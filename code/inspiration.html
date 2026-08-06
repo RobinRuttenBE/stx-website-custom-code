@@ -142,6 +142,8 @@
   .stx-insp .swap-btn { margin-top: clamp(14px, 1.6vw, 20px); background: none; border: 2px solid var(--dark); border-radius: 6px; padding: clamp(8px, 0.8vw, 9px) clamp(14px, 1.4vw, 18px); font-size: clamp(12px, 1vw, 13px); font-weight: 800; cursor: pointer; color: var(--dark); transition: transform 0.14s ease, box-shadow 0.14s ease; }
   .stx-insp .swap-btn:hover { transform: scale(1.05); box-shadow: var(--glow); }
   .stx-insp .calc-note { font-size: clamp(12px, 0.95vw, 13px); opacity: 0.7; margin-top: clamp(16px, 2vw, 26px); max-width: 72ch; }
+  .stx-insp .calc-notice { background: #f1d9ff; border-left: 4px solid var(--purple); border-radius: 8px; padding: clamp(12px, 1.4vw, 16px) clamp(14px, 1.6vw, 20px); margin: clamp(14px, 1.8vw, 22px) 0 clamp(18px, 2.2vw, 28px); }
+  .stx-insp .calc-notice p { margin: 0; font-size: clamp(13.5px, 1.05vw, 15px); font-weight: 600; color: var(--dark); opacity: 1; max-width: none; }
 
   /* ---- DOWNLOADS ---- */
   .stx-insp .dl-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, clamp(230px, 22vw, 300px)), 1fr)); gap: clamp(14px, 2vw, 28px); }
@@ -434,8 +436,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // -- 1. YOUTUBE --
     youtube: {
-      apiKey: 'PLACEHOLDER_API_KEY',
-      channelId: 'PLACEHOLDER_CHANNEL_ID',
+      apiKey: 'AIzaSyCEarMsI5T6n599CtTZkbs5vfBcYuLMFPg',
+      channelId: 'UChOB8F5m325uEG3t4lcnwhw',
       maxVideos: 12,
       channelUrl: 'https://www.youtube.com/@sempertexeurope',
       shopUrl: '/shop'
@@ -455,7 +457,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Zolang PLACEHOLDER: fallbackPosts (afbeeldingen zelf hosten,
     // Instagram CDN links verlopen na enkele dagen).
     instagram: {
-      feedUrl: 'PLACEHOLDER_FEED_URL',
+      feedUrl: 'https://feeds.behold.so/58tdDSZCkZMv8kC5AZcR',
       maxPosts: 12,
       fallbackPosts: [
         { img: '', link: '#' }, { img: '', link: '#' }, { img: '', link: '#' },
@@ -725,6 +727,12 @@ document.addEventListener('DOMContentLoaded', function () {
     root.querySelectorAll('.side a').forEach(function (a) {
       a.classList.toggle('active', a.getAttribute('data-view') === name);
     });
+    // De resultaatballon wordt gemeten op de breedte van zijn kolom.
+    // Als de calculator-view net zichtbaar wordt, meten we opnieuw in
+    // het eerstvolgende frame, anders start hij op minimumformaat.
+    if (name === 'calculator' && typeof root.stxCalcResize === 'function') {
+      window.requestAnimationFrame(root.stxCalcResize);
+    }
     track('inspiration_view', { view: name });
   }
   window.addEventListener('hashchange', function () { showView((window.location.hash || '').replace('#', '')); });
@@ -886,6 +894,23 @@ document.addEventListener('DOMContentLoaded', function () {
     if (e.target.closest && e.target.closest('.swatch')) { tip.style.display = 'none'; }
   });
 
+  // ---- DISCLAIMER PROMINENT BOVENAAN DE CALCULATOR ----
+  // De benaderings-melding staat in de opmaak onderaan de calculator,
+  // maar wordt bij het laden verplaatst naar direct onder de intro
+  // van de calculatorpagina, in een opvallende balk. De verplaatsing
+  // gebeurt in de browser en werkt dus ook op opgeslagen kopieen.
+  (function moveCalcNote() {
+    var note = root.querySelector('[data-i18n="calc_note"]');
+    var lede = root.querySelector('#view-calculator .lede');
+    if (!note || !lede) { return; }
+    if (note.closest && note.closest('.calc-notice')) { return; }
+    var wrap = document.createElement('div');
+    wrap.className = 'calc-notice';
+    note.classList.remove('calc-note');
+    lede.parentNode.insertBefore(wrap, lede.nextSibling);
+    wrap.appendChild(note);
+  })();
+
   // ---- PALETTEN ----
   // Taakverdeling per paletkaart:
   // AFBEELDING en DOWNLOADLINK zijn code-beheerd: die komen altijd vers
@@ -975,6 +1000,9 @@ document.addEventListener('DOMContentLoaded', function () {
       stage.style.width = W + 'px';
       stage.style.height = Math.round(W * h / w) + 'px';
     }
+    root.stxCalcResize = function () {
+      if (lastTexW && lastTexH) { sizeStage(lastTexW, lastTexH); }
+    };
     var rszTimer = null;
     window.addEventListener('resize', function () {
       if (rszTimer) { clearTimeout(rszTimer); }
@@ -1067,29 +1095,37 @@ document.addEventListener('DOMContentLoaded', function () {
       function x(n) { n = Math.max(0, Math.min(255, Math.round(n))); var s = n.toString(16); return s.length === 1 ? '0' + s : s; }
       return '#' + x(c.r) + x(c.g) + x(c.b);
     }
-    // Kleurmodel v2: rechtstreeks gekalibreerd op 9 gefotografeerde
-    // double stuffs (juli 2026, R5, daglicht, losse buitenballon als
-    // belichtingsanker). Per finish twee gemeten ankers: b = kleurratio
-    // bij zwarte binnenballon, w = ratio bij witte binnenballon. De
-    // luminantie van de binnenkleur bepaalt de positie daartussen
-    // (kwadratisch), de chroma geeft een zweem (TINT_Q). Crystal: de
-    // melkwaas groeit mee met de lichtheid van de binnenkleur.
-    // Gemiddelde afwijking op de meetset: 5 per kanaal (0-255).
-    // Pearl b-anker is afgeleid (nog niet gefotografeerd).
+    // Kleurmodel v4, gekalibreerd op twee fotorondes (juli/aug 2026).
+    // Drie regels bepalen het resultaat:
+    // 1) ANKERS per finish: hoeveel een zwarte (b) of witte (w)
+    //    binnenballon de buitenkleur verdiept of oplicht.
+    // 2) LICHTHEID VAN DE BUITENKANT (OUTER_CAL): donkere buitenkant
+    //    laat vrijwel niets door (Midnight Grey verandert amper),
+    //    lichte buitenkant meer. lum* stuurt het licht-effect,
+    //    tint* stuurt hoeveel KLEUR er doorschijnt.
+    // 3) KLEURMENGING (RANGE_TINT): het resultaat gloeit richting de
+    //    kleur van de binnenballon (rosewood door oyster white wordt
+    //    roze, door arctic blue lila). Fashion mengt het sterkst,
+    //    silk matig, metallic bijna niet, reflex circa 5%.
+    //    Grijze/zwarte binnenkleuren hebben geen chroma en mengen niets.
+    // Bijstellen: ankers richting 1.0 = minder licht-effect;
+    // RANGE_TINT hoger = meer kleurdoorschijn voor die finish.
     var RANGE_ANCH = {
-      // Ankers per finish: kleurratio resultaat/buitenkleur bij een
-      // ZWARTE binnenballon (b) en een WITTE binnenballon (w), per
-      // kanaal [r, g, b]. Afgeleid van de kalibratiefotos van juli 2026.
-      // Bijstellen: alle waarden richting 1.0 = buitenkleur domineert
-      // meer; verder van 1.0 = binnenkleur heeft meer invloed.
       fashion:  { b: [0.80, 0.87, 0.90], w: [1.10, 1.10, 1.10] },
-      pearl:    { b: [0.78, 0.78, 0.78], w: [1.00, 1.01, 1.01] },
-      metallic: { b: [0.85, 0.85, 0.85], w: [1.05, 1.02, 1.10] },
-      silk:     { b: [0.62, 0.67, 0.78], w: [1.08, 1.10, 1.16] },
-      reflex:   { b: [0.93, 0.93, 0.92], w: [1.00, 1.02, 1.00] }
+      pearl:    { b: [0.82, 0.82, 0.82], w: [1.00, 1.01, 1.01] },
+      metallic: { b: [0.85, 0.85, 0.85], w: [1.03, 1.03, 1.00] },
+      silk:     { b: [0.78, 0.78, 0.79], w: [1.05, 1.05, 1.06] },
+      reflex:   { b: [0.95, 0.95, 0.95], w: [1.00, 1.01, 1.00] }
     };
+    var OUTER_CAL = {
+      fashion:  { lcal: 0.50, lumExp: 0.9, lumMin: 0.50, lumMax: 1.20, tintExp: 0.9, tintMin: 0.50, tintMax: 1.30 },
+      pearl:    { lcal: 0.62, lumExp: 1.5, lumMin: 0.25, lumMax: 1.10, tintExp: 1.5, tintMin: 0.20, tintMax: 1.50 },
+      metallic: { lcal: 0.53, lumExp: 1.0, lumMin: 0.35, lumMax: 1.10, tintExp: 1.3, tintMin: 0.20, tintMax: 1.40 },
+      silk:     { lcal: 0.58, lumExp: 2.0, lumMin: 0.10, lumMax: 1.05, tintExp: 1.6, tintMin: 0.05, tintMax: 1.80 },
+      reflex:   { lcal: 0.60, lumExp: 1.0, lumMin: 0.60, lumMax: 1.05, tintExp: 1.0, tintMin: 0.30, tintMax: 1.20 }
+    };
+    var RANGE_TINT = { fashion: 0.45, pearl: 0.22, metallic: 0.10, silk: 0.30, reflex: 0.05 };
     var ANCH_KEY = { 'Fashion': 'fashion', 'Pastel Dusk': 'fashion', 'Neon': 'fashion', 'Pastel Matte': 'fashion', 'Pearl': 'pearl', 'Metallic': 'metallic', 'Silk': 'silk', 'Reflex': 'reflex' };
-    var TINT_Q = 0.22;
     function clampN(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
     function mix() {
       var ic = colorOf('inner'), oc = colorOf('outer');
@@ -1103,16 +1139,63 @@ document.addEventListener('DOMContentLoaded', function () {
           b: inner.b + w * (255 - inner.b)
         });
       }
-      var anch = RANGE_ANCH[ANCH_KEY[rangeOf('outer').name] || 'fashion'];
+      var key = ANCH_KEY[rangeOf('outer').name] || 'fashion';
+      var anch = RANGE_ANCH[key];
+      var cal = OUTER_CAL[key];
+      var Lout = (outer.r + outer.g + outer.b) / 765;
+      var fLum = clampN(Math.pow(Lout / cal.lcal, cal.lumExp), cal.lumMin, cal.lumMax);
+      var fTint = clampN(Math.pow(Lout / cal.lcal, cal.tintExp), cal.tintMin, cal.tintMax);
       var mixW = Math.pow(Math.min(1, Lin / 0.9), 2);
-      function ch(i, o, idx) {
-        var base = anch.b[idx] + (anch.w[idx] - anch.b[idx]) * mixW;
-        var tint = 1;
-        if (Lin > 0.03) { tint = clampN(Math.pow(i / (Lin * 255), TINT_Q), 0.3, 2.0); }
-        return clampN(o * base * tint, 0, 255);
+      // stap 1 en 2: lichtheid
+      var base = { r: 0, g: 0, b: 0 };
+      ['r', 'g', 'b'].forEach(function (chn, idx) {
+        var dev = anch.b[idx] + (anch.w[idx] - anch.b[idx]) * mixW;
+        base[chn] = clampN(outer[chn] * (1 + (dev - 1) * fLum), 0, 255);
+      });
+      // stap 3: kleurmenging richting de binnenkleur
+      var mxI = Math.max(inner.r, inner.g, inner.b);
+      var chroma = mxI > 0 ? (mxI - Math.min(inner.r, inner.g, inner.b)) / mxI : 0;
+      var tb = clampN(RANGE_TINT[key] * fTint * Math.pow(chroma, 0.7), 0, 0.85);
+      var res = base;
+      if (tb > 0.01 && Lin > 0.03) {
+        var Lbase = (base.r + base.g + base.b) / 765;
+        var scale = Lbase / Lin;
+        res = {
+          r: base.r * (1 - tb) + clampN(inner.r * scale, 0, 255) * tb,
+          g: base.g * (1 - tb) + clampN(inner.g * scale, 0, 255) * tb,
+          b: base.b * (1 - tb) + clampN(inner.b * scale, 0, 255) * tb
+        };
       }
-      return rgbToHex({ r: ch(inner.r, outer.r, 0), g: ch(inner.g, outer.g, 1), b: ch(inner.b, outer.b, 2) });
+      return rgbToHex(res);
     }
+
+    // SHEEN-CORRECTIE OP DE BASISKLEUREN:
+    // Parelmoerfinishes (silk, pearl, metallic, reflex) reflecteren
+    // licht, waardoor donkere kleuren er in het echt duidelijk lichter
+    // uitzien dan hun pigment-hex uit de chart (Midnight Grey oogt
+    // middengrijs, niet zwart). Donkere tinten (lichtheid < 0.45) van
+    // deze vier finishes worden daarom opgelicht richting hun
+    // daglicht-uitstraling; hoe donkerder, hoe sterker de correctie.
+    // Lichte en middenkleuren blijven exact op hun chart-waarde.
+    // Bijstellen: SHEEN per finish hoger = donkere tinten lichter.
+    var SHEEN = { silk: 0.55, pearl: 0.50, metallic: 0.45, reflex: 0.40 };
+    RANGES.forEach(function (rng) {
+      var sKey = ANCH_KEY[rng.name];
+      var s0 = SHEEN[sKey];
+      if (!s0) { return; }
+      rng.colors.forEach(function (c) {
+        if (c.clear) { return; }
+        var rgb = hexToRgb(c.hex);
+        var L = (rgb.r + rgb.g + rgb.b) / 765;
+        if (L >= 0.45) { return; }
+        var s = s0 * Math.pow((0.45 - L) / 0.45, 1.2);
+        c.hex = rgbToHex({
+          r: rgb.r + s * (255 - rgb.r),
+          g: rgb.g + s * (255 - rgb.g),
+          b: rgb.b + s * (255 - rgb.b)
+        });
+      });
+    });
 
     function buildTabs(which) {
       var box = root.querySelector('#tabs-' + which);
