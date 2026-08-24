@@ -329,6 +329,9 @@
             if (!html) return null;
             var d = new DOMParser().parseFromString(html, 'text/html');
             var wrapEl = d.querySelector('#wrap') || d.body;
+            [].slice.call(wrapEl.querySelectorAll('[data-stx-lang]')).forEach(function(el){
+              if ((el.getAttribute('data-stx-lang')||'').toLowerCase() !== LANG && el.parentNode) el.parentNode.removeChild(el);
+            });
             var meta = wrapEl.querySelector('.stx-blog-meta') || d.createElement('div');
             var h1 = wrapEl.querySelector('h1');
             var img = wrapEl.querySelector('#wrap img, img');
@@ -442,6 +445,13 @@
     inner.setAttribute('data-stx-injected','1');
     while (wrap.firstChild) inner.appendChild(wrap.firstChild);
     wrap.appendChild(inner);
+
+    /* Meertalige embed-blokken: elementen met data-stx-lang worden
+       enkel getoond in hun eigen taal. Blokken zonder het attribuut
+       gedragen zich zoals altijd (alle talen). */
+    [].slice.call(inner.querySelectorAll('[data-stx-lang]')).forEach(function(el){
+      if ((el.getAttribute('data-stx-lang')||'').toLowerCase() !== LANG && el.parentNode) el.parentNode.removeChild(el);
+    });
 
     var meta = inner.querySelector('.stx-blog-meta');
     var authorKey = meta ? meta.getAttribute('data-author') : 'team';
