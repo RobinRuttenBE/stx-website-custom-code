@@ -1,0 +1,582 @@
+<!-- ============================================================
+     STX EU / BLOG SECTIE (sectiebestand voor de section loader)
+     Stand: v26 (auteur enkel Sempertex Europe, editor-cachebypass,
+     brede artikelen, editor-guard, backend-artikeldetectie).
+
+     Dit bestand hoort in de repo onder /sections/ en wordt door
+     stx-loader geladen op /blog en alle /blog/... artikelen.
+     NIET los in Odoo plakken.
+
+     WERKING:
+     - Overzicht: pagina /blog LEEG laten in Odoo; deze code bouwt
+       hero, filters, featured, grid en newsletter, en vult zich
+       automatisch: ingelogd via de interne Odoo API (ook
+       unpublished, met badge), bezoekers via sitemap.xml.
+     - Artikel: elke /blog/slug pagina wordt automatisch gestyled:
+       quick answer (eerste alinea), ghost nummers per H2,
+       auteursblok, leestijd, tabellen, quotes, keep reading,
+       FAQPage en BlogPosting JSON-LD.
+     - Per artikel 1 meta-regel via Embed Code:
+       <div class="stx-blog-meta" data-tag="business"
+            data-date="2026-08" style="display:none"></div>
+       (data-featured="yes" op het featured artikel,
+        data-related="/blog/a,/blog/b" optioneel)
+     - Snippets voor tip, FAQ en download: stx-blog-snippets.html
+     CONFIG bovenin het script is jouw deel.
+     ============================================================ -->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rethink+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,700&display=swap" rel="stylesheet">
+
+<style>
+.stx-blog{--purple:#6b3fb9;--purple-light:#f1d9ff;--purple-bg:#faf4ff;--dark:#1b073d;--yellow:#ffdb5a;--warn:#cd0b5c;--paper:#fefcfa;--rule:#e8dcf5;
+  font-family:'Rethink Sans',sans-serif;color:var(--dark);line-height:1.55;font-size:17px;background:var(--paper)}
+.stx-blog *,.stx-blog *::before,.stx-blog *::after{box-sizing:border-box}
+.stx-blog a{color:var(--purple)}
+.stx-blog img{max-width:100%;height:auto;display:block}
+.stx-blog .sb-wrap{max-width:1680px;margin:0 auto;padding:clamp(28px,3.5vw,48px) clamp(14px,3vw,40px) clamp(56px,8vw,110px)}
+.stx-blog .sb-wrap-narrow{max-width:1060px;margin:0 auto;padding:56px 40px 110px}
+.stx-blog .sb-eyebrow{font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--purple);margin:0 0 14px}
+.stx-blog .sb-hl{background:var(--yellow);padding:0 .15em;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+
+/* ---- INDEX ---- */
+.stx-blog .sb-hero{border-bottom:2px solid var(--dark);padding-bottom:40px;margin-bottom:44px}
+.stx-blog .sb-hero h1{font-size:clamp(44px,7vw,84px);font-weight:800;line-height:.98;letter-spacing:-.03em;margin:0;max-width:16ch}
+.stx-blog .sb-hero .sb-lede{font-size:21px;font-weight:500;line-height:1.45;margin:20px 0 0;max-width:56ch}
+.stx-blog .sb-filters{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 40px}
+.stx-blog .sb-pill{border:2px solid var(--dark);background:#fff;color:var(--dark);border-radius:999px;padding:8px 18px;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;transition:all .15s ease}
+.stx-blog .sb-pill:hover{background:var(--purple-light)}
+.stx-blog .sb-pill.active{background:var(--dark);color:var(--yellow)}
+.stx-blog .sb-featured{display:grid;grid-template-columns:1.1fr 1fr;border:2px solid var(--dark);border-radius:10px;overflow:hidden;margin:0 0 48px;background:#fff;text-decoration:none;color:var(--dark);transition:box-shadow .2s ease,transform .2s ease}
+.stx-blog .sb-featured:hover{box-shadow:0 16px 44px rgba(27,7,61,.14);transform:translateY(-2px)}
+.stx-blog .sb-featured .sb-fx{padding:38px 42px;display:flex;flex-direction:column;justify-content:center}
+.stx-blog .sb-featured h2{font-size:clamp(26px,3.4vw,38px);font-weight:800;line-height:1.08;letter-spacing:-.02em;margin:0 0 14px}
+.stx-blog .sb-featured p{font-size:16px;opacity:.85;margin:0;max-width:52ch}
+.stx-blog .sb-cover{position:relative;min-height:200px;background:var(--purple-light);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.stx-blog .sb-cover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.stx-blog .sb-cover .sb-glyph{font-weight:800;font-size:90px;letter-spacing:-.04em;color:var(--purple);opacity:.55;user-select:none}
+.stx-blog .sb-draft{position:absolute;top:10px;left:10px;z-index:2;background:var(--warn);color:#fff;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:3px 10px;border-radius:4px}
+.stx-blog .sb-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:26px}
+.stx-blog .sb-card{border:2px solid var(--dark);border-radius:10px;overflow:hidden;background:#fff;display:flex;flex-direction:column;text-decoration:none;color:var(--dark);transition:box-shadow .2s ease,transform .2s ease}
+.stx-blog .sb-card:hover{box-shadow:0 14px 36px rgba(27,7,61,.14);transform:translateY(-3px)}
+.stx-blog .sb-card .sb-cover{min-height:160px}
+.stx-blog .sb-card .sb-cx{padding:20px 22px 22px;display:flex;flex-direction:column;gap:10px;flex:1}
+.stx-blog .sb-tag{align-self:flex-start;background:var(--purple-light);color:var(--dark);border-radius:4px;padding:3px 10px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.stx-blog .sb-card h3{font-size:20px;font-weight:800;line-height:1.2;letter-spacing:-.01em;margin:0}
+.stx-blog .sb-card p{font-size:15px;line-height:1.5;opacity:.85;flex:1;margin:0}
+.stx-blog .sb-meta-row{display:flex;align-items:center;gap:9px;font-size:13px;font-weight:600;opacity:.78}
+.stx-blog .sb-avatar{width:28px;height:28px;border-radius:50%;background:var(--purple);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex:none;overflow:hidden}
+.stx-blog .sb-avatar img{width:100%;height:100%;object-fit:cover}
+.stx-blog .sb-newsletter{background:var(--yellow);border-radius:10px;padding:40px 44px;margin-top:64px;display:grid;grid-template-columns:1.4fr auto;gap:32px;align-items:center}
+.stx-blog .sb-newsletter h2{font-size:clamp(26px,3.6vw,40px);font-weight:800;letter-spacing:-.02em;line-height:1.08;margin:0}
+.stx-blog .sb-newsletter p{font-size:16px;font-weight:500;margin:10px 0 0;max-width:46ch}
+.stx-blog .sb-btn{display:inline-block;background:var(--dark);color:var(--yellow);font-weight:800;font-size:16px;padding:14px 26px;border-radius:8px;text-decoration:none;border:2px solid var(--dark);transition:all .15s ease;cursor:pointer}
+.stx-blog .sb-btn:hover{background:transparent;color:var(--dark)}
+.stx-blog .sb-empty{padding:40px 0;font-weight:600;opacity:.7}
+
+/* ---- ARTIKEL ---- */
+.stx-blog-article .sb-back{display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:700;text-decoration:none;color:var(--purple);margin:0 0 32px}
+.stx-blog-article .sb-back:hover{color:var(--dark)}
+.stx-blog-article h1{font-size:clamp(36px,5.6vw,60px);font-weight:800;line-height:1.05;letter-spacing:-.03em;margin:0 0 22px}
+.stx-blog-article .sb-author{display:flex;align-items:center;gap:14px;padding:18px 0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);margin:0 0 34px}
+.stx-blog-article .sb-author .sb-avatar{width:44px;height:44px;font-size:17px}
+.stx-blog-article .sb-author .sb-who{font-size:15px;font-weight:700}
+.stx-blog-article .sb-author .sb-role{font-size:13px;font-weight:600;opacity:.7}
+.stx-blog-article .sb-author .sb-role:empty{display:none}
+.stx-blog-article .sb-author .sb-when{margin-left:auto;font-size:13px;font-weight:600;opacity:.7;text-align:right}
+.stx-blog-article .sb-quick{background:var(--purple-bg);border-left:4px solid var(--purple);border-radius:0 8px 8px 0;padding:24px 28px;margin:0 0 40px}
+.stx-blog-article .sb-quick .sb-qlabel{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--purple);margin:0 0 10px}
+.stx-blog-article .sb-quick p{font-size:18px;font-weight:500;line-height:1.5;margin:0}
+.stx-blog-article .sb-secnum{font-size:96px;font-weight:800;color:var(--purple-light);line-height:.85;margin:0;padding-top:52px;clear:both;user-select:none;pointer-events:none;position:relative;z-index:0}
+.stx-blog-article .sb-secnum + h2{margin-top:-42px}
+.stx-blog-article h2{clear:both;position:relative;z-index:1}
+.stx-blog-article h2{font-size:clamp(28px,4vw,40px);font-weight:800;line-height:1.06;letter-spacing:-.02em;margin:0 0 18px;position:relative}
+.stx-blog-article h3{font-size:22px;font-weight:700;letter-spacing:-.01em;margin:26px 0 12px}
+.stx-blog-article p{margin:0 0 16px}
+.stx-blog-article ul,.stx-blog-article ol{margin:0 0 16px;padding-left:2px;list-style:none}
+.stx-blog-article ul li{padding:5px 0 5px 20px;position:relative}
+.stx-blog-article ul li::before{content:"";position:absolute;left:0;top:14px;width:8px;height:8px;background:var(--purple)}
+.stx-blog-article ol{counter-reset:sbol}
+.stx-blog-article ol li{counter-increment:sbol;padding:5px 0 5px 30px;position:relative}
+.stx-blog-article ol li::before{content:counter(sbol);position:absolute;left:0;top:5px;color:var(--purple);font-weight:800}
+.stx-blog-article blockquote{font-size:25px;font-weight:700;line-height:1.3;letter-spacing:-.01em;margin:34px 0;padding-left:24px;border-left:4px solid var(--yellow)}
+.stx-blog-article blockquote p{font-size:inherit;font-weight:inherit;margin:0}
+.stx-blog-article table{border-collapse:collapse;width:100%;margin:24px 0;font-size:15px;background:#fff}
+.stx-blog-article th{background:var(--dark);color:var(--paper);text-align:left;padding:12px 16px;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;border:none}
+.stx-blog-article td{padding:11px 16px;border-bottom:1px solid var(--rule)}
+.stx-blog-article tr:nth-child(even) td{background:var(--purple-bg)}
+.stx-blog-article .sb-content img{border-radius:10px;margin:26px 0}
+.stx-blog .stx-tip{background:#fff;border:2px solid var(--purple);border-radius:8px;padding:22px 26px;margin:28px 0}
+.stx-blog .stx-tip .t-label{font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--purple);margin:0 0 8px}
+.stx-blog .stx-tip p{margin:0;font-size:16px}
+.stx-blog .stx-faq details{border-bottom:1px solid var(--rule)}
+.stx-blog .stx-faq summary{cursor:pointer;padding:16px 0;font-size:17px;font-weight:700;list-style:none;display:flex;justify-content:space-between;gap:16px}
+.stx-blog .stx-faq summary::-webkit-details-marker{display:none}
+.stx-blog .stx-faq summary::after{content:"+";font-weight:800;color:var(--purple);font-size:20px}
+.stx-blog .stx-faq details[open] summary::after{content:"\2212"}
+.stx-blog .stx-faq details p{padding:0 0 18px;font-size:16px;opacity:.9}
+.stx-blog .stx-download{background:var(--yellow);border-radius:10px;padding:38px 42px;margin:48px 0 0}
+.stx-blog .stx-download h2,.stx-blog .stx-download .d-title{font-size:clamp(24px,3.4vw,36px);font-weight:800;letter-spacing:-.02em;line-height:1.08;margin:0 0 12px}
+.stx-blog .stx-download p{font-size:16px;font-weight:500;margin:0 0 20px}
+.stx-blog .sb-related{margin-top:64px}
+.stx-blog .sb-related h2{margin-bottom:24px}
+/* ---- Odoo snippet-wrappers neutraliseren binnen artikelen ---- */
+.stx-blog-article section{background:transparent !important;padding-top:0 !important;padding-bottom:0 !important;box-shadow:none}
+.stx-blog-article .container,.stx-blog-article .container-fluid,.stx-blog-article .o_container_small{max-width:100% !important;padding-left:0 !important;padding-right:0 !important}
+.stx-blog-article h1,.stx-blog-article h2,.stx-blog-article h3,.stx-blog-article p,.stx-blog-article li,.stx-blog-article figcaption{text-align:left !important}
+.stx-blog-article .text-center{text-align:left !important}
+.stx-blog-article .s_embed_code,.stx-blog-article .s_embed_code_embedded{background:transparent !important;padding:0 !important}
+.stx-blog-article section[data-snippet="s_blockquote"],.stx-blog-article .s_blockquote{background:transparent !important;border:none !important;box-shadow:none;padding:0 !important}
+.stx-blog-article .s_blockquote img,.stx-blog-article .s_blockquote .o_avatar{display:none !important}
+@media (max-width:860px){
+  .stx-blog .sb-grid{grid-template-columns:repeat(2,1fr)}
+  .stx-blog .sb-featured{grid-template-columns:1fr}
+  .stx-blog .sb-newsletter{grid-template-columns:1fr}
+}
+@media (max-width:600px){
+  .stx-blog .sb-wrap,.stx-blog .sb-wrap-narrow{padding:36px 20px 70px}
+  .stx-blog .sb-grid{grid-template-columns:1fr}
+  .stx-blog-article .sb-secnum{font-size:64px;padding-top:40px}
+  .stx-blog-article .sb-secnum + h2{margin-top:-26px}
+  .stx-blog-article .sb-author .sb-when{display:none}
+}
+</style>
+<script>
+(function(){
+  /* ==========================================================
+     CONFIG BLOG: DIT IS JOUW DEEL.
+     ========================================================== */
+  var BLOG_CONFIG = {
+    blogRoot: '/blog',
+    layout: 'grid',            // 'grid' of 'list'
+    maxArticles: 30,           // max artikelen op het overzicht
+    newsletterUrl: '/newsletter',
+    cacheMinutes: 30,          // sessie-cache van de artikellijst
+    // Preview: slugs die het overzicht moet tonen ook al staan ze
+    // (nog) niet in de sitemap, bv. unpublished testartikelen.
+    // Enkel zichtbaar voor wie de pagina kan openen (ingelogd).
+    // Voorbeeld: extraArticles: ['/blog/mijn-testartikel'],
+    extraArticles: [],
+
+    authors: {
+      // Enige auteur. img mag later een URL naar het logo of een foto zijn.
+      'team':   { name: 'Sempertex Europe', role: { nl:'', en:'', fr:'', de:'' }, img: '' }
+    },
+
+    tags: {
+      'news':        { nl:'Nieuws & updates', en:'News & updates', fr:'Actus & mises a jour', de:'News & Updates' },
+      'techniques':  { nl:'Technieken', en:'Techniques', fr:'Techniques', de:'Techniken' },
+      'business':    { nl:'Business', en:'Business', fr:'Business', de:'Business' },
+      'helium':      { nl:'Helium en tools', en:'Helium and tools', fr:'Helium et outils', de:'Helium und Tools' },
+      'inspiration': { nl:'Kleuren en inspiratie', en:'Colours and inspiration', fr:'Couleurs et inspiration', de:'Farben und Inspiration' },
+      'products':    { nl:'Producten', en:'Products', fr:'Produits', de:'Produkte' }
+    },
+
+    ui: {
+      eyebrow:    { nl:'De Sempertex Europe Blog', en:'The Sempertex Europe Blog', fr:'Le blog Sempertex Europe', de:'Der Sempertex Europe Blog' },
+      heroTitle:  { nl:'Sempertex Europe |News|', en:'Sempertex Europe |News|', fr:'Sempertex Europe |News|', de:'Sempertex Europe |News|' },
+      heroLede:   { nl:'Nieuws over de ballonindustrie, tools, business, technieken en meer updates voor professionele ballonartiesten en decorateurs.', en:'News about the balloon industry, tools, business, techniques and more updates for professional balloon artists and decorators.', fr:'L\u2019actualite de l\u2019industrie du ballon, outils, business, techniques et plus de mises a jour pour les artistes ballon et decorateurs professionnels.', de:'News aus der Ballonindustrie, Tools, Business, Techniken und mehr Updates fuer professionelle Ballonkuenstler und Dekorateure.' },
+      all:        { nl:'Alle artikelen', en:'All articles', fr:'Tous les articles', de:'Alle Artikel' },
+      featured:   { nl:'Uitgelicht', en:'Featured', fr:'A la une', de:'Empfohlen' },
+      back:       { nl:'Alle artikelen', en:'All articles', fr:'Tous les articles', de:'Alle Artikel' },
+      draft:      { nl:'Niet gepubliceerd', en:'Unpublished', fr:'Non publie', de:'Unveroeffentlicht' },
+      quick:      { nl:'Kort antwoord', en:'Quick answer', fr:'Reponse rapide', de:'Kurze Antwort' },
+      minRead:    { nl:'min leestijd', en:'min read', fr:'min de lecture', de:'Min. Lesezeit' },
+      keepReading:{ nl:'Verder |lezen|', en:'Keep |reading|', fr:'Continuez a |lire|', de:'Weiter|lesen|' },
+      nlTitle:    { nl:'Schrijf je in voor meer updates en |exclusieve inzichten|', en:'Sign up for more updates and |exclusive insights|', fr:'Inscrivez-vous pour plus de mises a jour et |d\u2019insights exclusifs|', de:'Melde dich an fuer mehr Updates und |exklusive Einblicke|' },
+      nlText:     { nl:'Sluit je aan bij tienduizenden ballonartiesten in onze community newsletter voor tutorials, updates, guides en meer.', en:'Join tens of thousands of balloon artists in our community newsletter for tutorials, updates, guides and more.', fr:'Rejoignez des dizaines de milliers d\u2019artistes ballon dans notre newsletter pour des tutoriels, mises a jour, guides et plus.', de:'Schliesse dich zehntausenden Ballonkuenstlern in unserem Community Newsletter an: Tutorials, Updates, Guides und mehr.' },
+      nlBtn:      { nl:'Inschrijven', en:'Join the newsletter', fr:'S\u2019inscrire', de:'Anmelden' },
+      months:     { nl:['januari','februari','maart','april','mei','juni','juli','augustus','september','oktober','november','december'],
+                    en:['January','February','March','April','May','June','July','August','September','October','November','December'],
+                    fr:['janvier','fevrier','mars','avril','mai','juin','juillet','aout','septembre','octobre','novembre','decembre'],
+                    de:['Januar','Februar','Maerz','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'] }
+    }
+  };
+  /* ================= EINDE CONFIG BLOG ================= */
+
+  var path = location.pathname.replace(/\/+$/,'') || '/';
+  var m = path.match(/^\/(fr|de|en_GB)(\/|$)/);
+  var langPrefix = m ? '/' + m[1] : '';
+  var LANG = m ? (m[1] === 'en_GB' ? 'en' : m[1]) : 'nl';
+  var rest = langPrefix ? path.slice(langPrefix.length) : path;
+  var isIndex = (rest === BLOG_CONFIG.blogRoot);
+  var isArticle = rest.indexOf(BLOG_CONFIG.blogRoot + '/') === 0;
+  if (!isIndex && !isArticle) return;
+
+  /* ---- editor-beveiliging: nooit draaien of sporen achterlaten in Odoo bewerkmodus ---- */
+  function inEdit(){
+    return document.body.classList.contains('editor_enable')
+      || !!document.querySelector('.odoo-editor-editable')
+      || !!document.querySelector('#wrap.o_editable');
+  }
+  function cleanupInjected(wrap){
+    if (!wrap) return;
+    [].slice.call(wrap.querySelectorAll('.sb-quick[data-stx-injected]')).forEach(function(q){
+      var p = q.querySelector('p');
+      if (p) q.parentNode.insertBefore(p, q);
+      q.parentNode.removeChild(q);
+    });
+    [].slice.call(wrap.querySelectorAll('[data-stx-injected]')).forEach(function(el){
+      if (!el.parentNode) return;
+      if (el.classList.contains('sb-content')) {
+        while (el.firstChild) el.parentNode.insertBefore(el.firstChild, el);
+      }
+      el.parentNode.removeChild(el);
+    });
+    wrap.classList.remove('stx-blog','stx-blog-article');
+  }
+
+  function T(o){ return (o && (o[LANG] || o.en || o.nl)) || ''; }
+  function hl(s){ return String(s).replace(/\|([^|]+)\|/g, '<span class="sb-hl">$1</span>'); }
+  function esc(s){ var d=document.createElement('div'); d.textContent=s||''; return d.innerHTML; }
+  function fmtDate(ym){
+    if(!ym) return '';
+    var p = ym.split('-');
+    var mo = BLOG_CONFIG.ui.months[LANG] || BLOG_CONFIG.ui.months.en;
+    return (mo[(parseInt(p[1],10)||1)-1] || '') + ' ' + p[0];
+  }
+  function readTime(words){ return Math.max(3, Math.round(words/200)); }
+  function authorOf(key){
+    return BLOG_CONFIG.authors[key] || BLOG_CONFIG.authors['team'] || { name:'Sempertex Europe', role:{}, img:'' };
+  }
+  function avatarHtml(a){
+    if (a.img) return '<span class="sb-avatar"><img src="'+esc(a.img)+'" alt="'+esc(a.name)+'"></span>';
+    return '<span class="sb-avatar">'+esc((a.name||'S').charAt(0))+'</span>';
+  }
+  function coverHtml(item){
+    var badge = item.published === false ? '<span class="sb-draft">'+esc(T(BLOG_CONFIG.ui.draft))+'</span>' : '';
+    if (item.cover) return '<div class="sb-cover">'+badge+'<img src="'+esc(item.cover)+'" alt="'+esc(item.title)+'" loading="lazy"></div>';
+    return '<div class="sb-cover">'+badge+'<span class="sb-glyph">'+esc((item.title||'S').charAt(0).toUpperCase())+'</span></div>';
+  }
+  function articleUrl(slugPath){ return langPrefix + slugPath; }
+
+  /* ---------- artikellijst opbouwen via sitemap ---------- */
+  var CACHE_KEY = 'stxBlogIndex_v4_' + LANG;
+  /* Ingelogde editors krijgen altijd verse data (geen sessie-cache,
+     geen browsercache), bezoekers houden de snelle cache. */
+  function isEditor(){
+    try { return sessionStorage.getItem('stxBlogEditor') === '1'; } catch(e){ return false; }
+  }
+  /* Bron 1: interne Odoo API (werkt voor ingelogde gebruikers, toont
+     ook unpublished artikelen). Bron 2 (fallback voor bezoekers):
+     sitemap.xml, enkel gepubliceerde artikelen. */
+  function slugsFromBackend(){
+    return fetch('/web/dataset/call_kw', {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ jsonrpc: '2.0', method: 'call', params: {
+        model: 'website.page', method: 'search_read',
+        args: [ [['url','=like', BLOG_CONFIG.blogRoot + '/%']], ['url','is_published'] ],
+        kwargs: {}
+      }})
+    }).then(function(r){ return r.json(); }).then(function(d){
+      if (!d || !d.result || !d.result.length) throw 0;
+      try { sessionStorage.setItem('stxBlogEditor','1'); } catch(e){}
+      return d.result.map(function(rec){ return { slug: rec.url, published: rec.is_published !== false }; });
+    });
+  }
+  function slugsFromSitemap(){
+    return fetch('/sitemap.xml?stx=' + Date.now()).then(function(r){ return r.text(); }).then(function(xml){
+      var doc = new DOMParser().parseFromString(xml, 'text/xml');
+      var locs = [].slice.call(doc.querySelectorAll('loc')).map(function(n){ return n.textContent.trim(); });
+      var isIdx = doc.querySelector('sitemapindex');
+      var next = isIdx
+        ? Promise.all(locs.slice(0,5).map(function(u){ return fetch(u).then(function(r){ return r.text(); }).catch(function(){ return ''; }); }))
+            .then(function(parts){
+              var all = [];
+              parts.forEach(function(x){
+                var d2 = new DOMParser().parseFromString(x, 'text/xml');
+                [].slice.call(d2.querySelectorAll('url > loc')).forEach(function(n){ all.push(n.textContent.trim()); });
+              });
+              return all;
+            })
+        : Promise.resolve(locs);
+      return next.then(function(urls){
+        var out = [];
+        urls.forEach(function(u){
+          var p; try { p = new URL(u).pathname; } catch(e){ return; }
+          p = p.replace(/^\/(fr|de|en_GB)(?=\/)/,'');
+          if (p.indexOf(BLOG_CONFIG.blogRoot + '/') === 0 && p !== BLOG_CONFIG.blogRoot) out.push({ slug: p, published: true });
+        });
+        return out;
+      });
+    });
+  }
+  function loadIndex(cb){
+    if (!isEditor()) {
+      try {
+        var c = JSON.parse(sessionStorage.getItem(CACHE_KEY) || 'null');
+        if (c && (Date.now() - c.t) < BLOG_CONFIG.cacheMinutes*60000) return cb(c.items);
+      } catch(e){}
+    }
+    slugsFromBackend()
+      .catch(function(){ return slugsFromSitemap(); })
+      .catch(function(){ return []; })
+      .then(function(list){
+        var seen = {}, slugObjs = [];
+        (list || []).forEach(function(o){ if (o && o.slug && !seen[o.slug]) { seen[o.slug] = 1; slugObjs.push(o); } });
+        (BLOG_CONFIG.extraArticles || []).forEach(function(x){
+          x = String(x).trim();
+          if (x && x.indexOf(BLOG_CONFIG.blogRoot + '/') === 0 && !seen[x]) { seen[x] = 1; slugObjs.unshift({ slug: x, published: true }); }
+        });
+        slugObjs = slugObjs.slice(0, BLOG_CONFIG.maxArticles);
+        Promise.all(slugObjs.map(function(o){
+          var slug = o.slug;
+          return fetch(articleUrl(slug), isEditor() ? { cache: 'no-store' } : undefined).then(function(r){ return r.ok ? r.text() : ''; }).then(function(html){
+            if (!html) return null;
+            var d = new DOMParser().parseFromString(html, 'text/html');
+            var wrapEl = d.querySelector('#wrap') || d.body;
+            var meta = wrapEl.querySelector('.stx-blog-meta') || d.createElement('div');
+            var h1 = wrapEl.querySelector('h1');
+            var img = wrapEl.querySelector('#wrap img, img');
+            var firstP = null;
+            [].slice.call(wrapEl.querySelectorAll('p')).some(function(p2){
+              if ((p2.textContent||'').trim().length > 40) { firstP = p2; return true; } return false;
+            });
+            var words = (wrapEl.textContent||'').trim().split(/\s+/).length;
+            return {
+              slug: slug,
+              published: o.published,
+              title: h1 ? h1.textContent.trim() : slug.split('/').pop().replace(/-/g,' '),
+              cover: img ? img.getAttribute('src') : '',
+              excerpt: firstP ? firstP.textContent.trim().slice(0,150) + (firstP.textContent.trim().length>150 ? '\u2026' : '') : '',
+              author: meta.getAttribute('data-author') || 'team',
+              tag: meta.getAttribute('data-tag') || '',
+              date: meta.getAttribute('data-date') || '',
+              featured: meta.getAttribute('data-featured') === 'yes',
+              minutes: readTime(words)
+            };
+          }).catch(function(){ return null; });
+        })).then(function(items){
+          items = items.filter(Boolean);
+          items.sort(function(a,b){ return (b.date||'').localeCompare(a.date||''); });
+          if (items.length) { try { sessionStorage.setItem(CACHE_KEY, JSON.stringify({t:Date.now(), items:items})); } catch(e){} }
+          cb(items);
+        });
+      });
+  }
+
+  function cardHtml(item){
+    var a = authorOf(item.author);
+    var tagName = item.tag && BLOG_CONFIG.tags[item.tag] ? T(BLOG_CONFIG.tags[item.tag]) : '';
+    return '<a class="sb-card" data-cat="'+esc(item.tag)+'" href="'+esc(articleUrl(item.slug))+'">'
+      + coverHtml(item)
+      + '<div class="sb-cx">'
+      + (tagName ? '<span class="sb-tag">'+esc(tagName)+'</span>' : '')
+      + '<h3>'+esc(item.title)+'</h3>'
+      + (item.excerpt ? '<p>'+esc(item.excerpt)+'</p>' : '')
+      + '<div class="sb-meta-row">'+avatarHtml(a)+'<span>'+esc(a.name)+'</span><span style="opacity:.4">&middot;</span><span>'+item.minutes+' '+esc(T(BLOG_CONFIG.ui.minRead))+'</span></div>'
+      + '</div></a>';
+  }
+
+  /* ---------- OVERZICHTSPAGINA ---------- */
+  function buildIndex(){
+    var wrap = document.getElementById('wrap');
+    if (!wrap) return;
+    cleanupInjected(wrap);
+    if (inEdit()) return;
+    wrap.classList.add('stx-blog');
+    var pills = '<button class="sb-pill active" data-f="all">'+esc(T(BLOG_CONFIG.ui.all))+'</button>';
+    Object.keys(BLOG_CONFIG.tags).forEach(function(k){
+      pills += '<button class="sb-pill" data-f="'+k+'">'+esc(T(BLOG_CONFIG.tags[k]))+'</button>';
+    });
+    var host = document.createElement('div');
+    host.setAttribute('data-stx-injected','1');
+    host.innerHTML = '<div class="sb-wrap">'
+      + '<header class="sb-hero">'
+      + '<h1>'+hl(esc(T(BLOG_CONFIG.ui.heroTitle)))+'</h1>'
+      + '<p class="sb-lede">'+esc(T(BLOG_CONFIG.ui.heroLede))+'</p></header>'
+      + '<div class="sb-filters">'+pills+'</div>'
+      + '<div id="sb-featured-slot"></div>'
+      + '<div class="sb-grid" id="sb-grid"><div class="sb-empty">\u2026</div></div>'
+      + '<div class="sb-newsletter"><div><h2>'+hl(esc(T(BLOG_CONFIG.ui.nlTitle)))+'</h2>'
+      + '<p>'+esc(T(BLOG_CONFIG.ui.nlText))+'</p></div>'
+      + '<a class="sb-btn" href="'+esc(langPrefix + BLOG_CONFIG.newsletterUrl)+'">'+esc(T(BLOG_CONFIG.ui.nlBtn))+'</a></div>'
+      + '</div>';
+    wrap.appendChild(host);
+
+    wrap.querySelectorAll('.sb-pill').forEach(function(p){
+      p.addEventListener('click', function(){
+        wrap.querySelectorAll('.sb-pill').forEach(function(x){ x.classList.remove('active'); });
+        p.classList.add('active');
+        var f = p.getAttribute('data-f');
+        wrap.querySelectorAll('#sb-grid .sb-card').forEach(function(c){
+          c.style.display = (f==='all' || c.getAttribute('data-cat')===f) ? '' : 'none';
+        });
+      });
+    });
+
+    loadIndex(function(items){
+      var grid = document.getElementById('sb-grid');
+      var featSlot = document.getElementById('sb-featured-slot');
+      if (!items.length) { grid.innerHTML = '<div class="sb-empty">No articles yet.</div>'; return; }
+      var feat = null;
+      items.some(function(it){ if (it.featured) { feat = it; return true; } return false; });
+      if (!feat) feat = items[0];
+      var restItems = items.filter(function(it){ return it !== feat; });
+      var a = authorOf(feat.author);
+      var tagName = feat.tag && BLOG_CONFIG.tags[feat.tag] ? T(BLOG_CONFIG.tags[feat.tag]) : '';
+      featSlot.innerHTML = '<a class="sb-featured" href="'+esc(articleUrl(feat.slug))+'">'
+        + coverHtml(feat)
+        + '<div class="sb-fx"><div class="sb-eyebrow">'+esc(T(BLOG_CONFIG.ui.featured))+(tagName?' &middot; '+esc(tagName):'')+'</div>'
+        + '<h2>'+esc(feat.title)+'</h2>'
+        + (feat.excerpt?'<p>'+esc(feat.excerpt)+'</p>':'')
+        + '<div class="sb-meta-row" style="margin-top:20px">'+avatarHtml(a)+'<span>'+esc(a.name)+'</span><span style="opacity:.4">&middot;</span><span>'+feat.minutes+' '+esc(T(BLOG_CONFIG.ui.minRead))+'</span></div>'
+        + '</div></a>';
+      grid.innerHTML = restItems.map(cardHtml).join('') || '<div class="sb-empty"></div>';
+    });
+  }
+
+  /* ---------- ARTIKELPAGINA ---------- */
+  function buildArticle(){
+    var wrap = document.getElementById('wrap');
+    if (!wrap) return;
+    cleanupInjected(wrap);
+    if (inEdit()) return;
+    wrap.classList.add('stx-blog','stx-blog-article');
+    var inner = document.createElement('div');
+    inner.className = 'sb-wrap-narrow sb-content';
+    inner.setAttribute('data-stx-injected','1');
+    while (wrap.firstChild) inner.appendChild(wrap.firstChild);
+    wrap.appendChild(inner);
+
+    var meta = inner.querySelector('.stx-blog-meta');
+    var authorKey = meta ? meta.getAttribute('data-author') : 'team';
+    var tagKey = meta ? meta.getAttribute('data-tag') : '';
+    var dateStr = meta ? fmtDate(meta.getAttribute('data-date')) : '';
+    var relatedAttr = meta ? (meta.getAttribute('data-related')||'') : '';
+    var a = authorOf(authorKey);
+    var h1 = inner.querySelector('h1');
+    var words = (inner.textContent||'').trim().split(/\s+/).length;
+    var mins = readTime(words);
+
+    var back = document.createElement('a');
+    back.className = 'sb-back';
+    back.setAttribute('data-stx-injected','1');
+    back.href = langPrefix + BLOG_CONFIG.blogRoot;
+    back.innerHTML = '&#8592; ' + esc(T(BLOG_CONFIG.ui.back));
+    inner.insertBefore(back, inner.firstChild);
+
+    if (h1) {
+      if (tagKey && BLOG_CONFIG.tags[tagKey]) {
+        var eb = document.createElement('div');
+        eb.className = 'sb-eyebrow';
+        eb.setAttribute('data-stx-injected','1');
+        eb.textContent = T(BLOG_CONFIG.tags[tagKey]);
+        h1.parentNode.insertBefore(eb, h1);
+      }
+      var ab = document.createElement('div');
+      ab.className = 'sb-author';
+      ab.setAttribute('data-stx-injected','1');
+      ab.innerHTML = avatarHtml(a)
+        + '<div><div class="sb-who">'+esc(a.name)+'</div><div class="sb-role">'+esc(T(a.role))+'</div></div>'
+        + '<div class="sb-when">'+esc(dateStr)+(dateStr?'<br>':'')+mins+' '+esc(T(BLOG_CONFIG.ui.minRead))+'</div>';
+      h1.parentNode.insertBefore(ab, h1.nextSibling);
+
+      var firstP = null;
+      var seq = [].slice.call(inner.querySelectorAll('h1, h2, p'));
+      var afterH1 = false;
+      for (var i2 = 0; i2 < seq.length; i2++) {
+        var el2 = seq[i2];
+        if (el2.tagName === 'H1') { afterH1 = true; continue; }
+        if (!afterH1) continue;
+        if (el2.tagName === 'H2') break;
+        if (el2.closest('.stx-tip,.stx-faq,.stx-download,blockquote,.sb-author,.sb-quick,.stx-blog-meta')) continue;
+        if ((el2.textContent||'').trim().length > 40) { firstP = el2; break; }
+      }
+      if (firstP) {
+        var q = document.createElement('div');
+        q.className = 'sb-quick';
+        q.setAttribute('data-stx-injected','1');
+        q.innerHTML = '<div class="sb-qlabel">'+esc(T(BLOG_CONFIG.ui.quick))+'</div>';
+        firstP.parentNode.insertBefore(q, firstP);
+        q.appendChild(firstP);
+      }
+    }
+
+    var n = 0;
+    [].slice.call(inner.querySelectorAll('h2')).forEach(function(h2){
+      if (h2.closest('.stx-download') || h2.closest('.sb-related')) return;
+      n++;
+      var num = document.createElement('div');
+      num.className = 'sb-secnum';
+      num.setAttribute('data-stx-injected','1');
+      num.textContent = (n<10?'0':'') + n;
+      h2.parentNode.insertBefore(num, h2);
+    });
+
+    /* keep reading */
+    loadIndex(function(items){
+      var picks = [];
+      if (relatedAttr) {
+        relatedAttr.split(',').forEach(function(s){
+          s = s.trim();
+          items.some(function(it){ if (it.slug === s) { picks.push(it); return true; } return false; });
+        });
+      }
+      if (!picks.length) {
+        var current = rest;
+        picks = items.filter(function(it){ return it.slug !== current && (!tagKey || it.tag === tagKey); }).slice(0,3);
+        if (picks.length < 3) {
+          items.forEach(function(it){ if (picks.length<3 && it.slug!==current && picks.indexOf(it)<0) picks.push(it); });
+        }
+      }
+      if (!picks.length) return;
+      var rel = document.createElement('section');
+      rel.className = 'sb-related';
+      rel.setAttribute('data-stx-injected','1');
+      rel.innerHTML = '<h2>'+hl(esc(T(BLOG_CONFIG.ui.keepReading)))+'</h2><div class="sb-grid">'+picks.slice(0,3).map(cardHtml).join('')+'</div>';
+      inner.appendChild(rel);
+    });
+
+    /* FAQ JSON-LD */
+    var faqs = [].slice.call(inner.querySelectorAll('.stx-faq details'));
+    if (faqs.length) {
+      var entities = faqs.map(function(d){
+        var qEl = d.querySelector('summary');
+        var ans = '';
+        [].slice.call(d.querySelectorAll('p')).forEach(function(p){ ans += p.textContent.trim() + ' '; });
+        return { '@type':'Question', 'name': qEl ? qEl.textContent.trim() : '', 'acceptedAnswer': { '@type':'Answer', 'text': ans.trim() } };
+      }).filter(function(e){ return e.name && e.acceptedAnswer.text; });
+      if (entities.length) {
+        var s1 = document.createElement('script');
+        s1.type = 'application/ld+json';
+        s1.textContent = JSON.stringify({ '@context':'https://schema.org', '@type':'FAQPage', 'mainEntity': entities });
+        document.head.appendChild(s1);
+      }
+    }
+
+    /* BlogPosting JSON-LD */
+    if (h1) {
+      var img = inner.querySelector('.sb-content img');
+      var ld = { '@context':'https://schema.org', '@type':'BlogPosting',
+        'headline': h1.textContent.trim(),
+        'author': { '@type':'Person', 'name': a.name },
+        'publisher': { '@type':'Organization', 'name':'Sempertex Europe' },
+        'mainEntityOfPage': location.href };
+      var dm = meta ? meta.getAttribute('data-date') : '';
+      if (dm) ld.datePublished = dm + '-01';
+      if (img && img.src) ld.image = img.src;
+      var s2 = document.createElement('script');
+      s2.type = 'application/ld+json';
+      s2.textContent = JSON.stringify(ld);
+      document.head.appendChild(s2);
+    }
+  }
+
+  function init(){
+    if (inEdit()) { cleanupInjected(document.getElementById('wrap')); return; }
+    if (isIndex) buildIndex(); else buildArticle();
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+  try {
+    new MutationObserver(function(){
+      if (inEdit()) cleanupInjected(document.getElementById('wrap'));
+    }).observe(document.body, { attributes:true, attributeFilter:['class'], subtree:false });
+  } catch(e){}
+})();
+</script>
+<!-- ================ EINDE BLOG SECTIE ================ -->
