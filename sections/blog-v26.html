@@ -171,7 +171,8 @@
       'business':    { nl:'Business', en:'Business', fr:'Business', de:'Business' },
       'helium':      { nl:'Helium en tools', en:'Helium and tools', fr:'Helium et outils', de:'Helium und Tools' },
       'inspiration': { nl:'Kleuren en inspiratie', en:'Colours and inspiration', fr:'Couleurs et inspiration', de:'Farben und Inspiration' },
-      'products':    { nl:'Producten', en:'Products', fr:'Produits', de:'Produkte' }
+      'products':    { nl:'Producten', en:'Products', fr:'Produits', de:'Produkte' },
+      'industry':    { nl:'Industrie & milieu', en:'Industry & environment', fr:'Industrie & environnement', de:'Industrie & Umwelt' }
     },
 
     ui: {
@@ -421,6 +422,8 @@
         wrap.querySelectorAll('#sb-grid .sb-card').forEach(function(c){
           c.style.display = (f==='all' || c.getAttribute('data-cat')===f) ? '' : 'none';
         });
+        var fe = wrap.querySelector('.sb-featured');
+        if (fe) fe.style.display = (f==='all' || fe.getAttribute('data-cat')===f) ? '' : 'none';
       });
     });
 
@@ -434,7 +437,7 @@
       var restItems = items.filter(function(it){ return it !== feat; });
       var a = authorOf(feat.author);
       var tagName = feat.tag && BLOG_CONFIG.tags[feat.tag] ? T(BLOG_CONFIG.tags[feat.tag]) : '';
-      featSlot.innerHTML = '<a class="sb-featured" href="'+esc(articleUrl(feat.slug))+'">'
+      featSlot.innerHTML = '<a class="sb-featured" data-cat="'+esc(feat.tag)+'" href="'+esc(articleUrl(feat.slug))+'">'
         + coverHtml(feat)
         + '<div class="sb-fx"><div class="sb-eyebrow">'+esc(T(BLOG_CONFIG.ui.featured))+(tagName?' &middot; '+esc(tagName):'')+'</div>'
         + '<h2>'+esc(feat.title)+'</h2>'
