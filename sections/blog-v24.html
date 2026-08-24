@@ -329,7 +329,7 @@
           var pDoc = fetch(articleUrl(slug), FOPTS).then(function(r){ return r.ok ? r.text() : ''; });
           /* Meta-blok altijd uit de standaardtaal lezen, zodat featured,
              tag, datum en related maar op 1 plek beheerd worden. */
-          var pMeta = langPrefix ? fetch(slug, FOPTS).then(function(r){ return r.ok ? r.text() : ''; }).catch(function(){ return ''; }) : Promise.resolve('');
+          var pMeta = langPrefix ? fetch(slug, { credentials: 'omit', cache: isEditor() ? 'no-store' : 'default' }).then(function(r){ return r.ok ? r.text() : ''; }).catch(function(){ return ''; }) : Promise.resolve('');
           return Promise.all([pDoc, pMeta]).then(function(res){
             var html = res[0];
             if (!html) return null;
@@ -592,7 +592,7 @@
       }
     /* Meta altijd uit de standaardtaal-versie halen; lokale kopie is fallback. */
     if (langPrefix) {
-      fetch(rest, isEditor() ? { cache: 'no-store' } : undefined)
+      fetch(rest, { credentials: 'omit', cache: isEditor() ? 'no-store' : 'default' })
         .then(function(r){ return r.ok ? r.text() : ''; })
         .then(function(t){
           var mEl = null;
