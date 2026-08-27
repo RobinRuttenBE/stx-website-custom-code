@@ -1,6 +1,8 @@
 <!-- ============================================================
      STX EU / BLOG SECTIE (sectiebestand voor de section loader)
-     Stand: v28 (auteur enkel Sempertex Europe, editor-cachebypass,
+     Stand: v29 (v28 + laadscherm-koppeling: meldt zich klaar bij
+     de loading overlay bovenaan het custom-code veld; verder
+     auteur enkel Sempertex Europe, editor-cachebypass,
      brede artikelen, editor-guard, backend-artikeldetectie).
 
      Dit bestand hoort in de repo onder /sections/ en wordt door
@@ -212,6 +214,8 @@
       || !!document.querySelector('.odoo-editor-editable')
       || !!document.querySelector('#wrap.o_editable');
   }
+  /* Meldt aan het laadscherm (bovenaan het custom-code veld) dat de blog klaar is */
+  function wallDone(){ if (window.stxLoadwallHide) window.stxLoadwallHide(); }
   function cleanupInjected(wrap){
     if (!wrap) return;
     [].slice.call(wrap.querySelectorAll('.sb-quick[data-stx-injected]')).forEach(function(q){
@@ -391,9 +395,9 @@
   /* ---------- OVERZICHTSPAGINA ---------- */
   function buildIndex(){
     var wrap = document.getElementById('wrap');
-    if (!wrap) return;
+    if (!wrap) { wallDone(); return; }
     cleanupInjected(wrap);
-    if (inEdit()) return;
+    if (inEdit()) { wallDone(); return; }
     wrap.classList.add('stx-blog');
     var pills = '<button class="sb-pill active" data-f="all">'+esc(T(BLOG_CONFIG.ui.all))+'</button>';
     Object.keys(BLOG_CONFIG.tags).forEach(function(k){
@@ -430,7 +434,7 @@
     loadIndex(function(items){
       var grid = document.getElementById('sb-grid');
       var featSlot = document.getElementById('sb-featured-slot');
-      if (!items.length) { grid.innerHTML = '<div class="sb-empty">No articles yet.</div>'; return; }
+      if (!items.length) { grid.innerHTML = '<div class="sb-empty">No articles yet.</div>'; wallDone(); return; }
       var feat = null;
       items.some(function(it){ if (it.featured) { feat = it; return true; } return false; });
       if (!feat) feat = items[0];
@@ -445,15 +449,16 @@
         + '<div class="sb-meta-row" style="margin-top:20px">'+avatarHtml(a)+'<span>'+esc(a.name)+'</span><span style="opacity:.4">&middot;</span><span>'+feat.minutes+' '+esc(T(BLOG_CONFIG.ui.minRead))+'</span></div>'
         + '</div></a>';
       grid.innerHTML = restItems.map(cardHtml).join('') || '<div class="sb-empty"></div>';
+      wallDone();
     });
   }
 
   /* ---------- ARTIKELPAGINA ---------- */
   function buildArticle(){
     var wrap = document.getElementById('wrap');
-    if (!wrap) return;
+    if (!wrap) { wallDone(); return; }
     cleanupInjected(wrap);
-    if (inEdit()) return;
+    if (inEdit()) { wallDone(); return; }
     wrap.classList.add('stx-blog','stx-blog-article');
     var inner = document.createElement('div');
     inner.className = 'sb-wrap-narrow sb-content';
@@ -592,6 +597,7 @@
       s2.textContent = JSON.stringify(ld);
       document.head.appendChild(s2);
     }
+      wallDone();
       }
     /* Meta altijd uit de standaardtaal-versie halen; lokale kopie is fallback. */
     if (langPrefix) {
@@ -612,7 +618,7 @@
   }
 
   function init(){
-    if (inEdit()) { cleanupInjected(document.getElementById('wrap')); return; }
+    if (inEdit()) { cleanupInjected(document.getElementById('wrap')); wallDone(); return; }
     if (isIndex) buildIndex(); else buildArticle();
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
