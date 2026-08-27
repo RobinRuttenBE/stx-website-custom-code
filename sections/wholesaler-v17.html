@@ -1,0 +1,1487 @@
+<!-- ================================================================
+     HIERONDER NIEUW / WHOLESALER CAMPAGNE (testfase)
+     Blok 1: Become a distributor landingspagina
+     Guard: /become-a-distributor (ook /become-a-wholesaler)
+     Blok 2: Sempertex family tree
+     Guard: /stx-family-tree (ook /sempertex-family)
+     Assets via jsDelivr, gepind op commit 571d58bdb05c.
+     Bij nieuwe assets: push, en vervang de hash overal (1x zoeken en vervangen).
+     ================================================================ -->
+
+<!-- ============================================================
+     STX EU / BECOME A WHOLESALER LANDING PAGE (v2 demo)
+     Injectiepatroon identiek aan de inspiration page:
+     Instellingen > Website > Custom Code > einde-body veld.
+
+     v2 changes:
+     - Breder layout (max 1680px) met sticky scroll-sidebar links,
+       zelfde grid als de inspiration page.
+     - Donkerpaarse hero die overgaat naar wit (ACQ contrast).
+     - Segment decorator verwijderd: alleen shop + wholesale.
+     - Reviews (Google stijl, highlight markers) direct onder de form.
+     - Value stack met foto placeholders, herschreven copy,
+       platform als featured kaart.
+     - Guarantee herschreven + subtiele trust bar in de hero.
+     - Europa & UK scope doorheen de pagina.
+     - Link naar de Sempertex family tree pagina (apart bestand).
+
+     Guard: toont alleen op paginas eindigend op /become-a-wholesaler
+     (of /wholesaler). Lokaal previewen: bestand gewoon openen.
+     CONFIG bovenin het script is jouw deel om in te vullen.
+     ============================================================ -->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rethink+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,700&display=swap" rel="stylesheet">
+
+<style>
+  .stx-whl {
+    --purple: #6b3fb9;
+    --purple-light: #f1d9ff;
+    --purple-bg: #faf4ff;
+    --dark: #1b073d;
+    --yellow: #ffdb5a;
+    --warn: #cd0b5c;
+    --paper: #ffffff;
+    --rule: #e8dcf5;
+    --glow: 0 10px 34px rgba(107, 63, 185, 0.35);
+    --glow-y: 0 8px 26px rgba(255, 219, 90, 0.6);
+    /* 70% van de video hoogte (16:9, max 780px breed):
+       0.7 * 9/16 = 0.39375 van de breedte. Dit is de afstand
+       waarmee de video onder de donkere band uitsteekt. */
+    --vpull: min(307px, calc((100vw - 32px) * 0.39375));
+
+    font-family: 'Rethink Sans', sans-serif;
+    background: var(--paper);
+    color: var(--dark);
+    line-height: 1.55;
+    font-size: clamp(16px, 1.2vw, 18px);
+    max-width: 100%;
+  }
+  .stx-whl *, .stx-whl *::before, .stx-whl *::after { box-sizing: border-box; }
+  .stx-whl h1, .stx-whl h2, .stx-whl h3, .stx-whl h4, .stx-whl p, .stx-whl ul { margin: 0; padding: 0; }
+  .stx-whl img { max-width: 100%; display: block; }
+  .stx-whl button, .stx-whl input, .stx-whl select { font-family: inherit; }
+
+  .stx-whl .eyebrow { font-size: clamp(12px, 1.1vw, 14px); font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--purple); margin-bottom: clamp(12px, 1.4vw, 16px); }
+  .stx-whl .hl { background: var(--yellow); padding: 0 0.15em; box-decoration-break: clone; -webkit-box-decoration-break: clone; color: var(--dark); }
+
+  /* ============ DARK HERO ============ */
+  .stx-whl .hero-band { background: var(--dark); border-radius: 0 0 clamp(24px, 3vw, 40px) clamp(24px, 3vw, 40px); }
+  .stx-whl .hero-wrap { max-width: 1100px; margin: 0 auto; padding: clamp(48px, 6vw, 88px) clamp(16px, 3vw, 40px) calc(var(--vpull) + clamp(32px, 4vw, 52px)); text-align: center; }
+  .stx-whl .hero-wrap .eyebrow { color: var(--purple-light); }
+  .stx-whl .hero-wrap h1 { color: #fff; font-size: clamp(38px, 5.5vw, 68px); font-weight: 800; line-height: 1.0; letter-spacing: -0.03em; margin-bottom: clamp(16px, 2vw, 24px); }
+  .stx-whl .hero-wrap .lede { color: var(--purple-light); font-size: clamp(18px, 1.8vw, 22px); font-weight: 500; line-height: 1.45; max-width: 64ch; margin: 0 auto; }
+
+  /* Video steekt onder de donkere band uit: bovenste 70% op donker,
+     onderste 30% op wit. */
+  .stx-whl .video-pull { max-width: calc(780px + 32px); margin: calc(-1 * var(--vpull)) auto 0; padding: 0 16px; position: relative; z-index: 2; }
+  .stx-whl .trust-wrap { max-width: 1100px; margin: 0 auto; padding: 0 16px; }
+  .stx-whl .video-shell { max-width: 780px; margin: 0 auto; }
+  .stx-whl .video-box { position: relative; aspect-ratio: 16 / 9; background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(241, 217, 255, 0.25); border-radius: 12px; overflow: hidden; box-shadow: 0 16px 48px rgba(0, 0, 0, 0.35); display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 14px; cursor: pointer; }
+  .stx-whl .video-box iframe, .stx-whl .video-box video { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .stx-whl .video-play { width: clamp(64px, 7vw, 84px); height: clamp(64px, 7vw, 84px); border-radius: 50%; background: var(--yellow); display: flex; align-items: center; justify-content: center; transition: transform 0.16s ease, box-shadow 0.16s ease; }
+  .stx-whl .video-box:hover .video-play { transform: scale(1.08); box-shadow: var(--glow-y); }
+  .stx-whl .video-play svg { width: 42%; height: 42%; margin-left: 6%; }
+  .stx-whl .video-note { color: var(--purple-light); font-size: clamp(12px, 1.1vw, 14px); font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
+
+  .stx-whl .trust-bar { display: flex; justify-content: center; flex-wrap: wrap; gap: clamp(14px, 2.5vw, 36px); margin-top: clamp(20px, 2.5vw, 32px); }
+  .stx-whl .trust-bar span { color: #4d3a6e; font-size: clamp(13px, 1.15vw, 15px); font-weight: 700; display: flex; align-items: center; gap: 8px; }
+  .stx-whl .trust-bar .tick { width: 18px; height: 18px; border-radius: 50%; background: var(--yellow); color: var(--dark); font-size: 12px; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; }
+
+  /* ============ MAIN LAYOUT (sidebar + content) ============ */
+  .stx-whl .wrap { max-width: 1680px; margin: 0 auto; padding: clamp(40px, 4.5vw, 64px) clamp(14px, 3vw, 40px) clamp(64px, 8vw, 120px); overflow-x: clip; }
+  .stx-whl .layout { display: grid; grid-template-columns: clamp(190px, 16vw, 240px) minmax(0, 1fr); gap: clamp(24px, 3.5vw, 56px); align-items: start; }
+  .stx-whl .content, .stx-whl .side { min-width: 0; }
+
+  .stx-whl .side { position: sticky; top: 24px; }
+  .stx-whl .side .side-label { font-size: clamp(12px, 1.1vw, 14px); font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; padding-bottom: 14px; border-bottom: 2px solid var(--dark); margin-bottom: 14px; }
+  .stx-whl .side a { display: block; padding: 11px 8px; font-size: clamp(15px, 1.15vw, 17px); font-weight: 600; color: var(--purple); text-decoration: none; border-bottom: 1px solid var(--rule); transition: transform 0.16s ease, box-shadow 0.16s ease, background 0.16s ease; border-radius: 6px; }
+  .stx-whl .side a:hover { color: var(--dark); transform: scale(1.03); box-shadow: var(--glow); background: #fff; }
+  .stx-whl .side a.active { color: var(--dark); font-weight: 800; }
+  .stx-whl .side a.active::before { content: ""; display: inline-block; width: 8px; height: 8px; background: var(--yellow); margin-right: 10px; }
+
+  .stx-whl section { margin-bottom: clamp(64px, 7vw, 96px); scroll-margin-top: 24px; }
+  .stx-whl .sec-head { max-width: 820px; margin-bottom: clamp(24px, 3vw, 36px); }
+  .stx-whl .sec-head h2 { font-size: clamp(26px, 3.4vw, 42px); font-weight: 800; line-height: 1.08; letter-spacing: -0.02em; margin-bottom: 12px; }
+  .stx-whl .sec-head .sec-sub { font-size: clamp(16px, 1.45vw, 19px); font-weight: 500; color: #3d2b5e; max-width: 66ch; }
+
+  /* ============ BUTTONS ============ */
+  .stx-whl .btn-y { display: inline-block; background: var(--yellow); color: var(--dark); font-size: clamp(16px, 1.3vw, 18px); font-weight: 800; padding: clamp(14px, 1.4vw, 18px) clamp(24px, 2.6vw, 36px); border: none; border-radius: 8px; cursor: pointer; text-decoration: none; text-align: center; transition: transform 0.16s ease, box-shadow 0.16s ease; }
+  .stx-whl .btn-y:hover { transform: scale(1.04); box-shadow: var(--glow); }
+  .stx-whl .btn-dark { display: inline-block; background: var(--dark); color: var(--yellow); font-size: clamp(16px, 1.3vw, 18px); font-weight: 800; padding: clamp(14px, 1.4vw, 18px) clamp(24px, 2.6vw, 36px); border: none; border-radius: 8px; cursor: pointer; text-decoration: none; text-align: center; transition: transform 0.16s ease, box-shadow 0.16s ease; }
+  .stx-whl .btn-dark:hover { transform: scale(1.04); box-shadow: var(--glow-y); }
+
+  /* ============ FORM ============ */
+  .stx-whl .form-shell { max-width: 760px; }
+  .stx-whl .steps { display: flex; gap: clamp(16px, 2vw, 28px); margin-bottom: clamp(18px, 2vw, 26px); font-size: clamp(13px, 1.15vw, 15px); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+  .stx-whl .steps span { color: #9a8bb5; display: flex; align-items: center; gap: 8px; }
+  .stx-whl .steps span.on { color: var(--dark); }
+  .stx-whl .steps .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--rule); display: inline-block; }
+  .stx-whl .steps span.on .dot { background: var(--yellow); }
+  .stx-whl .form-card { background: var(--purple-bg); border: 1px solid var(--rule); border-radius: 14px; padding: clamp(24px, 3vw, 44px); }
+  .stx-whl .form-card h3 { font-size: clamp(20px, 2.1vw, 26px); font-weight: 800; letter-spacing: -0.01em; margin-bottom: 8px; }
+  .stx-whl .form-card .form-sub { font-size: clamp(15px, 1.3vw, 17px); color: #4d3a6e; margin-bottom: clamp(20px, 2.4vw, 28px); }
+  .stx-whl .req { color: var(--warn); }
+  .stx-whl .f-label { display: block; font-size: 14px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin: 18px 0 8px; }
+  .stx-whl .pills { display: flex; flex-wrap: wrap; gap: 10px; }
+  .stx-whl .pill { background: #fff; border: 2px solid var(--rule); border-radius: 999px; padding: 10px 18px; font-size: clamp(14px, 1.2vw, 16px); font-weight: 700; cursor: pointer; transition: transform 0.14s ease, border-color 0.14s ease, background 0.14s ease; color: var(--dark); }
+  .stx-whl .pill:hover { transform: scale(1.04); border-color: var(--purple); }
+  .stx-whl .pill.sel { background: var(--dark); border-color: var(--dark); color: var(--yellow); }
+  .stx-whl .f-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 18px; }
+  .stx-whl .f-input, .stx-whl .f-select { width: 100%; background: #fff; border: 2px solid var(--rule); border-radius: 8px; padding: 13px 15px; font-size: 17px; color: var(--dark); outline: none; transition: border-color 0.14s ease; }
+  .stx-whl .f-input:focus, .stx-whl .f-select:focus { border-color: var(--purple); }
+  .stx-whl .f-input.err, .stx-whl .f-select.err { border-color: var(--warn); }
+  .stx-whl .f-err { display: none; color: var(--warn); font-size: 14px; font-weight: 700; margin-top: 6px; }
+  .stx-whl .f-err.show { display: block; }
+  .stx-whl .form-cta { margin-top: 26px; }
+  .stx-whl .form-cta .btn-y { width: 100%; }
+  .stx-whl .form-micro { font-size: 14px; color: #6e5b90; margin-top: 12px; text-align: center; }
+
+  .stx-whl .booking { display: none; }
+  .stx-whl .booking.show { display: block; }
+  .stx-whl .booking-confirm { background: #fff; border: 2px solid var(--yellow); border-radius: 12px; padding: 16px 20px; font-weight: 700; margin-bottom: 22px; }
+  .stx-whl .cal-box { background: #fff; border: 1px solid var(--rule); border-radius: 12px; min-height: 480px; display: flex; align-items: center; justify-content: center; text-align: center; padding: 24px; color: #6e5b90; font-weight: 600; }
+  .stx-whl .cal-box iframe { width: 100%; height: 740px; border: 0; border-radius: 12px; }
+
+  /* ============ REVIEWS (Google stijl) ============ */
+  .stx-whl .reviews { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: clamp(18px, 2.2vw, 28px); align-items: start; }
+  .stx-whl a.rev-card { display: block; text-decoration: none; color: inherit; }
+  .stx-whl .rev-card { background: #fff; border: 1px solid #e9e4f0; border-radius: 14px; padding: clamp(18px, 2.2vw, 24px); box-shadow: 0 10px 34px rgba(27, 7, 61, 0.10); transition: transform 0.16s ease, box-shadow 0.16s ease; }
+  .stx-whl .rev-card:hover { box-shadow: var(--glow); }
+  .stx-whl .rev-card.r1 { transform: rotate(-1.4deg); }
+  .stx-whl .rev-card.r2 { transform: rotate(0.8deg) translateY(14px); }
+  .stx-whl .rev-card.r3 { transform: rotate(-0.6deg); }
+  .stx-whl .rev-card.r1:hover { transform: rotate(-1.4deg) translateY(-6px) scale(1.02); }
+  .stx-whl .rev-card.r2:hover { transform: rotate(0.8deg) translateY(8px) scale(1.02); }
+  .stx-whl .rev-card.r3:hover { transform: rotate(-0.6deg) translateY(-6px) scale(1.02); }
+  .stx-whl .rev-top { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+  .stx-whl .rev-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--purple); color: #fff; font-weight: 800; font-size: 17px; display: flex; align-items: center; justify-content: center; flex: 0 0 auto; overflow: hidden; }
+  .stx-whl .rev-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+  .stx-whl .rev-name { font-size: 16px; font-weight: 800; line-height: 1.2; }
+  .stx-whl .rev-meta { font-size: 13.5px; color: #7a7a85; }
+  .stx-whl .rev-starrow { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .stx-whl .rev-stars { color: #f5b400; font-size: 16px; letter-spacing: 2px; }
+  .stx-whl .rev-when { font-size: 13.5px; color: #7a7a85; }
+  .stx-whl .rev-new { font-size: 11.5px; font-weight: 800; letter-spacing: 0.06em; border: 1px solid #d5d0dd; border-radius: 4px; padding: 2px 6px; color: #55506a; }
+  .stx-whl .rev-card p { font-size: clamp(14.5px, 1.2vw, 16px); line-height: 1.6; color: #2c2438; }
+  .stx-whl .rev-card .mark { background: var(--yellow); padding: 0 0.12em; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+  .stx-whl .rev-src { margin-top: 12px; font-size: 13px; color: #9a8bb5; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+  .stx-whl .rev-cta { text-align: center; margin-top: clamp(28px, 3.5vw, 40px); }
+
+  /* ============ VALUE STACK ============ */
+  .stx-whl .banner { background: var(--dark); border-radius: 16px; padding: clamp(32px, 4vw, 52px) clamp(24px, 3.5vw, 48px); text-align: center; margin-bottom: clamp(24px, 3vw, 40px); }
+  .stx-whl .banner h2 { color: #fff; font-size: clamp(26px, 3.6vw, 44px); font-weight: 800; line-height: 1.1; letter-spacing: -0.02em; }
+  .stx-whl .stack { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(16px, 2vw, 26px); }
+  .stx-whl .stack-card { background: var(--purple-bg); border: 1px solid var(--rule); border-radius: 14px; overflow: hidden; transition: transform 0.16s ease, box-shadow 0.16s ease; display: flex; flex-direction: column; }
+  .stx-whl .stack-card:hover { transform: translateY(-4px); box-shadow: var(--glow); }
+  .stx-whl .stack-card.featured { grid-column: 1 / -1; background: var(--purple-light); border-color: var(--purple); }
+  .stx-whl .stack-img { aspect-ratio: 16 / 7; background: repeating-linear-gradient(45deg, #efe6f8, #efe6f8 14px, #f7f0fd 14px, #f7f0fd 28px); border-bottom: 1px solid var(--rule); display: flex; align-items: center; justify-content: center; text-align: center; color: #8a76ab; font-size: 12.5px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; padding: 12px; }
+  .stx-whl img.stack-img, .stx-whl video.stack-img { object-fit: cover; width: 100%; padding: 0; display: block; }
+  .stx-whl .stack-card.featured .stack-img { aspect-ratio: 16 / 5; }
+  .stx-whl .stack-card.featured img.stack-img, .stx-whl .stack-card.featured video.stack-img { object-position: top; }
+  .stx-whl img.stack-img[alt="Sempertex balloon installation"] { object-position: center 32%; }
+  /* Laatste kaart staat alleen op zijn rij (7 gewone + 1 featured):
+     centreren op kolombreedte zodat het niet scheef oogt. */
+  .stx-whl .stack > .stack-card:last-child:not(.featured) { grid-column: 1 / -1; width: calc((100% - clamp(16px, 2vw, 26px)) / 2); justify-self: center; }
+  .stx-whl .stack-body { padding: clamp(18px, 2.2vw, 26px); }
+  .stx-whl .stack-body .num { font-size: 14px; font-weight: 800; letter-spacing: 0.12em; color: var(--purple); margin-bottom: 8px; }
+  .stx-whl .stack-body h4 { font-size: clamp(18px, 1.6vw, 21px); font-weight: 800; letter-spacing: -0.01em; margin-bottom: 8px; }
+  .stx-whl .stack-body p { font-size: clamp(15px, 1.25vw, 16.5px); line-height: 1.55; color: #3d2b5e; }
+  .stx-whl .stack-cta { text-align: center; margin-top: clamp(24px, 3vw, 36px); }
+
+  /* ============ HOW IT WORKS ============ */
+  .stx-whl .hiw { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: clamp(16px, 2vw, 26px); }
+  .stx-whl .hiw-card { background: #fff; border: 1px solid var(--rule); border-radius: 14px; padding: clamp(20px, 2.4vw, 28px); transition: transform 0.16s ease, box-shadow 0.16s ease; }
+  .stx-whl .hiw-card:hover { transform: translateY(-4px); box-shadow: var(--glow); }
+  .stx-whl .hiw-card .hiw-num { width: 52px; height: 52px; border-radius: 50%; background: var(--yellow); color: var(--dark); font-weight: 800; font-size: 22px; display: flex; align-items: center; justify-content: center; margin-bottom: 14px; }
+  .stx-whl .hiw-card h4 { font-size: clamp(18px, 1.6vw, 21px); font-weight: 800; margin-bottom: 8px; }
+  .stx-whl .hiw-card p { font-size: clamp(15px, 1.25vw, 16.5px); color: #3d2b5e; line-height: 1.55; }
+
+  /* ============ GUARANTEE ============ */
+  .stx-whl .guarantee { background: var(--purple-bg); border: 2px solid var(--purple); border-radius: 16px; padding: clamp(28px, 3.5vw, 44px); display: grid; grid-template-columns: auto 1fr; gap: clamp(20px, 2.6vw, 32px); align-items: center; transition: transform 0.16s ease, box-shadow 0.16s ease; }
+  .stx-whl .guarantee:hover { transform: translateY(-4px); box-shadow: var(--glow); }
+  .stx-whl .guarantee .g-badge { width: clamp(72px, 8vw, 96px); height: clamp(72px, 8vw, 96px); border-radius: 50%; background: var(--yellow); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: clamp(24px, 3vw, 34px); }
+  .stx-whl .guarantee h3 { font-size: clamp(20px, 2.2vw, 28px); font-weight: 800; margin-bottom: 10px; }
+  .stx-whl .guarantee p { font-size: clamp(15px, 1.35vw, 18px); color: #3d2b5e; line-height: 1.6; }
+
+  /* ============ FAMILY TREE TEASER ============ */
+  .stx-whl .family-band { background: var(--purple-light); border-radius: 16px; padding: clamp(28px, 3.5vw, 48px); display: grid; grid-template-columns: 1fr auto; gap: clamp(20px, 3vw, 40px); align-items: center; }
+  .stx-whl .family-band h3 { font-size: clamp(20px, 2.4vw, 30px); font-weight: 800; letter-spacing: -0.01em; margin-bottom: 8px; }
+  .stx-whl .family-band p { font-size: clamp(15px, 1.35vw, 17px); color: #3d2b5e; max-width: 60ch; }
+
+  /* ============ FAQ ============ */
+  .stx-whl .faq { max-width: 880px; }
+  .stx-whl .faq-item { border: 1px solid var(--rule); border-radius: 10px; margin-bottom: 12px; overflow: hidden; background: #fff; transition: transform 0.16s ease, box-shadow 0.16s ease; }
+  .stx-whl .faq-item:hover { transform: translateY(-2px); box-shadow: var(--glow); }
+  .stx-whl .faq-q { width: 100%; background: none; border: none; text-align: left; padding: 18px 22px; font-size: clamp(16px, 1.4vw, 18px); font-weight: 800; color: var(--dark); cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+  .stx-whl .faq-q .fx { font-size: 22px; font-weight: 800; color: var(--purple); transition: transform 0.16s ease; flex: 0 0 auto; }
+  .stx-whl .faq-item.open .faq-q .fx { transform: rotate(45deg); }
+  .stx-whl .faq-a { display: none; padding: 0 22px 20px; font-size: clamp(15px, 1.3vw, 17px); color: #3d2b5e; line-height: 1.6; }
+  .stx-whl .faq-item.open .faq-a { display: block; }
+
+  /* ============ CLOSING ============ */
+  .stx-whl .closing { background: var(--yellow); border-radius: 16px; text-align: center; padding: clamp(40px, 5vw, 64px) clamp(24px, 3.5vw, 48px); margin-bottom: 0; }
+  .stx-whl .closing h2 { font-size: clamp(26px, 3.8vw, 42px); font-weight: 800; line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 12px; }
+  .stx-whl .closing p { font-size: clamp(16px, 1.5vw, 19px); font-weight: 500; max-width: 56ch; margin: 0 auto 26px; }
+
+  .stx-whl .fine-print { font-size: 13px; color: #6e5b90; line-height: 1.6; max-width: 860px; margin: clamp(20px, 2.5vw, 28px) 0 0; }
+
+  /* ============ MOBILE ============ */
+  @media (max-width: 900px) {
+    .stx-whl .layout { grid-template-columns: 1fr; }
+    .stx-whl .side { display: none; }
+  }
+  @media (max-width: 720px) {
+    .stx-whl .f-grid, .stx-whl .stack, .stx-whl .hiw, .stx-whl .reviews { grid-template-columns: 1fr; }
+    .stx-whl .stack > .stack-card:last-child:not(.featured) { width: 100%; }
+    .stx-whl .rev-card.r1, .stx-whl .rev-card.r2, .stx-whl .rev-card.r3 { transform: none; }
+    .stx-whl .guarantee { grid-template-columns: 1fr; text-align: center; }
+    .stx-whl .guarantee .g-badge { margin: 0 auto; }
+    .stx-whl .family-band { grid-template-columns: 1fr; text-align: center; }
+    .stx-whl .steps { flex-direction: column; gap: 8px; }
+  }
+</style>
+
+<div class="stx-whl" id="stx-whl-root">
+
+  <!-- ============ DARK HERO ============ -->
+  <div class="hero-band">
+    <div class="hero-wrap">
+      <div class="eyebrow" data-i18n="hero_eyebrow">Sempertex Europe / Wholesale Partnership / Europe &amp; UK</div>
+      <h1 id="whl-h1" data-i18n="hero_h_generic">Balloons recommended by <span class="hl">professionals</span></h1>
+      <p class="lede" id="whl-lede" data-i18n="hero_lede_generic">Become an official Sempertex wholesale partner and add the premium latex balloon line. For businesses based in Europe and the UK.</p>
+    </div>
+  </div>
+
+  <!-- Video over de overgang: 70% donker, 30% wit -->
+  <div class="video-pull">
+    <div class="video-box" id="whl-video">
+      <div class="video-play"><svg viewBox="0 0 24 24" fill="var(--dark)"><path d="M8 5v14l11-7z"/></svg></div>
+      <div class="video-note" data-i18n="video_note">Video placeholder: Sofie introduces the partnership</div>
+    </div>
+  </div>
+
+  <div class="trust-wrap">
+    <div class="trust-bar">
+      <span><span class="tick">✓</span><span data-i18n="trust_1">First order buyback guarantee*</span></span>
+      <span><span class="tick">✓</span><span data-i18n="trust_2">Fast delivery from our EU warehouse</span></span>
+      <span><span class="tick">✓</span><span data-i18n="trust_3">Strictly B2B, Europe &amp; UK only</span></span>
+    </div>
+  </div>
+
+  <!-- ============ SIDEBAR + CONTENT ============ -->
+  <div class="wrap">
+    <div class="layout">
+
+      <nav class="side" id="whl-side">
+        <div class="side-label" data-i18n="side_label">Wholesale</div>
+        <a href="#apply" data-sec="apply" data-i18n="nav_apply">Apply</a>
+        <a href="#offer" data-sec="offer" data-i18n="nav_offer">What's in it for you</a>
+        <a href="#proof" data-sec="proof" data-i18n="nav_reviews">Reviews</a>
+        <a href="#how" data-sec="how" data-i18n="nav_how">How it works</a>
+        <a href="#guarantee-sec" data-sec="guarantee-sec" data-i18n="nav_guarantee">Our guarantee</a>
+        <a href="#faq" data-sec="faq" data-i18n="nav_faq">FAQ</a>
+        <a href="#family" data-sec="family" data-i18n="nav_family">The Sempertex family</a>
+      </nav>
+
+      <div class="content">
+
+        <!-- ============ QUALIFICATION FORM ============ -->
+        <section id="apply">
+          <div class="form-shell">
+            <div class="steps">
+              <span class="on" id="step-1"><span class="dot"></span><span data-i18n="step_1">1. Tell us about your business</span></span>
+              <span id="step-2"><span class="dot"></span><span data-i18n="step_2">2. Book your intake call</span></span>
+            </div>
+
+            <div class="form-card" id="whl-form-card">
+              <h3 data-i18n="form_h">Apply to become a wholesale partner</h3>
+              <p class="form-sub" data-i18n="form_sub">Takes two minutes. Straight after this form you pick a time slot for an intake call with our team. Open to businesses registered in Europe and the UK.</p>
+
+              <label class="f-label"><span data-i18n="f_type">What type of business do you run?</span> <span class="req">*</span></label>
+              <div class="pills" id="pill-row">
+                <button type="button" class="pill" data-val="party_shop" data-i18n="pill_shop">Party shop</button>
+                <button type="button" class="pill" data-val="wholesaler" data-i18n="pill_whl">Party supplies wholesaler</button>
+                <button type="button" class="pill" data-val="other" data-i18n="pill_other">Other</button>
+              </div>
+              <div class="f-err" id="err-type" data-i18n="err_type">Please select your business type.</div>
+              <div id="other-wrap" style="display:none;">
+                <label class="f-label" for="whl-other"><span data-i18n="f_other">Namely</span> <span class="req">*</span></label>
+                <input class="f-input" id="whl-other" type="text" placeholder="What type of business?">
+              </div>
+
+              <div class="f-grid">
+                <div>
+                  <label class="f-label" for="whl-country"><span data-i18n="f_country">Country</span> <span class="req">*</span></label>
+                  <select class="f-select" id="whl-country"></select>
+                </div>
+                <div>
+                  <label class="f-label" for="whl-name"><span data-i18n="f_name">Your name</span> <span class="req">*</span></label>
+                  <input class="f-input" id="whl-name" type="text" autocomplete="name">
+                </div>
+                <div>
+                  <label class="f-label" for="whl-business"><span data-i18n="f_business">Business name</span> <span class="req">*</span></label>
+                  <input class="f-input" id="whl-business" type="text" autocomplete="organization">
+                </div>
+                <div>
+                  <label class="f-label" for="whl-vat"><span data-i18n="f_vat">VAT number</span> <span class="req">*</span></label>
+                  <input class="f-input" id="whl-vat" type="text" placeholder="LT100001234567">
+                </div>
+                <div>
+                  <label class="f-label" for="whl-email"><span data-i18n="f_email">Business email</span> <span class="req">*</span></label>
+                  <input class="f-input" id="whl-email" type="email" autocomplete="email">
+                </div>
+                <div>
+                  <label class="f-label" for="whl-website" data-i18n="f_website">Website</label>
+                  <input class="f-input" id="whl-website" type="text" autocomplete="url" placeholder="www.yourbusiness.com">
+                </div>
+              </div>
+              <div class="f-err" id="err-fields" data-i18n="err_fields">Please complete the highlighted fields. A VAT number is required, we work strictly B2B.</div>
+
+              <div class="form-cta">
+                <button class="btn-y" id="whl-submit" data-i18n="form_btn">Continue to book my intake call</button>
+              </div>
+              <p class="form-micro" data-i18n="form_micro">Strictly B2B, Europe &amp; UK. Your details go directly to our partnership team.</p>
+            </div>
+
+            <!-- Step 2: booking -->
+            <div class="booking" id="whl-booking">
+              <div class="booking-confirm" data-i18n="book_confirm">Details received. One last step: pick a moment for your intake call.</div>
+              <div class="cal-box" id="whl-cal">
+                <div data-i18n="cal_ph">Calendar placeholder. CONFIG.bookingUrl invullen met de Odoo Appointments link, dan verschijnt hier de embedded agenda.</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ VALUE STACK ============ -->
+        <section id="offer">
+          <div class="banner">
+            <h2 data-i18n="stack_banner">What's in it for you as a <span class="hl">Sempertex wholesale partner</span></h2>
+          </div>
+          <div class="stack">
+            <div class="stack-card">
+              <img class="stack-img" src="https://cdn.jsdelivr.net/gh/RobinRuttenBE/stx-website-custom-code@571d58bdb05cf1992a45fba484ac8ce60137e3a8/wholesaler-campaign/wholesaler/01-brand-sign.jpg" alt="Sempertex Europe brand sign">
+              <div class="stack-body">
+                <div class="num">01</div>
+                <h4 data-i18n="s1_h">Official partnership with the number one professional brand</h4>
+                <p data-i18n="s1_p">Sempertex is the world's largest professional producer of latex balloons and the brand professionals ask for by name. You sell a product with an existing reputation and proven professional quality.</p>
+              </div>
+            </div>
+            <div class="stack-card">
+              <img class="stack-img" src="https://cdn.jsdelivr.net/gh/RobinRuttenBE/stx-website-custom-code@571d58bdb05cf1992a45fba484ac8ce60137e3a8/wholesaler-campaign/wholesaler/02-support-team.jpg" alt="Sempertex Europe support team">
+              <div class="stack-body">
+                <div class="num">02</div>
+                <h4 data-i18n="s2_h">A partner, not just a supplier</h4>
+                <p data-i18n="s2_p">Quarterly meetings, dedicated support and data reports on how your Sempertex range is performing, backed by more than 15 years of experience in the European balloon market. You are never left figuring it out alone.</p>
+              </div>
+            </div>
+            <div class="stack-card">
+              <img class="stack-img" src="https://cdn.jsdelivr.net/gh/RobinRuttenBE/stx-website-custom-code@571d58bdb05cf1992a45fba484ac8ce60137e3a8/wholesaler-campaign/wholesaler/03-warehouse.jpg" alt="Sempertex Europe warehouse">
+              <div class="stack-body">
+                <div class="num">03</div>
+                <h4 data-i18n="s3_h">Fast delivery from our EU warehouse</h4>
+                <p data-i18n="s3_p">Shipped from our warehouse in Belgium. Restock fast, keep less capital in stock, never miss a season.</p>
+              </div>
+            </div>
+            <div class="stack-card">
+              <img class="stack-img" src="https://cdn.jsdelivr.net/gh/RobinRuttenBE/stx-website-custom-code@571d58bdb05cf1992a45fba484ac8ce60137e3a8/wholesaler-campaign/wholesaler/04-packing.jpg" alt="Order being packed at Sempertex Europe">
+              <div class="stack-body">
+                <div class="num">04</div>
+                <h4 data-i18n="s4_h">Ready-to-sell starter package</h4>
+                <p data-i18n="s4_p">One order and your shelf is ready. Our team guides you through your assortment choices, and once you are live, your platform data shows exactly what to restock and when.</p>
+              </div>
+            </div>
+            <div class="stack-card featured">
+              <img class="stack-img" src="https://cdn.jsdelivr.net/gh/RobinRuttenBE/stx-website-custom-code@571d58bdb05cf1992a45fba484ac8ce60137e3a8/wholesaler-campaign/wholesaler/05-partner-hub.jpg" alt="Sempertex Europe partner hub" id="platform-media">
+              <div class="stack-body">
+                <div class="num">05</div>
+                <h4 data-i18n="s5_h">The Sempertex partner platform</h4>
+                <p data-i18n="s5_p">Your entire Sempertex operation in one place: ordering integration, complete product data, your own sales analytics and restock insights, plus every marketing asset we produce. Built for all our official distributors, based on what you actually need. Instead of only a price list, we hand over a full system.</p>
+              </div>
+            </div>
+            <div class="stack-card">
+              <img class="stack-img" src="https://cdn.jsdelivr.net/gh/RobinRuttenBE/stx-website-custom-code@571d58bdb05cf1992a45fba484ac8ce60137e3a8/wholesaler-campaign/wholesaler/06-stock.jpg" alt="Sempertex stock in the warehouse">
+              <div class="stack-body">
+                <div class="num">06</div>
+                <h4 data-i18n="s6_h">Volume discounts and early access</h4>
+                <p data-i18n="s6_p">Discounts that grow with your order volume, plus first access to new colours and collections before the wider market.</p>
+              </div>
+            </div>
+            <div class="stack-card">
+              <img class="stack-img" src="https://cdn.jsdelivr.net/gh/RobinRuttenBE/stx-website-custom-code@571d58bdb05cf1992a45fba484ac8ce60137e3a8/wholesaler-campaign/wholesaler/07-ballerina.jpg" alt="Sempertex balloon installation">
+              <div class="stack-body">
+                <div class="num">07</div>
+                <h4 data-i18n="s7_h">Launch and marketing support</h4>
+                <p data-i18n="s7_p">Product photography, launch materials and marketing co-op possibilities. You sell, we supply the assets that make selling easier.</p>
+              </div>
+            </div>
+            <div class="stack-card">
+              <img class="stack-img" src="https://cdn.jsdelivr.net/gh/RobinRuttenBE/stx-website-custom-code@571d58bdb05cf1992a45fba484ac8ce60137e3a8/wholesaler-campaign/wholesaler/08-workshop.jpg" alt="Sempertex Europe workshop session">
+              <div class="stack-body">
+                <div class="num">08</div>
+                <h4 data-i18n="s8_h">Workshop hosting rights</h4>
+                <p data-i18n="s8_p">Host our existing professional workshops in your region. We bring the programme, you bring the room and your customers, everyone leaves buying balloons.</p>
+              </div>
+            </div>
+          </div>
+          <div class="stack-cta">
+            <a class="btn-y cta-apply" href="#apply" data-i18n="cta_mid">Apply and book my intake call</a>
+          </div>
+        </section>
+
+        <!-- ============ SOCIAL PROOF (Google stijl) ============ -->
+        <section id="proof">
+          <div class="sec-head">
+            <h2 data-i18n="rev_h">Why professionals <span class="hl">choose Sempertex</span></h2>
+            <p class="sec-sub" data-i18n="rev_sub">Your customers already know the brand. This is what the professional community says about the product you would be selling.</p>
+          </div>
+          <div class="reviews">
+            <!-- Reviewer namen invullen zodra bekend (avatar letter mee aanpassen). -->
+            <a class="rev-card r1" href="https://share.google/wgXcVJyi9aI62EkKy" target="_blank" rel="noopener" data-rev="1">
+              <div class="rev-top">
+                <div class="rev-avatar">O</div>
+                <div>
+                  <div class="rev-name" data-i18n="rev1_n">Oksana</div>
+                  <div class="rev-meta" data-i18n="rev1_m">Local Guide · 11 reviews · 35 photos</div>
+                </div>
+              </div>
+              <div class="rev-starrow"><span class="rev-stars">★★★★★</span></div>
+              <p data-i18n="rev1_p"><span class="mark">I was especially impressed by the level of organization, attention to detail, and how well the team operates.</span> Open, engaged people and a supportive atmosphere.</p>
+              <div class="rev-src" data-i18n="rev1_r">Balloon professional</div>
+            </a>
+            <a class="rev-card r2" href="https://share.google/Zizd8gtLLziEL3SqW" target="_blank" rel="noopener" data-rev="2">
+              <div class="rev-top">
+                <div class="rev-avatar">A</div>
+                <div>
+                  <div class="rev-name" data-i18n="rev2_n">Annet van Niehoff</div>
+                  <div class="rev-meta" data-i18n="rev2_m">Local Guide · 10 reviews · 4 photos</div>
+                </div>
+              </div>
+              <div class="rev-starrow"><span class="rev-stars">★★★★★</span></div>
+              <p data-i18n="rev2_p">People sometimes complain about pain in their fingers or hands when working with balloons, but with Sempertex I hardly experience that at all. <span class="mark">The material feels strong, reliable and comfortable to work with.</span></p>
+              <div class="rev-src" data-i18n="rev2_r">Professional decorator</div>
+            </a>
+            <a class="rev-card r3" href="https://share.google/u4qEAMnWN19IMNwZw" target="_blank" rel="noopener" data-rev="3">
+              <div class="rev-top">
+                <div class="rev-avatar">K</div>
+                <div>
+                  <div class="rev-name" data-i18n="rev3_n">kristof tuts</div>
+                  <div class="rev-meta" data-i18n="rev3_m">6 reviews · 1 photo</div>
+                </div>
+              </div>
+              <div class="rev-starrow"><span class="rev-stars">★★★★★</span></div>
+              <p data-i18n="rev3_p">Very good service and always helpful. <span class="mark">The highest quality products and the fastest delivery.</span></p>
+              <div class="rev-src" data-i18n="rev3_r">Professional decorator</div>
+            </a>
+          </div>
+          <div class="rev-cta">
+            <a class="btn-dark" id="review-btn" href="https://search.google.com/local/writereview?placeid=ChIJ7-SFy44gwUcR6tx2CJR0ieA" target="_blank" rel="noopener" data-i18n="rev_btn">Leave a review</a>
+          </div>
+        </section>
+
+        <!-- ============ HOW IT WORKS ============ -->
+        <section id="how">
+          <div class="sec-head">
+            <h2 data-i18n="hiw_h">Let's see if we're a <span class="hl">good fit</span>. Here is how it works.</h2>
+            <p class="sec-sub" data-i18n="hiw_sub">We believe in building strong, long-term partnerships. That's why we like to make sure there's a good fit on both sides from the start.</p>
+          </div>
+          <div class="hiw">
+            <div class="hiw-card">
+              <div class="hiw-num">1</div>
+              <h4 data-i18n="hiw1_h">Apply</h4>
+              <p data-i18n="hiw1_p">Fill in the two minute form above and pick a time slot for your intake call.</p>
+            </div>
+            <div class="hiw-card">
+              <div class="hiw-num">2</div>
+              <h4 data-i18n="hiw2_h">Intake call</h4>
+              <p data-i18n="hiw2_p">A call of 30 to 60 minutes with our team. We look at your business, your region and your customers, and check honestly whether we can serve your business well and whether it is the right match on both sides.</p>
+            </div>
+            <div class="hiw-card">
+              <div class="hiw-num">3</div>
+              <h4 data-i18n="hiw3_h">Partnership and launch</h4>
+              <p data-i18n="hiw3_p">If it is a match, you become an official partner. You receive your starter package with launch support, ready to sell the week it arrives.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ GUARANTEE ============ -->
+        <!-- INTERN: pas live zetten na akkoord Sofie over buyback
+             voorwaarden en periode. CONFIG.showGuarantee -->
+        <section id="guarantee-sec">
+          <div class="guarantee">
+            <div class="g-badge">✓</div>
+            <div>
+              <h3 data-i18n="g_h">Zero dead stock risk on your first order*</h3>
+              <p data-i18n="g_p">Here is exactly how it works. You place your first order. Anything that has not sold after 90 days, we buy back or swap for products that fit your customers better. Your money back, or a shelf that sells. Either way, your first order cannot leave you stuck with stock. You test Sempertex in your shop, we carry the risk.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ FAQ ============ -->
+        <section id="faq">
+          <div class="sec-head">
+            <h2 data-i18n="faq_h">Frequently asked <span class="hl">questions</span></h2>
+          </div>
+          <div class="faq">
+            <div class="faq-item">
+              <button class="faq-q" type="button"><span data-i18n="q1">Is there a minimum order quantity?</span><span class="fx">+</span></button>
+              <div class="faq-a" data-i18n="a1">Yes, we discuss the exact minimum during your intake call. It is designed to be achievable as a first order, and volume discounts grow from there.</div>
+            </div>
+            <div class="faq-item">
+              <button class="faq-q" type="button"><span data-i18n="q2">Do I need a VAT number?</span><span class="fx">+</span></button>
+              <div class="faq-a" data-i18n="a2">Yes. Sempertex Europe works strictly B2B, so a valid VAT number is required to become a partner.</div>
+            </div>
+            <div class="faq-item">
+              <button class="faq-q" type="button"><span data-i18n="q3">What happens during the intake call?</span><span class="fx">+</span></button>
+              <div class="faq-a" data-i18n="a3">A call of 30 to 60 minutes with our team. We look at your business, your region and your customers, and check whether we can genuinely serve your business and whether the partnership is the right match on both sides. If it is, you receive a concrete starter proposal afterwards.</div>
+            </div>
+            <div class="faq-item">
+              <button class="faq-q" type="button"><span data-i18n="q4">How fast is delivery?</span><span class="fx">+</span></button>
+              <div class="faq-a" data-i18n="a4">Orders ship from our warehouse in Belgium and delivery across Europe and the UK is fast. Exact delivery times depend on your country, we walk you through them during your intake call.</div>
+            </div>
+            <div class="faq-item">
+              <button class="faq-q" type="button"><span data-i18n="q5">I have never sold balloons before. Is this for me?</span><span class="fx">+</span></button>
+              <div class="faq-a" data-i18n="a5">Maybe! Previous experience with balloons is not essential, but passion for the product and the motivation to build the Sempertex brand in your market are. We are looking for partners who genuinely believe in the product and are excited to grow with us. Our team will support you with product guidance, photography and launch materials to help you get started.</div>
+            </div>
+            <div class="faq-item">
+              <button class="faq-q" type="button"><span data-i18n="q6">Which countries can apply?</span><span class="fx">+</span></button>
+              <div class="faq-a" data-i18n="a6">This partnership is for businesses registered in Europe and the UK. We are opening wholesale partnerships country by country. Select your country in the form above. If your country is not open yet, apply anyway and we will contact you as soon as it is. The exceptions are Spain, Portugal and Italy, which are served by their own official distributors: businesses there can contact Liragram or Sempertex Italy directly.</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ FAMILY TREE TEASER ============ -->
+        <section id="family">
+          <div class="family-band">
+            <div>
+              <h3 data-i18n="fam_h">From Colombia to your city</h3>
+              <p data-i18n="fam_p">Sempertex balloons travel from the factory in Barranquilla through official distributors on every continent. Sempertex Europe is the official home for Europe and the UK. See the full family and every partner in our network.</p>
+            </div>
+            <a class="btn-dark" id="family-btn" href="/stx-family-tree" data-i18n="fam_btn">Explore the Sempertex family</a>
+          </div>
+        </section>
+
+        <!-- ============ CLOSING CTA ============ -->
+        <section class="closing">
+          <h2 data-i18n="close_h">Your customers already trust the brand.</h2>
+          <p data-i18n="close_p">The only question is whether they buy it from you or from someone else. Apply today and find out in one call whether a Sempertex partnership fits your business.</p>
+          <a class="btn-dark cta-apply" href="#apply" data-i18n="close_btn">Apply and book my intake call</a>
+        </section>
+
+        <p class="fine-print" data-i18n="fine_print">* The first order buyback guarantee applies under fair conditions: stock is stored properly, returned undamaged and in its original packaging, and return shipping is carried by the partner. Full conditions are discussed during your intake call.</p>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ---- GUARD ---- */
+  var PAGE_PATHS = ['/become-a-distributor', '/become-a-wholesaler', '/wholesaler'];
+  // Saved-detectie zoals de inspiration page: als de pagina ooit in de
+  // Odoo builder is opgeslagen, staat er een kopie IN de pagina zelf.
+  // Die opgeslagen versie is dan de bron van waarheid (team edits
+  // blijven staan), en de vers geinjecteerde kopie ruimen we op.
+  var allRoots = document.querySelectorAll('#stx-whl-root');
+  var root = allRoots[0];
+  var isSaved = allRoots.length > 1;
+  for (var ri = 1; ri < allRoots.length; ri++) {
+    if (allRoots[ri].parentNode) { allRoots[ri].parentNode.removeChild(allRoots[ri]); }
+  }
+  if (!root) { return; }
+  var isFile = window.location.protocol === 'file:';
+  var p = (window.location.pathname || '').replace(/\/+$/, '');
+  var onPage = PAGE_PATHS.some(function (pp) { return p.slice(-pp.length) === pp; });
+  if (!isFile && !onPage) {
+    if (root.parentNode) { root.parentNode.removeChild(root); }
+    return;
+  }
+
+  /* ---- POSITIONERING: content boven de Odoo footer plaatsen
+     (alleen bij verse injectie, de saved kopie staat al op zijn plek) ---- */
+  if (!isFile && !isSaved) {
+    var mount = document.getElementById('wrap') || document.querySelector('main');
+    if (mount) { mount.appendChild(root); }
+    else {
+      var foot = document.querySelector('footer');
+      if (foot && foot.parentNode) { foot.parentNode.insertBefore(root, foot); }
+    }
+  }
+
+  /* ---- TAAL ---- */
+  var seg = (p.split('/')[1] || '').toLowerCase();
+  function langFrom(s) {
+    if (s === 'en' || s.indexOf('en_') === 0 || s.indexOf('en-') === 0) return 'en';
+    if (s === 'de' || s.indexOf('de_') === 0 || s.indexOf('de-') === 0) return 'de';
+    if (s === 'fr' || s.indexOf('fr_') === 0 || s.indexOf('fr-') === 0) return 'fr';
+    if (s === 'nl' || s.indexOf('nl_') === 0 || s.indexOf('nl-') === 0) return 'nl';
+    // Geen taalprefix = standaardtaal van de site = Nederlands
+    return 'nl';
+  }
+  var lang = langFrom(seg);
+  // Huidige taalprefix bewaren voor interne links tussen de paginas
+  var langPrefix = /^[a-z]{2}([_-][a-z]{2})?$/.test(seg) ? '/' + seg : '';
+
+  /* ==========================================================
+     CONFIG: DIT IS JOUW DEEL.
+     ========================================================== */
+  var CONFIG = {
+    // Calendly booking link voor de intake call.
+    bookingUrl: 'https://calendly.com/sempertexeurope-info/30min',
+    // Native Odoo CRM lead aanmaken bij submit (vereist website_crm
+    // module, standaard aanwezig). Lead verschijnt in CRM > Leads.
+    // Werkt alleen op de Odoo site zelf, niet in lokale preview.
+    odooLead: true,
+    // Optionele extra webhook (Zapier of ander endpoint). Leeg = uit.
+    webhookUrl: '',
+    // Video: mp4/webm URL = native speler zonder platform branding,
+    // YouTube embed URL = iframe. Leeg = placeholder.
+    videoUrl: 'https://www.youtube-nocookie.com/embed/Yi7n8xoBHdw?rel=0&modestbranding=1&enablejsapi=1',
+    // Optionele poster afbeelding voor de native speler.
+    videoPoster: '',
+    // Loopende screen recording (mp4/webm, zonder audio) voor de
+    // partner platform kaart. Leeg = statische screenshot.
+    platformVideoUrl: 'https://cdn.jsdelivr.net/gh/RobinRuttenBE/stx-website-custom-code@571d58bdb05cf1992a45fba484ac8ce60137e3a8/wholesaler-campaign/wholesaler/platform-loop.mp4',
+    // Risk reversal tonen? Pas op true na akkoord Sofie.
+    showGuarantee: true,
+    // URL van de family tree pagina.
+    familyUrl: '/stx-family-tree',
+    // Google "write a review" link van de STX EU Google Business page
+    // (place ID van de officiele listing, Mieenbroekstraat 43, Genk).
+    reviewUrl: 'https://search.google.com/local/writereview?placeid=ChIJ7-SFy44gwUcR6tx2CJR0ieA',
+    // Reviewer profielen: naam + profielfoto URL van de Google review.
+    // Foto: open de review, rechtermuisklik op de profielfoto,
+    // "afbeeldingsadres kopieren" (googleusercontent link), hier plakken.
+    reviewers: [
+      { name: 'Oksana', photo: 'https://cdn.jsdelivr.net/gh/RobinRuttenBE/stx-website-custom-code@571d58bdb05cf1992a45fba484ac8ce60137e3a8/wholesaler-campaign/wholesaler/rev-oksana.jpg' },
+      { name: 'Annet van Niehoff', photo: 'https://cdn.jsdelivr.net/gh/RobinRuttenBE/stx-website-custom-code@571d58bdb05cf1992a45fba484ac8ce60137e3a8/wholesaler-campaign/wholesaler/rev-annet.jpg' },
+      { name: 'kristof tuts', photo: '' }
+    ],
+    // Landen in de dropdown. Launch landen bovenaan. Europa + UK only.
+    // Alle Europese landen, launch landen bovenaan.
+    // Bewust niet in de lijst: Italy, Spain, Portugal.
+    countries: [
+      'Lithuania', 'Sweden',
+      'Albania', 'Andorra', 'Austria', 'Belarus', 'Belgium',
+      'Bosnia and Herzegovina', 'Bulgaria', 'Croatia', 'Cyprus',
+      'Czechia', 'Denmark', 'Estonia', 'Finland', 'France',
+      'Germany', 'Greece', 'Hungary', 'Iceland', 'Ireland',
+      'Kosovo', 'Latvia', 'Liechtenstein', 'Luxembourg', 'Malta',
+      'Moldova', 'Monaco', 'Montenegro', 'Netherlands',
+      'North Macedonia', 'Norway', 'Poland', 'Romania',
+      'San Marino', 'Serbia', 'Slovakia', 'Slovenia',
+      'Switzerland', 'Ukraine', 'United Kingdom'
+    ]
+  };
+  /* ================= EINDE CONFIG ================= */
+
+  /* ---- SEGMENT MESSAGE MATCH ----
+     Ads linken naar ?s=shop / ?s=wholesale.
+     Footer link zonder parameter = generieke versie. */
+  var SEGMENTS = {
+    shop: {
+      h: 'Stop competing with <span class="hl">supermarket balloons</span>',
+      lede: 'Big retailers sell cheap balloons for half your price. We give your party shop a premium professional balloon line. For businesses based in Europe and the UK.',
+      pill: 'party_shop'
+    },
+    wholesale: {
+      h: 'Your balloon shelf should grow <span class="hl">as fast as the rest</span> of your catalogue',
+      lede: 'A gap in your balloon assortment sends your best retailers to another wholesaler. Complete your catalogue with the premium line professionals ask for by name. For businesses based in Europe and the UK.',
+      pill: 'wholesaler'
+    }
+  };
+
+  var params = new URLSearchParams(window.location.search || '');
+  var segKey = (params.get('s') || '').toLowerCase();
+  var segment = SEGMENTS[segKey] ? segKey : 'generic';
+
+  /* ---- TRACKING ---- */
+  function track(event, extra) {
+    try {
+      var payload = extra || {};
+      payload.page_section = 'wholesaler';
+      payload.page_lang = lang;
+      payload.segment = segment;
+      // Altijd naar de dataLayer, zodat GTM custom event triggers
+      // deze events zien (voor Meta Pixel Lead e.d.).
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push(Object.assign({ event: event }, payload));
+      if (typeof window.gtag === 'function') {
+        window.gtag('event', event, payload);
+      }
+      if (window.posthog && window.posthog.capture) {
+        window.posthog.capture(event, payload);
+      }
+    } catch (err) { /* tracking mag nooit de pagina breken */ }
+  }
+
+  /* ---- I18N ----
+     Demo: alleen en. NL/DE/FR later, zelfde patroon als de
+     inspiration page. Standaardtaal volgt de builder versie. */
+  var I18N_MARK = null;
+  var I18N = {
+    en: {
+      hero_eyebrow: "Sempertex Europe / Wholesale Partnership / Europe &amp; UK",
+      hero_h_generic: "Balloons recommended by <span class=\"hl\">professionals",
+      hero_lede_generic: "Become an official Sempertex wholesale partner and add the premium latex balloon line. For businesses based in Europe and the UK.",
+      trust_1: "First order buyback guarantee*",
+      trust_2: "Fast delivery from our EU warehouse",
+      trust_3: "Strictly B2B, Europe &amp; UK only",
+      side_label: "Wholesale",
+      nav_apply: "Apply",
+      nav_offer: "What's in it for you",
+      nav_reviews: "Reviews",
+      nav_how: "How it works",
+      nav_guarantee: "Our guarantee",
+      nav_faq: "FAQ",
+      nav_family: "The Sempertex family",
+      step_1: "1. Tell us about your business",
+      step_2: "2. Book your intake call",
+      form_h: "Apply to become a wholesale partner",
+      form_sub: "Takes two minutes. Straight after this form you pick a time slot for an intake call with our team. Open to businesses registered in Europe and the UK.",
+      f_type: "What type of business do you run?",
+      pill_shop: "Party shop",
+      pill_whl: "Party supplies wholesaler",
+      pill_other: "Other",
+      err_type: "Please select your business type.",
+      f_other: "Namely",
+      f_country: "Country",
+      f_name: "Your name",
+      f_business: "Business name",
+      f_vat: "VAT number",
+      f_email: "Business email",
+      f_website: "Website",
+      err_fields: "Please complete the highlighted fields. A VAT number is required, we work strictly B2B.",
+      form_btn: "Continue to book my intake call",
+      form_micro: "Strictly B2B, Europe &amp; UK. Your details go directly to our partnership team.",
+      book_confirm: "Details received. One last step: pick a moment for your intake call.",
+      stack_banner: "What's in it for you as a <span class=\"hl\">Sempertex wholesale partner",
+      s1_h: "Official partnership with the number one professional brand",
+      s1_p: "Sempertex is the world's largest producer of professional latex balloons and the brand professionals ask for by name. You sell a product with an existing reputation and proven professional quality.",
+      s2_h: "A partner, not just a supplier",
+      s2_p: "Quarterly meetings, dedicated support and data reports on how your Sempertex range is performing, backed by more than 15 years of experience in the European balloon market. You are never left figuring it out alone.",
+      s3_h: "Fast delivery from our EU warehouse",
+      s3_p: "Shipped from our warehouse in Belgium. Restock fast, keep less capital in stock, never miss a season.",
+      s4_h: "Ready-to-sell starter package",
+      s4_p: "One order and your shelf is ready. Our team guides you through your assortment choices, and once you are live, your platform data shows exactly what to restock and when.",
+      s5_h: "The Sempertex partner platform",
+      s5_p: "Your entire Sempertex operation in one place: product data, your own sales analytics and restock insights, plus all Sempertex marketing assets ready for you to use. Built for all our official distributors, based on what you actually need.",
+      s6_h: "Volume discounts and early access",
+      s6_p: "Discounts that grow with your order volume, plus pre-order options for new colours and collections.",
+      s7_h: "Launch and marketing support",
+      s7_p: "Product photography, launch materials and marketing co-op possibilities. You sell, we supply the assets that make selling easier.",
+      s8_h: "Workshop hosting rights",
+      s8_p: "Host our existing professional workshops in your region. We bring the programme, you bring the room and your customers, everyone leaves buying balloons.",
+      cta_mid: "Apply and book my intake call",
+      rev_h: "Why professionals <span class=\"hl\">choose Sempertex",
+      rev_sub: "Your customers already know the brand. This is what the professional community says about the product you would be selling.",
+      rev1_n: "Oksana",
+      rev1_m: "Local Guide · 11 reviews · 35 photos",
+      rev1_p: "<span class=\"mark\">I was especially impressed by the level of organization, attention to detail, and how well the team operates.",
+      rev1_r: "Balloon professional",
+      rev2_n: "Annet van Niehoff",
+      rev2_m: "Local Guide · 10 reviews · 4 photos",
+      rev2_p: "People sometimes complain about pain in their fingers or hands when working with balloons, but with Sempertex I hardly experience that at all. <span class=\"mark\">The material feels strong, reliable and comfortable to work with.",
+      rev2_r: "Professional decorator",
+      rev3_n: "kristof tuts",
+      rev3_m: "6 reviews · 1 photo",
+      rev3_p: "Very good service and always helpful. <span class=\"mark\">The highest quality products and the fastest delivery.",
+      rev3_r: "Professional decorator",
+      rev_btn: "Leave a review",
+      hiw_h: "Let's see if we're a <span class=\"hl\">good fit",
+      hiw_sub: "We believe in building strong, long-term partnerships. That's why we like to make sure there's a good fit on both sides from the start.",
+      hiw1_h: "Apply",
+      hiw1_p: "Fill in the two minute form above and pick a time slot for your intake call.",
+      hiw2_h: "Intake call",
+      hiw2_p: "A call of 30 to 60 minutes with our team. We look at your business, your region and your customers, and check honestly whether we can serve your business well and whether it is the right match on both sides.",
+      hiw3_h: "Partnership and launch",
+      hiw3_p: "If it is a match, you become an official partner. You receive your starter package with launch support, ready to sell the week it arrives.",
+      g_h: "Zero dead stock risk on your first order*",
+      g_p: "Here is exactly how it works. You place your first order. Anything that has not sold after 90 days, we buy back or swap for products that fit your customers better. Your money back, or a shelf that sells. Either way, your first order cannot leave you stuck with stock. You test Sempertex in your shop, we carry the risk.",
+      faq_h: "Frequently asked <span class=\"hl\">questions",
+      q1: "Is there a minimum order quantity?",
+      a1: "Yes, we discuss the exact minimum during your intake call. It is designed to be achievable as a first order, and volume discounts grow from there.",
+      q2: "Do I need a VAT number?",
+      a2: "Yes. Sempertex Europe works strictly B2B, so a valid VAT number is required to become a partner.",
+      q3: "What happens during the intake call?",
+      a3: "A call of 30 to 60 minutes with our team. We look at your business, your region and your customers, and check whether we can genuinely serve your business and whether the partnership is the right match on both sides. If it is, you receive a concrete starter proposal afterwards.",
+      q4: "How fast is delivery?",
+      a4: "Orders ship from our warehouse in Belgium and delivery across Europe and the UK is fast. Exact delivery times depend on your country, we walk you through them during your intake call.",
+      q5: "I have never sold balloons before. Is this for me?",
+      a5: "Maybe! Previous experience with balloons is not essential, but passion for the product and the motivation to build the Sempertex brand in your market are. We are looking for partners who genuinely believe in the product and are excited to grow with us. Our team will support you with product guidance, photography and launch materials to help you get started.",
+      q6: "Which countries can apply?",
+      a6: "This partnership is for businesses registered in Europe and the UK. We are opening wholesale partnerships country by country. Select your country in the form above. If your country is not open yet, apply anyway and we will contact you as soon as it is. The exceptions are Spain, Portugal and Italy, which are served by their own official distributors: businesses there can contact Liragram or Sempertex Italy directly.",
+      fam_h: "From Colombia to your city",
+      fam_p: "Sempertex balloons travel from the factory in Barranquilla through official distributors on every continent. Sempertex Europe is the official home for Europe and the UK. See the full family and every partner in our network.",
+      fam_btn: "Explore the Sempertex family",
+      close_h: "Your customers already trust the brand.",
+      close_p: "The only question is whether they buy it from you or from someone else. Apply today and find out in one call whether a Sempertex partnership fits your business.",
+      close_btn: "Apply and book my intake call",
+      fine_print: "* The first order buyback guarantee applies under fair conditions: stock is stored properly, returned undamaged and in its original packaging, and return shipping is carried by the partner. Full conditions are discussed during your intake call.",
+      f_country_ph: "Select your country"
+    },
+    nl: {
+      hero_eyebrow: "Sempertex Europe / Wholesale Partnership / Europa &amp; UK",
+      hero_h_generic: "Ballonnen aangeraden door <span class=\"hl\">professionals</span>",
+      hero_lede_generic: "Word officiële Sempertex wholesale partner en voeg de premium latex ballonlijn toe aan je assortiment. Voor bedrijven gevestigd in Europa en de UK.",
+      trust_1: "Terugkoopgarantie op je eerste bestelling*",
+      trust_2: "Snelle levering vanuit ons EU magazijn",
+      trust_3: "Strikt B2B, alleen Europa &amp; UK",
+      nav_apply: "Aanmelden",
+      nav_offer: "Wat levert het je op",
+      nav_reviews: "Reviews",
+      nav_how: "Hoe het werkt",
+      nav_guarantee: "Onze garantie",
+      nav_faq: "FAQ",
+      nav_family: "De Sempertex familie",
+      step_1: "1. Vertel ons over je bedrijf",
+      step_2: "2. Boek je intakegesprek",
+      form_h: "Meld je aan als wholesale partner",
+      form_sub: "Duurt twee minuten. Direct na dit formulier kies je een moment voor een intakegesprek met ons team. Voor bedrijven geregistreerd in Europa en de UK.",
+      f_type: "Wat voor bedrijf run je?",
+      pill_shop: "Feestwinkel",
+      pill_whl: "Groothandel in feestartikelen",
+      pill_other: "Anders",
+      err_type: "Selecteer je bedrijfstype.",
+      f_other: "Namelijk",
+      f_country: "Land",
+      f_name: "Je naam",
+      f_business: "Bedrijfsnaam",
+      f_vat: "BTW-nummer",
+      f_email: "Zakelijk e-mailadres",
+      f_website: "Website",
+      err_fields: "Vul de gemarkeerde velden in. Een BTW-nummer is verplicht, wij werken strikt B2B.",
+      form_btn: "Verder naar mijn intakegesprek boeken",
+      form_micro: "Strikt B2B, Europa &amp; UK. Je gegevens gaan rechtstreeks naar ons partnership team.",
+      book_confirm: "Gegevens ontvangen. Nog één stap: kies een moment voor je intakegesprek.",
+      stack_banner: "Wat het je oplevert als <span class=\"hl\">Sempertex wholesale partner</span>",
+      s1_h: "Officieel partnership met het nummer één professionele merk",
+      s1_p: "Sempertex is de grootste producent van professionele latexballonnen ter wereld en het merk waar professionals bij naam om vragen. Je verkoopt een product met een bestaande reputatie en bewezen professionele kwaliteit.",
+      s2_h: "Een partner, niet zomaar een leverancier",
+      s2_p: "Kwartaalmeetings, dedicated support en datarapporten over hoe je Sempertex assortiment presteert, gedragen door meer dan 15 jaar ervaring in de Europese ballonmarkt. Je zoekt het nooit alleen uit.",
+      s3_h: "Snelle levering vanuit ons EU magazijn",
+      s3_p: "Verzonden vanuit ons magazijn in België. Snel bijbestellen, minder kapitaal in voorraad, nooit een seizoen missen.",
+      s4_h: "Kant-en-klaar starterspakket",
+      s4_p: "Eén bestelling en je schap staat klaar. Ons team begeleidt je bij je assortimentskeuzes, en zodra je live bent toont je platformdata precies wat je wanneer moet bijbestellen.",
+      s5_h: "Het Sempertex partnerplatform",
+      s5_p: "Je volledige Sempertex operatie op één plek: productdata, je eigen verkoopanalyses en restock inzichten, plus alle Sempertex marketing assets die je zelf kan gebruiken. Gebouwd voor al onze officiële distributeurs, op basis van wat jij echt nodig hebt.",
+      s6_h: "Volumekortingen en vroege toegang",
+      s6_p: "Kortingen die meegroeien met je bestelvolume, plus pre-order mogelijkheden tot nieuwe kleuren en collecties.",
+      s7_h: "Launch en marketing support",
+      s7_p: "Productfotografie, launchmaterialen en marketing co-op mogelijkheden. Jij verkoopt, wij leveren de middelen die verkopen makkelijker maken.",
+      s8_h: "Workshop hosting rechten",
+      s8_p: "Host onze bestaande professionele workshops in jouw regio. Wij brengen het programma, jij de ruimte en je klanten, en iedereen gaat naar huis met inspiratie en ballonnen.",
+      cta_mid: "Aanmelden en mijn intakegesprek boeken",
+      rev_h: "Waarom professionals <span class=\"hl\">voor Sempertex kiezen</span>",
+      rev_sub: "Je klanten kennen het merk al. Dit zegt de professionele community over het product dat jij zou verkopen.",
+      rev1_p: "<span class=\"mark\">Ik was vooral onder de indruk van de organisatie, het oog voor detail en hoe goed het team werkt.</span> Open, betrokken mensen en een ondersteunende sfeer.",
+      rev1_r: "Ballonprofessional",
+      rev2_p: "Mensen klagen soms over pijn in hun vingers of handen bij het werken met ballonnen, maar met Sempertex heb ik daar nauwelijks last van. <span class=\"mark\">Het materiaal voelt sterk, betrouwbaar en comfortabel om mee te werken.</span>",
+      rev2_r: "Professionele decorateur",
+      rev3_p: "Zeer goede service en altijd behulpzaam. <span class=\"mark\">De meest kwaliteitsvolle producten en de snelste levering.</span>",
+      rev3_r: "Professionele decorateur",
+      rev_btn: "Laat een review achter",
+      hiw_h: "Eens kijken of we een <span class=\"hl\">goede match</span> zijn. Zo werkt het.",
+      hiw_sub: "Wij geloven in sterke, langdurige partnerships. Daarom checken we graag vanaf het begin of het aan beide kanten goed zit.",
+      hiw1_h: "Aanmelden",
+      hiw1_p: "Vul het formulier van twee minuten hierboven in en kies een moment voor je intakegesprek.",
+      hiw2_h: "Intakegesprek",
+      hiw2_p: "Een gesprek van 30 tot 60 minuten met ons team. We kijken naar je bedrijf, je regio en je klanten, en checken eerlijk of wij jouw bedrijf goed kunnen bedienen en of het aan beide kanten de juiste match is.",
+      hiw3_h: "Partnership en launch",
+      hiw3_p: "Is het een match, dan word je officiële partner. Je ontvangt je starterspakket met launch support, klaar om te verkopen in de week dat het aankomt.",
+      g_h: "Nul risico op dode voorraad bij je eerste bestelling*",
+      g_p: "Zo werkt het precies. Je plaatst je eerste bestelling. Alles wat na 90 dagen niet verkocht is, kopen wij terug of ruilen we voor producten die beter bij jouw klanten passen. Je geld terug, of een schap dat verkoopt. Je eerste bestelling kan je hoe dan ook niet met voorraad laten zitten. Jij test Sempertex in je winkel, wij dragen het risico.",
+      faq_h: "Veelgestelde <span class=\"hl\">vragen</span>",
+      q1: "Is er een minimale bestelhoeveelheid?",
+      a1: "Ja, het exacte minimum bespreken we tijdens je intakegesprek. Het is zo opgezet dat het haalbaar is als eerste bestelling, en volumekortingen groeien vanaf daar.",
+      q2: "Heb ik een BTW-nummer nodig?",
+      a2: "Ja. Sempertex Europe werkt strikt B2B, dus een geldig BTW-nummer is vereist om partner te worden.",
+      q3: "Wat gebeurt er tijdens het intakegesprek?",
+      a3: "Een gesprek van 30 tot 60 minuten met ons team. We kijken naar je bedrijf, je regio en je klanten, en checken of wij jouw bedrijf echt goed kunnen bedienen en of het partnership aan beide kanten klopt. Is dat zo, dan ontvang je daarna een concreet startersvoorstel.",
+      q4: "Hoe snel is de levering?",
+      a4: "Bestellingen verzenden vanuit ons magazijn in België en de levering in Europa en de UK is snel. Exacte levertijden hangen af van je land, we nemen ze met je door tijdens je intakegesprek.",
+      q5: "Ik heb nog nooit ballonnen verkocht. Is dit iets voor mij?",
+      a5: "Misschien! Eerdere ervaring met ballonnen is niet essentieel, maar passie voor het product en de motivatie om het Sempertex merk in jouw markt op te bouwen wel. We zoeken partners die echt in het product geloven en zin hebben om met ons mee te groeien. Ons team ondersteunt je met productadvies, fotografie en launchmaterialen om goed van start te gaan.",
+      q6: "Welke landen kunnen zich aanmelden?",
+      a6: "Dit partnership is voor bedrijven geregistreerd in Europa en de UK. We openen wholesale partnerships land per land. Selecteer je land in het formulier hierboven. Staat jouw land er nog niet bij, meld je toch aan en we nemen contact op zodra het opent. De uitzonderingen zijn Spanje, Portugal en Italië, die bediend worden door hun eigen officiële distributeurs: bedrijven daar kunnen rechtstreeks terecht bij Liragram of Sempertex Italy.",
+      fam_h: "Van Colombia naar jouw stad",
+      fam_p: "Sempertex ballonnen reizen van de fabriek in Barranquilla via officiële distributeurs op elk continent. Sempertex Europe is het officiële thuis voor Europa en de UK. Bekijk de volledige familie en elke partner in ons netwerk.",
+      fam_btn: "Ontdek de Sempertex familie",
+      close_h: "Je klanten vertrouwen het merk al.",
+      close_p: "De enige vraag is of ze het bij jou kopen of bij iemand anders. Meld je vandaag aan en weet na één gesprek of een Sempertex partnership bij jouw bedrijf past.",
+      close_btn: "Aanmelden en mijn intakegesprek boeken",
+      fine_print: "* De terugkoopgarantie op de eerste bestelling geldt onder faire voorwaarden: voorraad wordt correct bewaard, onbeschadigd en in originele verpakking geretourneerd, en de retourverzending is voor rekening van de partner. De volledige voorwaarden bespreken we tijdens je intakegesprek.",
+      f_country_ph: "Selecteer je land"
+    },
+    de: {
+      hero_eyebrow: "Sempertex Europe / Wholesale Partnerschaft / Europa &amp; UK",
+      hero_h_generic: "Ballons, die <span class=\"hl\">Profis</span> empfehlen",
+      hero_lede_generic: "Werden Sie offizieller Sempertex Wholesale Partner und nehmen Sie die Premium Latexballon Linie in Ihr Sortiment auf. Für Unternehmen mit Sitz in Europa und dem UK.",
+      trust_1: "Rückkaufgarantie auf die erste Bestellung*",
+      trust_2: "Schnelle Lieferung aus unserem EU Lager",
+      trust_3: "Streng B2B, nur Europa &amp; UK",
+      nav_apply: "Bewerben",
+      nav_offer: "Was Sie davon haben",
+      nav_reviews: "Bewertungen",
+      nav_how: "So funktioniert es",
+      nav_guarantee: "Unsere Garantie",
+      nav_faq: "FAQ",
+      nav_family: "Die Sempertex Familie",
+      step_1: "1. Erzählen Sie uns von Ihrem Unternehmen",
+      step_2: "2. Buchen Sie Ihr Intake Gespräch",
+      form_h: "Als Wholesale Partner bewerben",
+      form_sub: "Dauert zwei Minuten. Direkt nach dem Formular wählen Sie einen Termin für ein Intake Gespräch mit unserem Team. Offen für Unternehmen mit Sitz in Europa und dem UK.",
+      f_type: "Welche Art von Unternehmen führen Sie?",
+      pill_shop: "Partyshop",
+      pill_whl: "Großhandel für Partyartikel",
+      pill_other: "Andere",
+      err_type: "Bitte wählen Sie Ihren Unternehmenstyp.",
+      f_other: "Und zwar",
+      f_country: "Land",
+      f_name: "Ihr Name",
+      f_business: "Firmenname",
+      f_vat: "USt-IdNr.",
+      f_email: "Geschäftliche E-Mail",
+      f_website: "Website",
+      err_fields: "Bitte füllen Sie die markierten Felder aus. Eine USt-IdNr. ist erforderlich, wir arbeiten streng B2B.",
+      form_btn: "Weiter zur Terminbuchung",
+      form_micro: "Streng B2B, Europa &amp; UK. Ihre Daten gehen direkt an unser Partnership Team.",
+      book_confirm: "Daten erhalten. Noch ein Schritt: Wählen Sie einen Termin für Ihr Intake Gespräch.",
+      stack_banner: "Was Sie als <span class=\"hl\">Sempertex Wholesale Partner</span> bekommen",
+      s1_h: "Offizielle Partnerschaft mit der professionellen Nummer eins",
+      s1_p: "Sempertex ist der weltweit größte Hersteller von professionellen Latexballons und die Marke, nach der Profis namentlich fragen. Sie verkaufen ein Produkt mit bestehendem Ruf und bewährter professioneller Qualität.",
+      s2_h: "Ein Partner, nicht nur ein Lieferant",
+      s2_p: "Quartalsmeetings, persönlicher Support und Datenreports zur Performance Ihres Sempertex Sortiments, getragen von über 15 Jahren Erfahrung im europäischen Ballonmarkt. Sie stehen nie allein da.",
+      s3_h: "Schnelle Lieferung aus unserem EU Lager",
+      s3_p: "Versand aus unserem Lager in Belgien. Schnell nachbestellen, weniger Kapital im Lager, keine Saison verpassen.",
+      s4_h: "Verkaufsfertiges Starterpaket",
+      s4_p: "Eine Bestellung und Ihr Regal steht. Unser Team begleitet Sie bei der Sortimentswahl, und sobald Sie live sind, zeigen Ihnen Ihre Plattformdaten genau, was Sie wann nachbestellen sollten.",
+      s5_h: "Die Sempertex Partnerplattform",
+      s5_p: "Ihre gesamte Sempertex Operation an einem Ort: Produktdaten, eigene Verkaufsanalysen und Restock Insights, plus alle Sempertex Marketing Assets, die Sie selbst nutzen können. Gebaut für alle unsere offiziellen Distributoren, basierend auf dem, was Sie wirklich brauchen.",
+      s6_h: "Mengenrabatte und früher Zugang",
+      s6_p: "Rabatte, die mit Ihrem Bestellvolumen wachsen, plus Pre-Order Möglichkeiten für neue Farben und Kollektionen.",
+      s7_h: "Launch und Marketing Support",
+      s7_p: "Produktfotografie, Launchmaterialien und Marketing Co-op Möglichkeiten. Sie verkaufen, wir liefern die Mittel, die das Verkaufen leichter machen.",
+      s8_h: "Workshop Hosting Rechte",
+      s8_p: "Veranstalten Sie unsere professionellen Workshops in Ihrer Region. Wir bringen das Programm, Sie den Raum und Ihre Kunden, und alle gehen inspiriert nach Hause und kaufen Ballons.",
+      cta_mid: "Bewerben und Intake Gespräch buchen",
+      rev_h: "Warum Profis <span class=\"hl\">Sempertex wählen</span>",
+      rev_sub: "Ihre Kunden kennen die Marke bereits. Das sagt die professionelle Community über das Produkt, das Sie verkaufen würden.",
+      rev1_p: "<span class=\"mark\">Besonders beeindruckt haben mich die Organisation, die Liebe zum Detail und wie gut das Team arbeitet.</span> Offene, engagierte Menschen und eine unterstützende Atmosphäre.",
+      rev1_r: "Ballonprofi",
+      rev2_p: "Manche klagen über Schmerzen in Fingern oder Händen beim Arbeiten mit Ballons, aber mit Sempertex habe ich das kaum. <span class=\"mark\">Das Material fühlt sich stark, zuverlässig und angenehm in der Verarbeitung an.</span>",
+      rev2_r: "Professionelle Dekorateurin",
+      rev3_p: "Sehr guter Service und immer hilfsbereit. <span class=\"mark\">Die hochwertigsten Produkte und die schnellste Lieferung.</span>",
+      rev3_r: "Professioneller Dekorateur",
+      rev_btn: "Bewertung hinterlassen",
+      hiw_h: "Passen wir <span class=\"hl\">zusammen</span>? So funktioniert es.",
+      hiw_sub: "Wir glauben an starke, langfristige Partnerschaften. Deshalb prüfen wir von Anfang an, ob es auf beiden Seiten passt.",
+      hiw1_h: "Bewerben",
+      hiw1_p: "Füllen Sie das Zwei-Minuten-Formular oben aus und wählen Sie einen Termin für Ihr Intake Gespräch.",
+      hiw2_h: "Intake Gespräch",
+      hiw2_p: "Ein Gespräch von 30 bis 60 Minuten mit unserem Team. Wir schauen auf Ihr Unternehmen, Ihre Region und Ihre Kunden und prüfen ehrlich, ob wir Ihr Unternehmen gut bedienen können und ob es auf beiden Seiten passt.",
+      hiw3_h: "Partnerschaft und Launch",
+      hiw3_p: "Passt es, werden Sie offizieller Partner. Sie erhalten Ihr Starterpaket mit Launch Support, verkaufsbereit in der Woche der Lieferung.",
+      g_h: "Null Risiko auf tote Ware bei Ihrer ersten Bestellung*",
+      g_p: "So funktioniert es genau. Sie geben Ihre erste Bestellung auf. Alles, was nach 90 Tagen nicht verkauft ist, kaufen wir zurück oder tauschen es gegen Produkte, die besser zu Ihren Kunden passen. Ihr Geld zurück, oder ein Regal, das verkauft. Ihre erste Bestellung kann Sie so oder so nicht auf Ware sitzen lassen. Sie testen Sempertex in Ihrem Geschäft, wir tragen das Risiko.",
+      faq_h: "Häufige <span class=\"hl\">Fragen</span>",
+      q1: "Gibt es eine Mindestbestellmenge?",
+      a1: "Ja, das genaue Minimum besprechen wir im Intake Gespräch. Es ist so gestaltet, dass es als erste Bestellung gut machbar ist, und Mengenrabatte wachsen von dort.",
+      q2: "Brauche ich eine USt-IdNr.?",
+      a2: "Ja. Sempertex Europe arbeitet streng B2B, eine gültige USt-IdNr. ist daher Voraussetzung für eine Partnerschaft.",
+      q3: "Was passiert im Intake Gespräch?",
+      a3: "Ein Gespräch von 30 bis 60 Minuten mit unserem Team. Wir schauen auf Ihr Unternehmen, Ihre Region und Ihre Kunden und prüfen, ob wir Ihr Unternehmen wirklich gut bedienen können und ob die Partnerschaft auf beiden Seiten passt. Wenn ja, erhalten Sie danach ein konkretes Starterangebot.",
+      q4: "Wie schnell ist die Lieferung?",
+      a4: "Bestellungen versenden wir aus unserem Lager in Belgien, die Lieferung in Europa und dem UK ist schnell. Genaue Lieferzeiten hängen von Ihrem Land ab, wir gehen sie im Intake Gespräch mit Ihnen durch.",
+      q5: "Ich habe noch nie Ballons verkauft. Ist das etwas für mich?",
+      a5: "Vielleicht! Erfahrung mit Ballons ist nicht entscheidend, wohl aber Leidenschaft für das Produkt und die Motivation, die Marke Sempertex in Ihrem Markt aufzubauen. Wir suchen Partner, die wirklich an das Produkt glauben und mit uns wachsen wollen. Unser Team unterstützt Sie mit Produktberatung, Fotografie und Launchmaterialien für einen guten Start.",
+      q6: "Welche Länder können sich bewerben?",
+      a6: "Diese Partnerschaft ist für Unternehmen mit Sitz in Europa und dem UK. Wir öffnen Wholesale Partnerschaften Land für Land. Wählen Sie Ihr Land im Formular oben. Ist Ihr Land noch nicht dabei, bewerben Sie sich trotzdem und wir melden uns, sobald es öffnet. Die Ausnahmen sind Spanien, Portugal und Italien, die von eigenen offiziellen Distributoren betreut werden: Unternehmen dort wenden sich direkt an Liragram oder Sempertex Italy.",
+      fam_h: "Von Kolumbien in Ihre Stadt",
+      fam_p: "Sempertex Ballons reisen von der Fabrik in Barranquilla über offizielle Distributoren auf jedem Kontinent. Sempertex Europe ist das offizielle Zuhause für Europa und das UK. Entdecken Sie die ganze Familie und jeden Partner in unserem Netzwerk.",
+      fam_btn: "Die Sempertex Familie entdecken",
+      close_h: "Ihre Kunden vertrauen der Marke bereits.",
+      close_p: "Die einzige Frage ist, ob sie sie bei Ihnen kaufen oder bei jemand anderem. Bewerben Sie sich heute und wissen Sie nach einem Gespräch, ob eine Sempertex Partnerschaft zu Ihrem Unternehmen passt.",
+      close_btn: "Bewerben und Intake Gespräch buchen",
+      fine_print: "* Die Rückkaufgarantie auf die erste Bestellung gilt unter fairen Bedingungen: Die Ware wird korrekt gelagert, unbeschädigt und in Originalverpackung retourniert, und der Rückversand geht zulasten des Partners. Die vollständigen Bedingungen besprechen wir im Intake Gespräch.",
+      f_country_ph: "Wählen Sie Ihr Land"
+    },
+    fr: {
+      hero_eyebrow: "Sempertex Europe / Partenariat Wholesale / Europe &amp; UK",
+      hero_h_generic: "Les ballons recommandés par les <span class=\"hl\">professionnels</span>",
+      hero_lede_generic: "Devenez partenaire wholesale officiel de Sempertex et ajoutez la gamme premium de ballons en latex à votre assortiment. Pour les entreprises établies en Europe et au Royaume-Uni.",
+      trust_1: "Garantie de rachat sur la première commande*",
+      trust_2: "Livraison rapide depuis notre entrepôt UE",
+      trust_3: "Strictement B2B, Europe &amp; UK uniquement",
+      nav_apply: "Postuler",
+      nav_offer: "Ce que vous y gagnez",
+      nav_reviews: "Avis",
+      nav_how: "Comment ça marche",
+      nav_guarantee: "Notre garantie",
+      nav_faq: "FAQ",
+      nav_family: "La famille Sempertex",
+      step_1: "1. Parlez-nous de votre entreprise",
+      step_2: "2. Réservez votre entretien",
+      form_h: "Postulez pour devenir partenaire wholesale",
+      form_sub: "Deux minutes suffisent. Juste après ce formulaire, vous choisissez un créneau pour un entretien avec notre équipe. Ouvert aux entreprises enregistrées en Europe et au Royaume-Uni.",
+      f_type: "Quel type d’entreprise dirigez-vous ?",
+      pill_shop: "Magasin de fête",
+      pill_whl: "Grossiste en articles de fête",
+      pill_other: "Autre",
+      err_type: "Veuillez sélectionner votre type d’entreprise.",
+      f_other: "À savoir",
+      f_country: "Pays",
+      f_name: "Votre nom",
+      f_business: "Nom de l’entreprise",
+      f_vat: "Numéro de TVA",
+      f_email: "E-mail professionnel",
+      f_website: "Site web",
+      err_fields: "Veuillez compléter les champs indiqués. Un numéro de TVA est requis, nous travaillons strictement en B2B.",
+      form_btn: "Continuer et réserver mon entretien",
+      form_micro: "Strictement B2B, Europe &amp; UK. Vos informations vont directement à notre équipe partenariats.",
+      book_confirm: "Informations reçues. Une dernière étape : choisissez un moment pour votre entretien.",
+      stack_banner: "Ce que vous recevez en tant que <span class=\"hl\">partenaire wholesale Sempertex</span>",
+      s1_h: "Un partenariat officiel avec la marque professionnelle numéro un",
+      s1_p: "Sempertex est le plus grand producteur de ballons en latex professionnels au monde et la marque que les professionnels demandent par son nom. Vous vendez un produit avec une réputation établie et une qualité professionnelle prouvée.",
+      s2_h: "Un partenaire, pas un simple fournisseur",
+      s2_p: "Des réunions trimestrielles, un support dédié et des rapports de données sur la performance de votre gamme Sempertex, portés par plus de 15 ans d’expérience sur le marché européen du ballon. Vous n’êtes jamais seul.",
+      s3_h: "Livraison rapide depuis notre entrepôt UE",
+      s3_p: "Expédié depuis notre entrepôt en Belgique. Réapprovisionnez vite, immobilisez moins de capital en stock, ne manquez jamais une saison.",
+      s4_h: "Pack de démarrage prêt à vendre",
+      s4_p: "Une commande et votre rayon est prêt. Notre équipe vous guide dans vos choix d’assortiment, et une fois lancé, vos données plateforme montrent exactement quoi recommander et quand.",
+      s5_h: "La plateforme partenaires Sempertex",
+      s5_p: "Toute votre opération Sempertex au même endroit : données produits, vos propres analyses de ventes et insights de réassort, plus tous les supports marketing Sempertex que vous pouvez utiliser vous-même. Conçue pour tous nos distributeurs officiels, sur base de ce dont vous avez réellement besoin.",
+      s6_h: "Remises sur volume et accès anticipé",
+      s6_p: "Des remises qui grandissent avec votre volume de commande, plus des possibilités de pré-commande pour les nouvelles couleurs et collections.",
+      s7_h: "Support de lancement et marketing",
+      s7_p: "Photographie produit, supports de lancement et possibilités de co-op marketing. Vous vendez, nous fournissons les outils qui rendent la vente plus facile.",
+      s8_h: "Droits d’accueil de workshops",
+      s8_p: "Accueillez nos workshops professionnels dans votre région. Nous apportons le programme, vous la salle et vos clients, et tout le monde repart inspiré et achète des ballons.",
+      cta_mid: "Postuler et réserver mon entretien",
+      rev_h: "Pourquoi les professionnels <span class=\"hl\">choisissent Sempertex</span>",
+      rev_sub: "Vos clients connaissent déjà la marque. Voici ce que la communauté professionnelle dit du produit que vous vendriez.",
+      rev1_p: "<span class=\"mark\">J’ai été particulièrement impressionnée par le niveau d’organisation, le souci du détail et le fonctionnement de l’équipe.</span> Des personnes ouvertes, engagées et une atmosphère bienveillante.",
+      rev1_r: "Professionnelle du ballon",
+      rev2_p: "On se plaint parfois de douleurs aux doigts ou aux mains en travaillant les ballons, mais avec Sempertex je n’en souffre presque pas. <span class=\"mark\">Le matériau est solide, fiable et agréable à travailler.</span>",
+      rev2_r: "Décoratrice professionnelle",
+      rev3_p: "Très bon service et toujours serviable. <span class=\"mark\">Les produits de la meilleure qualité et la livraison la plus rapide.</span>",
+      rev3_r: "Décorateur professionnel",
+      rev_btn: "Laisser un avis",
+      hiw_h: "Sommes-nous faits pour <span class=\"hl\">travailler ensemble</span> ? Voici comment ça marche.",
+      hiw_sub: "Nous croyons aux partenariats solides et durables. C’est pourquoi nous vérifions dès le départ que ça colle des deux côtés.",
+      hiw1_h: "Postuler",
+      hiw1_p: "Remplissez le formulaire de deux minutes ci-dessus et choisissez un créneau pour votre entretien.",
+      hiw2_h: "Entretien",
+      hiw2_p: "Un échange de 30 à 60 minutes avec notre équipe. Nous regardons votre entreprise, votre région et vos clients, et vérifions honnêtement si nous pouvons bien servir votre entreprise et si le partenariat a du sens des deux côtés.",
+      hiw3_h: "Partenariat et lancement",
+      hiw3_p: "Si ça colle, vous devenez partenaire officiel. Vous recevez votre pack de démarrage avec support de lancement, prêt à vendre la semaine de son arrivée.",
+      g_h: "Zéro risque de stock mort sur votre première commande*",
+      g_p: "Voici exactement comment ça marche. Vous passez votre première commande. Tout ce qui n’est pas vendu après 90 jours, nous le rachetons ou l’échangeons contre des produits qui conviennent mieux à vos clients. Votre argent de retour, ou un rayon qui vend. Dans tous les cas, votre première commande ne peut pas vous laisser avec du stock. Vous testez Sempertex dans votre magasin, nous portons le risque.",
+      faq_h: "Questions <span class=\"hl\">fréquentes</span>",
+      q1: "Y a-t-il une quantité minimale de commande ?",
+      a1: "Oui, nous discutons du minimum exact lors de votre entretien. Il est conçu pour être atteignable en première commande, et les remises sur volume grandissent à partir de là.",
+      q2: "Ai-je besoin d’un numéro de TVA ?",
+      a2: "Oui. Sempertex Europe travaille strictement en B2B, un numéro de TVA valide est donc requis pour devenir partenaire.",
+      q3: "Que se passe-t-il pendant l’entretien ?",
+      a3: "Un échange de 30 à 60 minutes avec notre équipe. Nous regardons votre entreprise, votre région et vos clients, et vérifions si nous pouvons réellement bien servir votre entreprise et si le partenariat a du sens des deux côtés. Si oui, vous recevez ensuite une proposition de démarrage concrète.",
+      q4: "La livraison est-elle rapide ?",
+      a4: "Les commandes partent de notre entrepôt en Belgique et la livraison en Europe et au Royaume-Uni est rapide. Les délais exacts dépendent de votre pays, nous les passons en revue lors de votre entretien.",
+      q5: "Je n’ai jamais vendu de ballons. Est-ce pour moi ?",
+      a5: "Peut-être ! L’expérience avec les ballons n’est pas essentielle, mais la passion pour le produit et la motivation de construire la marque Sempertex sur votre marché le sont. Nous cherchons des partenaires qui croient vraiment au produit et veulent grandir avec nous. Notre équipe vous accompagne avec des conseils produit, de la photographie et des supports de lancement pour bien démarrer.",
+      q6: "Quels pays peuvent postuler ?",
+      a6: "Ce partenariat s’adresse aux entreprises enregistrées en Europe et au Royaume-Uni. Nous ouvrons les partenariats wholesale pays par pays. Sélectionnez votre pays dans le formulaire ci-dessus. Si votre pays n’est pas encore ouvert, postulez quand même et nous vous contactons dès son ouverture. Les exceptions sont l’Espagne, le Portugal et l’Italie, servis par leurs propres distributeurs officiels : les entreprises de ces pays peuvent contacter directement Liragram ou Sempertex Italy.",
+      fam_h: "De la Colombie à votre ville",
+      fam_p: "Les ballons Sempertex voyagent de l’usine de Barranquilla via des distributeurs officiels sur chaque continent. Sempertex Europe est la maison officielle pour l’Europe et le Royaume-Uni. Découvrez toute la famille et chaque partenaire de notre réseau.",
+      fam_btn: "Découvrir la famille Sempertex",
+      close_h: "Vos clients font déjà confiance à la marque.",
+      close_p: "La seule question est de savoir s’ils l’achètent chez vous ou chez quelqu’un d’autre. Postulez aujourd’hui et sachez en un seul échange si un partenariat Sempertex convient à votre entreprise.",
+      close_btn: "Postuler et réserver mon entretien",
+      fine_print: "* La garantie de rachat sur la première commande s’applique à des conditions équitables : le stock est conservé correctement, retourné intact et dans son emballage d’origine, et les frais de retour sont à charge du partenaire. Les conditions complètes sont discutées lors de votre entretien.",
+      f_country_ph: "Sélectionnez votre pays"
+    }
+  };
+  var STR = I18N[lang] || I18N.en;
+  // Nederlands (brontaal) volgt na een builder-save de opgeslagen
+  // versie: team edits blijven staan. Engels, Duits en Frans komen
+  // ALTIJD uit dit woordenboek, ook na een save. Zo kan een save
+  // de andere talen nooit meer platslaan.
+  if (lang !== 'nl' || !isSaved) {
+    root.querySelectorAll('[data-i18n]').forEach(function (el) {
+      var key = el.getAttribute('data-i18n');
+      if (STR[key]) { el.innerHTML = STR[key]; }
+    });
+  }
+
+  /* ---- SEGMENT COPY (alleen en, vertaalde paginas tonen de
+     generieke hero; vertaalde segment varianten later indien nodig) ---- */
+  if (segment !== 'generic' && lang === 'en') {
+    var h1 = root.querySelector('#whl-h1');
+    var lede = root.querySelector('#whl-lede');
+    if (h1) { h1.innerHTML = SEGMENTS[segment].h; }
+    if (lede) { lede.innerHTML = SEGMENTS[segment].lede; }
+  }
+
+  /* ---- FIRST TOUCH PERSISTENTIE ----
+     Bewaart UTMs + fbclid van het eerste bezoek 90 dagen in de
+     browser. Boekt iemand pas dagen later een intake, dan weten
+     wij alsnog uit welke ad en campagne hij kwam, ook al is Meta
+     hem na 7 dagen kwijt. Gaat mee de CRM lead in. */
+  var TOUCH_KEY = 'stx_whl_touch';
+  var firstTouch = null;
+  try {
+    var stored = localStorage.getItem(TOUCH_KEY);
+    if (stored) {
+      firstTouch = JSON.parse(stored);
+      // 90 dagen expiry
+      if (Date.now() - firstTouch.ts > 90 * 24 * 3600 * 1000) { firstTouch = null; localStorage.removeItem(TOUCH_KEY); }
+    }
+    var hasParams = false;
+    var touch = { ts: Date.now(), landing: window.location.pathname + window.location.search };
+    ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'fbclid', 'gclid'].forEach(function (k) {
+      var v = params.get(k);
+      if (v) { touch[k] = v; hasParams = true; }
+    });
+    if (segment !== 'generic') { touch.segment = segment; }
+    if (!firstTouch && hasParams) {
+      localStorage.setItem(TOUCH_KEY, JSON.stringify(touch));
+      firstTouch = touch;
+    }
+  } catch (err) { /* private mode e.d.: stil verder */ }
+
+  function touchSummary() {
+    if (!firstTouch) { return ''; }
+    var days = Math.floor((Date.now() - firstTouch.ts) / (24 * 3600 * 1000));
+    var parts = [];
+    ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content'].forEach(function (k) {
+      if (firstTouch[k]) { parts.push(k + '=' + firstTouch[k]); }
+    });
+    if (firstTouch.fbclid) { parts.push('fbclid=yes'); }
+    if (firstTouch.segment) { parts.push('first_segment=' + firstTouch.segment); }
+    parts.push('days_since_first_touch=' + days);
+    return parts.join(', ');
+  }
+
+  track('wholesaler_page_view', {});
+
+  /* ---- VIDEO ---- */
+  var videoBox = root.querySelector('#whl-video');
+  if (CONFIG.videoUrl && videoBox) {
+    if (/\.(mp4|webm)(\?|$)/i.test(CONFIG.videoUrl)) {
+      // Native speler: eigen mp4, geen platform branding
+      var nv = document.createElement('video');
+      nv.controls = true; nv.playsInline = true; nv.preload = 'metadata';
+      nv.setAttribute('playsinline', '');
+      if (CONFIG.videoPoster) { nv.poster = CONFIG.videoPoster; }
+      var nvs = document.createElement('source');
+      nvs.src = CONFIG.videoUrl;
+      nv.appendChild(nvs);
+      videoBox.innerHTML = '';
+      videoBox.appendChild(nv);
+      var played = false;
+      nv.addEventListener('play', function () {
+        if (!played) { played = true; track('wholesaler_video_play', {}); }
+      });
+      nv.addEventListener('ended', function () { track('wholesaler_video_complete', {}); });
+    } else {
+      videoBox.innerHTML = '<iframe src="' + CONFIG.videoUrl + '" allow="autoplay; encrypted-media" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>';
+    }
+  } else if (videoBox) {
+    videoBox.addEventListener('click', function () { track('wholesaler_video_click', {}); });
+  }
+
+  /* ---- PLATFORM LOOP VIDEO ----
+     Vervangt de statische hub screenshot door een loopende
+     screen recording zodra CONFIG.platformVideoUrl gezet is.
+     De screenshot blijft dienen als poster tijdens het laden. */
+  var pm = root.querySelector('#platform-media');
+  if (CONFIG.platformVideoUrl && pm) {
+    var pvid = document.createElement('video');
+    pvid.className = 'stack-img';
+    pvid.autoplay = true; pvid.muted = true; pvid.loop = true; pvid.playsInline = true;
+    pvid.setAttribute('muted', '');
+    pvid.setAttribute('playsinline', '');
+    pvid.poster = pm.src;
+    var psrc = document.createElement('source');
+    psrc.src = CONFIG.platformVideoUrl;
+    pvid.appendChild(psrc);
+    pm.parentNode.replaceChild(pvid, pm);
+  }
+
+  /* ---- CALENDLY BEVESTIGING ----
+     Calendly stuurt een postMessage zodra een tijdslot bevestigd
+     is. Dat is het echte "booked" conversie event, één stap dieper
+     dan de form submit. */
+  window.addEventListener('message', function (e) {
+    try {
+      if (e.origin && e.origin.indexOf('calendly.com') !== -1 &&
+          e.data && e.data.event === 'calendly.event_scheduled') {
+        track('wholesaler_booking_confirmed', {});
+      }
+    } catch (err) { /* stil */ }
+  });
+
+  /* ---- REVIEWS ---- */
+  root.querySelectorAll('a.rev-card').forEach(function (a, i) {
+    a.addEventListener('click', function () {
+      track('wholesaler_review_click', { review: a.getAttribute('data-rev') });
+    });
+    // Naam en profielfoto uit CONFIG.reviewers toepassen
+    var rv = (CONFIG.reviewers || [])[i];
+    if (rv) {
+      if (rv.name) {
+        var nameEl = a.querySelector('.rev-name');
+        if (nameEl) { nameEl.textContent = rv.name; }
+        var av = a.querySelector('.rev-avatar');
+        if (av && !rv.photo) { av.textContent = rv.name.charAt(0).toUpperCase(); }
+      }
+      if (rv.photo) {
+        var av2 = a.querySelector('.rev-avatar');
+        if (av2) {
+          var im = document.createElement('img');
+          im.src = rv.photo;
+          im.alt = rv.name || 'Reviewer';
+          im.addEventListener('error', function () {
+            av2.textContent = (rv.name || '?').charAt(0).toUpperCase();
+          });
+          av2.textContent = '';
+          av2.appendChild(im);
+        }
+      }
+    }
+  });
+  var revBtn = root.querySelector('#review-btn');
+  if (revBtn) {
+    if (CONFIG.reviewUrl) { revBtn.setAttribute('href', CONFIG.reviewUrl); }
+    revBtn.addEventListener('click', function () { track('wholesaler_review_cta', {}); });
+  }
+
+  /* ---- FAMILY LINK ---- */
+  var famBtn = root.querySelector('#family-btn');
+  if (famBtn) {
+    famBtn.setAttribute('href', langPrefix + CONFIG.familyUrl);
+    famBtn.addEventListener('click', function () { track('wholesaler_family_click', {}); });
+  }
+
+  /* ---- COUNTRY DROPDOWN ---- */
+  var countrySel = root.querySelector('#whl-country');
+  if (countrySel) {
+    countrySel.innerHTML = '';
+    var opt0 = document.createElement('option');
+    opt0.value = ''; opt0.textContent = STR.f_country_ph || 'Select your country';
+    countrySel.appendChild(opt0);
+    CONFIG.countries.forEach(function (c) {
+      var o = document.createElement('option');
+      o.value = c; o.textContent = c;
+      countrySel.appendChild(o);
+    });
+  }
+
+  /* ---- PILLS ---- */
+  var chosenType = '';
+  var pills = root.querySelectorAll('#pill-row .pill');
+  pills.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      pills.forEach(function (b) { b.classList.remove('sel'); });
+      btn.classList.add('sel');
+      chosenType = btn.getAttribute('data-val');
+      root.querySelector('#err-type').classList.remove('show');
+      var ow = root.querySelector('#other-wrap');
+      if (ow) { ow.style.display = (chosenType === 'other') ? 'block' : 'none'; }
+    });
+  });
+  if (segment !== 'generic') {
+    var pre = SEGMENTS[segment].pill;
+    pills.forEach(function (b) {
+      if (b.getAttribute('data-val') === pre) { b.click(); }
+    });
+  }
+
+  /* ---- FORM START TRACKING ---- */
+  var started = false;
+  root.querySelectorAll('.f-input, .f-select').forEach(function (el) {
+    el.addEventListener('focus', function () {
+      if (!started) { started = true; track('wholesaler_form_start', {}); }
+    });
+  });
+
+  /* ---- VALIDATIE + SUBMIT ---- */
+  function val(id) { var el = root.querySelector('#' + id); return el ? el.value.trim() : ''; }
+  function mark(id, bad) { var el = root.querySelector('#' + id); if (el) { el.classList.toggle('err', bad); } }
+
+  var submitBtn = root.querySelector('#whl-submit');
+  if (submitBtn) {
+    submitBtn.addEventListener('click', function () {
+      var name = val('whl-name');
+      var business = val('whl-business');
+      var vat = val('whl-vat');
+      var email = val('whl-email');
+      var country = val('whl-country');
+      var otherType = val('whl-other');
+      var website = val('whl-website');
+
+      var vatOk = vat.length > 0; // open veld, geen vast format
+      var emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
+
+      var bad = false;
+      if (!chosenType) { root.querySelector('#err-type').classList.add('show'); bad = true; }
+      mark('whl-name', !name); if (!name) bad = true;
+      mark('whl-business', !business); if (!business) bad = true;
+      mark('whl-vat', !vatOk); if (!vatOk) bad = true;
+      mark('whl-email', !emailOk); if (!emailOk) bad = true;
+      mark('whl-country', !country); if (!country) bad = true;
+      if (chosenType === 'other') { mark('whl-other', !otherType); if (!otherType) bad = true; }
+
+      var errBox = root.querySelector('#err-fields');
+      errBox.classList.toggle('show', bad);
+      if (bad) { track('wholesaler_form_error', {}); return; }
+
+      var lead = {
+        name: name, business: business, vat: vat, email: email,
+        country: country, business_type: chosenType,
+        business_type_other: otherType || '',
+        website: website || '',
+        segment: segment, lang: lang,
+        source_url: window.location.href,
+        submitted_at: new Date().toISOString()
+      };
+
+      // Native Odoo CRM lead. Faalt stil buiten de Odoo site.
+      if (CONFIG.odooLead) {
+        try {
+          var fd = new FormData();
+          // crm.lead vereist 'name' (het Onderwerp in Odoo). Zonder dit
+          // veld antwoordt Odoo 16 met een 500 en wordt er geen lead
+          // aangemaakt, terwijl Meta en GA4 wel een Lead tellen.
+          fd.append('name', 'Wholesale application: ' + business + ' (' + country + ')');
+          fd.append('contact_name', name);
+          fd.append('partner_name', business);
+          fd.append('email_from', email);
+          fd.append('description',
+            'Wholesale application | VAT: ' + vat +
+            ' | Country: ' + country +
+            ' | Type: ' + chosenType + (otherType ? ' (' + otherType + ')' : '') +
+            (website ? ' | Website: ' + website : '') +
+            ' | Segment: ' + segment + ' | Lang: ' + lang +
+            ' | URL: ' + window.location.href +
+            (touchSummary() ? ' | First touch: ' + touchSummary() : ''));
+          if (window.odoo && window.odoo.csrf_token) { fd.append('csrf_token', window.odoo.csrf_token); }
+          fetch('/website/form/crm.lead', { method: 'POST', body: fd })
+            .then(function (r) {
+              // Odoo antwoordt 200 met {"id": n} bij succes. Alles
+              // anders loggen we als event zodat een stille breuk
+              // zichtbaar wordt in PostHog en GA4.
+              if (!r.ok) { track('wholesaler_lead_post_failed', { status: r.status }); }
+            })
+            .catch(function () { track('wholesaler_lead_post_failed', { status: 0 }); });
+        } catch (err) { /* stil */ }
+      }
+
+      // Optionele extra webhook. Faalt stil, tracking blijft de bron.
+      if (CONFIG.webhookUrl) {
+        try {
+          fetch(CONFIG.webhookUrl, {
+            method: 'POST', mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(lead)
+          });
+        } catch (err) { /* stil */ }
+      }
+
+      var submitPayload = { business_type: chosenType, country: country };
+      if (firstTouch) {
+        submitPayload.days_since_first_touch = Math.floor((Date.now() - firstTouch.ts) / (24 * 3600 * 1000));
+        if (firstTouch.utm_campaign) { submitPayload.first_campaign = firstTouch.utm_campaign; }
+      }
+      track('wholesaler_form_submit', submitPayload);
+
+      root.querySelector('#whl-form-card').style.display = 'none';
+      root.querySelector('#step-1').classList.remove('on');
+      root.querySelector('#step-2').classList.add('on');
+      var booking = root.querySelector('#whl-booking');
+      booking.classList.add('show');
+      if (CONFIG.bookingUrl) {
+        var bUrl = CONFIG.bookingUrl;
+        if (bUrl.indexOf('calendly.com') !== -1) {
+          // Prefill zodat ze naam en email niet dubbel typen,
+          // plus first touch UTMs zodat de boeking in Calendly
+          // dezelfde attributie draagt als de lead.
+          var q = ['hide_gdpr_banner=1'];
+          q.push('name=' + encodeURIComponent(name));
+          q.push('email=' + encodeURIComponent(email));
+          if (firstTouch) {
+            ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content'].forEach(function (k) {
+              if (firstTouch[k]) { q.push(k + '=' + encodeURIComponent(firstTouch[k])); }
+            });
+          }
+          q.push('utm_term=' + encodeURIComponent(segment));
+          bUrl += (bUrl.indexOf('?') === -1 ? '?' : '&') + q.join('&');
+        }
+        root.querySelector('#whl-cal').innerHTML = '<iframe src="' + bUrl + '"></iframe>';
+      }
+      booking.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      track('wholesaler_booking_view', {});
+    });
+  }
+
+  /* ---- GUARANTEE TOGGLE ---- */
+  if (!CONFIG.showGuarantee) {
+    var g = root.querySelector('#guarantee-sec');
+    if (g && g.parentNode) { g.parentNode.removeChild(g); }
+    var gNav = root.querySelector('.side a[data-sec="guarantee-sec"]');
+    if (gNav && gNav.parentNode) { gNav.parentNode.removeChild(gNav); }
+    var t1 = root.querySelector('.trust-bar span');
+    if (t1 && t1.parentNode) { t1.parentNode.removeChild(t1); }
+  }
+
+  /* ---- SIDEBAR: smooth scroll + active state ---- */
+  var sideLinks = root.querySelectorAll('.side a[data-sec]');
+  sideLinks.forEach(function (a) {
+    a.addEventListener('click', function (e) {
+      var target = root.querySelector('#' + a.getAttribute('data-sec'));
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        track('wholesaler_nav_click', { section: a.getAttribute('data-sec') });
+      }
+    });
+  });
+  function updateActive() {
+    var current = '';
+    sideLinks.forEach(function (a) {
+      var sec = root.querySelector('#' + a.getAttribute('data-sec'));
+      if (sec && sec.getBoundingClientRect().top < window.innerHeight * 0.4) {
+        current = a.getAttribute('data-sec');
+      }
+    });
+    sideLinks.forEach(function (a) {
+      a.classList.toggle('active', a.getAttribute('data-sec') === current);
+    });
+  }
+  window.addEventListener('scroll', updateActive, { passive: true });
+  updateActive();
+
+  /* ---- FAQ ---- */
+  root.querySelectorAll('.faq-item').forEach(function (item) {
+    var q = item.querySelector('.faq-q');
+    q.addEventListener('click', function () {
+      var open = item.classList.toggle('open');
+      if (open) {
+        var label = q.querySelector('span');
+        track('wholesaler_faq_open', { question: label ? label.textContent : '' });
+      }
+    });
+  });
+
+  /* ---- CTA TRACKING ---- */
+  root.querySelectorAll('.cta-apply').forEach(function (a) {
+    a.addEventListener('click', function () { track('wholesaler_cta_click', {}); });
+  });
+
+})();
+</script>
+
