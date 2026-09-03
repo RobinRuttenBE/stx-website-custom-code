@@ -1,0 +1,257 @@
+<!-- ================ NEWSLETTER BLOK ================ -->
+
+<!-- ============================================================
+     STX EU / NEWSLETTER SIGNUP (v1)
+     Injectiepatroon identiek aan de andere secties:
+     wordt door de section loader geladen op /newsletter.
+
+     - Hero met gehighlighte titel + signup form (first name + email)
+     - Front-end validatie; nog GEEN backend koppeling (Brevo/Odoo
+       lijst). Bij submit toont hij nu enkel de bevestiging.
+     - Engelstalig (klantcommunicatie = Engels), geen i18n.
+
+     Guard: toont alleen op paginas eindigend op /newsletter.
+     Lokaal previewen: bestand gewoon openen.
+     ============================================================ -->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rethink+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,700&display=swap" rel="stylesheet">
+
+<style>
+  .stx-news {
+    --purple: #6b3fb9;
+    --purple-light: #f1d9ff;
+    --purple-bg: #faf4ff;
+    --dark: #1b073d;
+    --yellow: #ffdb5a;
+    --paper: #fefcfa;
+
+    font-family: "Rethink Sans", sans-serif;
+    background: var(--paper);
+    color: var(--dark);
+    font-size: 17px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  .stx-news *, .stx-news *::before, .stx-news *::after { box-sizing: border-box; }
+
+  .stx-news .wrap {
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: clamp(64px, 9vw, 120px) 40px;
+    text-align: center;
+  }
+
+  .stx-news h1 {
+    font-size: clamp(40px, 6.5vw, 76px);
+    font-weight: 800;
+    line-height: 1.02;
+    letter-spacing: -0.03em;
+    margin: 0 auto 28px;
+    max-width: 22ch;
+    position: relative;
+    isolation: isolate;
+  }
+  .stx-news .hl {
+    position: relative;
+    padding: 0 0.15em;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+  }
+  .stx-news .hl::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0.08em;
+    bottom: 0.02em;
+    background: var(--yellow);
+    z-index: -1;
+  }
+  .stx-news .lede {
+    font-size: 22px;
+    font-weight: 500;
+    line-height: 1.45;
+    max-width: 720px;
+    margin: 0 auto 40px;
+  }
+
+  .stx-news .signup {
+    background: var(--purple-bg);
+    border: 2px solid var(--purple-light);
+    border-radius: 14px;
+    padding: 28px;
+    max-width: 720px;
+    margin: 0 auto;
+    text-align: left;
+  }
+  .stx-news .row {
+    display: flex;
+    gap: 10px;
+  }
+  .stx-news .field {
+    flex: 1;
+    min-width: 0;
+  }
+  .stx-news .field label {
+    display: block;
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .stx-news .req { color: var(--purple); font-weight: 800; }
+  .stx-news .field input {
+    width: 100%;
+    font: inherit;
+    font-size: 17px;
+    padding: 14px 16px;
+    border: 2px solid var(--dark);
+    border-radius: 8px;
+    background: #fff;
+    color: var(--dark);
+  }
+  .stx-news .field input:focus {
+    outline: 3px solid var(--purple);
+    outline-offset: 2px;
+  }
+  .stx-news .field input.invalid { border-color: #cd0b5c; }
+  .stx-news .error {
+    display: none;
+    color: #cd0b5c;
+    font-size: 14px;
+    font-weight: 600;
+    margin: 12px 0 0;
+  }
+  .stx-news .signup.show-error .error { display: block; }
+  .stx-news .btn-wrap {
+    display: flex;
+    align-items: flex-end;
+  }
+  .stx-news .btn {
+    font: inherit;
+    font-size: 17px;
+    font-weight: 800;
+    padding: 14px 28px;
+    border: 2px solid var(--dark);
+    border-radius: 8px;
+    background: var(--yellow);
+    color: var(--dark);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.15s, color 0.15s;
+  }
+  .stx-news .btn:hover { background: var(--dark); color: var(--yellow); }
+  .stx-news .btn:focus-visible { outline: 3px solid var(--purple); outline-offset: 2px; }
+  .stx-news .fine {
+    font-size: 14px;
+    margin: 14px 0 0;
+    opacity: 0.75;
+  }
+  .stx-news .done {
+    display: none;
+    font-size: 20px;
+    font-weight: 700;
+    margin: 0;
+  }
+  .stx-news .done small {
+    display: block;
+    font-size: 15px;
+    font-weight: 400;
+    margin-top: 6px;
+    opacity: 0.8;
+  }
+  .stx-news .signup.sent form { display: none; }
+  .stx-news .signup.sent .done { display: block; }
+
+  @media (max-width: 720px) {
+    .stx-news .wrap { padding: 40px 22px 64px; }
+    .stx-news .row { flex-direction: column; }
+    .stx-news .signup { padding: 20px; }
+    .stx-news .btn { width: 100%; }
+  }
+</style>
+
+<div class="stx-news" id="stx-news-root">
+  <div class="wrap">
+
+    <h1>Get on the mailing list for new techniques, insights and <span class="hl">balloon news</span></h1>
+    <p class="lede">Join 5000+ balloon artists, decorators, shops and wholesalers who are already receiving exclusives every week.</p>
+
+    <div class="signup" id="stx-news-form">
+      <form novalidate>
+        <div class="row">
+          <div class="field">
+            <label for="stx-news-fname">First name <span class="req" aria-hidden="true">*</span></label>
+            <input id="stx-news-fname" type="text" placeholder="Your first name" required autocomplete="given-name">
+          </div>
+          <div class="field">
+            <label for="stx-news-email">Email <span class="req" aria-hidden="true">*</span></label>
+            <input id="stx-news-email" type="email" placeholder="name@yourstudio.com" required autocomplete="email">
+          </div>
+          <div class="btn-wrap">
+            <button class="btn" type="submit">Subscribe</button>
+          </div>
+        </div>
+      </form>
+      <p class="error">Fill in your first name and a valid email address to subscribe.</p>
+      <p class="done">You're on the list.<small>Check your spam folder if the welcome email is missing.</small></p>
+      <p class="fine">Unsubscribe with one click at the bottom of any email.</p>
+    </div>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ---- GUARD ---- */
+  var PAGE_PATHS = ['/newsletter'];
+  var allRoots = document.querySelectorAll('#stx-news-root');
+  var root = allRoots[0];
+  var isSaved = allRoots.length > 1;
+  for (var ri = 1; ri < allRoots.length; ri++) {
+    if (allRoots[ri].parentNode) { allRoots[ri].parentNode.removeChild(allRoots[ri]); }
+  }
+  if (!root) { return; }
+  var isFile = window.location.protocol === 'file:';
+  var p = (window.location.pathname || '').replace(/\/+$/, '');
+  var onPage = PAGE_PATHS.some(function (pp) { return p.slice(-pp.length) === pp; });
+  if (!isFile && !onPage) {
+    if (root.parentNode) { root.parentNode.removeChild(root); }
+    return;
+  }
+
+  /* ---- POSITIONERING: content boven de Odoo footer plaatsen
+     (alleen bij verse injectie, de saved kopie staat al op zijn plek) ---- */
+  if (!isFile && !isSaved) {
+    var mount = document.getElementById('wrap') || document.querySelector('main');
+    if (mount) { mount.appendChild(root); }
+    else {
+      var foot = document.querySelector('footer');
+      if (foot && foot.parentNode) { foot.parentNode.insertBefore(root, foot); }
+    }
+  }
+
+  /* ---- FORM ---- */
+  var box = root.querySelector('#stx-news-form');
+  var form = box.querySelector('form');
+  var name = root.querySelector('#stx-news-fname');
+  var email = root.querySelector('#stx-news-email');
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var ok = true;
+    [name, email].forEach(function (f) { f.classList.remove('invalid'); });
+    if (!name.value.trim()) { name.classList.add('invalid'); ok = false; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim())) { email.classList.add('invalid'); ok = false; }
+    if (!ok) { box.classList.add('show-error'); return; }
+    box.classList.remove('show-error');
+    /* TODO: hier de echte inschrijving koppelen (Brevo lijst / Odoo
+       mailing list) voor de bevestiging getoond wordt. */
+    box.classList.add('sent');
+  });
+})();
+</script>
+<!-- ================ EINDE NEWSLETTER BLOK ================ -->
