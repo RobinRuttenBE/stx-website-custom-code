@@ -1,0 +1,494 @@
+<!-- ================ NEWSLETTER BLOK ================ -->
+
+<!-- ============================================================
+     STX EU / NEWSLETTER SIGNUP (v4)
+     Injectiepatroon identiek aan de andere secties:
+     wordt door de section loader geladen op /newsletter.
+
+     v4 changes:
+     - Verplicht veld "Preferred language" (NL/EN/FR/DE),
+       voorgeselecteerd op de paginataal. De keuze bepaalt in
+       welke taal-sublijst het contact EXTRA terechtkomt
+       (CONFIG.langLists), naast de hoofdlijst. Alle lijsten
+       moeten publiek staan in Odoo.
+     v3:
+     - Viertalig via het data-i18n patroon van de family tree:
+       markup in het NL (Odoo standaardtaal), vertalingen voor
+       en (/en_GB), fr (/fr) en de (/de) in de I18N dict.
+       Ook placeholders, knoptekst en foutmeldingen vertalen mee.
+     v2:
+     - Echte inschrijving via Odoo: POST naar
+       /website/form/mailing.contact (zelfde mechanisme als het
+       wholesaler formulier) met voornaam + email + lijst-id.
+       Inschrijvingen komen in Email Marketing > Mailinglijsten
+       (lijst 2 = "Sign-up Page", moet publiek staan!),
+       NIET tussen de CRM leads.
+     - Fallback: /website_mass_mailing/subscribe (alleen email)
+       als het form-endpoint faalt.
+     - Nette states: bezig / gelukt / mislukt, knop disabled
+       tijdens verzenden.
+     - PostHog events (newsletter_subscribe / _failed) als
+       posthog op de pagina aanwezig is.
+
+     Guard: toont alleen op paginas eindigend op /newsletter.
+     Lokaal previewen: bestand gewoon openen (submit toont dan
+     direct de bevestiging, zonder netwerk).
+     ============================================================ -->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rethink+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,700&display=swap" rel="stylesheet">
+
+<style>
+  .stx-news {
+    --purple: #6b3fb9;
+    --purple-light: #f1d9ff;
+    --purple-bg: #faf4ff;
+    --dark: #1b073d;
+    --yellow: #ffdb5a;
+    --paper: #fefcfa;
+
+    font-family: "Rethink Sans", sans-serif;
+    background: var(--paper);
+    color: var(--dark);
+    font-size: 17px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  .stx-news *, .stx-news *::before, .stx-news *::after { box-sizing: border-box; }
+
+  .stx-news .wrap {
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: clamp(64px, 9vw, 120px) 40px;
+    text-align: center;
+  }
+
+  .stx-news h1 {
+    font-size: clamp(40px, 6.5vw, 76px);
+    font-weight: 800;
+    line-height: 1.02;
+    letter-spacing: -0.03em;
+    margin: 0 auto 28px;
+    max-width: 22ch;
+    position: relative;
+    isolation: isolate;
+  }
+  .stx-news .hl {
+    position: relative;
+    padding: 0 0.15em;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+  }
+  .stx-news .hl::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0.08em;
+    bottom: 0.02em;
+    background: var(--yellow);
+    z-index: -1;
+  }
+  .stx-news .lede {
+    font-size: 22px;
+    font-weight: 500;
+    line-height: 1.45;
+    max-width: 720px;
+    margin: 0 auto 40px;
+  }
+
+  .stx-news .signup {
+    background: var(--purple-bg);
+    border: 2px solid var(--purple-light);
+    border-radius: 14px;
+    padding: 28px;
+    max-width: 720px;
+    margin: 0 auto;
+    text-align: left;
+  }
+  .stx-news .row {
+    display: flex;
+    gap: 10px;
+  }
+  .stx-news .field {
+    flex: 1;
+    min-width: 0;
+  }
+  .stx-news .field label {
+    display: block;
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .stx-news .req { color: var(--purple); font-weight: 800; }
+  .stx-news .field input {
+    width: 100%;
+    font: inherit;
+    font-size: 17px;
+    padding: 14px 16px;
+    border: 2px solid var(--dark);
+    border-radius: 8px;
+    background: #fff;
+    color: var(--dark);
+  }
+  .stx-news .field input:focus {
+    outline: 3px solid var(--purple);
+    outline-offset: 2px;
+  }
+  .stx-news .field input.invalid { border-color: #cd0b5c; }
+  .stx-news .field select {
+    width: 100%;
+    font: inherit;
+    font-size: 17px;
+    padding: 14px 16px;
+    border: 2px solid var(--dark);
+    border-radius: 8px;
+    background: #fff;
+    color: var(--dark);
+    cursor: pointer;
+  }
+  .stx-news .field select:focus {
+    outline: 3px solid var(--purple);
+    outline-offset: 2px;
+  }
+  .stx-news .row + .row { margin-top: 10px; }
+  .stx-news .error,
+  .stx-news .error-send {
+    display: none;
+    color: #cd0b5c;
+    font-size: 14px;
+    font-weight: 600;
+    margin: 12px 0 0;
+  }
+  .stx-news .signup.show-error .error { display: block; }
+  .stx-news .signup.show-send-error .error-send { display: block; }
+  .stx-news .btn-wrap {
+    display: flex;
+    align-items: flex-end;
+  }
+  .stx-news .btn {
+    font: inherit;
+    font-size: 17px;
+    font-weight: 800;
+    padding: 14px 28px;
+    border: 2px solid var(--dark);
+    border-radius: 8px;
+    background: var(--yellow);
+    color: var(--dark);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.15s, color 0.15s;
+  }
+  .stx-news .btn:hover { background: var(--dark); color: var(--yellow); }
+  .stx-news .btn:focus-visible { outline: 3px solid var(--purple); outline-offset: 2px; }
+  .stx-news .btn:disabled { opacity: 0.6; cursor: wait; }
+  .stx-news .fine {
+    font-size: 14px;
+    margin: 14px 0 0;
+    opacity: 0.75;
+  }
+  .stx-news .done {
+    display: none;
+    font-size: 20px;
+    font-weight: 700;
+    margin: 0;
+  }
+  .stx-news .done small {
+    display: block;
+    font-size: 15px;
+    font-weight: 400;
+    margin-top: 6px;
+    opacity: 0.8;
+  }
+  .stx-news .signup.sent form { display: none; }
+  .stx-news .signup.sent .fine { display: none; }
+  .stx-news .signup.sent .done { display: block; }
+
+  @media (max-width: 720px) {
+    .stx-news .wrap { padding: 40px 22px 64px; }
+    .stx-news .row { flex-direction: column; }
+    .stx-news .signup { padding: 20px; }
+    .stx-news .btn { width: 100%; }
+  }
+</style>
+
+<div class="stx-news" id="stx-news-root">
+  <div class="wrap">
+
+    <h1 data-i18n="h1">Zet je op de mailinglijst voor nieuwe technieken, inzichten en <span class="hl">ballonnieuws</span></h1>
+    <p class="lede" data-i18n="lede">Sluit je aan bij 5000+ ballonartiesten, decorateurs, winkels en groothandels die elke week exclusieve updates ontvangen.</p>
+
+    <div class="signup" id="stx-news-form">
+      <form novalidate>
+        <div class="row">
+          <div class="field">
+            <label for="stx-news-fname"><span data-i18n="lbl_fname">Voornaam</span> <span class="req" aria-hidden="true">*</span></label>
+            <input id="stx-news-fname" type="text" placeholder="Je voornaam" required autocomplete="given-name">
+          </div>
+          <div class="field">
+            <label for="stx-news-email"><span data-i18n="lbl_email">E-mail</span> <span class="req" aria-hidden="true">*</span></label>
+            <input id="stx-news-email" type="email" placeholder="naam@jouwstudio.com" required autocomplete="email">
+          </div>
+        </div>
+        <div class="row">
+          <div class="field">
+            <label for="stx-news-lang"><span data-i18n="lbl_lang">Voorkeurstaal</span> <span class="req" aria-hidden="true">*</span></label>
+            <select id="stx-news-lang" required>
+              <option value="nl">Nederlands</option>
+              <option value="en">English</option>
+              <option value="fr">Fran&ccedil;ais</option>
+              <option value="de">Deutsch</option>
+            </select>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn" type="submit" data-i18n="btn">Inschrijven</button>
+          </div>
+        </div>
+      </form>
+      <p class="error" data-i18n="err_fields">Vul je voornaam en een geldig e-mailadres in om je in te schrijven.</p>
+      <p class="error-send" data-i18n="err_send">Er ging iets mis aan onze kant. Probeer het over een minuutje opnieuw.</p>
+      <p class="done"><span data-i18n="done_h">Je staat op de lijst.</span><small data-i18n="done_s">Binnen 7 dagen valt je eerste mail in je mailbox, check je promo- of spamfolder als je hem niet vindt.</small></p>
+      <p class="fine" data-i18n="fine">Uitschrijven kan met &eacute;&eacute;n klik onderaan elke mail.</p>
+    </div>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ==========================================================
+     CONFIG: id van de Odoo mailinglijst waar inschrijvingen in
+     terechtkomen. Te vinden in Odoo: Email Marketing >
+     Mailinglijsten > open de lijst > het getal in de URL.
+     Lijst 2 = "Sign-up Page" (moet publiek staan).
+     langLists: per voorkeurstaal het id van de taal-sublijst.
+     Het contact komt in de hoofdlijst EN in de taallijst.
+     Alle taallijsten moeten OOK publiek staan in Odoo.
+     Een id van 0 = die taallijst overslaan.
+     ========================================================== */
+  var CONFIG = {
+    listId: 2,
+    langLists: { nl: 0, en: 0, fr: 0, de: 0 }
+  };
+
+  /* ---- I18N: NL staat in de markup (standaardtaal), de dicts
+     hieronder vertalen alles voor /en_GB, /fr en /de. ---- */
+  var I18N = {
+    en: {
+      h1: 'Get on the mailing list for new techniques, insights and <span class="hl">balloon news</span>',
+      lede: 'Join 5000+ balloon artists, decorators, shops and wholesalers who are already receiving exclusives every week.',
+      lbl_fname: 'First name',
+      ph_fname: 'Your first name',
+      lbl_email: 'Email',
+      ph_email: 'name@yourstudio.com',
+      lbl_lang: 'Preferred language',
+      btn: 'Subscribe',
+      btn_busy: 'Subscribing…',
+      err_fields: 'Fill in your first name and a valid email address to subscribe.',
+      err_send: 'Something went wrong on our side. Please try again in a minute.',
+      done_h: "You're on the list.",
+      done_s: "You'll see your first email pop up within 7 days, check your promo or spam folder if you can't find it.",
+      fine: 'Unsubscribe with one click at the bottom of any email.'
+    },
+    fr: {
+      h1: 'Inscrivez-vous à la mailing list pour les nouvelles techniques, les insights et <span class="hl">l’actu ballon</span>',
+      lede: 'Rejoignez plus de 5000 artistes ballon, décorateurs, boutiques et grossistes qui reçoivent déjà nos exclusivités chaque semaine.',
+      lbl_fname: 'Prénom',
+      ph_fname: 'Votre prénom',
+      lbl_email: 'Email',
+      ph_email: 'nom@votrestudio.com',
+      lbl_lang: 'Langue préférée',
+      btn: 'S’inscrire',
+      btn_busy: 'Inscription…',
+      err_fields: 'Indiquez votre prénom et une adresse email valide pour vous inscrire.',
+      err_send: 'Un problème est survenu de notre côté. Réessayez dans une minute.',
+      done_h: 'Vous êtes sur la liste.',
+      done_s: 'Votre premier email arrivera dans les 7 jours, vérifiez votre dossier promotions ou spam si vous ne le trouvez pas.',
+      fine: 'Désinscription en un clic en bas de chaque email.'
+    },
+    de: {
+      h1: 'Komm auf die Mailingliste für neue Techniken, Insights und <span class="hl">Ballon-News</span>',
+      lede: 'Schließe dich 5000+ Ballonkünstlern, Dekorateuren, Shops und Großhändlern an, die schon jede Woche Exklusives erhalten.',
+      lbl_fname: 'Vorname',
+      ph_fname: 'Dein Vorname',
+      lbl_email: 'E-Mail',
+      ph_email: 'name@deinstudio.com',
+      lbl_lang: 'Bevorzugte Sprache',
+      btn: 'Anmelden',
+      btn_busy: 'Wird gesendet…',
+      err_fields: 'Gib deinen Vornamen und eine gültige E-Mail-Adresse an, um dich anzumelden.',
+      err_send: 'Bei uns ist etwas schiefgelaufen. Versuch es in einer Minute noch einmal.',
+      done_h: 'Du stehst auf der Liste.',
+      done_s: 'Deine erste E-Mail kommt innerhalb von 7 Tagen, schau im Promo- oder Spam-Ordner nach, falls du sie nicht findest.',
+      fine: 'Abmelden geht mit einem Klick unten in jeder E-Mail.'
+    }
+  };
+  /* NL knopteksten (markup is al NL, alleen JS heeft deze nodig) */
+  var NL = { btn: 'Inschrijven', btn_busy: 'Bezig…', ph_fname: 'Je voornaam', ph_email: 'naam@jouwstudio.com' };
+
+  /* ---- GUARD ---- */
+  var PAGE_PATHS = ['/newsletter'];
+  var allRoots = document.querySelectorAll('#stx-news-root');
+  var root = allRoots[0];
+  var isSaved = allRoots.length > 1;
+  for (var ri = 1; ri < allRoots.length; ri++) {
+    if (allRoots[ri].parentNode) { allRoots[ri].parentNode.removeChild(allRoots[ri]); }
+  }
+  if (!root) { return; }
+  var isFile = window.location.protocol === 'file:';
+  var p = (window.location.pathname || '').replace(/\/+$/, '');
+  var onPage = PAGE_PATHS.some(function (pp) { return p.slice(-pp.length) === pp; });
+  if (!isFile && !onPage) {
+    if (root.parentNode) { root.parentNode.removeChild(root); }
+    return;
+  }
+
+  /* ---- POSITIONERING: content boven de Odoo footer plaatsen
+     (alleen bij verse injectie, de saved kopie staat al op zijn plek) ---- */
+  if (!isFile && !isSaved) {
+    var mount = document.getElementById('wrap') || document.querySelector('main');
+    if (mount) { mount.appendChild(root); }
+    else {
+      var foot = document.querySelector('footer');
+      if (foot && foot.parentNode) { foot.parentNode.insertBefore(root, foot); }
+    }
+  }
+
+  /* ---- TAAL (zelfde logica als de family tree: eerste padsegment,
+     geen taalprefix = standaardtaal van de site = Nederlands) ---- */
+  var seg = (p.split('/')[1] || '').toLowerCase();
+  function langFrom(s) {
+    if (s === 'en' || s.indexOf('en_') === 0 || s.indexOf('en-') === 0) return 'en';
+    if (s === 'de' || s.indexOf('de_') === 0 || s.indexOf('de-') === 0) return 'de';
+    if (s === 'fr' || s.indexOf('fr_') === 0 || s.indexOf('fr-') === 0) return 'fr';
+    return 'nl';
+  }
+  var lang = isFile ? 'nl' : langFrom(seg);
+  var STR = I18N[lang] || NL;
+
+  var name = root.querySelector('#stx-news-fname');
+  var email = root.querySelector('#stx-news-email');
+  var langSel = root.querySelector('#stx-news-lang');
+
+  /* Voorkeurstaal voorselecteren op de paginataal */
+  langSel.value = lang;
+
+  if (I18N[lang]) {
+    [].slice.call(root.querySelectorAll('[data-i18n]')).forEach(function (el) {
+      var k = el.getAttribute('data-i18n');
+      if (STR[k]) { el.innerHTML = STR[k]; }
+    });
+    name.setAttribute('placeholder', STR.ph_fname);
+    email.setAttribute('placeholder', STR.ph_email);
+  } else {
+    STR = NL;
+  }
+
+  /* ---- TRACKING (stil als posthog er niet is) ---- */
+  function track(ev, props) {
+    try { if (window.posthog && window.posthog.capture) { window.posthog.capture(ev, props || {}); } } catch (e) { /* stil */ }
+  }
+
+  /* ---- FORM ---- */
+  var box = root.querySelector('#stx-news-form');
+  var form = box.querySelector('form');
+  var btn = box.querySelector('.btn');
+  var busy = false;
+
+  function done() {
+    box.classList.remove('show-send-error');
+    box.classList.add('sent');
+    track('newsletter_subscribe', { lang: lang, preferred_language: langSel.value });
+  }
+  function fail(status) {
+    busy = false;
+    btn.disabled = false;
+    btn.textContent = STR.btn;
+    box.classList.add('show-send-error');
+    track('newsletter_subscribe_failed', { status: status, lang: lang });
+  }
+
+  /* Primair: Odoo website form endpoint op mailing.contact.
+     Slaat voornaam EN email op in de mailinglijst (Email
+     Marketing > Mailinglijsten), niet tussen de CRM leads.
+     Zelfde mechanisme als het wholesaler formulier. */
+  function sendViaForm(nm, em, pref) {
+    var fd = new FormData();
+    fd.append('name', nm);
+    fd.append('email', em);
+    var lists = [CONFIG.listId];
+    if (CONFIG.langLists[pref]) { lists.push(CONFIG.langLists[pref]); }
+    fd.append('list_ids', lists.join(','));
+    if (window.odoo && window.odoo.csrf_token) { fd.append('csrf_token', window.odoo.csrf_token); }
+    return fetch('/website/form/mailing.contact', { method: 'POST', body: fd })
+      .then(function (r) {
+        if (!r.ok) { throw r.status; }
+        return r.json().catch(function () { return {}; });
+      })
+      .then(function (d) {
+        /* Odoo antwoordt 200 met {"id": n} bij succes; een 200 met
+           een error-payload betekent alsnog mislukt. */
+        if (d && d.error) { throw 200; }
+        return true;
+      });
+  }
+
+  /* Fallback: het klassieke subscribe endpoint van de Odoo
+     newsletter snippet. Slaat alleen het emailadres op.
+     Param-namen van Odoo 15 en 16+ allebei meesturen. */
+  function sendViaSubscribe(em) {
+    return fetch('/website_mass_mailing/subscribe', {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ jsonrpc: '2.0', method: 'call', params: {
+        list_id: CONFIG.listId,
+        value: em, subscription_type: 'email',
+        email: em
+      }})
+    }).then(function (r) {
+      if (!r.ok) { throw r.status; }
+      return r.json();
+    }).then(function (d) {
+      if (!d || d.error || (d.result && d.result.toast_type === 'danger')) { throw 200; }
+      return true;
+    });
+  }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (busy) { return; }
+
+    var ok = true;
+    [name, email].forEach(function (f) { f.classList.remove('invalid'); });
+    if (!name.value.trim()) { name.classList.add('invalid'); ok = false; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim())) { email.classList.add('invalid'); ok = false; }
+    if (!ok) { box.classList.add('show-error'); return; }
+    box.classList.remove('show-error');
+    box.classList.remove('show-send-error');
+
+    /* Lokale preview: geen Odoo, dus meteen de bevestiging tonen */
+    if (isFile) { done(); return; }
+
+    busy = true;
+    btn.disabled = true;
+    btn.textContent = STR.btn_busy;
+
+    var nm = name.value.trim();
+    var em = email.value.trim();
+    var pref = langSel.value || lang;
+    sendViaForm(nm, em, pref)
+      .then(done)
+      .catch(function () {
+        sendViaSubscribe(em)
+          .then(done)
+          .catch(function (status) { fail(typeof status === 'number' ? status : 0); });
+      });
+  });
+})();
+</script>
+<!-- ================ EINDE NEWSLETTER BLOK ================ -->
