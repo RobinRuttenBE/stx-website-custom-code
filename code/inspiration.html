@@ -205,6 +205,8 @@
   .stx-insp .pal-card h4 { font-size: clamp(13.5px, 1.05vw, 16px); font-weight: 800; line-height: 1.25; letter-spacing: -0.01em; }
   .stx-insp .pal-card ul { list-style: none; }
   .stx-insp .pal-card ul li { position: relative; padding: 2px 0 2px 14px; font-size: clamp(12px, 0.9vw, 13.5px); }
+  .stx-insp .pal-card ul li a.js-shop { color: inherit; text-decoration: none; border-bottom: 1px dotted var(--purple); transition: color 0.15s ease, border-color 0.15s ease; }
+  .stx-insp .pal-card ul li a.js-shop:hover { color: var(--purple); border-bottom-style: solid; }
   .stx-insp .pal-card ul li::before { content: ""; position: absolute; left: 0; top: 9px; width: 6px; height: 6px; background: var(--purple); }
   .stx-insp .pal-card .btn-y { margin-top: auto; align-self: flex-start; font-size: clamp(12px, 0.95vw, 13px); padding: clamp(8px, 0.8vw, 10px) clamp(13px, 1.3vw, 18px); }
 
@@ -706,6 +708,18 @@ document.addEventListener('DOMContentLoaded', function () {
   var STR = I18N[lang];
   function t(v) { if (typeof v === 'string') return v; return v[lang] || v.en || v.nl || ''; }
   function esc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+  // Kleurcode (3 cijfers) -> Odoo shop-categorie id. Het id-only pad
+  // (/shop/category/<id>) stuurt zelf door naar de vertaalde slug.
+  var SHOP_CAT = {"005":3836, "006":4076, "008":4086, "009":3837, "010":3838, "011":3839, "012":3840, "013":4085, "014":3841, "015":3842, "016":3843, "018":3844, "020":3845, "021":3846, "023":3847, "027":3848, "029":3849, "030":3850, "031":3851, "032":3852, "035":3853, "037":3854, "038":3855, "040":3856, "041":3857, "042":3858, "044":3859, "050":3860, "051":3861, "056":3862, "058":4077, "059":3863, "060":3864, "061":3865, "062":3866, "070":3867, "071":3868, "073":3869, "074":3870, "076":3871, "080":3872, "081":3873, "082":4078, "107":3875, "110":3876, "126":3877, "127":3878, "140":3879, "150":3880, "212":3882, "220":3883, "230":3884, "240":3885, "261":3886, "390":3887, "405":3889, "406":3890, "409":3891, "430":3892, "440":3893, "450":3894, "481":3895, "512":3897, "515":3898, "530":3899, "540":3900, "568":3901, "570":3902, "580":3903, "609":3905, "620":3906, "630":3907, "640":3908, "650":3909, "660":3910, "661":3911, "663":3912, "806":3914, "809":3915, "826":3916, "839":3917, "850":3918, "870":3919, "873":3920, "880":3921, "909":3923, "912":3924, "915":3925, "931":3926, "932":3927, "940":3928, "944":3929, "951":3930, "968":3931, "970":3932, "971":3933, "981":3934};
+  var shopPrefix = (lang !== 'nl') ? '/' + seg : '';
+  function shopUrl(code) { return SHOP_CAT[code] ? shopPrefix + '/shop/category/' + SHOP_CAT[code] : ''; }
+  // Bullet 'Fashion Candy Pink 008' -> klikbare link naar die kleur in de shop.
+  function bulletInner(b) {
+    var mm = /(\d{3})\s*$/.exec(b || '');
+    var url = mm ? shopUrl(mm[1]) : '';
+    if (!url) { return esc(b); }
+    return '<a class="js-shop" href="' + url + '" target="_blank" rel="noopener" data-code="' + mm[1] + '">' + esc(b) + '</a>';
+  }
 
   // Statische teksten: in de standaardtaal (nl) is de opgeslagen builder
   // versie de bron van waarheid (team edits blijven staan). Op alle
@@ -926,7 +940,7 @@ document.addEventListener('DOMContentLoaded', function () {
       var img = pl.img
         ? '<div class="pal-img"><img loading="lazy" src="' + pl.img + '" alt=""></div>'
         : '<div class="pal-img"><span class="ph-label">' + STR.img_ph + '</span></div>';
-      var bullets = (t(pl.bullets) || []).map(function (b) { return '<li>' + esc(b) + '</li>'; }).join('');
+      var bullets = (t(pl.bullets) || []).map(function (b) { return '<li>' + bulletInner(b) + '</li>'; }).join('');
       var btn = pl.img ? '<a class="btn-y js-dl" href="' + pl.img + '" download>' + STR.dl_btn + '</a>' : '';
       return '<div class="pal-card" data-pal="' + fileOf(pl.img) + '">' + img
         + '<div class="card-body"><h4>' + esc(t(pl.title)) + '</h4><ul>' + bullets + '</ul>' + btn + '</div></div>';
@@ -950,6 +964,9 @@ document.addEventListener('DOMContentLoaded', function () {
       if (imEl) { imEl.setAttribute('src', pl.img); }
       var btn = card.querySelector('a.js-dl');
       if (btn) { btn.setAttribute('href', pl.img); }
+      Array.prototype.slice.call(card.querySelectorAll('ul li')).forEach(function (li) {
+        if (!li.querySelector('a')) { li.innerHTML = bulletInner(li.textContent); }
+      });
     });
     CONFIG.palettes.forEach(function (pl) {
       var key = fileOf(pl.img);
@@ -1297,6 +1314,8 @@ document.addEventListener('DOMContentLoaded', function () {
     if (vid) { track('video_click', { url: vid.getAttribute('href') || '' }); }
     var igp = e.target.closest ? e.target.closest('#insta-track a') : null;
     if (igp) { track('instagram_click', {}); }
+    var shop = e.target.closest ? e.target.closest('a.js-shop') : null;
+    if (shop) { track('palette_shop_click', { colour: shop.getAttribute('data-code') || '' }); return; }
     var zip = e.target.closest ? e.target.closest('a[download]') : null;
     if (zip && !zip.classList.contains('js-dl')) {
       track('inspiration_download', { file: (zip.getAttribute('href') || '').split('/').pop() });
