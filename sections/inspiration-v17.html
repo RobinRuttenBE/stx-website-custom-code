@@ -350,6 +350,9 @@
   }
   .stx-cc .cc-chip:hover { transform: scale(1.06); box-shadow: var(--glow); }
   .stx-cc .cc-chip.cc-add { background: var(--dark); color: var(--yellow); border-color: var(--dark); }
+  .stx-cc .cc-chip.cc-cart { background: var(--yellow); color: var(--dark); border-color: var(--yellow); }
+  .stx-cc .cc-chip.cc-cart[disabled] { opacity: 0.6; cursor: wait; transform: none; box-shadow: none; }
+  .stx-cc .cc-toast a { color: var(--yellow); font-weight: 800; text-decoration: underline; margin-left: 8px; }
   .stx-cc .cc-pct { display: inline-flex; align-items: center; gap: 6px; }
   .stx-cc .cc-pct .cc-in { width: 64px; padding: 5px 8px; }
 
@@ -684,6 +687,7 @@
           </div>
           <div class="cc-sheet-foot">
             <button class="cc-chip cc-add" type="button" id="cc-mat-add" data-i18n="cc_mat_add">+ Add line</button>
+            <button class="cc-chip cc-cart" type="button" id="cc-cart-all" hidden data-i18n="cc_btn_cart">Add all to cart</button>
             <span style="font-size:12.5px;color:var(--ink-soft);font-weight:600;margin-left:4px" id="cc-cat-note"></span>
           </div>
         </div>
@@ -693,6 +697,7 @@
       <section class="cc-block" id="cc-block-time">
         <div class="cc-ghost">02</div>
         <h2 data-i18n="cc_time_h">Time and overhead</h2>
+        <p class="cc-hint"><span data-i18n="cc_time_hint">Your hourly rate, your rate per km and your fixed monthly costs come from your settings. Set them once, they are used here on every job.</span> <button class="cc-chip" type="button" id="cc-time-settings" data-i18n="cc_btn_open_settings">Open settings</button></p>
         <div class="cc-sheet">
           <div class="cc-row cc-head cc-tim">
             <div data-i18n="cc_col_task">Task</div>
@@ -1278,6 +1283,15 @@
       cc_cat_note_live: '{n} Sempertex products in the catalogue.',
       cc_pack_note: '{p} per pack of {n}',
       cc_ac_none: 'No match. Keep typing to use your own item.',
+      cc_time_hint: 'Your hourly rate, your rate per km and your fixed monthly costs come from your settings. Set them once, they are used here on every job.',
+      cc_btn_open_settings: 'Open settings',
+      cc_btn_cart: 'Add all to cart',
+      cc_cart_busy: 'Adding {i} of {n} to your cart...',
+      cc_cart_done: '{l} items, {n} packs added to your cart.',
+      cc_cart_skipped: '{n} own items skipped (not in the shop).',
+      cc_cart_failed: 'Could not add: {names}.',
+      cc_cart_view: 'View cart',
+      cc_cart_none: 'Pick items from the catalogue first.',
       cc_fin_margin: 'Margin above your cost price',
       cc_leg_keep: 'Yours: hours + margin',
       cc_keep_hint: 'Only real expenses come off: materials, overhead and km. Your hours are money you earn.',
@@ -1452,6 +1466,15 @@
       cc_cat_note_live: '{n} Sempertex-Produkte im Katalog.',
       cc_pack_note: '{p} pro Packung von {n}',
       cc_ac_none: 'Kein Treffer. Tippe weiter, um deinen eigenen Artikel zu verwenden.',
+      cc_time_hint: 'Dein Stundensatz, dein Kilometersatz und deine festen Monatskosten kommen aus deinen Einstellungen. Einmal festlegen, sie gelten hier bei jedem Auftrag.',
+      cc_btn_open_settings: 'Einstellungen \u00f6ffnen',
+      cc_btn_cart: 'Alles in den Warenkorb',
+      cc_cart_busy: 'F\u00fcge {i} von {n} zum Warenkorb hinzu...',
+      cc_cart_done: '{l} Artikel, {n} Packungen in den Warenkorb gelegt.',
+      cc_cart_skipped: '{n} eigene Artikel \u00fcbersprungen (nicht im Shop).',
+      cc_cart_failed: 'Nicht hinzugef\u00fcgt: {names}.',
+      cc_cart_view: 'Warenkorb ansehen',
+      cc_cart_none: 'W\u00e4hle zuerst Artikel aus dem Katalog.',
       cc_fin_margin: 'Marge \u00fcber deinem Selbstkostenpreis',
       cc_leg_keep: 'F\u00fcr dich: Stunden + Marge',
       cc_keep_hint: 'Nur echte Ausgaben gehen ab: Material, Gemeinkosten und km. Deine Stunden sind Geld, das du verdienst.',
@@ -1626,6 +1649,15 @@
       cc_cat_note_live: '{n} produits Sempertex dans le catalogue.',
       cc_pack_note: '{p} par paquet de {n}',
       cc_ac_none: 'Aucun r\u00e9sultat. Continuez \u00e0 taper pour utiliser votre propre article.',
+      cc_time_hint: 'Votre taux horaire, votre tarif au km et vos frais fixes mensuels viennent de vos param\u00e8tres. R\u00e9glez-les une fois, ils s\u2019appliquent ici \u00e0 chaque mission.',
+      cc_btn_open_settings: 'Ouvrir les param\u00e8tres',
+      cc_btn_cart: 'Tout ajouter au panier',
+      cc_cart_busy: 'Ajout de {i} sur {n} au panier...',
+      cc_cart_done: '{l} articles, {n} paquets ajout\u00e9s au panier.',
+      cc_cart_skipped: '{n} articles personnels ignor\u00e9s (pas dans la boutique).',
+      cc_cart_failed: 'Impossible d\u2019ajouter : {names}.',
+      cc_cart_view: 'Voir le panier',
+      cc_cart_none: 'Choisissez d\u2019abord des articles du catalogue.',
       cc_fin_margin: 'Marge au-dessus de votre prix de revient',
       cc_leg_keep: 'Pour vous : heures + marge',
       cc_keep_hint: 'Seules les vraies d\u00e9penses sont d\u00e9duites : mat\u00e9riel, frais g\u00e9n\u00e9raux et km. Vos heures sont de l\'argent que vous gagnez.',
@@ -1800,6 +1832,15 @@
       cc_cat_note_live: '{n} Sempertex-producten in de catalogus.',
       cc_pack_note: '{p} per verpakking van {n}',
       cc_ac_none: 'Geen match. Typ verder om je eigen item te gebruiken.',
+      cc_time_hint: 'Je uurtarief, je tarief per km en je vaste maandkosten komen uit je instellingen. E\u00e9n keer instellen, ze gelden hier bij elke job.',
+      cc_btn_open_settings: 'Instellingen openen',
+      cc_btn_cart: 'Alles in de winkelmand',
+      cc_cart_busy: 'Bezig met {i} van {n} in de winkelmand...',
+      cc_cart_done: '{l} items, {n} verpakkingen in je winkelmand gezet.',
+      cc_cart_skipped: '{n} eigen items overgeslagen (niet in de shop).',
+      cc_cart_failed: 'Niet gelukt: {names}.',
+      cc_cart_view: 'Bekijk winkelmand',
+      cc_cart_none: 'Kies eerst items uit de catalogus.',
       cc_fin_margin: 'Marge boven je kostprijs',
       cc_leg_keep: 'Voor jou: uren + marge',
       cc_keep_hint: 'Alleen echte kosten gaan eraf: materiaal, overhead en km. Je uren zijn geld dat je verdient.',
@@ -2527,7 +2568,7 @@
   function clamp(n, lo, hi) { return Math.min(hi, Math.max(lo, n)); }
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
   function fmtDate(d) { if (!d) return ''; var loc = { nl: 'nl-BE', en: 'en-GB', de: 'de-DE', fr: 'fr-BE' }[lang] || 'en-GB'; return new Date(d).toLocaleDateString(loc, { day: 'numeric', month: 'long', year: 'numeric' }); }
-  function toast(msg) { var el = $('cc-toast'); el.textContent = msg; el.classList.add('cc-on'); clearTimeout(el._t); el._t = setTimeout(function () { el.classList.remove('cc-on'); }, 1800); }
+  function toast(msg, html, ms) { var el = $('cc-toast'); if (html) { el.innerHTML = msg; } else { el.textContent = msg; } el.classList.add('cc-on'); clearTimeout(el._t); el._t = setTimeout(function () { el.classList.remove('cc-on'); }, ms || 1800); }
   function persist() { save('stx_quote_draft', state); }
 
   /* ---------------- calculation (pure) ---------------- */
@@ -2603,7 +2644,8 @@
     });
     return { hits: hits, more: local.more };
   }
-  function showPrice(p) { return pricesOk !== false && p.price != null; }
+  function priceOf(p) { if (p.price != null) return p.price; return (p.template_id && priceById[p.template_id] != null) ? priceById[p.template_id] : null; }
+  function showPrice(p) { return pricesOk !== false && priceOf(p) != null; }
   /* One search list for all rows, appended to <body> and placed under the active input. */
   var acPortalEl = null;
   function acPortal() {
@@ -2645,28 +2687,41 @@
       function pick(p) {
         var m = state.mat[i];
         m.name = p.name; m.sku = p.sku || ''; m.packSize = p.pack_size || 1; m.packPrice = null; m.template_id = p.template_id || null;
-        nameIn.value = p.name; closeList(); applyPrice(p.price); update(); row.querySelector('[data-f=qty]').focus();
-        if (p.price == null && pricesOk !== false) {
-          // Catalogue hit without a price yet: ask the shop for this exact product.
-          remoteSearch(p.name.replace(/\s*-\s*/g, ' '), function (hits) {
-            var hit = null;
-            hits.forEach(function (h) { if (!hit && ((p.template_id && h.template_id === p.template_id) || h.name.toLowerCase() === p.name.toLowerCase())) hit = h; });
-            if (hit && hit.price != null && state.mat[i] === m && m.name === p.name) { applyPrice(hit.price); update(); }
+        var have = priceOf(p);
+        nameIn.value = p.name; closeList(); applyPrice(have); update(); row.querySelector('[data-f=qty]').focus();
+        if (have == null && pricesOk !== false && p.template_id) {
+          // Catalogue hit without a price yet: ask the shop for this exact product. The SKU is
+          // language independent; without one, the codes in the name (size, colour, pack) are.
+          lookupPrice(p.template_id, function (price) {
+            if (price != null && state.mat[i] === m && m.name === p.name) { applyPrice(price); update(); }
           });
         }
       }
       var lastHits = [];
-      function renderList(res) {
+      function renderList(res, keepHi) {
+        var hiIdx = keepHi ? Array.prototype.indexOf.call(list.querySelectorAll('.cc-ac-item:not(.cc-none):not(.cc-more)'), list.querySelector('.cc-hi')) : -1;
         lastHits = res.hits; list.innerHTML = ''; list.owner = nameIn; list.place = place;
         if (!res.hits.length) { list.innerHTML = '<div class="cc-ac-item cc-none">' + esc(t('ac_none')) + '</div>'; }
         res.hits.forEach(function (p) {
           var it = document.createElement('div'); it.className = 'cc-ac-item';
-          it.innerHTML = '<strong>' + esc(p.name) + '</strong><span>' + (showPrice(p) ? money(p.price) + (p.pack_size > 1 ? ' / ' + p.pack_size : '') : '') + '</span>';
+          it.innerHTML = '<strong>' + esc(p.name) + '</strong><span>' + (showPrice(p) ? money(priceOf(p)) + (p.pack_size > 1 ? ' / ' + p.pack_size : '') : '') + '</span>';
           it.addEventListener('mousedown', function (e) { e.preventDefault(); pick(p); });
           list.appendChild(it);
         });
         if (res.more) { var mo = document.createElement('div'); mo.className = 'cc-ac-item cc-more'; mo.textContent = t('ac_more', { n: res.more }); list.appendChild(mo); }
+        if (hiIdx > -1) { var its = list.querySelectorAll('.cc-ac-item:not(.cc-none):not(.cc-more)'); if (its[hiIdx]) its[hiIdx].classList.add('cc-hi'); }
         place(); list.classList.add('cc-on');
+      }
+      function fillListPrices(q, res) {
+        // After the debounced shop search: ask the price of every visible hit that still has none.
+        if (pricesOk !== true) return;
+        res.hits.forEach(function (p) {
+          if (!p.template_id || priceOf(p) != null) return;
+          lookupPrice(p.template_id, function (price) {
+            if (price == null || nameIn.value !== q || list.owner !== nameIn) return;
+            renderList(mergeHits(searchCatalog(q), remoteCache[q.trim().toLowerCase()] || []), true);
+          });
+        });
       }
       nameIn.addEventListener('input', function () {
         var m = state.mat[i];
@@ -2676,7 +2731,9 @@
           renderList(searchCatalog(q));
           remoteSearch(q, function (remoteHits) {
             if (nameIn.value !== q || list.owner !== nameIn) return;
-            renderList(mergeHits(searchCatalog(q), remoteHits));
+            var res = mergeHits(searchCatalog(q), remoteHits);
+            renderList(res);
+            fillListPrices(q, res);
           });
         } else closeList();
         update();
@@ -2704,6 +2761,51 @@
     var msg = catalogLive ? t('cat_note_live', { n: CATALOG.length }) : t('cat_note');
     if (pricesOk === true) msg += ' ' + t('price_note_on'); else if (pricesOk === false) msg += ' ' + t('price_note_off');
     el.textContent = msg;
+    var cartBtn = $('cc-cart-all'); if (cartBtn) cartBtn.hidden = pricesOk !== true;
+  }
+
+  /* ---------------- add every material line to the shop cart ----------------
+     Standard Odoo 18 route /shop/cart/add (JSON-RPC, same origin, session cookie), one line at a
+     time because the cart is one sale order. Quantity is in packs: pieces / pack size, rounded up.
+     Own items without a shop product are skipped and counted. */
+  function addAllToCart() {
+    var btn = $('cc-cart-all'); if (!btn || btn.disabled) return;
+    var lines = [], skipped = 0;
+    state.mat.forEach(function (r) {
+      if (!r.template_id) { if ((r.name || '').trim()) skipped++; return; }
+      var packs = Math.max(1, Math.ceil(num(r.qty) / (r.packSize || 1)));
+      lines.push({ name: r.name, tid: r.template_id, packs: packs });
+    });
+    if (!lines.length) { toast(t('cart_none')); return; }
+    btn.disabled = true;
+    var done = 0, packsTotal = 0, failed = [];
+    function finish() {
+      btn.disabled = false;
+      var msg = esc(t('cart_done', { n: packsTotal, l: done }));
+      if (skipped) msg += ' ' + esc(t('cart_skipped', { n: skipped }));
+      if (failed.length) msg += ' ' + esc(t('cart_failed', { names: failed.join(', ') }));
+      msg += ' <a href="/shop/cart">' + esc(t('cart_view')) + '</a>';
+      toast(msg, true, 9000);
+      track('cost_calc_cart', { lines: done, packs: packsTotal, skipped: skipped, failed: failed.length });
+    }
+    function step(k) {
+      if (k >= lines.length) { finish(); return; }
+      var l = lines[k];
+      toast(t('cart_busy', { i: k + 1, n: lines.length }), false, 20000);
+      function add(pid) {
+        if (!pid) { failed.push(l.name); step(k + 1); return; }
+        fetch('/shop/cart/add', {
+          method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ jsonrpc: '2.0', method: 'call', id: Date.now(), params: { product_template_id: l.tid, product_id: pid, quantity: l.packs } })
+        }).then(function (r) { return r.json(); }).then(function (d) {
+          if (!d || d.error || !d.result) { failed.push(l.name); } else { done++; packsTotal += l.packs; }
+          step(k + 1);
+        }).catch(function () { failed.push(l.name); step(k + 1); });
+      }
+      if (productById[l.tid]) add(productById[l.tid]);
+      else combinationInfo(l.tid, function (price, pid) { add(pid); });
+    }
+    step(0);
   }
 
   /* Catalogue sources:
@@ -2744,7 +2846,7 @@
       renderCatNote();
     });
   }
-  var remoteTimer = null, remoteCache = {};
+  var remoteTimer = null, remoteCache = {}, priceById = {}; // priceById: shop price per template id, once seen
   function stripTags(v) { return String(v == null ? '' : v).replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim(); }
   function packFromName(name) {
     var m = /(\d+)\s*(pcs|pieces|stuks|st\.|st\b|pz|pi\u00e8ces|St\u00fcck|stk)/i.exec(name || '');
@@ -2760,8 +2862,9 @@
   }
   /* One call to the shop search route (Odoo 17/18), the same one the shop's own search bar uses.
      cb gets the raw result rows; on any error nothing happens. */
+  var SHOP_SEARCH_URL = '/en_GB/website/snippet/autocomplete'; // English route: product names match the catalogue on every page language
   function shopSearch(term, limit, cb) {
-    fetch('/website/snippet/autocomplete', {
+    fetch(SHOP_SEARCH_URL, {
       method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ jsonrpc: '2.0', method: 'call', id: 1, params: {
         search_type: 'products', term: term, order: 'name asc', limit: limit, max_nb_chars: 120,
@@ -2772,25 +2875,52 @@
       cb(res.results || []);
     }).catch(function () {});
   }
+  /* Variant id and price of one product, from the same route the shop's product page uses.
+     The price is the logged in account's price (0 when the account sees no prices). */
+  var productById = {}; // template id -> variant id
+  var comboPending = {};
+  function combinationInfo(tid, cb) {
+    if (location.protocol === 'file:' || typeof fetch !== 'function') return;
+    if (comboPending[tid]) { comboPending[tid].push(cb); return; }
+    comboPending[tid] = [cb];
+    fetch('/website_sale/get_combination_info', {
+      method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ jsonrpc: '2.0', method: 'call', id: 1, params: { product_template_id: tid, product_id: false, combination: [], add_qty: 1, parent_combination: [] } })
+    }).then(function (r) { return r.json(); }).then(function (d) {
+      var c = (d && d.result) || {};
+      if (c.product_id) productById[tid] = c.product_id;
+      var price = (pricesOk !== false && typeof c.price === 'number' && c.price > 0) ? c.price : null;
+      if (price != null) priceById[tid] = price;
+      var cbs = comboPending[tid]; delete comboPending[tid];
+      cbs.forEach(function (f) { f(price, c.product_id || null); });
+    }).catch(function () { var cbs = comboPending[tid]; delete comboPending[tid]; cbs.forEach(function (f) { f(null, null); }); });
+  }
+  function lookupPrice(tid, cb) {
+    if (priceById[tid] != null) { cb(priceById[tid]); return; }
+    if (pricesOk === false) { cb(null); return; }
+    combinationInfo(tid, function (price) { cb(price); });
+  }
   function remoteSearch(q, cb) {
     if (!CC_SHOP_SEARCH || location.protocol === 'file:' || typeof fetch !== 'function') return;
     q = q.trim().toLowerCase();
     if (remoteCache[q]) { cb(remoteCache[q]); return; }
     clearTimeout(remoteTimer);
     remoteTimer = setTimeout(function () {
-      shopSearch(q, 8, function (items) {
+      shopSearch(q, 30, function (items) {
         var hits = items.map(function (r) {
           var url = r.website_url || '';
-          var tm = /-(\d+)(?:[?#].*)?$/.exec(url);
+          var tm = /^\/shop\/(?!category\/)[^/?#]*-(\d+)(?:[?#].*)?$/.exec(url);
           var tid = tm ? parseInt(tm[1], 10) : null;
+          if (!tid) return null; // category rows and anything that is not a product page
           var known = null;
           if (tid) { for (var k = 0; k < CATALOG.length; k++) { if (CATALOG[k].template_id === tid) { known = CATALOG[k]; break; } } }
           var name = known ? known.name : stripTags(r.name);
           // detail is the price as the shop renders it ("<span class=\"oe_currency_value\">5.67</span> €"),
           // and an empty string for accounts that do not see prices.
           var price = pricesOk === false ? null : parsePrice(stripTags(r.detail));
+          if (price != null) priceById[tid] = price;
           return { sku: known ? known.sku : stripTags(r.default_code), name: name, template_id: tid, pack_size: known ? known.pack_size : packFromName(name), price: price };
-        }).filter(function (h) { return h.name; });
+        }).filter(function (h) { return h && h.name; });
         remoteCache[q] = hits; cb(hits);
       });
     }, 250);
@@ -3034,6 +3164,7 @@
       $('cc-overhead').addEventListener('blur', function () { update(); });
       $('cc-mult').addEventListener('input', function (e) { state.mult = num(e.target.value); update(); });
       $('cc-round5').addEventListener('change', function (e) { state.round5 = e.target.checked; update(); });
+      $('cc-cart-all').addEventListener('click', addAllToCart);
       $('cc-mat-add').addEventListener('click', function () { state.mat.push({ name: '', qty: 1, unit: 0 }); renderMat(); update(); var last = $('cc-mat-rows').lastElementChild; if (last) last.querySelector('input').focus(); });
       $('cc-make-quote').addEventListener('click', function () { renderQuote(); showCcView('cc-view-quote'); track('cost_calc_quote', { price: calc(state, settings).price }); });
       $('cc-m-make-quote').addEventListener('click', function () { renderQuote(); showCcView('cc-view-quote'); });
@@ -3050,6 +3181,7 @@
       $('cc-q-print').addEventListener('click', function () { track('cost_calc_pdf', {}); window.print(); });
       $('cc-q-save').addEventListener('click', saveJob);
       $('cc-open-settings').addEventListener('click', function () { fillSettings(); openDrawer('cc-drawer-settings'); });
+      $('cc-time-settings').addEventListener('click', function () { fillSettings(); openDrawer('cc-drawer-settings'); });
       $('cc-doc-ph').addEventListener('click', function () { fillSettings(); openDrawer('cc-drawer-settings'); });
       $('cc-open-saved').addEventListener('click', function () { renderSaved(); openDrawer('cc-drawer-saved'); });
       $('cc-scrim').addEventListener('click', closeDrawers);
