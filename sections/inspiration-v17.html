@@ -742,7 +742,8 @@
               <label class="cc-toggle"><input type="checkbox" id="cc-round5" checked><span data-i18n="cc_fin_round">Round up to a clean price</span></label>
             </div>
           </div>
-          <div class="cc-row cc-fin"><div class="cc-lbl" data-i18n="cc_fin_profit_eur">Profit on this job</div><div class="cc-num" id="cc-f-profit">0</div></div>
+          <div class="cc-row cc-fin"><div class="cc-lbl" data-i18n="cc_fin_margin">Margin above your cost price</div><div class="cc-num" id="cc-f-margin">0</div></div>
+          <div class="cc-row cc-fin cc-sub"><div class="cc-lbl"><span data-i18n="cc_fin_profit_eur">What you keep from this job (your hours + margin)</span><small data-i18n="cc_keep_hint">Only real expenses come off: materials, overhead and km. Your hours are money you earn.</small></div><div class="cc-num" id="cc-f-profit">0</div></div>
           <div class="cc-row cc-total cc-fin"><div class="cc-lbl" data-i18n="cc_fin_quote">Quote the client</div><div class="cc-num" id="cc-f-price">0</div></div>
         </div>
       </section>
@@ -758,8 +759,9 @@
       <div class="cc-legend">
         <div class="cc-k"><i style="background:#1b073d"></i><span data-i18n="cc_leg_mat">Materials</span></div><div class="cc-v" id="cc-l-mat">0</div>
         <div class="cc-k"><i style="background:#6b3fb9"></i><span data-i18n="cc_leg_time">Your hours</span></div><div class="cc-v" id="cc-l-time">0</div>
-        <div class="cc-k"><i style="background:#cd0b5c"></i><span data-i18n="cc_leg_over">Overhead</span></div><div class="cc-v" id="cc-l-over">0</div>
-        <div class="cc-k"><i style="background:#ffdb5a"></i><span data-i18n="cc_leg_profit">Profit</span></div><div class="cc-v" id="cc-l-profit">0</div>
+        <div class="cc-k"><i style="background:#cd0b5c"></i><span data-i18n="cc_leg_over">Overhead and km</span></div><div class="cc-v" id="cc-l-over">0</div>
+        <div class="cc-k"><i style="background:#ffdb5a"></i><span data-i18n="cc_leg_profit">Margin</span></div><div class="cc-v" id="cc-l-profit">0</div>
+        <div class="cc-k" style="font-weight:800;margin-top:4px"><i style="background:linear-gradient(90deg,#6b3fb9,#ffdb5a)"></i><span data-i18n="cc_leg_keep">Yours: hours + margin</span></div><div class="cc-v" id="cc-l-keep" style="font-weight:800;margin-top:4px">0</div>
       </div>
       <div class="cc-hourly">
         <div class="cc-cap" data-i18n="cc_hourly_cap">What you actually earn per hour</div>
@@ -1190,15 +1192,15 @@
       cc_fin_cost: 'Your cost',
       cc_fin_profit: 'Profit margin',
       cc_fin_round: 'Round up to a clean price',
-      cc_fin_profit_eur: 'Profit on this job',
+      cc_fin_profit_eur: 'What you keep from this job (your hours + margin)',
       cc_fin_quote: 'Quote the client',
       cc_card_cap: 'Quote the client',
       cc_card_exvat: 'ex VAT',
       cc_card_inclvat: 'incl. VAT',
       cc_leg_mat: 'Materials',
       cc_leg_time: 'Your hours',
-      cc_leg_over: 'Overhead',
-      cc_leg_profit: 'Profit',
+      cc_leg_over: 'Overhead and km',
+      cc_leg_profit: 'Margin',
       cc_hourly_cap: 'What you actually earn per hour',
       cc_hourly_note_ok: 'Above your hourly rate of {r}. Good.',
       cc_hourly_note_low: 'Below your hourly rate of {r}. Raise the margin or the hours.',
@@ -1276,6 +1278,9 @@
       cc_cat_note_live: '{n} Sempertex products in the catalogue.',
       cc_pack_note: '{p} per pack of {n}',
       cc_ac_none: 'No match. Keep typing to use your own item.',
+      cc_fin_margin: 'Margin above your cost price',
+      cc_leg_keep: 'Yours: hours + margin',
+      cc_keep_hint: 'Only real expenses come off: materials, overhead and km. Your hours are money you earn.',
       cc_ac_more: '{n} more. Keep typing to narrow down.',
       cc_price_note_on: 'Prices follow the pricelist of your shop account.',
       cc_price_note_off: 'Your shop account does not show prices, so they are not filled in here either. Type your own purchase price per piece.',
@@ -1361,15 +1366,15 @@
       cc_fin_cost: 'Deine Kosten',
       cc_fin_profit: 'Gewinnmarge',
       cc_fin_round: 'Auf einen runden Preis aufrunden',
-      cc_fin_profit_eur: 'Gewinn bei diesem Auftrag',
+      cc_fin_profit_eur: 'Was dir von diesem Auftrag bleibt (deine Stunden + Marge)',
       cc_fin_quote: 'Preis f\u00fcr den Kunden',
       cc_card_cap: 'Preis f\u00fcr den Kunden',
       cc_card_exvat: 'exkl. MwSt.',
       cc_card_inclvat: 'inkl. MwSt.',
       cc_leg_mat: 'Material',
       cc_leg_time: 'Deine Stunden',
-      cc_leg_over: 'Gemeinkosten',
-      cc_leg_profit: 'Gewinn',
+      cc_leg_over: 'Gemeinkosten und km',
+      cc_leg_profit: 'Marge',
       cc_hourly_cap: 'Was du wirklich pro Stunde verdienst',
       cc_hourly_note_ok: '\u00dcber deinem Stundensatz von {r}. Gut so.',
       cc_hourly_note_low: 'Unter deinem Stundensatz von {r}. Erh\u00f6he die Marge oder z\u00e4hle deine Stunden ehrlich.',
@@ -1447,6 +1452,9 @@
       cc_cat_note_live: '{n} Sempertex-Produkte im Katalog.',
       cc_pack_note: '{p} pro Packung von {n}',
       cc_ac_none: 'Kein Treffer. Tippe weiter, um deinen eigenen Artikel zu verwenden.',
+      cc_fin_margin: 'Marge \u00fcber deinem Selbstkostenpreis',
+      cc_leg_keep: 'F\u00fcr dich: Stunden + Marge',
+      cc_keep_hint: 'Nur echte Ausgaben gehen ab: Material, Gemeinkosten und km. Deine Stunden sind Geld, das du verdienst.',
       cc_ac_more: '{n} weitere. Tippe weiter, um einzugrenzen.',
       cc_price_note_on: 'Preise folgen der Preisliste deines Shop-Kontos.',
       cc_price_note_off: 'Dein Shop-Konto zeigt keine Preise, deshalb werden sie auch hier nicht ausgef\u00fcllt. Gib deinen eigenen Einkaufspreis pro St\u00fcck ein.',
@@ -1532,15 +1540,15 @@
       cc_fin_cost: 'Votre co\u00fbt',
       cc_fin_profit: 'Marge b\u00e9n\u00e9ficiaire',
       cc_fin_round: 'Arrondir \u00e0 un prix rond',
-      cc_fin_profit_eur: 'B\u00e9n\u00e9fice sur cette mission',
+      cc_fin_profit_eur: 'Ce qui vous reste de cette mission (vos heures + marge)',
       cc_fin_quote: 'Prix pour le client',
       cc_card_cap: 'Prix pour le client',
       cc_card_exvat: 'HT',
       cc_card_inclvat: 'TTC',
       cc_leg_mat: 'Mat\u00e9riel',
       cc_leg_time: 'Vos heures',
-      cc_leg_over: 'Frais g\u00e9n\u00e9raux',
-      cc_leg_profit: 'B\u00e9n\u00e9fice',
+      cc_leg_over: 'Frais g\u00e9n\u00e9raux et km',
+      cc_leg_profit: 'Marge',
       cc_hourly_cap: 'Ce que vous gagnez vraiment par heure',
       cc_hourly_note_ok: 'Au-dessus de votre taux horaire de {r}. Parfait.',
       cc_hourly_note_low: 'En dessous de votre taux horaire de {r}. Augmentez la marge ou comptez vos heures honn\u00eatement.',
@@ -1618,6 +1626,9 @@
       cc_cat_note_live: '{n} produits Sempertex dans le catalogue.',
       cc_pack_note: '{p} par paquet de {n}',
       cc_ac_none: 'Aucun r\u00e9sultat. Continuez \u00e0 taper pour utiliser votre propre article.',
+      cc_fin_margin: 'Marge au-dessus de votre prix de revient',
+      cc_leg_keep: 'Pour vous : heures + marge',
+      cc_keep_hint: 'Seules les vraies d\u00e9penses sont d\u00e9duites : mat\u00e9riel, frais g\u00e9n\u00e9raux et km. Vos heures sont de l\'argent que vous gagnez.',
       cc_ac_more: '{n} de plus. Continuez \u00e0 taper pour affiner.',
       cc_price_note_on: 'Les prix suivent la liste de prix de votre compte boutique.',
       cc_price_note_off: 'Votre compte boutique n\'affiche pas les prix, ils ne sont donc pas remplis ici non plus. Tapez votre propre prix d\'achat par pi\u00e8ce.',
@@ -1703,15 +1714,15 @@
       cc_fin_cost: 'Jouw kost',
       cc_fin_profit: 'Winstmarge',
       cc_fin_round: 'Afronden naar een mooie prijs',
-      cc_fin_profit_eur: 'Winst op deze job',
+      cc_fin_profit_eur: 'Wat je overhoudt aan deze job (je uren + marge)',
       cc_fin_quote: 'Prijs voor de klant',
       cc_card_cap: 'Prijs voor de klant',
       cc_card_exvat: 'excl. btw',
       cc_card_inclvat: 'incl. btw',
       cc_leg_mat: 'Materiaal',
       cc_leg_time: 'Jouw uren',
-      cc_leg_over: 'Overhead',
-      cc_leg_profit: 'Winst',
+      cc_leg_over: 'Overhead en km',
+      cc_leg_profit: 'Marge',
       cc_hourly_cap: 'Wat je \u00e9cht verdient per uur',
       cc_hourly_note_ok: 'Boven je uurtarief van {r}. Goed zo.',
       cc_hourly_note_low: 'Onder je uurtarief van {r}. Verhoog de marge of tel je uren eerlijk.',
@@ -1789,6 +1800,9 @@
       cc_cat_note_live: '{n} Sempertex-producten in de catalogus.',
       cc_pack_note: '{p} per verpakking van {n}',
       cc_ac_none: 'Geen match. Typ verder om je eigen item te gebruiken.',
+      cc_fin_margin: 'Marge boven je kostprijs',
+      cc_leg_keep: 'Voor jou: uren + marge',
+      cc_keep_hint: 'Alleen echte kosten gaan eraf: materiaal, overhead en km. Je uren zijn geld dat je verdient.',
       cc_ac_more: 'Nog {n}. Typ verder om te verfijnen.',
       cc_price_note_on: 'Prijzen volgen de prijslijst van je shopaccount.',
       cc_price_note_off: 'Je shopaccount toont geen prijzen, dus worden ze hier ook niet ingevuld. Typ je eigen aankoopprijs per stuk.',
@@ -2523,9 +2537,11 @@
     var matSub = matBase + waste;
     var hoursWork = st.time.reduce(function (a, r) { return a + num(r.hours); }, 0);
     var travelH = num(st.travelKm) / TRAVEL_SPEED;
-    var travelCost = num(st.travelKm) * num(se.km) + travelH * num(se.hourly);
+    var kmCost = num(st.travelKm) * num(se.km);
+    var labour = (hoursWork + travelH) * num(se.hourly);
+    var travelCost = kmCost + travelH * num(se.hourly);
     var hours = hoursWork + travelH;
-    var timeCost = hoursWork * num(se.hourly) + travelCost;
+    var timeCost = labour + kmCost;
     var overheadDefault = num(se.jobs) > 0 ? num(se.overhead) / num(se.jobs) : 0;
     var overhead = st.overheadOverride == null ? overheadDefault : num(st.overheadOverride);
     var timeSub = timeCost + overhead;
@@ -2533,12 +2549,17 @@
     var raw = cost * num(st.mult);
     var price = st.round5 ? Math.ceil(raw / 5) * 5 : Math.round(raw * 100) / 100;
     if (cost === 0) price = 0;
-    var profit = price - cost;
-    var hourly = hours > 0 ? (price - matSub - overhead) / hours : 0;
+    // margin: what the multiplier adds above the cost price (hours priced at your rate).
+    // keep: what lands on your account after the real expenses (materials, km, overhead).
+    // Your hours are earned money, so they are not subtracted from what you keep.
+    var margin = price - cost;
+    var expenses = matSub + kmCost + overhead;
+    var keep = price - expenses;
+    var hourly = hours > 0 ? keep / hours : 0;
     return {
       matBase: matBase, waste: waste, matSub: matSub, hoursWork: hoursWork, travelH: travelH, travelCost: travelCost, hours: hours,
-      timeCost: timeCost, overheadDefault: overheadDefault, overhead: overhead, timeSub: timeSub, cost: cost, price: price,
-      priceIncl: price * (1 + num(se.vat) / 100), profit: profit, hourly: hourly
+      kmCost: kmCost, labour: labour, timeCost: timeCost, overheadDefault: overheadDefault, overhead: overhead, timeSub: timeSub, cost: cost, price: price,
+      priceIncl: price * (1 + num(se.vat) / 100), margin: margin, expenses: expenses, keep: keep, profit: keep, hourly: hourly
     };
   }
 
@@ -2692,8 +2713,8 @@
      2. Live shop search while typing (remoteSearch): asks the Odoo webshop for matching
         products and their price for the logged in customer, so prices follow the
         customer's own pricelist, and stay hidden for accounts that do not see prices. */
-  var CC_CATALOG_URL = 'https://cdn.jsdelivr.net/gh/RobinRuttenBE/stx-website-custom-code@d420db68375039f99cfb697491fdda08b09680bd/sections/data/stx-catalog.json';
-  var CC_CATALOG_URL_FALLBACK = 'https://raw.githubusercontent.com/RobinRuttenBE/stx-website-custom-code/d420db68375039f99cfb697491fdda08b09680bd/sections/data/stx-catalog.json';
+  var CC_CATALOG_URL = 'https://cdn.jsdelivr.net/gh/RobinRuttenBE/stx-website-custom-code@f18bf0f91dc8b6f10b4a07e793b488afc4d88f1f/sections/data/stx-catalog.json';
+  var CC_CATALOG_URL_FALLBACK = 'https://raw.githubusercontent.com/RobinRuttenBE/stx-website-custom-code/f18bf0f91dc8b6f10b4a07e793b488afc4d88f1f/sections/data/stx-catalog.json';
   var CC_SHOP_SEARCH = true;
   function loadCatalog(idx) {
     var urls = [CC_CATALOG_URL, CC_CATALOG_URL_FALLBACK];
@@ -2714,19 +2735,15 @@
      source of truth: no price markers on /shop means no prices here either. */
   var pricesOk = null; // null = not checked yet, true or false after the check
   function checkPriceVisibility() {
+    // Asks the shop search for a known product with price detail. The shop fills that price
+    // only for accounts that see prices, the same rule as its own search bar and product pages.
+    // Checked on every page load, never cached, so logging in or out changes the answer at once.
     if (location.protocol === 'file:' || typeof fetch !== 'function') return;
-    try {
-      var c = JSON.parse(sessionStorage.getItem('stx_cc_prices') || 'null');
-      if (c && Date.now() - c.t < 15 * 60 * 1000) { pricesOk = !!c.ok; renderCatNote(); return; }
-    } catch (e) {}
-    fetch('/shop', { credentials: 'same-origin' }).then(function (r) { return r.ok ? r.text() : ''; }).then(function (html) {
-      if (!html) return;
-      pricesOk = /oe_currency_value/.test(html);
-      try { sessionStorage.setItem('stx_cc_prices', JSON.stringify({ ok: pricesOk, t: Date.now() })); } catch (e) {}
+    shopSearch('R12 005', 3, function (items) {
+      pricesOk = items.some(function (r) { return parsePrice(stripTags(r.detail)) != null; });
       renderCatNote();
-    }).catch(function () {});
+    });
   }
-
   var remoteTimer = null, remoteCache = {};
   function stripTags(v) { return String(v == null ? '' : v).replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim(); }
   function packFromName(name) {
@@ -2741,22 +2758,27 @@
     else if (s.indexOf(',') > -1) s = s.replace(',', '.');
     var n = parseFloat(s); return isNaN(n) ? null : n;
   }
+  /* One call to the shop search route (Odoo 17/18), the same one the shop's own search bar uses.
+     cb gets the raw result rows; on any error nothing happens. */
+  function shopSearch(term, limit, cb) {
+    fetch('/website/snippet/autocomplete', {
+      method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ jsonrpc: '2.0', method: 'call', id: 1, params: {
+        search_type: 'products', term: term, order: 'name asc', limit: limit, max_nb_chars: 120,
+        options: { displayDescription: false, displayDetail: true, displayExtraLink: false, displayImage: false, allowFuzzy: true }
+      } })
+    }).then(function (r) { return r.json(); }).then(function (d) {
+      var res = (d && d.result) || {};
+      cb(res.results || []);
+    }).catch(function () {});
+  }
   function remoteSearch(q, cb) {
     if (!CC_SHOP_SEARCH || location.protocol === 'file:' || typeof fetch !== 'function') return;
     q = q.trim().toLowerCase();
     if (remoteCache[q]) { cb(remoteCache[q]); return; }
     clearTimeout(remoteTimer);
     remoteTimer = setTimeout(function () {
-      // Odoo 17/18 website search endpoint, the same one the shop's own search bar uses.
-      fetch('/website/snippet/autocomplete', {
-        method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ jsonrpc: '2.0', method: 'call', id: 1, params: {
-          search_type: 'products', term: q, order: 'name asc', limit: 8, max_nb_chars: 120,
-          options: { displayDescription: false, displayDetail: true, displayExtraLink: false, displayImage: false, allowFuzzy: true }
-        } })
-      }).then(function (r) { return r.json(); }).then(function (d) {
-        var res = (d && d.result) || {};
-        var items = res.results || [];
+      shopSearch(q, 8, function (items) {
         var hits = items.map(function (r) {
           var url = r.website_url || '';
           var tm = /-(\d+)(?:[?#].*)?$/.exec(url);
@@ -2770,7 +2792,7 @@
           return { sku: known ? known.sku : stripTags(r.default_code), name: name, template_id: tid, pack_size: known ? known.pack_size : packFromName(name), price: price };
         }).filter(function (h) { return h.name; });
         remoteCache[q] = hits; cb(hits);
-      }).catch(function () {});
+      });
     }, 250);
   }
 
@@ -2811,21 +2833,23 @@
     $('cc-f-time').textContent = money(c.timeSub);
     $('cc-f-cost').textContent = money(c.cost);
     $('cc-mult-val').textContent = num(state.mult).toFixed(2);
-    $('cc-f-profit').textContent = money(c.profit);
+    $('cc-f-margin').textContent = money(c.margin);
+    $('cc-f-profit').textContent = money(c.keep);
     $('cc-f-price').textContent = money(c.price);
     $('cc-card-price').textContent = money(c.price);
     $('cc-m-price').textContent = money(c.price);
     $('cc-card-incl').textContent = money(c.priceIncl);
     $('cc-l-mat').textContent = money(c.matSub);
-    $('cc-l-time').textContent = money(c.timeCost);
-    $('cc-l-over').textContent = money(c.overhead);
-    $('cc-l-profit').textContent = money(c.profit);
+    $('cc-l-time').textContent = money(c.labour);
+    $('cc-l-over').textContent = money(c.overhead + c.kmCost);
+    $('cc-l-profit').textContent = money(c.margin);
+    $('cc-l-keep').textContent = money(c.keep);
     var tot = c.price || 1;
     var bar = $('cc-bar').children;
     bar[0].style.width = (100 * c.matSub / tot) + '%';
-    bar[1].style.width = (100 * c.timeCost / tot) + '%';
-    bar[2].style.width = (100 * c.overhead / tot) + '%';
-    bar[3].style.width = (100 * Math.max(0, c.profit) / tot) + '%';
+    bar[1].style.width = (100 * c.labour / tot) + '%';
+    bar[2].style.width = (100 * (c.overhead + c.kmCost) / tot) + '%';
+    bar[3].style.width = (100 * Math.max(0, c.margin) / tot) + '%';
     var hv = $('cc-hourly-val');
     hv.textContent = money(c.hourly) + '/h';
     hv.classList.toggle('cc-low', c.hours > 0 && c.hourly < num(settings.hourly));
