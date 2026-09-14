@@ -2609,7 +2609,7 @@
      3. Live shop search while typing (remoteSearch): asks the Odoo
         webshop for matching products and their price for the logged in
         customer. Prices then follow the customer's own pricelist. */
-  var CC_CATALOG_URL = '';
+  var CC_CATALOG_URL = 'https://cdn.jsdelivr.net/gh/RobinRuttenBE/stx-website-custom-code@f4384810fd6cd8b93d218a6083552028f3bd5c0f/sections/data/stx-catalog.json';
   var CC_SHOP_SEARCH = true;
   function loadCatalog() {
     if (!CC_CATALOG_URL || typeof fetch !== 'function') return;
