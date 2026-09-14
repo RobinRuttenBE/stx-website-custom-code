@@ -2,8 +2,10 @@
      STX EU / INSPIRATION SECTIE (v17, meertalig nl/en/de/fr)
      v17: nieuwe view "Cost Calculator" (#cost) onder de Double
      Stuffing Calculator in het menu. Teksten: I18N keys cost_* en cc_*.
-     Demo-catalogus en instellingen: CC_CATALOG / CC_CATALOG_URL in het
-     COST CALCULATOR blok onderaan het script.
+     Catalogus en shopzoeker: CC_CATALOG_URL en remoteSearch in het
+     COST CALCULATOR blok onderaan het script. Prijzen komen enkel live
+     uit de shop, per ingelogd account. BETA: de view is alleen zichtbaar
+     met ?cc=1 in de URL (zie COST CALCULATOR BETA SWITCH bij de router).
      Plak dit VOLLEDIGE bestand in:
      Instellingen > Website > Custom Code > het einde-body veld.
 
@@ -286,10 +288,10 @@
 
   /* ---- BLOCKS ---- */
   .stx-cc .cc-block { position: relative; }
-  .stx-insp .stx-cc .cc-block h2 { position: relative; z-index: 1; font-size: clamp(22px, 2.2vw, 30px); font-weight: 800; letter-spacing: -0.02em; margin-bottom: 6px; padding: 14px 0 0 0.3em; }
+  .stx-insp .stx-cc .cc-block h2 { display: inline-block; vertical-align: middle; font-size: clamp(22px, 2.2vw, 30px); font-weight: 800; letter-spacing: -0.02em; line-height: 1.2; margin: 0 0 6px; padding: 0; }
   .stx-cc .cc-block .cc-ghost {
-    position: absolute; left: -0.12em; top: 0.05em; font-size: clamp(64px, 6.4vw, 88px); font-weight: 800; line-height: 1;
-    color: #f3e7ff; letter-spacing: -0.05em; z-index: 0; pointer-events: none; user-select: none;
+    display: inline-flex; align-items: center; justify-content: center; vertical-align: middle; width: 34px; height: 34px; border-radius: 50%;
+    background: var(--dark); color: var(--yellow); font-size: 13px; font-weight: 800; letter-spacing: 0.04em; margin: 0 10px 6px 0; user-select: none;
   }
   .stx-cc .cc-block .cc-hint { position: relative; z-index: 1; color: var(--ink-soft); font-size: 14.5px; margin-bottom: 16px; max-width: 64ch; }
   .stx-cc .cc-sheet { position: relative; z-index: 1; background: #fff; border: 2px solid var(--dark); border-radius: var(--radius); }
@@ -329,6 +331,16 @@
   .stx-cc .cc-ac-item span { color: var(--ink-soft); font-size: 12.5px; white-space: nowrap; font-variant-numeric: tabular-nums; }
   .stx-cc .cc-ac-item.cc-none { color: var(--ink-soft); cursor: default; }
   .stx-cc .cc-pack-note { font-size: 11.5px; color: var(--ink-soft); font-weight: 600; margin-top: 3px; }
+  /* The search list is appended to <body> and positioned on the input, so no row, sheet or view can cover it. */
+  .stx-cc-ac-portal { position: fixed; z-index: 99999; display: none; background: #fff; border: 1.5px solid #e8dcf5; border-radius: 10px; box-shadow: 0 10px 34px rgba(107, 63, 185, 0.28); max-height: 300px; overflow-y: auto; font-family: 'Rethink Sans', sans-serif; color: #1b073d; line-height: 1.4; text-align: left; }
+  .stx-cc-ac-portal.cc-on { display: block; }
+  .stx-cc-ac-portal .cc-ac-item { display: flex; justify-content: space-between; gap: 10px; padding: 9px 12px; cursor: pointer; font-size: 13.5px; border-bottom: 1px solid #e8dcf5; }
+  .stx-cc-ac-portal .cc-ac-item:last-child { border-bottom: none; }
+  .stx-cc-ac-portal .cc-ac-item:hover, .stx-cc-ac-portal .cc-ac-item.cc-hi { background: #faf4ff; }
+  .stx-cc-ac-portal .cc-ac-item strong { font-weight: 700; }
+  .stx-cc-ac-portal .cc-ac-item span { color: rgba(27, 7, 61, 0.62); font-size: 12.5px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .stx-cc-ac-portal .cc-ac-item.cc-none, .stx-cc-ac-portal .cc-ac-item.cc-more { color: rgba(27, 7, 61, 0.62); cursor: default; font-size: 12.5px; }
+  .stx-cc-ac-portal .cc-ac-item.cc-more:hover { background: #fff; }
   .stx-cc .cc-x { width: 28px; height: 28px; border-radius: 50%; border: none; background: transparent; color: var(--ink-soft); font-weight: 800; font-size: 16px; line-height: 1; padding: 0; }
   .stx-cc .cc-x:hover { background: var(--purple-light); color: var(--dark); }
   .stx-cc .cc-sheet-foot { display: flex; flex-wrap: wrap; gap: 8px; padding: 12px 14px; background: var(--purple-bg); border-top: 1px solid var(--rule); align-items: center; }
@@ -497,7 +509,6 @@
     .stx-cc .cc-tim .cc-col-rate { display: none; }
     .stx-cc .cc-row { padding: 8px 10px; gap: 6px; }
     .stx-cc .cc-row.cc-head { font-size: 11px; }
-    .stx-cc .cc-block .cc-ghost { font-size: 58px; }
     .stx-cc .cc-price-card { display: none; }
     .stx-cc .cc-mobile-bar {
       display: flex; position: fixed; left: 0; right: 0; bottom: 0; z-index: 1000; background: var(--purple-light); color: var(--dark);
@@ -649,7 +660,7 @@
       <section class="cc-block" id="cc-block-materials">
         <div class="cc-ghost">01</div>
         <h2 data-i18n="cc_mat_h">Materials</h2>
-        <p class="cc-hint" data-i18n="cc_mat_hint">Type an item and pick it from the Sempertex catalogue: the cost per piece fills in by itself. Own items work too. Always keep a margin.</p>
+        <p class="cc-hint" data-i18n="cc_mat_hint">Type a size, colour or code and pick the item from the Sempertex catalogue. Own items work too: type the name and your own price per piece.</p>
         <div class="cc-sheet">
           <div class="cc-row cc-head cc-mat">
             <div data-i18n="cc_col_item">Item</div>
@@ -697,7 +708,7 @@
             <div class="cc-num" id="cc-travel-total">0</div>
           </div>
           <div class="cc-row cc-tim">
-            <div class="cc-lbl"><span data-i18n="cc_time_overhead">Overhead share</span><small id="cc-overhead-note"></small></div>
+            <div class="cc-lbl"><span data-i18n="cc_time_overhead">Share of your fixed monthly costs</span><small id="cc-overhead-note"></small></div>
             <div></div>
             <div class="cc-num cc-soft cc-col-rate">&nbsp;</div>
             <div class="cc-in-wrap"><input class="cc-in" type="number" id="cc-overhead" min="0" step="1"></div>
@@ -841,7 +852,7 @@
           <h4 data-i18n="cc_doc_appendix">Materials</h4>
           <table id="cc-doc-appendix-table"></table>
         </section>
-        <footer class="cc-doc-foot" id="cc-doc-foot"></footer>
+        <div class="cc-doc-foot" id="cc-doc-foot"></div>
         <div class="cc-doc-stx" id="cc-doc-stx" data-i18n="cc_doc_stx">Made with STX Tools by Sempertex Europe</div>
       </article>
     </div>
@@ -862,10 +873,11 @@
     <div class="cc-field"><label data-i18n="cc_set_km">Rate per km</label><input class="cc-in" type="number" id="cc-s-km" min="0" step="0.01"></div>
   </div>
   <div class="cc-field-row">
-    <div class="cc-field"><label data-i18n="cc_set_overhead">Monthly overhead</label><input class="cc-in" type="number" id="cc-s-overhead" min="0" step="10"></div>
+    <div class="cc-field"><label data-i18n="cc_set_overhead">Fixed costs per month (overhead)</label><input class="cc-in" type="number" id="cc-s-overhead" min="0" step="10" placeholder="400"></div>
     <div class="cc-field"><label data-i18n="cc_set_jobs">Jobs per month</label><input class="cc-in" type="number" id="cc-s-jobs" min="1" step="1"></div>
   </div>
-  <p class="cc-hint" data-i18n="cc_set_overhead_hint">Overhead is everything you pay even without a job: van, insurance, storage, software, phone. Divided by the jobs you do in a month.</p>
+  <p class="cc-hint" data-i18n="cc_set_overhead_hint">Add up everything you pay every month, even in a month without a single job: van or car, insurance, storage or studio rent, software, phone, website, accountant. Fill in that monthly total here. The tool divides it by your jobs per month, so every job carries its share.</p>
+  <p class="cc-hint" data-i18n="cc_set_overhead_ex">Example: van 150 + insurance 60 + storage 120 + software 30 + phone 40 = 400 per month. With 8 jobs a month, each job carries 50.</p>
   <div class="cc-field-row">
     <div class="cc-field"><label data-i18n="cc_set_currency">Currency</label>
       <select class="cc-in cc-text" id="cc-s-currency"><option value="EUR">EUR</option><option value="GBP">GBP</option></select></div>
@@ -1148,7 +1160,7 @@
       cc_btn_saved: 'Saved quotes',
       cc_btn_settings: 'Settings',
       cc_mat_h: 'Materials',
-      cc_mat_hint: 'Type an item and pick it from the Sempertex catalogue: the cost per piece fills in by itself. Own items work too. Always keep a margin.',
+      cc_mat_hint: 'Type a size, colour or code and pick the item from the Sempertex catalogue. Own items work too: type the name and your own price per piece.',
       cc_col_item: 'Item',
       cc_col_qty: 'Qty',
       cc_col_unit: 'Per piece',
@@ -1161,7 +1173,7 @@
       cc_mat_add: '+ Add line',
       cc_time_h: 'Time and overhead',
       cc_time_travel: 'Travel, both ways',
-      cc_time_overhead: 'Overhead share',
+      cc_time_overhead: 'Share of your fixed monthly costs',
       cc_time_sub: 'Time and overhead subtotal',
       cc_t_inflate: 'Inflation and prep',
       cc_t_inflate_s: 'Tying, sizing, building at home',
@@ -1170,7 +1182,7 @@
       cc_t_admin: 'Client contact and admin',
       cc_t_admin_s: 'Calls, messages, this quote',
       cc_travel_note: 'about {h} h on the road, plus {r} per km',
-      cc_overhead_note: '{m} monthly overhead over {j} jobs',
+      cc_overhead_note: '{m} fixed costs per month over {j} jobs',
       cc_fin_h: 'Final price',
       cc_fin_hint: 'Costs plus profit. 1.30 to 1.50 is the usual range for decoration work.',
       cc_fin_mat: 'Materials subtotal',
@@ -1229,9 +1241,9 @@
       cc_set_rates: 'Your rates',
       cc_set_hourly: 'Hourly rate',
       cc_set_km: 'Rate per km',
-      cc_set_overhead: 'Monthly overhead',
+      cc_set_overhead: 'Fixed costs per month (overhead)',
       cc_set_jobs: 'Jobs per month',
-      cc_set_overhead_hint: 'Overhead is everything you pay even without a job: van, insurance, storage, software, phone. Divided by the jobs you do in a month.',
+      cc_set_overhead_hint: 'Add up everything you pay every month, even in a month without a single job: van or car, insurance, storage or studio rent, software, phone, website, accountant. Fill in that monthly total here. The tool divides it by your jobs per month, so every job carries its share.',
       cc_set_currency: 'Currency',
       cc_set_vat: 'VAT rate %',
       cc_set_business: 'Your business, on the quote',
@@ -1260,10 +1272,14 @@
       cc_ph_desc: 'Description',
       cc_default_footer: 'Prices exclude delivery outside 30 km. The deposit confirms the date. Balloons are a natural product; colours can vary slightly from the preview.',
       cc_q_line_setup: 'Delivery, setup and breakdown',
-      cc_cat_note: 'Catalogue prices are demo values until the shop export runs.',
-      cc_cat_note_live: '{n} Sempertex products loaded with shop prices.',
+      cc_cat_note: 'The Sempertex catalogue could not be loaded. Type your own items and prices.',
+      cc_cat_note_live: '{n} Sempertex products in the catalogue.',
       cc_pack_note: '{p} per pack of {n}',
       cc_ac_none: 'No match. Keep typing to use your own item.',
+      cc_ac_more: '{n} more. Keep typing to narrow down.',
+      cc_price_note_on: 'Prices follow the pricelist of your shop account.',
+      cc_price_note_off: 'Your shop account does not show prices, so they are not filled in here either. Type your own purchase price per piece.',
+      cc_set_overhead_ex: 'Example: van 150 + insurance 60 + storage 120 + software 30 + phone 40 = 400 per month. With 8 jobs a month, each job carries 50.',
       cc_ph_item: 'Search the catalogue or type your own item',
       cc_ph_client: 'Client name and address',
       cc_ph_event: 'Event, date and venue',
@@ -1315,7 +1331,7 @@
       cc_btn_saved: 'Gespeicherte Angebote',
       cc_btn_settings: 'Einstellungen',
       cc_mat_h: 'Material',
-      cc_mat_hint: 'Tippe einen Artikel und w\u00e4hle ihn aus dem Sempertex-Katalog: der Preis pro St\u00fcck f\u00fcllt sich von selbst. Eigene Artikel gehen auch. Rechne immer eine Marge ein.',
+      cc_mat_hint: 'Tippe Gr\u00f6\u00dfe, Farbe oder Code und w\u00e4hle den Artikel aus dem Sempertex-Katalog. Eigene Artikel gehen auch: Name und eigenen Preis pro St\u00fcck eingeben.',
       cc_col_item: 'Artikel',
       cc_col_qty: 'Anzahl',
       cc_col_unit: 'Pro St\u00fcck',
@@ -1328,7 +1344,7 @@
       cc_mat_add: '+ Zeile hinzuf\u00fcgen',
       cc_time_h: 'Zeit und Gemeinkosten',
       cc_time_travel: 'Anfahrt, hin und zur\u00fcck',
-      cc_time_overhead: 'Anteil Gemeinkosten',
+      cc_time_overhead: 'Anteil deiner festen Monatskosten',
       cc_time_sub: 'Zwischensumme Zeit und Gemeinkosten',
       cc_t_inflate: 'Aufblasen und Vorbereitung',
       cc_t_inflate_s: 'Knoten, auf Gr\u00f6\u00dfe bringen, zu Hause bauen',
@@ -1337,7 +1353,7 @@
       cc_t_admin: 'Kundenkontakt und Verwaltung',
       cc_t_admin_s: 'Anrufe, Nachrichten, dieses Angebot',
       cc_travel_note: 'etwa {h} h unterwegs, plus {r} pro km',
-      cc_overhead_note: '{m} Gemeinkosten pro Monat auf {j} Auftr\u00e4ge',
+      cc_overhead_note: '{m} feste Kosten pro Monat auf {j} Auftr\u00e4ge',
       cc_fin_h: 'Endpreis',
       cc_fin_hint: 'Kosten plus Gewinn. 1,30 bis 1,50 ist bei Dekorationsarbeit \u00fcblich.',
       cc_fin_mat: 'Zwischensumme Material',
@@ -1396,9 +1412,9 @@
       cc_set_rates: 'Deine S\u00e4tze',
       cc_set_hourly: 'Stundensatz',
       cc_set_km: 'Satz pro km',
-      cc_set_overhead: 'Gemeinkosten pro Monat',
+      cc_set_overhead: 'Feste Kosten pro Monat (Gemeinkosten)',
       cc_set_jobs: 'Auftr\u00e4ge pro Monat',
-      cc_set_overhead_hint: 'Gemeinkosten sind alles, was du auch ohne Auftrag zahlst: Lieferwagen, Versicherung, Lager, Software, Telefon. Geteilt durch die Auftr\u00e4ge pro Monat.',
+      cc_set_overhead_hint: 'Z\u00e4hle alles zusammen, was du jeden Monat zahlst, auch in einem Monat ohne einen einzigen Auftrag: Lieferwagen oder Auto, Versicherung, Lager oder Atelier, Software, Telefon, Website, Buchhalter. Trage diese Monatssumme hier ein. Das Tool teilt sie durch deine Auftr\u00e4ge pro Monat, so tr\u00e4gt jeder Auftrag seinen Anteil.',
       cc_set_currency: 'W\u00e4hrung',
       cc_set_vat: 'MwSt.-Satz %',
       cc_set_business: 'Dein Unternehmen, auf dem Angebot',
@@ -1427,10 +1443,14 @@
       cc_ph_desc: 'Beschreibung',
       cc_default_footer: 'Preise ohne Lieferung au\u00dferhalb von 30 km. Die Anzahlung best\u00e4tigt den Termin. Ballons sind ein Naturprodukt; Farben k\u00f6nnen leicht von der Vorschau abweichen.',
       cc_q_line_setup: 'Lieferung, Aufbau und Abbau',
-      cc_cat_note: 'Katalogpreise sind Demowerte, bis der Shop-Export l\u00e4uft.',
-      cc_cat_note_live: '{n} Sempertex-Produkte mit Shop-Preisen geladen.',
+      cc_cat_note: 'Der Sempertex-Katalog konnte nicht geladen werden. Gib eigene Artikel und Preise ein.',
+      cc_cat_note_live: '{n} Sempertex-Produkte im Katalog.',
       cc_pack_note: '{p} pro Packung von {n}',
       cc_ac_none: 'Kein Treffer. Tippe weiter, um deinen eigenen Artikel zu verwenden.',
+      cc_ac_more: '{n} weitere. Tippe weiter, um einzugrenzen.',
+      cc_price_note_on: 'Preise folgen der Preisliste deines Shop-Kontos.',
+      cc_price_note_off: 'Dein Shop-Konto zeigt keine Preise, deshalb werden sie auch hier nicht ausgef\u00fcllt. Gib deinen eigenen Einkaufspreis pro St\u00fcck ein.',
+      cc_set_overhead_ex: 'Beispiel: Lieferwagen 150 + Versicherung 60 + Lager 120 + Software 30 + Telefon 40 = 400 pro Monat. Bei 8 Auftr\u00e4gen im Monat tr\u00e4gt jeder Auftrag 50.',
       cc_ph_item: 'Katalog durchsuchen oder eigenen Artikel eingeben',
       cc_ph_client: 'Name und Adresse des Kunden',
       cc_ph_event: 'Event, Datum und Ort',
@@ -1482,7 +1502,7 @@
       cc_btn_saved: 'Devis enregistr\u00e9s',
       cc_btn_settings: 'Param\u00e8tres',
       cc_mat_h: 'Mat\u00e9riel',
-      cc_mat_hint: 'Tapez un article et choisissez-le dans le catalogue Sempertex : le co\u00fbt par pi\u00e8ce se remplit tout seul. Vos propres articles fonctionnent aussi. Pr\u00e9voyez toujours une marge.',
+      cc_mat_hint: 'Tapez une taille, une couleur ou un code et choisissez l\'article dans le catalogue Sempertex. Vos propres articles fonctionnent aussi : tapez le nom et votre prix par pi\u00e8ce.',
       cc_col_item: 'Article',
       cc_col_qty: 'Qt\u00e9',
       cc_col_unit: 'Par pi\u00e8ce',
@@ -1495,7 +1515,7 @@
       cc_mat_add: '+ Ajouter une ligne',
       cc_time_h: 'Temps et frais g\u00e9n\u00e9raux',
       cc_time_travel: 'D\u00e9placement, aller-retour',
-      cc_time_overhead: 'Part des frais g\u00e9n\u00e9raux',
+      cc_time_overhead: 'Part de vos frais fixes mensuels',
       cc_time_sub: 'Sous-total temps et frais g\u00e9n\u00e9raux',
       cc_t_inflate: 'Gonflage et pr\u00e9paration',
       cc_t_inflate_s: 'Nouer, calibrer, monter \u00e0 la maison',
@@ -1504,7 +1524,7 @@
       cc_t_admin: 'Contact client et administration',
       cc_t_admin_s: 'Appels, messages, ce devis',
       cc_travel_note: 'environ {h} h sur la route, plus {r} par km',
-      cc_overhead_note: '{m} de frais g\u00e9n\u00e9raux par mois sur {j} missions',
+      cc_overhead_note: '{m} de frais fixes par mois sur {j} missions',
       cc_fin_h: 'Prix final',
       cc_fin_hint: 'Co\u00fbts plus b\u00e9n\u00e9fice. 1,30 \u00e0 1,50 est la fourchette habituelle en d\u00e9coration.',
       cc_fin_mat: 'Sous-total mat\u00e9riel',
@@ -1563,9 +1583,9 @@
       cc_set_rates: 'Vos tarifs',
       cc_set_hourly: 'Taux horaire',
       cc_set_km: 'Tarif par km',
-      cc_set_overhead: 'Frais g\u00e9n\u00e9raux mensuels',
+      cc_set_overhead: 'Frais fixes par mois (frais g\u00e9n\u00e9raux)',
       cc_set_jobs: 'Missions par mois',
-      cc_set_overhead_hint: 'Les frais g\u00e9n\u00e9raux, c\'est tout ce que vous payez m\u00eame sans mission : camionnette, assurance, stockage, logiciels, t\u00e9l\u00e9phone. Divis\u00e9s par le nombre de missions par mois.',
+      cc_set_overhead_hint: 'Additionnez tout ce que vous payez chaque mois, m\u00eame un mois sans aucune mission : camionnette ou voiture, assurance, stockage ou atelier, logiciels, t\u00e9l\u00e9phone, site web, comptable. Indiquez ce total mensuel ici. L\'outil le divise par vos missions par mois, chaque mission porte ainsi sa part.',
       cc_set_currency: 'Devise',
       cc_set_vat: 'Taux de TVA %',
       cc_set_business: 'Votre entreprise, sur le devis',
@@ -1594,10 +1614,14 @@
       cc_ph_desc: 'Description',
       cc_default_footer: 'Prix hors livraison au-del\u00e0 de 30 km. L\'acompte confirme la date. Les ballons sont un produit naturel ; les couleurs peuvent l\u00e9g\u00e8rement diff\u00e9rer de l\'aper\u00e7u.',
       cc_q_line_setup: 'Livraison, installation et d\u00e9montage',
-      cc_cat_note: 'Les prix du catalogue sont des valeurs de d\u00e9monstration tant que l\'export de la boutique n\'a pas tourn\u00e9.',
-      cc_cat_note_live: '{n} produits Sempertex charg\u00e9s avec les prix de la boutique.',
+      cc_cat_note: 'Le catalogue Sempertex n\'a pas pu \u00eatre charg\u00e9. Tapez vos propres articles et prix.',
+      cc_cat_note_live: '{n} produits Sempertex dans le catalogue.',
       cc_pack_note: '{p} par paquet de {n}',
       cc_ac_none: 'Aucun r\u00e9sultat. Continuez \u00e0 taper pour utiliser votre propre article.',
+      cc_ac_more: '{n} de plus. Continuez \u00e0 taper pour affiner.',
+      cc_price_note_on: 'Les prix suivent la liste de prix de votre compte boutique.',
+      cc_price_note_off: 'Votre compte boutique n\'affiche pas les prix, ils ne sont donc pas remplis ici non plus. Tapez votre propre prix d\'achat par pi\u00e8ce.',
+      cc_set_overhead_ex: 'Exemple : camionnette 150 + assurance 60 + stockage 120 + logiciels 30 + t\u00e9l\u00e9phone 40 = 400 par mois. Avec 8 missions par mois, chaque mission porte 50.',
       cc_ph_item: 'Chercher dans le catalogue ou taper votre article',
       cc_ph_client: 'Nom et adresse du client',
       cc_ph_event: '\u00c9v\u00e9nement, date et lieu',
@@ -1649,7 +1673,7 @@
       cc_btn_saved: 'Opgeslagen offertes',
       cc_btn_settings: 'Instellingen',
       cc_mat_h: 'Materiaal',
-      cc_mat_hint: 'Typ een item en kies het uit de Sempertex-catalogus: de kost per stuk vult zichzelf in. Eigen items kunnen ook. Reken altijd een marge.',
+      cc_mat_hint: 'Typ een maat, kleur of code en kies het item uit de Sempertex-catalogus. Eigen items kunnen ook: typ de naam en je eigen prijs per stuk.',
       cc_col_item: 'Item',
       cc_col_qty: 'Aantal',
       cc_col_unit: 'Per stuk',
@@ -1662,7 +1686,7 @@
       cc_mat_add: '+ Regel toevoegen',
       cc_time_h: 'Tijd en overhead',
       cc_time_travel: 'Verplaatsing, heen en terug',
-      cc_time_overhead: 'Aandeel overhead',
+      cc_time_overhead: 'Aandeel van je vaste maandkosten',
       cc_time_sub: 'Subtotaal tijd en overhead',
       cc_t_inflate: 'Opblazen en voorbereiden',
       cc_t_inflate_s: 'Knopen, op maat brengen, thuis bouwen',
@@ -1671,7 +1695,7 @@
       cc_t_admin: 'Klantcontact en administratie',
       cc_t_admin_s: 'Bellen, berichten, deze offerte',
       cc_travel_note: 'ongeveer {h} u onderweg, plus {r} per km',
-      cc_overhead_note: '{m} overhead per maand over {j} jobs',
+      cc_overhead_note: '{m} vaste kosten per maand over {j} jobs',
       cc_fin_h: 'Eindprijs',
       cc_fin_hint: 'Kosten plus winst. 1,30 tot 1,50 is gebruikelijk voor decoratiewerk.',
       cc_fin_mat: 'Subtotaal materiaal',
@@ -1730,9 +1754,9 @@
       cc_set_rates: 'Je tarieven',
       cc_set_hourly: 'Uurtarief',
       cc_set_km: 'Tarief per km',
-      cc_set_overhead: 'Overhead per maand',
+      cc_set_overhead: 'Vaste kosten per maand (overhead)',
       cc_set_jobs: 'Jobs per maand',
-      cc_set_overhead_hint: 'Overhead is alles wat je ook zonder job betaalt: bestelwagen, verzekering, opslag, software, telefoon. Gedeeld door het aantal jobs per maand.',
+      cc_set_overhead_hint: 'Tel alles op wat je elke maand betaalt, ook in een maand zonder \u00e9\u00e9n job: bestelwagen of auto, verzekering, opslag of atelier, software, telefoon, website, boekhouder. Vul dat maandtotaal hier in. De tool deelt het door je jobs per maand, zo draagt elke job zijn deel.',
       cc_set_currency: 'Munt',
       cc_set_vat: 'Btw-tarief %',
       cc_set_business: 'Jouw zaak, op de offerte',
@@ -1761,10 +1785,14 @@
       cc_ph_desc: 'Omschrijving',
       cc_default_footer: 'Prijzen exclusief levering buiten 30 km. Het voorschot bevestigt de datum. Ballonnen zijn een natuurproduct; kleuren kunnen licht afwijken van de preview.',
       cc_q_line_setup: 'Levering, opbouw en afbraak',
-      cc_cat_note: 'Catalogusprijzen zijn demowaarden tot de shopexport draait.',
-      cc_cat_note_live: '{n} Sempertex-producten geladen met shopprijzen.',
+      cc_cat_note: 'De Sempertex-catalogus kon niet geladen worden. Typ je eigen items en prijzen.',
+      cc_cat_note_live: '{n} Sempertex-producten in de catalogus.',
       cc_pack_note: '{p} per verpakking van {n}',
       cc_ac_none: 'Geen match. Typ verder om je eigen item te gebruiken.',
+      cc_ac_more: 'Nog {n}. Typ verder om te verfijnen.',
+      cc_price_note_on: 'Prijzen volgen de prijslijst van je shopaccount.',
+      cc_price_note_off: 'Je shopaccount toont geen prijzen, dus worden ze hier ook niet ingevuld. Typ je eigen aankoopprijs per stuk.',
+      cc_set_overhead_ex: 'Voorbeeld: bestelwagen 150 + verzekering 60 + opslag 120 + software 30 + telefoon 40 = 400 per maand. Met 8 jobs per maand draagt elke job 50.',
       cc_ph_item: 'Zoek in de catalogus of typ je eigen item',
       cc_ph_client: 'Naam en adres van de klant',
       cc_ph_event: 'Event, datum en locatie',
@@ -1797,9 +1825,19 @@
     });
   }
 
+  // ---- COST CALCULATOR BETA SWITCH ----
+  // The Cost Calculator only shows with ?cc=1 in the page URL (remembered in this
+  // browser); ?cc=0 hides it again. Remove this block to release it to everyone.
+  var ccParam = /[?&]cc=([01])\b/.exec(window.location.search);
+  if (ccParam) { try { if (ccParam[1] === '1') { localStorage.setItem('stx_cc_beta', '1'); } else { localStorage.removeItem('stx_cc_beta'); } } catch (e) {} }
+  var CC_ENABLED = false;
+  try { CC_ENABLED = localStorage.getItem('stx_cc_beta') === '1'; } catch (e) {}
+  if (!CC_ENABLED) { var ccNav = root.querySelector('.side a[data-view="cost"]'); if (ccNav) { ccNav.style.display = 'none'; } }
+
   // ---- ROUTER ----
   var views = ['tutorials', 'colours', 'calculator', 'cost', 'downloads'];
   function showView(name) {
+    if (name === 'cost' && !CC_ENABLED) { name = 'tutorials'; }
     if (views.indexOf(name) === -1) { name = 'tutorials'; }
     views.forEach(function (v) {
       var sec = root.querySelector('#view-' + v);
@@ -2432,31 +2470,9 @@
     { key: 'setup', hours: 1.5 },
     { key: 'admin', hours: 1 }
   ];
-  /* Catalogue: demo sample in the shape of stx-tools/data/products.json.
-     When products.json sits next to this file (or the site exposes it), it replaces the sample. */
-  var CC_CATALOG = [
-    { sku: 'R5-005', name: 'R5 Fashion White', pack_size: 100, price: 4.5 },
-    { sku: 'R5-080', name: 'R5 Fashion Black', pack_size: 100, price: 4.5 },
-    { sku: 'R5-609', name: 'R5 Pastel Matte Pink', pack_size: 100, price: 4.9 },
-    { sku: 'R5-107', name: 'R5 Pastel Dusk Cream', pack_size: 100, price: 4.9 },
-    { sku: 'R12-005', name: 'R12 Fashion White', pack_size: 50, price: 7.5 },
-    { sku: 'R12-080', name: 'R12 Fashion Black', pack_size: 50, price: 7.5 },
-    { sku: 'R12-071', name: 'R12 Fashion White Sand', pack_size: 50, price: 7.5 },
-    { sku: 'R12-212', name: 'R12 Neon Fuchsia', pack_size: 50, price: 8.2 },
-    { sku: 'R12-220', name: 'R12 Neon Yellow', pack_size: 50, price: 8.2 },
-    { sku: 'R12-609', name: 'R12 Pastel Matte Pink', pack_size: 50, price: 8.2 },
-    { sku: 'R12-640', name: 'R12 Pastel Matte Blue', pack_size: 50, price: 8.2 },
-    { sku: 'R12-970', name: 'R12 Reflex Gold', pack_size: 50, price: 12.5 },
-    { sku: 'R18-005', name: 'R18 Fashion White', pack_size: 25, price: 11 },
-    { sku: 'R18-970', name: 'R18 Reflex Gold', pack_size: 25, price: 16 },
-    { sku: 'R24-005', name: 'R24 Fashion White', pack_size: 10, price: 12 },
-    { sku: 'R36-005', name: 'R36 Fashion White', pack_size: 2, price: 9 },
-    { sku: '260-005', name: '260 Fashion White', pack_size: 50, price: 6 },
-    { sku: '260-390', name: '260 Crystal Clear', pack_size: 50, price: 6 },
-    { sku: 'LOL12-005', name: 'LOL12 Fashion White', pack_size: 50, price: 8.5 },
-    { sku: 'FOIL26-GOLD-1', name: 'Grabo number 1, 26 inch, Gold', pack_size: 1, price: 3.9 },
-    { sku: 'FOIL40-GOLD-1', name: 'Grabo number 1, 40 inch, Gold', pack_size: 1, price: 6.5 }
-  ];
+  /* Catalogue: loaded from CC_CATALOG_URL (see the catalogue sources block below).
+     Names, SKUs and pack sizes only. Prices come from the shop, per logged in account. */
+  var CC_CATALOG = [];
   var catalogLive = false;
   var CATALOG = CC_CATALOG;
   var TRAVEL_SPEED = 50; // km/h used to turn km into hours on the road
@@ -2465,15 +2481,12 @@
   var settings = load('stx_quote_settings', DEFAULT_SETTINGS);
   // lang, STR, I18N and track come from the inspiration section (outer scope).
   var state = load('stx_quote_draft', null) || freshState();
+  if (!state.v) { state = freshState(); } // drafts from the demo build carried sample prices
 
   function freshState() {
     return {
-      id: null, number: null, createdAt: null,
-      mat: [
-        { name: 'R12 Fashion White', sku: 'R12-005', qty: 60, unit: 0.15, packSize: 50, packPrice: 7.5 },
-        { name: 'R5 Pastel Matte Pink', sku: 'R5-609', qty: 40, unit: 0.049, packSize: 100, packPrice: 4.9 },
-        { name: 'R18 Reflex Gold', sku: 'R18-970', qty: 4, unit: 0.64, packSize: 25, packPrice: 16 }
-      ],
+      v: 2, id: null, number: null, createdAt: null,
+      mat: [{ name: '', qty: 1, unit: 0 }],
       waste: 15,
       time: TIME_KEYS.map(function (t) { return { key: t.key, hours: t.hours }; }),
       travelKm: 30,
@@ -2530,61 +2543,126 @@
   }
 
   /* ---------------- render: calculator ---------------- */
-  function searchCatalog(q) {
-    q = (q || '').trim().toLowerCase(); if (q.length < 2) return [];
-    var words = q.split(/\s+/);
-    return CATALOG.filter(function (p) { var n = p.name.toLowerCase(); return words.every(function (w) { return n.indexOf(w) > -1; }); }).slice(0, 8);
+  /* Search text per product: name, SKU, and "fashion" for plain colours (the shop names
+     leave the Fashion line unnamed, while Pastel Matte, Reflex, Neon etc. are in the name). */
+  function searchText(p) {
+    if (!p._q) {
+      var n = p.name || '', extra = '';
+      if (!/pastel|reflex|silk|pearl|neon|metallic|crystal|satin|chrome|grabo|number/i.test(n)) { extra = ' fashion'; }
+      p._q = (n + ' ' + (p.sku || '') + extra).toLowerCase();
+    }
+    return p._q;
   }
-  function perPiece(p) { return p.price == null ? null : Math.round((p.price / (p.pack_size || 1)) * 10000) / 10000; }
+  var AC_MAX = 12;
+  function searchCatalog(q) {
+    q = (q || '').trim().toLowerCase(); if (q.length < 2) return { hits: [], more: 0 };
+    var words = q.split(/\s+/), compact = q.replace(/[\s-]/g, '');
+    var scored = [];
+    CATALOG.forEach(function (p) {
+      var st = searchText(p), sku = (p.sku || '').toLowerCase();
+      if (!words.every(function (w) { return st.indexOf(w) > -1; }) && sku.indexOf(compact) === -1) return;
+      var name = p.name.toLowerCase(), plain = name.replace(/\s*-\s*/g, ' '), rank = 3;
+      if (sku === compact) rank = 0;
+      else if (name.indexOf(q) === 0 || plain.indexOf(words.join(' ')) === 0) rank = 1;
+      else if (words.every(function (w) { return (' ' + name).indexOf(' ' + w) > -1; })) rank = 2;
+      scored.push({ p: p, r: rank });
+    });
+    scored.sort(function (a, b) { return a.r - b.r || a.p.name.localeCompare(b.p.name); });
+    return { hits: scored.slice(0, AC_MAX).map(function (x) { return x.p; }), more: Math.max(0, scored.length - AC_MAX) };
+  }
+  function mergeHits(local, remote) {
+    var hits = local.hits.map(function (p) { return { sku: p.sku, name: p.name, pack_size: p.pack_size, price: p.price, template_id: p.template_id }; });
+    remote.forEach(function (r) {
+      var own = null;
+      for (var k = 0; k < hits.length; k++) {
+        if ((r.template_id && hits[k].template_id === r.template_id) || hits[k].name.toLowerCase() === r.name.toLowerCase()) { own = hits[k]; break; }
+      }
+      if (own) { if (r.price != null) own.price = r.price; }
+      else if (hits.length < AC_MAX) hits.push(r);
+    });
+    return { hits: hits, more: local.more };
+  }
+  function showPrice(p) { return pricesOk !== false && p.price != null; }
+  /* One search list for all rows, appended to <body> and placed under the active input. */
+  var acPortalEl = null;
+  function acPortal() {
+    if (!acPortalEl) {
+      acPortalEl = document.createElement('div'); acPortalEl.className = 'stx-cc-ac-portal'; document.body.appendChild(acPortalEl);
+      var move = function () { if (acPortalEl.classList.contains('cc-on') && acPortalEl.place) acPortalEl.place(); };
+      window.addEventListener('scroll', move, true); window.addEventListener('resize', move);
+    }
+    return acPortalEl;
+  }
 
   function renderMat() {
     var host = $('cc-mat-rows'); host.innerHTML = '';
     state.mat.forEach(function (r, i) {
       var row = document.createElement('div'); row.className = 'cc-row cc-mat';
-      var note = r.packSize ? t('pack_note', { p: money(r.packPrice), n: r.packSize }) : '';
+      var note = (r.packSize && r.packPrice != null && pricesOk !== false) ? t('pack_note', { p: money(r.packPrice), n: r.packSize }) : '';
       row.innerHTML =
-        '<div class="cc-ac"><input class="cc-in cc-text" type="text" data-f="name" autocomplete="off" placeholder="' + esc(t('ph_item')) + '" value="' + esc(r.name) + '"><div class="cc-ac-list"></div><div class="cc-pack-note">' + esc(note) + '</div></div>' +
+        '<div class="cc-ac"><input class="cc-in cc-text" type="text" data-f="name" autocomplete="off" placeholder="' + esc(t('ph_item')) + '" value="' + esc(r.name) + '"><div class="cc-pack-note">' + esc(note) + '</div></div>' +
         '<div><input class="cc-in" type="number" min="0" step="1" data-f="qty" value="' + esc(r.qty) + '"></div>' +
         '<div><input class="cc-in" type="number" min="0" step="0.01" data-f="unit" value="' + esc(r.unit) + '"></div>' +
         '<div class="cc-num cc-col-total">' + money(num(r.qty) * num(r.unit)) + '</div>' +
         '<button class="cc-x" type="button" aria-label="Remove">&times;</button>';
-      var nameIn = row.querySelector('[data-f=name]'), list = row.querySelector('.cc-ac-list'), noteEl = row.querySelector('.cc-pack-note');
+      var nameIn = row.querySelector('[data-f=name]'), list = acPortal(), noteEl = row.querySelector('.cc-pack-note');
       function refreshTotal() { row.querySelector('.cc-col-total').textContent = money(num(state.mat[i].qty) * num(state.mat[i].unit)); }
-      function closeList() { list.classList.remove('cc-on'); list.innerHTML = ''; }
+      function closeList() { if (list.owner === nameIn) { list.classList.remove('cc-on'); list.innerHTML = ''; list.owner = null; } }
+      function place() {
+        var b = nameIn.getBoundingClientRect();
+        list.style.left = b.left + 'px'; list.style.top = (b.bottom + 4) + 'px';
+        list.style.width = Math.min(Math.max(b.width, 300), window.innerWidth - b.left - 8) + 'px';
+      }
+      function applyPrice(price) {
+        var m = state.mat[i];
+        if (price == null || pricesOk === false) { noteEl.textContent = ''; return; }
+        var pp = Math.round((price / (m.packSize || 1)) * 10000) / 10000;
+        m.unit = pp; m.packPrice = price; row.querySelector('[data-f=unit]').value = pp;
+        noteEl.textContent = t('pack_note', { p: money(price), n: m.packSize || 1 });
+        refreshTotal();
+      }
       function pick(p) {
-        state.mat[i].name = p.name; state.mat[i].sku = p.sku; state.mat[i].packSize = p.pack_size; state.mat[i].packPrice = p.price;
-        var pp = perPiece(p); if (pp != null) { state.mat[i].unit = pp; row.querySelector('[data-f=unit]').value = pp; }
-        nameIn.value = p.name; noteEl.textContent = p.price != null ? t('pack_note', { p: money(p.price), n: p.pack_size }) : '';
-        closeList(); refreshTotal(); update(); row.querySelector('[data-f=qty]').focus();
+        var m = state.mat[i];
+        m.name = p.name; m.sku = p.sku || ''; m.packSize = p.pack_size || 1; m.packPrice = null; m.template_id = p.template_id || null;
+        nameIn.value = p.name; closeList(); applyPrice(p.price); update(); row.querySelector('[data-f=qty]').focus();
+        if (p.price == null && pricesOk !== false) {
+          // Catalogue hit without a price yet: ask the shop for this exact product.
+          remoteSearch(p.name.replace(/\s*-\s*/g, ' '), function (hits) {
+            var hit = null;
+            hits.forEach(function (h) { if (!hit && ((p.template_id && h.template_id === p.template_id) || h.name.toLowerCase() === p.name.toLowerCase())) hit = h; });
+            if (hit && hit.price != null && state.mat[i] === m && m.name === p.name) { applyPrice(hit.price); update(); }
+          });
+        }
       }
       var lastHits = [];
-      function renderList(hits) {
-        lastHits = hits; list.innerHTML = '';
-        if (!hits.length) { list.innerHTML = '<div class="cc-ac-item cc-none">' + esc(t('ac_none')) + '</div>'; }
-        hits.forEach(function (p) {
+      function renderList(res) {
+        lastHits = res.hits; list.innerHTML = ''; list.owner = nameIn; list.place = place;
+        if (!res.hits.length) { list.innerHTML = '<div class="cc-ac-item cc-none">' + esc(t('ac_none')) + '</div>'; }
+        res.hits.forEach(function (p) {
           var it = document.createElement('div'); it.className = 'cc-ac-item';
-          it.innerHTML = '<strong>' + esc(p.name) + '</strong><span>' + (p.price != null ? money(p.price) + (p.pack_size > 1 ? ' / ' + p.pack_size : '') : '') + '</span>';
+          it.innerHTML = '<strong>' + esc(p.name) + '</strong><span>' + (showPrice(p) ? money(p.price) + (p.pack_size > 1 ? ' / ' + p.pack_size : '') : '') + '</span>';
           it.addEventListener('mousedown', function (e) { e.preventDefault(); pick(p); });
           list.appendChild(it);
         });
-        list.classList.add('cc-on');
+        if (res.more) { var mo = document.createElement('div'); mo.className = 'cc-ac-item cc-more'; mo.textContent = t('ac_more', { n: res.more }); list.appendChild(mo); }
+        place(); list.classList.add('cc-on');
       }
       nameIn.addEventListener('input', function () {
-        state.mat[i].name = nameIn.value; state.mat[i].sku = null; state.mat[i].packSize = null; state.mat[i].packPrice = null; noteEl.textContent = '';
+        var m = state.mat[i];
+        m.name = nameIn.value; m.sku = null; m.packSize = null; m.packPrice = null; m.template_id = null; noteEl.textContent = '';
         var q = nameIn.value;
         if (q.trim().length >= 2) {
           renderList(searchCatalog(q));
           remoteSearch(q, function (remoteHits) {
-            if (nameIn.value !== q) return;
-            var merged = searchCatalog(q).slice();
-            remoteHits.forEach(function (r) { if (!merged.some(function (m) { return m.name.toLowerCase() === r.name.toLowerCase(); })) merged.push(r); });
-            renderList(merged.slice(0, 10));
+            if (nameIn.value !== q || list.owner !== nameIn) return;
+            renderList(mergeHits(searchCatalog(q), remoteHits));
           });
         } else closeList();
         update();
       });
       nameIn.addEventListener('keydown', function (e) {
-        var items = list.querySelectorAll('.cc-ac-item:not(.cc-none)'); if (!items.length) return;
+        if (list.owner !== nameIn) return;
+        var items = list.querySelectorAll('.cc-ac-item:not(.cc-none):not(.cc-more)'); if (!items.length) return;
         var hi = list.querySelector('.cc-hi'); var idx = hi ? Array.prototype.indexOf.call(items, hi) : -1;
         if (e.key === 'ArrowDown') { e.preventDefault(); idx = Math.min(items.length - 1, idx + 1); } else if (e.key === 'ArrowUp') { e.preventDefault(); idx = Math.max(0, idx - 1); }
         else if (e.key === 'Enter') { e.preventDefault(); var h = lastHits[Math.max(0, idx)]; if (h) pick(h); return; }
@@ -2598,31 +2676,59 @@
       row.querySelector('.cc-x').addEventListener('click', function () { state.mat.splice(i, 1); renderMat(); update(); });
       host.appendChild(row);
     });
-    $('cc-cat-note').textContent = catalogLive ? t('cat_note_live', { n: CATALOG.length }) : t('cat_note');
+    renderCatNote();
+  }
+  function renderCatNote() {
+    var el = $('cc-cat-note'); if (!el) return;
+    var msg = catalogLive ? t('cat_note_live', { n: CATALOG.length }) : t('cat_note');
+    if (pricesOk === true) msg += ' ' + t('price_note_on'); else if (pricesOk === false) msg += ' ' + t('price_note_off');
+    el.textContent = msg;
   }
 
-  /* Catalogue sources, in order:
-     1. CC_CATALOG (demo sample below) so the tool always works.
-     2. CC_CATALOG_URL: a JSON file with the full Sempertex catalogue
-        (same shape: sku, name, pack_size, price, template_id). Generated
-        from the shop export and served from the repo via jsDelivr.
-     3. Live shop search while typing (remoteSearch): asks the Odoo
-        webshop for matching products and their price for the logged in
-        customer. Prices then follow the customer's own pricelist. */
-  var CC_CATALOG_URL = 'https://cdn.jsdelivr.net/gh/RobinRuttenBE/stx-website-custom-code@f4384810fd6cd8b93d218a6083552028f3bd5c0f/sections/data/stx-catalog.json';
+  /* Catalogue sources:
+     1. CC_CATALOG_URL: JSON with the Sempertex catalogue (sku, name, pack_size, template_id),
+        generated from the shop export and served from the repo via jsDelivr, with a
+        raw GitHub fallback for the same commit. Prices in that file are ignored.
+     2. Live shop search while typing (remoteSearch): asks the Odoo webshop for matching
+        products and their price for the logged in customer, so prices follow the
+        customer's own pricelist, and stay hidden for accounts that do not see prices. */
+  var CC_CATALOG_URL = 'https://cdn.jsdelivr.net/gh/RobinRuttenBE/stx-website-custom-code@d420db68375039f99cfb697491fdda08b09680bd/sections/data/stx-catalog.json';
+  var CC_CATALOG_URL_FALLBACK = 'https://raw.githubusercontent.com/RobinRuttenBE/stx-website-custom-code/d420db68375039f99cfb697491fdda08b09680bd/sections/data/stx-catalog.json';
   var CC_SHOP_SEARCH = true;
-  function loadCatalog() {
-    if (!CC_CATALOG_URL || typeof fetch !== 'function') return;
-    fetch(CC_CATALOG_URL).then(function (r) { return r.ok ? r.json() : null; }).then(function (data) {
-      if (!data) return;
+  function loadCatalog(idx) {
+    var urls = [CC_CATALOG_URL, CC_CATALOG_URL_FALLBACK];
+    idx = idx || 0;
+    if (typeof fetch !== 'function' || idx >= urls.length) return;
+    if (!urls[idx]) { loadCatalog(idx + 1); return; }
+    fetch(urls[idx]).then(function (r) { return r.ok ? r.json() : null; }).then(function (data) {
+      if (!data) { loadCatalog(idx + 1); return; }
       var list = Array.isArray(data) ? data : (data.products || []);
       var mapped = list.filter(function (p) { return p && p.name; }).map(function (p) {
-        return { sku: p.sku || p.default_code || '', name: p.name, pack_size: p.pack_size || 1, price: (p.price == null ? null : p.price), template_id: p.odoo_template_id || p.template_id || null };
+        return { sku: p.sku || p.default_code || '', name: p.name, pack_size: p.pack_size || 1, price: null, template_id: p.odoo_template_id || p.template_id || null };
       });
-      if (mapped.length) { CATALOG = mapped; catalogLive = true; renderMat(); }
+      if (mapped.length) { CATALOG = mapped; catalogLive = true; renderCatNote(); } else { loadCatalog(idx + 1); }
+    }).catch(function () { loadCatalog(idx + 1); });
+  }
+
+  /* Prices show only when the shop shows them to this account. The shop page is the
+     source of truth: no price markers on /shop means no prices here either. */
+  var pricesOk = null; // null = not checked yet, true or false after the check
+  function checkPriceVisibility() {
+    if (location.protocol === 'file:' || typeof fetch !== 'function') return;
+    try {
+      var c = JSON.parse(sessionStorage.getItem('stx_cc_prices') || 'null');
+      if (c && Date.now() - c.t < 15 * 60 * 1000) { pricesOk = !!c.ok; renderCatNote(); return; }
+    } catch (e) {}
+    fetch('/shop', { credentials: 'same-origin' }).then(function (r) { return r.ok ? r.text() : ''; }).then(function (html) {
+      if (!html) return;
+      pricesOk = /oe_currency_value/.test(html);
+      try { sessionStorage.setItem('stx_cc_prices', JSON.stringify({ ok: pricesOk, t: Date.now() })); } catch (e) {}
+      renderCatNote();
     }).catch(function () {});
   }
+
   var remoteTimer = null, remoteCache = {};
+  function stripTags(v) { return String(v == null ? '' : v).replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim(); }
   function packFromName(name) {
     var m = /(\d+)\s*(pcs|pieces|stuks|st\.|st\b|pz|pi\u00e8ces|St\u00fcck|stk)/i.exec(name || '');
     return m ? parseInt(m[1], 10) : 1;
@@ -2641,19 +2747,27 @@
     if (remoteCache[q]) { cb(remoteCache[q]); return; }
     clearTimeout(remoteTimer);
     remoteTimer = setTimeout(function () {
-      fetch('/shop/products/autocomplete', {
+      // Odoo 17/18 website search endpoint, the same one the shop's own search bar uses.
+      fetch('/website/snippet/autocomplete', {
         method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ jsonrpc: '2.0', method: 'call', params: { term: q, limit: 8, options: { displayDetail: true, displayImage: false, displayExtraLink: false, displayExtraDetail: false } } })
+        body: JSON.stringify({ jsonrpc: '2.0', method: 'call', id: 1, params: {
+          search_type: 'products', term: q, order: 'name asc', limit: 8, max_nb_chars: 120,
+          options: { displayDescription: false, displayDetail: true, displayExtraLink: false, displayImage: false, allowFuzzy: true }
+        } })
       }).then(function (r) { return r.json(); }).then(function (d) {
         var res = (d && d.result) || {};
-        var items = res.products || res.results || [];
+        var items = res.results || [];
         var hits = items.map(function (r) {
-          var url = r.website_url || r.url || '';
+          var url = r.website_url || '';
           var tm = /-(\d+)(?:[?#].*)?$/.exec(url);
           var tid = tm ? parseInt(tm[1], 10) : null;
           var known = null;
-          for (var k = 0; k < CATALOG.length; k++) { if (CATALOG[k].template_id && CATALOG[k].template_id === tid) { known = CATALOG[k]; break; } }
-          return { sku: known ? known.sku : '', name: r.name, template_id: tid, pack_size: known ? known.pack_size : packFromName(r.name), price: parsePrice(r.price) };
+          if (tid) { for (var k = 0; k < CATALOG.length; k++) { if (CATALOG[k].template_id === tid) { known = CATALOG[k]; break; } } }
+          var name = known ? known.name : stripTags(r.name);
+          // detail is the price as the shop renders it ("<span class=\"oe_currency_value\">5.67</span> €"),
+          // and an empty string for accounts that do not see prices.
+          var price = pricesOk === false ? null : parsePrice(stripTags(r.detail));
+          return { sku: known ? known.sku : stripTags(r.default_code), name: name, template_id: tid, pack_size: known ? known.pack_size : packFromName(name), price: price };
         }).filter(function (h) { return h.name; });
         remoteCache[q] = hits; cb(hits);
       }).catch(function () {});
@@ -2934,9 +3048,11 @@
   }
 
   if (!$('cc-view-calc')) return;
+  if (typeof CC_ENABLED !== 'undefined' && !CC_ENABLED) return; // beta switch, see the router
   document.addEventListener('focusin', function (e) { if (e.target && e.target.type === 'number' && e.target.closest('.stx-cc')) e.target.select(); });
   init(true);
   loadCatalog();
+  checkPriceVisibility();
   window.STXCostCalc = { calc: calc, settings: function () { return settings; }, state: function () { return state; } };
   })();
 
