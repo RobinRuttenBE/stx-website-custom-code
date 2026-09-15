@@ -1,7 +1,12 @@
 <!-- ============================================================
-     STX EU / INSPIRATION SECTIE (v17, meertalig nl/en/de/fr)
-     v17: nieuwe view "Cost Calculator" (#cost) onder de Double
-     Stuffing Calculator in het menu. Teksten: I18N keys cost_* en cc_*.
+     STX EU / INSPIRATION + TOOLS SECTIE (v17, meertalig nl/en/de/fr)
+     Sinds 15/09/2026 draait dit bestand op twee paginas (loader: zelfde
+     bestand, paden /inspiration, /inspiratie, /test-inspo EN /tools):
+     - /inspiration: Tutorials, Colour Combinations, Downloads
+     - /tools: Double Stuffing Calculator (#calculator), Cost Calculator (#cost)
+     Het pad bepaalt de views en het zijmenu (zie PAGINA bij de guard en de
+     ROUTER). Een hash van de andere pagina stuurt door naar die pagina.
+     v17: nieuwe view "Cost Calculator" (#cost). Teksten: I18N keys cost_* en cc_*.
      Catalogus en shopzoeker: CC_CATALOG_URL en remoteSearch in het
      COST CALCULATOR blok onderaan het script. Prijzen komen enkel live
      uit de shop, per ingelogd account. Sinds 15/09/2026 voor iedereen
@@ -976,8 +981,14 @@
   var p = window.location.pathname;
   while (p.length > 1 && p.charAt(p.length - 1) === '/') { p = p.slice(0, -1); }
   // Paden waarop deze sectie mag tonen (testpagina mag hier later uit)
-  var PAGE_PATHS = ['/inspiration', '/inspiratie', '/test-inspo'];
+  var PAGE_PATHS = ['/inspiration', '/inspiratie', '/test-inspo', '/tools'];
   var onPage = PAGE_PATHS.some(function (pp) { return p.slice(-pp.length) === pp; });
+  // ---- PAGINA ----
+  // Zelfde bestand op twee paginas: /tools toont de twee calculators,
+  // /inspiration de rest. Lokaal (file:) kies je met ?page=tools.
+  var isTools = p.slice(-6) === '/tools' || (isFile && /[?&]page=tools\b/.test(window.location.search));
+  var PAGE_VIEWS = isTools ? ['calculator', 'cost'] : ['tutorials', 'colours', 'downloads'];
+  var OTHER_VIEWS = isTools ? ['tutorials', 'colours', 'downloads'] : ['calculator', 'cost'];
   if (!isFile && !onPage) {
     allRoots.forEach(function (r) { if (r.parentNode) { r.parentNode.removeChild(r); } });
     return;
@@ -1132,6 +1143,7 @@
   var I18N = {
     en: {
       side_label: 'Inspiration',
+      side_label_tools: 'Tools',
       nav_tutorials: 'Educational Tutorials',
       nav_colours: 'Colour Combinations',
       nav_downloads: 'Downloads',
@@ -1148,7 +1160,7 @@
       col_h: 'Colour <span class="hl">combinations</span>',
       col_lede: 'Curated Sempertex palettes with the exact materials. Looking for the double stuffing calculator? It has its own page in the menu!',
       nav_calc: 'Double Stuffing Calculator',
-      calcp_eyebrow: 'Inspiration / Calculator',
+      calcp_eyebrow: 'Tools / Calculator',
       calcp_h: 'Double stuffing <span class="hl">calculator</span>',
       calcp_lede: 'Pick an inner and an outer balloon and preview the mixed colour before you inflate a single balloon.',
       pal_dl_all: 'Download all palettes',
@@ -1174,7 +1186,7 @@
       calc_cart_tip: '1 bag of each, 12 inch, 50 pieces per bag',
       dl_items: 'items',
       nav_cost: 'Cost Calculator',
-      cost_eyebrow: 'Inspiration / Cost calculator',
+      cost_eyebrow: 'Tools / Cost calculator',
       cost_h: 'Cost <span class="hl">calculator</span>',
       cost_lede: 'Materials, hours and overhead. The price updates while you type, and the quote for your client is one click away.',
       cc_btn_saved: 'Saved quotes',
@@ -1319,6 +1331,7 @@
     },
     de: {
       side_label: 'Inspiration',
+      side_label_tools: 'Tools',
       nav_tutorials: 'Lern-Tutorials',
       nav_colours: 'Farbkombinationen',
       nav_downloads: 'Downloads',
@@ -1335,7 +1348,7 @@
       col_h: 'Farb<span class="hl">kombinationen</span>',
       col_lede: 'Kuratierte Sempertex Paletten mit den exakten Materialien. Auf der Suche nach dem Double Stuffing Rechner? Er hat jetzt eine eigene Seite im Men\u00fc!',
       nav_calc: 'Double Stuffing Rechner',
-      calcp_eyebrow: 'Inspiration / Rechner',
+      calcp_eyebrow: 'Tools / Rechner',
       calcp_h: 'Double Stuffing <span class="hl">Rechner</span>',
       calcp_lede: 'W\u00e4hle einen Innen- und Au\u00dfenballon und sieh die Mischfarbe, bevor du einen einzigen Ballon aufbl\u00e4st.',
       pal_dl_all: 'Alle Paletten herunterladen',
@@ -1361,7 +1374,7 @@
       calc_cart_tip: 'Je 1 Beutel, 12 Zoll, 50 St\u00fcck pro Beutel',
       dl_items: 'Dateien',
       nav_cost: 'Kostenrechner',
-      cost_eyebrow: 'Inspiration / Kostenrechner',
+      cost_eyebrow: 'Tools / Kostenrechner',
       cost_h: 'Kosten<span class="hl">rechner</span>',
       cost_lede: 'Material, Stunden und Gemeinkosten. Der Preis rechnet mit, w\u00e4hrend du tippst, und das Angebot f\u00fcr deinen Kunden ist einen Klick entfernt.',
       cc_btn_saved: 'Gespeicherte Angebote',
@@ -1506,6 +1519,7 @@
     },
     fr: {
       side_label: 'Inspiration',
+      side_label_tools: 'Outils',
       nav_tutorials: 'Tutoriels \u00e9ducatifs',
       nav_colours: 'Combinaisons de couleurs',
       nav_downloads: 'T\u00e9l\u00e9chargements',
@@ -1522,7 +1536,7 @@
       col_h: 'Combinaisons de <span class="hl">couleurs</span>',
       col_lede: 'Des palettes Sempertex s\u00e9lectionn\u00e9es avec les mat\u00e9riaux exacts. Vous cherchez le calculateur de double stuffing? Il a d\u00e9sormais sa propre page dans le menu!',
       nav_calc: 'Calculateur double stuffing',
-      calcp_eyebrow: 'Inspiration / Calculateur',
+      calcp_eyebrow: 'Outils / Calculateur',
       calcp_h: 'Calculateur de <span class="hl">double stuffing</span>',
       calcp_lede: 'Choisissez un ballon int\u00e9rieur et un ballon ext\u00e9rieur et visualisez la couleur obtenue avant de gonfler le moindre ballon.',
       pal_dl_all: 'T\u00e9l\u00e9charger toutes les palettes',
@@ -1548,7 +1562,7 @@
       calc_cart_tip: '1 sachet chacune, 12 pouces, 50 pi\u00e8ces par sachet',
       dl_items: '\u00e9l\u00e9ments',
       nav_cost: 'Calculateur de co\u00fbts',
-      cost_eyebrow: 'Inspiration / Calculateur de co\u00fbts',
+      cost_eyebrow: 'Outils / Calculateur de co\u00fbts',
       cost_h: 'Calculateur de <span class="hl">co\u00fbts</span>',
       cost_lede: 'Mat\u00e9riel, heures et frais g\u00e9n\u00e9raux. Le prix se met \u00e0 jour pendant que vous tapez, et le devis pour votre client est \u00e0 un clic.',
       cc_btn_saved: 'Devis enregistr\u00e9s',
@@ -1693,6 +1707,7 @@
     },
     nl: {
       side_label: 'Inspiratie',
+      side_label_tools: 'Tools',
       nav_tutorials: 'Educatieve Tutorials',
       nav_colours: 'Kleurencombinaties',
       nav_downloads: 'Downloads',
@@ -1709,7 +1724,7 @@
       col_h: 'Kleuren<span class="hl">combinaties</span>',
       col_lede: 'Samengestelde Sempertex paletten met de exacte materialen. Op zoek naar de double stuffing calculator? Die heeft nu een eigen pagina in het menu!',
       nav_calc: 'Double Stuffing Calculator',
-      calcp_eyebrow: 'Inspiratie / Calculator',
+      calcp_eyebrow: 'Tools / Calculator',
       calcp_h: 'Double stuffing <span class="hl">calculator</span>',
       calcp_lede: 'Kies een binnen- en buitenballon en zie de mengkleur nog voor je een ballon opblaast.',
       pal_dl_all: 'Download alle palettes',
@@ -1735,7 +1750,7 @@
       calc_cart_tip: '1 zakje van elk, 12 inch, 50 stuks per zakje',
       dl_items: 'items',
       nav_cost: 'Kostprijscalculator',
-      cost_eyebrow: 'Inspiratie / Kostprijscalculator',
+      cost_eyebrow: 'Tools / Kostprijscalculator',
       cost_h: 'Kostprijs<span class="hl">calculator</span>',
       cost_lede: 'Materiaal, uren en overhead. De prijs rekent mee terwijl je typt, en de offerte voor je klant staat \u00e9\u00e9n klik verder.',
       cc_btn_saved: 'Opgeslagen offertes',
@@ -1904,12 +1919,26 @@
       if (STR[key]) { el.innerHTML = STR[key]; }
     });
   }
+  // Zijmenu per pagina: label en alleen de links van deze pagina.
+  (function pageNav() {
+    var lbl = root.querySelector('.side .side-label');
+    if (lbl && isTools) { lbl.innerHTML = STR.side_label_tools || 'Tools'; }
+    root.querySelectorAll('.side a[data-view]').forEach(function (a) {
+      if (OTHER_VIEWS.indexOf(a.getAttribute('data-view')) > -1 && a.parentNode) { a.parentNode.removeChild(a); }
+    });
+  })();
 
   // ---- ROUTER ----
-  var views = ['tutorials', 'colours', 'calculator', 'cost', 'downloads'];
+  var views = PAGE_VIEWS;
+  var ALL_VIEWS = ['tutorials', 'colours', 'calculator', 'cost', 'downloads'];
+  // Pad van de andere pagina, met taalprefix (en_GB, fr, de; nl zonder).
+  function otherPageUrl(view) {
+    return shopPrefix + (isTools ? '/inspiration' : '/tools') + '#' + view;
+  }
   function showView(name) {
-    if (views.indexOf(name) === -1) { name = 'tutorials'; }
-    views.forEach(function (v) {
+    if (OTHER_VIEWS.indexOf(name) > -1 && !isFile) { window.location.replace(otherPageUrl(name)); return; }
+    if (views.indexOf(name) === -1) { name = views[0]; }
+    ALL_VIEWS.forEach(function (v) {
       var sec = root.querySelector('#view-' + v);
       if (sec) { sec.classList.toggle('active', v === name); }
     });
@@ -1922,7 +1951,7 @@
     if (name === 'calculator' && typeof root.stxCalcResize === 'function') {
       window.requestAnimationFrame(root.stxCalcResize);
     }
-    track('inspiration_view', { view: name });
+    track('inspiration_view', { view: name, page: isTools ? 'tools' : 'inspiration' });
   }
   window.addEventListener('hashchange', function () { showView((window.location.hash || '').replace('#', '')); });
   showView((window.location.hash || '').replace('#', ''));
@@ -1981,6 +2010,7 @@
   var videoCar = initCarousel(root.querySelector('#car-videos'));
 
   (function loadVideos() {
+    if (isTools) { return; }
     var yt = CONFIG.youtube;
     if (!yt.apiKey || yt.apiKey.indexOf('PLACEHOLDER') === 0 || !yt.channelId || yt.channelId.indexOf('PLACEHOLDER') === 0) {
       renderVideos(CONFIG.fallbackVideos);
@@ -2037,6 +2067,7 @@
   var instaCar = initCarousel(root.querySelector('#car-insta'));
 
   (function loadInsta() {
+    if (isTools) { return; }
     var ig = CONFIG.instagram;
     if (!ig.feedUrl || ig.feedUrl.indexOf('PLACEHOLDER') === 0) {
       renderInsta(ig.fallbackPosts);
@@ -3328,6 +3359,11 @@
       var foot = document.querySelector('footer');
       if (foot && foot.parentNode) { foot.parentNode.insertBefore(root, foot); }
     }
+  }
+  // Landt de bezoeker direct op de calculator (default op /tools), meet de
+  // resultaatballon dan nu de root zichtbaar is.
+  if (typeof root.stxCalcResize === 'function' && root.querySelector('#view-calculator.active')) {
+    window.requestAnimationFrame(root.stxCalcResize);
   }
 });
 </script>
