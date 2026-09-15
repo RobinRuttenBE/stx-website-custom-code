@@ -307,7 +307,7 @@
     display: inline-flex; align-items: center; justify-content: center; vertical-align: middle; width: 34px; height: 34px; border-radius: 50%;
     background: var(--dark); color: var(--yellow); font-size: 13px; font-weight: 800; letter-spacing: 0.04em; margin: 0 10px 6px 0; user-select: none;
   }
-  .stx-cc .cc-block .cc-hint { position: relative; z-index: 1; color: var(--ink-soft); font-size: 14.5px; margin-bottom: 16px; max-width: 64ch; }
+  .stx-cc .cc-block .cc-hint { position: relative; z-index: 1; color: var(--ink); font-size: 14.5px; margin-bottom: 16px; max-width: 64ch; }
   .stx-cc .cc-sheet { position: relative; z-index: 1; background: #fff; border: 2px solid var(--dark); border-radius: var(--radius); }
   .stx-cc .cc-sheet > .cc-row:first-child { border-radius: 10px 10px 0 0; }
   .stx-cc .cc-sheet > :last-child { border-radius: 0 0 10px 10px; }
@@ -677,7 +677,7 @@
       <section class="cc-block" id="cc-block-materials">
         <div class="cc-ghost">01</div>
         <h2 data-i18n="cc_mat_h">Materials</h2>
-        <p class="cc-hint" data-i18n="cc_mat_hint">Type a size, colour or code and pick the item from the Sempertex catalogue. Own items work too: type the name and your own price per piece. To see prices, you need to be logged in to your account.<br><br>When you are logged in, prices are filled in automatically. Then enter the number of balloons you will need for your job and the price is calculated for you.</p>
+        <p class="cc-hint" data-i18n="cc_mat_hint">Type a size, colour or code and pick the item from the Sempertex catalogue. Own items work too: type the name and your own price per piece. <strong>To see prices, you need to be logged in to your account.</strong><br><br>When you are logged in, prices are filled in automatically. Then enter the number of balloons you will need for your job and the price is calculated for you.</p>
         <div class="cc-sheet">
           <div class="cc-row cc-head cc-mat">
             <div data-i18n="cc_col_item">Item</div>
@@ -1192,7 +1192,7 @@
       cc_btn_saved: 'Saved quotes',
       cc_btn_settings: 'Settings',
       cc_mat_h: 'Materials',
-      cc_mat_hint: 'Type a size, colour or code and pick the item from the Sempertex catalogue. Own items work too: type the name and your own price per piece. To see prices, you need to be logged in to your account.<br><br>When you are logged in, prices are filled in automatically. Then enter the number of balloons you will need for your job and the price is calculated for you.',
+      cc_mat_hint: 'Type a size, colour or code and pick the item from the Sempertex catalogue. Own items work too: type the name and your own price per piece. <strong>To see prices, you need to be logged in to your account.</strong><br><br>When you are logged in, prices are filled in automatically. Then enter the number of balloons you will need for your job and the price is calculated for you.',
       cc_col_item: 'Item',
       cc_col_qty: 'Qty',
       cc_col_unit: 'Per piece',
@@ -1381,7 +1381,7 @@
       cc_btn_saved: 'Gespeicherte Angebote',
       cc_btn_settings: 'Einstellungen',
       cc_mat_h: 'Material',
-      cc_mat_hint: 'Tippe Gr\u00f6\u00dfe, Farbe oder Code und w\u00e4hle den Artikel aus dem Sempertex-Katalog. Eigene Artikel gehen auch: Name und eigenen Preis pro St\u00fcck eingeben. Um Preise zu sehen, musst du in deinem Konto angemeldet sein.<br><br>Bist du angemeldet, werden die Preise automatisch eingetragen. Gib dann die Anzahl Ballons ein, die du f\u00fcr deinen Auftrag brauchst, und der Preis wird automatisch berechnet.',
+      cc_mat_hint: 'Tippe Gr\u00f6\u00dfe, Farbe oder Code und w\u00e4hle den Artikel aus dem Sempertex-Katalog. Eigene Artikel gehen auch: Name und eigenen Preis pro St\u00fcck eingeben. <strong>Um Preise zu sehen, musst du in deinem Konto angemeldet sein.</strong><br><br>Bist du angemeldet, werden die Preise automatisch eingetragen. Gib dann die Anzahl Ballons ein, die du f\u00fcr deinen Auftrag brauchst, und der Preis wird automatisch berechnet.',
       cc_col_item: 'Artikel',
       cc_col_qty: 'Anzahl',
       cc_col_unit: 'Pro St\u00fcck',
@@ -1570,7 +1570,7 @@
       cc_btn_saved: 'Devis enregistr\u00e9s',
       cc_btn_settings: 'Param\u00e8tres',
       cc_mat_h: 'Mat\u00e9riel',
-      cc_mat_hint: 'Tapez une taille, une couleur ou un code et choisissez l\'article dans le catalogue Sempertex. Vos propres articles fonctionnent aussi : tapez le nom et votre prix par pi\u00e8ce. Pour voir les prix, vous devez \u00eatre connect\u00e9 \u00e0 votre compte.<br><br>Une fois connect\u00e9, les prix sont ajout\u00e9s automatiquement. Indiquez ensuite le nombre de ballons n\u00e9cessaires pour votre projet et le prix est calcul\u00e9 automatiquement.',
+      cc_mat_hint: 'Tapez une taille, une couleur ou un code et choisissez l\'article dans le catalogue Sempertex. Vos propres articles fonctionnent aussi : tapez le nom et votre prix par pi\u00e8ce. <strong>Pour voir les prix, vous devez \u00eatre connect\u00e9 \u00e0 votre compte.</strong><br><br>Une fois connect\u00e9, les prix sont ajout\u00e9s automatiquement. Indiquez ensuite le nombre de ballons n\u00e9cessaires pour votre projet et le prix est calcul\u00e9 automatiquement.',
       cc_col_item: 'Article',
       cc_col_qty: 'Qt\u00e9',
       cc_col_unit: 'Par pi\u00e8ce',
@@ -1759,7 +1759,7 @@
       cc_btn_saved: 'Opgeslagen offertes',
       cc_btn_settings: 'Instellingen',
       cc_mat_h: 'Materiaal',
-      cc_mat_hint: 'Typ een maat, kleur of code en kies het item uit de Sempertex-catalogus. Eigen items kunnen ook: typ de naam en je eigen prijs per stuk. Om prijzen te zien, moet je ingelogd zijn op je account.<br><br>Als je bent ingelogd worden prijzen automatisch toegevoegd. Dan vul je het aantal ballonnen in dat nodig zal zijn voor je werk en wordt de prijs automatisch berekend.',
+      cc_mat_hint: 'Typ een maat, kleur of code en kies het item uit de Sempertex-catalogus. Eigen items kunnen ook: typ de naam en je eigen prijs per stuk. <strong>Om prijzen te zien, moet je ingelogd zijn op je account.</strong><br><br>Als je bent ingelogd worden prijzen automatisch toegevoegd. Dan vul je het aantal ballonnen in dat nodig zal zijn voor je werk en wordt de prijs automatisch berekend.',
       cc_col_item: 'Item',
       cc_col_qty: 'Aantal',
       cc_col_unit: 'Per stuk',
@@ -1917,7 +1917,11 @@
   // Statische teksten: in de standaardtaal (nl) is de opgeslagen builder
   // versie de bron van waarheid (team edits blijven staan). Op alle
   // andere talen past het woordenboek de vertalingen gewoon toe.
-  if (!isSaved || lang !== 'nl') {
+  // Sleutels die ook op een opgeslagen NL-kopie altijd uit het woordenboek
+  // komen (de NL-tekst in het woordenboek is Robins eigen tekst, met opmaak).
+  var FORCE_KEYS = ['cc_mat_hint'];
+  var forceOnly = isSaved && lang === 'nl';
+  if (!isSaved || lang !== 'nl' || forceOnly) {
     // De builder kan bij een team-edit een tekstblok in twee elementen met
     // dezelfde data-i18n splitsen (bv. cc_mat_hint). Sleutels die in de verse
     // markup precies 1x voorkomen, vullen we 1x en de extra kopieen gaan weg.
@@ -1930,6 +1934,7 @@
     var seenKey = {};
     root.querySelectorAll('[data-i18n]').forEach(function (el) {
       var key = el.getAttribute('data-i18n');
+      if (forceOnly && FORCE_KEYS.indexOf(key) === -1) { return; }
       if (isSaved && freshCount[key] === 1 && seenKey[key]) {
         if (el.parentNode) { el.parentNode.removeChild(el); }
         return;
