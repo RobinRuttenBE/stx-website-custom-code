@@ -1,0 +1,31 @@
+<!-- ============================================================
+     STX EU / MENU HIGHLIGHT "TOOLS"
+     Gele gloed (Sempertex geel) rond het menu-item Tools in de
+     bovenbalk, desktop en mobiel, op elke pagina. Werkt op elke
+     taalversie (href eindigt op /tools). Verwijderen = dit blok
+     weghalen. Sinds 15/09/2026.
+     ============================================================ -->
+<style>
+  .navbar a.nav-link[href$="/tools"] > span {
+    display: inline-block;
+    padding: 3px 12px;
+    margin: -3px -2px;
+    border-radius: 999px;
+    background: rgba(255, 219, 90, 0.22);
+    box-shadow: 0 0 0 2px #ffdb5a, 0 0 10px 2px rgba(255, 219, 90, 0.6);
+    animation: stx-tools-glow 2.6s ease-in-out infinite;
+  }
+  .navbar a.nav-link[href$="/tools"]:hover > span {
+    background: #ffdb5a;
+    animation: none;
+    box-shadow: 0 0 0 2px #ffdb5a, 0 0 12px 3px rgba(255, 219, 90, 0.75);
+  }
+  @keyframes stx-tools-glow {
+    0%, 100% { box-shadow: 0 0 0 2px #ffdb5a, 0 0 8px 2px rgba(255, 219, 90, 0.45); }
+    50% { box-shadow: 0 0 0 2px #ffdb5a, 0 0 12px 3px rgba(255, 219, 90, 0.8); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .navbar a.nav-link[href$="/tools"] > span { animation: none; }
+  }
+</style>
+
