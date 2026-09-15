@@ -4,8 +4,8 @@
      Stuffing Calculator in het menu. Teksten: I18N keys cost_* en cc_*.
      Catalogus en shopzoeker: CC_CATALOG_URL en remoteSearch in het
      COST CALCULATOR blok onderaan het script. Prijzen komen enkel live
-     uit de shop, per ingelogd account. BETA: de view is alleen zichtbaar
-     met ?cc=1 in de URL (zie COST CALCULATOR BETA SWITCH bij de router).
+     uit de shop, per ingelogd account. Sinds 15/09/2026 voor iedereen
+     zichtbaar (beta switch ?cc=1 verwijderd).
      Plak dit VOLLEDIGE bestand in:
      Instellingen > Website > Custom Code > het einde-body veld.
 
@@ -1880,19 +1880,9 @@
     });
   }
 
-  // ---- COST CALCULATOR BETA SWITCH ----
-  // The Cost Calculator only shows with ?cc=1 in the page URL (remembered in this
-  // browser); ?cc=0 hides it again. Remove this block to release it to everyone.
-  var ccParam = /[?&]cc=([01])\b/.exec(window.location.search);
-  if (ccParam) { try { if (ccParam[1] === '1') { localStorage.setItem('stx_cc_beta', '1'); } else { localStorage.removeItem('stx_cc_beta'); } } catch (e) {} }
-  var CC_ENABLED = false;
-  try { CC_ENABLED = localStorage.getItem('stx_cc_beta') === '1'; } catch (e) {}
-  if (!CC_ENABLED) { var ccNav = root.querySelector('.side a[data-view="cost"]'); if (ccNav) { ccNav.style.display = 'none'; } }
-
   // ---- ROUTER ----
   var views = ['tutorials', 'colours', 'calculator', 'cost', 'downloads'];
   function showView(name) {
-    if (name === 'cost' && !CC_ENABLED) { name = 'tutorials'; }
     if (views.indexOf(name) === -1) { name = 'tutorials'; }
     views.forEach(function (v) {
       var sec = root.querySelector('#view-' + v);
@@ -3204,7 +3194,6 @@
   }
 
   if (!$('cc-view-calc')) return;
-  if (typeof CC_ENABLED !== 'undefined' && !CC_ENABLED) return; // beta switch, see the router
   document.addEventListener('focusin', function (e) { if (e.target && e.target.type === 'number' && e.target.closest('.stx-cc')) e.target.select(); });
   init(true);
   loadCatalog();
