@@ -677,7 +677,7 @@
       <section class="cc-block" id="cc-block-materials">
         <div class="cc-ghost">01</div>
         <h2 data-i18n="cc_mat_h">Materials</h2>
-        <p class="cc-hint" data-i18n="cc_mat_hint">Type a size, colour or code and pick the item from the Sempertex catalogue. Own items work too: type the name and your own price per piece.</p>
+        <p class="cc-hint" data-i18n="cc_mat_hint">Type a size, colour or code and pick the item from the Sempertex catalogue. Own items work too: type the name and your own price per piece. To see prices, you need to be logged in to your account.<br><br>When you are logged in, prices are filled in automatically. Then enter the number of balloons you will need for your job and the price is calculated for you.</p>
         <div class="cc-sheet">
           <div class="cc-row cc-head cc-mat">
             <div data-i18n="cc_col_item">Item</div>
@@ -1180,19 +1180,19 @@
       dl_charts_h: 'Charts and design sheets',
       dl_photos_h: 'Product photos per finish',
       dl_btn: 'Download',
-      pal_cart: 'Add 1 bag per colour to cart',
-      pal_cart_tip: '12 inch, 50 pieces per bag',
+      pal_cart: 'Add all colours to cart',
+      pal_cart_tip: '1 bag of each colour in 5, 12 and 18 inch',
       calc_cart: 'Add both colours to cart',
       calc_cart_tip: '1 bag of each, 12 inch, 50 pieces per bag',
       dl_items: 'items',
       nav_cost: 'Cost Calculator',
       cost_eyebrow: 'Tools / Cost calculator',
       cost_h: 'Cost <span class="hl">calculator</span>',
-      cost_lede: 'Materials, hours and overhead. The price updates while you type, and the quote for your client is one click away.',
+      cost_lede: 'Materials, hours and overhead. Start in Settings: fill in your own hourly rate, cost per km and overhead. After that the price updates while you type, and the quote for your client is one click away.',
       cc_btn_saved: 'Saved quotes',
       cc_btn_settings: 'Settings',
       cc_mat_h: 'Materials',
-      cc_mat_hint: 'Type a size, colour or code and pick the item from the Sempertex catalogue. Own items work too: type the name and your own price per piece.',
+      cc_mat_hint: 'Type a size, colour or code and pick the item from the Sempertex catalogue. Own items work too: type the name and your own price per piece. To see prices, you need to be logged in to your account.<br><br>When you are logged in, prices are filled in automatically. Then enter the number of balloons you will need for your job and the price is calculated for you.',
       cc_col_item: 'Item',
       cc_col_qty: 'Qty',
       cc_col_unit: 'Per piece',
@@ -1317,6 +1317,7 @@
       cc_cart_failed: 'Could not add: {names}.',
       cc_cart_view: 'View cart',
       cc_cart_none: 'Pick items from the catalogue first.',
+      cc_cart_nosize: '{n} sizes not in the shop, skipped.',
       cc_fin_margin: 'Margin above your cost price',
       cc_leg_keep: 'Yours: hours + margin',
       cc_keep_hint: 'Only real expenses come off: materials, overhead and km. Your hours are money you earn.',
@@ -1368,19 +1369,19 @@
       dl_charts_h: 'Charts und Design Sheets',
       dl_photos_h: 'Produktfotos pro Finish',
       dl_btn: 'Download',
-      pal_cart: '1 Beutel pro Farbe in den Warenkorb',
-      pal_cart_tip: '12 Zoll, 50 St\u00fcck pro Beutel',
+      pal_cart: 'Alle Farben in den Warenkorb',
+      pal_cart_tip: '1 Beutel pro Farbe in 5, 12 und 18 Zoll',
       calc_cart: 'Beide Farben in den Warenkorb',
       calc_cart_tip: 'Je 1 Beutel, 12 Zoll, 50 St\u00fcck pro Beutel',
       dl_items: 'Dateien',
       nav_cost: 'Kostenrechner',
       cost_eyebrow: 'Tools / Kostenrechner',
       cost_h: 'Kosten<span class="hl">rechner</span>',
-      cost_lede: 'Material, Stunden und Gemeinkosten. Der Preis rechnet mit, w\u00e4hrend du tippst, und das Angebot f\u00fcr deinen Kunden ist einen Klick entfernt.',
+      cost_lede: 'Material, Stunden und Gemeinkosten. Beginne bei den Einstellungen: trage deinen Stundensatz, deine Kosten pro km und deine Gemeinkosten ein. Danach rechnet der Preis mit, w\u00e4hrend du tippst, und das Angebot f\u00fcr deinen Kunden ist einen Klick entfernt.',
       cc_btn_saved: 'Gespeicherte Angebote',
       cc_btn_settings: 'Einstellungen',
       cc_mat_h: 'Material',
-      cc_mat_hint: 'Tippe Gr\u00f6\u00dfe, Farbe oder Code und w\u00e4hle den Artikel aus dem Sempertex-Katalog. Eigene Artikel gehen auch: Name und eigenen Preis pro St\u00fcck eingeben.',
+      cc_mat_hint: 'Tippe Gr\u00f6\u00dfe, Farbe oder Code und w\u00e4hle den Artikel aus dem Sempertex-Katalog. Eigene Artikel gehen auch: Name und eigenen Preis pro St\u00fcck eingeben. Um Preise zu sehen, musst du in deinem Konto angemeldet sein.<br><br>Bist du angemeldet, werden die Preise automatisch eingetragen. Gib dann die Anzahl Ballons ein, die du f\u00fcr deinen Auftrag brauchst, und der Preis wird automatisch berechnet.',
       cc_col_item: 'Artikel',
       cc_col_qty: 'Anzahl',
       cc_col_unit: 'Pro St\u00fcck',
@@ -1505,6 +1506,7 @@
       cc_cart_failed: 'Nicht hinzugef\u00fcgt: {names}.',
       cc_cart_view: 'Warenkorb ansehen',
       cc_cart_none: 'W\u00e4hle zuerst Artikel aus dem Katalog.',
+      cc_cart_nosize: '{n} Gr\u00f6\u00dfen nicht im Shop, \u00fcbersprungen.',
       cc_fin_margin: 'Marge \u00fcber deinem Selbstkostenpreis',
       cc_leg_keep: 'F\u00fcr dich: Stunden + Marge',
       cc_keep_hint: 'Nur echte Ausgaben gehen ab: Material, Gemeinkosten und km. Deine Stunden sind Geld, das du verdienst.',
@@ -1556,19 +1558,19 @@
       dl_charts_h: 'Charts et design sheets',
       dl_photos_h: 'Photos produits par finish',
       dl_btn: 'T\u00e9l\u00e9charger',
-      pal_cart: '1 sachet par couleur au panier',
-      pal_cart_tip: '12 pouces, 50 pi\u00e8ces par sachet',
+      pal_cart: 'Toutes les couleurs au panier',
+      pal_cart_tip: '1 sachet par couleur en 5, 12 et 18 pouces',
       calc_cart: 'Les deux couleurs au panier',
       calc_cart_tip: '1 sachet chacune, 12 pouces, 50 pi\u00e8ces par sachet',
       dl_items: '\u00e9l\u00e9ments',
       nav_cost: 'Calculateur de co\u00fbts',
       cost_eyebrow: 'Outils / Calculateur de co\u00fbts',
       cost_h: 'Calculateur de <span class="hl">co\u00fbts</span>',
-      cost_lede: 'Mat\u00e9riel, heures et frais g\u00e9n\u00e9raux. Le prix se met \u00e0 jour pendant que vous tapez, et le devis pour votre client est \u00e0 un clic.',
+      cost_lede: 'Mat\u00e9riel, heures et frais g\u00e9n\u00e9raux. Commencez par les param\u00e8tres : indiquez votre taux horaire, votre co\u00fbt par km et vos frais g\u00e9n\u00e9raux. Ensuite, le prix se met \u00e0 jour pendant que vous tapez, et le devis pour votre client est \u00e0 un clic.',
       cc_btn_saved: 'Devis enregistr\u00e9s',
       cc_btn_settings: 'Param\u00e8tres',
       cc_mat_h: 'Mat\u00e9riel',
-      cc_mat_hint: 'Tapez une taille, une couleur ou un code et choisissez l\'article dans le catalogue Sempertex. Vos propres articles fonctionnent aussi : tapez le nom et votre prix par pi\u00e8ce.',
+      cc_mat_hint: 'Tapez une taille, une couleur ou un code et choisissez l\'article dans le catalogue Sempertex. Vos propres articles fonctionnent aussi : tapez le nom et votre prix par pi\u00e8ce. Pour voir les prix, vous devez \u00eatre connect\u00e9 \u00e0 votre compte.<br><br>Une fois connect\u00e9, les prix sont ajout\u00e9s automatiquement. Indiquez ensuite le nombre de ballons n\u00e9cessaires pour votre projet et le prix est calcul\u00e9 automatiquement.',
       cc_col_item: 'Article',
       cc_col_qty: 'Qt\u00e9',
       cc_col_unit: 'Par pi\u00e8ce',
@@ -1693,6 +1695,7 @@
       cc_cart_failed: 'Impossible d\u2019ajouter : {names}.',
       cc_cart_view: 'Voir le panier',
       cc_cart_none: 'Choisissez d\u2019abord des articles du catalogue.',
+      cc_cart_nosize: '{n} tailles pas dans la boutique, ignor\u00e9es.',
       cc_fin_margin: 'Marge au-dessus de votre prix de revient',
       cc_leg_keep: 'Pour vous : heures + marge',
       cc_keep_hint: 'Seules les vraies d\u00e9penses sont d\u00e9duites : mat\u00e9riel, frais g\u00e9n\u00e9raux et km. Vos heures sont de l\'argent que vous gagnez.',
@@ -1744,19 +1747,19 @@
       dl_charts_h: 'Charts en design sheets',
       dl_photos_h: 'Productfotos per finish',
       dl_btn: 'Download',
-      pal_cart: '1 zakje per kleur in winkelmand',
-      pal_cart_tip: '12 inch, 50 stuks per zakje',
+      pal_cart: 'Alle kleuren in winkelmand',
+      pal_cart_tip: '1 zakje van elke kleur in 5, 12 en 18 inch',
       calc_cart: 'Beide kleuren in winkelmand',
       calc_cart_tip: '1 zakje van elk, 12 inch, 50 stuks per zakje',
       dl_items: 'items',
       nav_cost: 'Kostprijscalculator',
       cost_eyebrow: 'Tools / Kostprijscalculator',
       cost_h: 'Kostprijs<span class="hl">calculator</span>',
-      cost_lede: 'Materiaal, uren en overhead. De prijs rekent mee terwijl je typt, en de offerte voor je klant staat \u00e9\u00e9n klik verder.',
+      cost_lede: 'Materiaal, uren en overhead. Begin bij Instellingen: vul je eigen uurtarief, kilometerprijs en overhead in. Daarna rekent de prijs mee terwijl je typt, en staat de offerte voor je klant \u00e9\u00e9n klik verder.',
       cc_btn_saved: 'Opgeslagen offertes',
       cc_btn_settings: 'Instellingen',
       cc_mat_h: 'Materiaal',
-      cc_mat_hint: 'Typ een maat, kleur of code en kies het item uit de Sempertex-catalogus. Eigen items kunnen ook: typ de naam en je eigen prijs per stuk.',
+      cc_mat_hint: 'Typ een maat, kleur of code en kies het item uit de Sempertex-catalogus. Eigen items kunnen ook: typ de naam en je eigen prijs per stuk. Om prijzen te zien, moet je ingelogd zijn op je account.<br><br>Als je bent ingelogd worden prijzen automatisch toegevoegd. Dan vul je het aantal ballonnen in dat nodig zal zijn voor je werk en wordt de prijs automatisch berekend.',
       cc_col_item: 'Item',
       cc_col_qty: 'Aantal',
       cc_col_unit: 'Per stuk',
@@ -1881,6 +1884,7 @@
       cc_cart_failed: 'Niet gelukt: {names}.',
       cc_cart_view: 'Bekijk winkelmand',
       cc_cart_none: 'Kies eerst items uit de catalogus.',
+      cc_cart_nosize: '{n} maten niet in de shop, overgeslagen.',
       cc_fin_margin: 'Marge boven je kostprijs',
       cc_leg_keep: 'Voor jou: uren + marge',
       cc_keep_hint: 'Alleen echte kosten gaan eraf: materiaal, overhead en km. Je uren zijn geld dat je verdient.',
@@ -2160,7 +2164,7 @@
       });
       return out;
     }
-    // "1 bag per colour" button: 12 inch (R12) of every colour, hidden unless the shop
+    // "All colours" button: 1 bag of 5, 12 and 18 inch (R5, R12, R18) of every colour, hidden unless the shop
     // shows prices to this account (class stx-shop-on on the root, set by stxShop).
     function cartBtnHtml(pl) {
       var codes = palCodes(pl);
@@ -2572,7 +2576,7 @@
     if (pc) {
       e.preventDefault();
       if (root.stxShop) {
-        root.stxShop.addR12((pc.getAttribute('data-codes') || '').split(',').filter(Boolean), pc, 'palette_cart', { palette: pc.getAttribute('data-title') || '' });
+        root.stxShop.addSizes((pc.getAttribute('data-codes') || '').split(',').filter(Boolean), ['R5', 'R12', 'R18'], pc, 'palette_cart', { palette: pc.getAttribute('data-title') || '' });
       }
       return;
     }
@@ -2618,7 +2622,7 @@
 
   /* ---------------- defaults ---------------- */
   var DEFAULT_SETTINGS = {
-    hourly: 35, km: 0.45, overhead: 400, jobs: 8, currency: 'EUR', vat: 21,
+    hourly: 0, km: 0, overhead: 0, jobs: 8, currency: 'EUR', vat: 21, // rates start at 0: the user sets their own in Settings first
     logo: '', name: '', details: '', valid: 14, deposit: 30, footer: '', accent: '#6b3fb9', lang: 'en'
   };
   var TIME_KEYS = [
@@ -2883,7 +2887,7 @@
   /* Adds lines [{name, tid, packs}] to the cart one by one, with progress and result toasts.
      btn is disabled while busy. Shared by the cost calculator, the colour palettes and the
      double stuffing calculator (through root.stxShop). */
-  function cartAddLines(lines, btn, skipped, evt, extra) {
+  function cartAddLines(lines, btn, skipped, evt, extra, skippedKey) {
     if (btn && btn.disabled) return;
     if (!lines.length) { toast(t('cart_none')); return; }
     if (btn) btn.disabled = true;
@@ -2891,7 +2895,7 @@
     function finish() {
       if (btn) btn.disabled = false;
       var msg = esc(t('cart_done', { n: packsTotal, l: done }));
-      if (skipped) msg += ' ' + esc(t('cart_skipped', { n: skipped }));
+      if (skipped) msg += ' ' + esc(t(skippedKey || 'cart_skipped', { n: skipped }));
       if (failed.length) msg += ' ' + esc(t('cart_failed', { names: failed.join(', ') }));
       msg += ' <a href="/shop/cart">' + esc(t('cart_view')) + '</a>';
       toast(msg, true, 9000);
@@ -2923,8 +2927,8 @@
      The colour palettes and the double stuffing calculator add 12 inch bags (SKU R12 + colour
      code, 50 pieces) to the cart. Their buttons only show when this account sees prices AND
      the catalogue is loaded: class stx-shop-on on the root (shopFlag, called from renderCatNote). */
-  function r12Product(code) {
-    for (var k = 0; k < CATALOG.length; k++) { if (CATALOG[k].sku === 'R12' + code) return CATALOG[k]; }
+  function sizeProduct(prefix, code) {
+    for (var k = 0; k < CATALOG.length; k++) { if (CATALOG[k].sku === prefix + code) return CATALOG[k]; }
     return null;
   }
   function shopFlag() {
@@ -2932,17 +2936,21 @@
   }
   root.stxShop = {
     ready: function () { return pricesOk === true && catalogLive; },
-    addR12: function (codes, btn, evt, extra) {
+    // sizes: SKU prefixes, e.g. ['R5', 'R12', 'R18']; 1 pack per colour per size.
+    addSizes: function (codes, sizes, btn, evt, extra) {
       if (pricesOk !== true) return;
       var lines = [], missing = 0;
       (codes || []).forEach(function (c) {
-        var p = r12Product(c);
-        if (p) lines.push({ name: p.name, tid: p.template_id, packs: 1 }); else missing++;
+        (sizes || ['R12']).forEach(function (pre) {
+          var p = sizeProduct(pre, c);
+          if (p) lines.push({ name: p.name, tid: p.template_id, packs: 1 }); else missing++;
+        });
       });
-      var ev = { codes: (codes || []).join(',') };
+      var ev = { codes: (codes || []).join(','), sizes: (sizes || ['R12']).join(',') };
       Object.keys(extra || {}).forEach(function (k) { ev[k] = extra[k]; });
-      cartAddLines(lines, btn, missing, evt, ev);
-    }
+      cartAddLines(lines, btn, missing, evt, ev, 'cart_nosize');
+    },
+    addR12: function (codes, btn, evt, extra) { root.stxShop.addSizes(codes, ['R12'], btn, evt, extra); }
   };
 
   /* Catalogue sources:
