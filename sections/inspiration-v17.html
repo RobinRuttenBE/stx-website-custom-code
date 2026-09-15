@@ -1918,8 +1918,23 @@
   // versie de bron van waarheid (team edits blijven staan). Op alle
   // andere talen past het woordenboek de vertalingen gewoon toe.
   if (!isSaved || lang !== 'nl') {
+    // De builder kan bij een team-edit een tekstblok in twee elementen met
+    // dezelfde data-i18n splitsen (bv. cc_mat_hint). Sleutels die in de verse
+    // markup precies 1x voorkomen, vullen we 1x en de extra kopieen gaan weg.
+    var freshCount = {};
+    if (fresh) {
+      fresh.querySelectorAll('[data-i18n]').forEach(function (el) {
+        var k = el.getAttribute('data-i18n'); freshCount[k] = (freshCount[k] || 0) + 1;
+      });
+    }
+    var seenKey = {};
     root.querySelectorAll('[data-i18n]').forEach(function (el) {
       var key = el.getAttribute('data-i18n');
+      if (isSaved && freshCount[key] === 1 && seenKey[key]) {
+        if (el.parentNode) { el.parentNode.removeChild(el); }
+        return;
+      }
+      seenKey[key] = true;
       if (STR[key]) { el.innerHTML = STR[key]; }
     });
   }
