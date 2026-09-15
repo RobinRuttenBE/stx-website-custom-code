@@ -215,6 +215,15 @@
   .stx-insp .pal-card ul li a.js-shop:hover { color: var(--purple); border-bottom-style: solid; }
   .stx-insp .pal-card ul li::before { content: ""; position: absolute; left: 0; top: 9px; width: 6px; height: 6px; background: var(--purple); }
   .stx-insp .pal-card .btn-y { margin-top: auto; align-self: flex-start; font-size: clamp(12px, 0.95vw, 13px); padding: clamp(8px, 0.8vw, 10px) clamp(13px, 1.3vw, 18px); }
+  /* Shop cart buttons (palettes and double stuffing): only for accounts that see prices, see stxShop in the cost calculator block */
+  .stx-insp .js-cart { display: none; }
+  .stx-insp.stx-shop-on .js-cart { display: inline-block; }
+  .stx-insp .btn-cart { background: var(--purple); color: #fff; font-family: inherit; font-size: clamp(12px, 0.95vw, 13px); font-weight: 800; padding: clamp(8px, 0.8vw, 10px) clamp(13px, 1.3vw, 18px); border: none; border-radius: 6px; cursor: pointer; text-align: center; transition: transform 0.16s ease, box-shadow 0.16s ease; }
+  .stx-insp .btn-cart:hover { transform: scale(1.04); box-shadow: var(--glow); }
+  .stx-insp .btn-cart[disabled] { opacity: 0.6; cursor: wait; transform: none; box-shadow: none; }
+  .stx-insp .pal-card .card-actions { margin-top: auto; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .stx-insp .pal-card .card-actions .btn-y { margin-top: 0; align-self: auto; }
+  .stx-insp.stx-shop-on #calc-cart { display: block; margin: clamp(10px, 1.2vw, 14px) auto 0; }
 
   @media (max-width: 1250px) {
     .stx-insp .pal-track { grid-auto-columns: calc((100% - clamp(12px, 1.6vw, 22px)) / 2); }
@@ -352,7 +361,7 @@
   .stx-cc .cc-chip.cc-add { background: var(--dark); color: var(--yellow); border-color: var(--dark); }
   .stx-cc .cc-chip.cc-cart { background: var(--yellow); color: var(--dark); border-color: var(--yellow); }
   .stx-cc .cc-chip.cc-cart[disabled] { opacity: 0.6; cursor: wait; transform: none; box-shadow: none; }
-  .stx-cc .cc-toast a { color: var(--yellow); font-weight: 800; text-decoration: underline; margin-left: 8px; }
+  .stx-insp .cc-toast a { color: var(--yellow); font-weight: 800; text-decoration: underline; margin-left: 8px; }
   .stx-cc .cc-pct { display: inline-flex; align-items: center; gap: 6px; }
   .stx-cc .cc-pct .cc-in { width: 64px; padding: 5px 8px; }
 
@@ -491,8 +500,8 @@
   .stx-cc .cc-doc-stx { margin-top: 18px; font-size: 11px; color: #999; text-align: center; }
 
   /* ---- TOAST ---- */
-  .stx-cc .cc-toast { position: fixed; left: 50%; bottom: 26px; transform: translateX(-50%) translateY(20px); background: var(--dark); color: #fff; padding: 12px 18px; border-radius: 10px; font-weight: 700; font-size: 14px; opacity: 0; pointer-events: none; transition: opacity 0.2s ease, transform 0.2s ease; z-index: 2100; box-shadow: 0 10px 30px rgba(27,7,61,0.35); }
-  .stx-cc .cc-toast.cc-on { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .stx-insp .cc-toast { position: fixed; left: 50%; bottom: 26px; transform: translateX(-50%) translateY(20px); background: var(--dark); color: #fff; padding: 12px 18px; border-radius: 10px; font-weight: 700; font-size: 14px; opacity: 0; pointer-events: none; transition: opacity 0.2s ease, transform 0.2s ease; z-index: 2100; box-shadow: 0 10px 30px rgba(27,7,61,0.35); }
+  .stx-insp .cc-toast.cc-on { opacity: 1; transform: translateX(-50%) translateY(0); }
 
   /* ---- RESPONSIVE ---- */
   @media (max-width: 980px) {
@@ -1159,6 +1168,10 @@
       dl_charts_h: 'Charts and design sheets',
       dl_photos_h: 'Product photos per finish',
       dl_btn: 'Download',
+      pal_cart: 'Add 1 bag per colour to cart',
+      pal_cart_tip: '12 inch, 50 pieces per bag',
+      calc_cart: 'Add both colours to cart',
+      calc_cart_tip: '1 bag of each, 12 inch, 50 pieces per bag',
       dl_items: 'items',
       nav_cost: 'Cost Calculator',
       cost_eyebrow: 'Inspiration / Cost calculator',
@@ -1342,6 +1355,10 @@
       dl_charts_h: 'Charts und Design Sheets',
       dl_photos_h: 'Produktfotos pro Finish',
       dl_btn: 'Download',
+      pal_cart: '1 Beutel pro Farbe in den Warenkorb',
+      pal_cart_tip: '12 Zoll, 50 St\u00fcck pro Beutel',
+      calc_cart: 'Beide Farben in den Warenkorb',
+      calc_cart_tip: 'Je 1 Beutel, 12 Zoll, 50 St\u00fcck pro Beutel',
       dl_items: 'Dateien',
       nav_cost: 'Kostenrechner',
       cost_eyebrow: 'Inspiration / Kostenrechner',
@@ -1525,6 +1542,10 @@
       dl_charts_h: 'Charts et design sheets',
       dl_photos_h: 'Photos produits par finish',
       dl_btn: 'T\u00e9l\u00e9charger',
+      pal_cart: '1 sachet par couleur au panier',
+      pal_cart_tip: '12 pouces, 50 pi\u00e8ces par sachet',
+      calc_cart: 'Les deux couleurs au panier',
+      calc_cart_tip: '1 sachet chacune, 12 pouces, 50 pi\u00e8ces par sachet',
       dl_items: '\u00e9l\u00e9ments',
       nav_cost: 'Calculateur de co\u00fbts',
       cost_eyebrow: 'Inspiration / Calculateur de co\u00fbts',
@@ -1708,6 +1729,10 @@
       dl_charts_h: 'Charts en design sheets',
       dl_photos_h: 'Productfotos per finish',
       dl_btn: 'Download',
+      pal_cart: '1 zakje per kleur in winkelmand',
+      pal_cart_tip: '12 inch, 50 stuks per zakje',
+      calc_cart: 'Beide kleuren in winkelmand',
+      calc_cart_tip: '1 zakje van elk, 12 inch, 50 stuks per zakje',
       dl_items: 'items',
       nav_cost: 'Kostprijscalculator',
       cost_eyebrow: 'Inspiratie / Kostprijscalculator',
@@ -2092,7 +2117,25 @@
       var bullets = (t(pl.bullets) || []).map(function (b) { return '<li>' + bulletInner(b) + '</li>'; }).join('');
       var btn = pl.img ? '<a class="btn-y js-dl" href="' + pl.img + '" download>' + STR.dl_btn + '</a>' : '';
       return '<div class="pal-card" data-pal="' + fileOf(pl.img) + '">' + img
-        + '<div class="card-body"><h4>' + esc(t(pl.title)) + '</h4><ul>' + bullets + '</ul>' + btn + '</div></div>';
+        + '<div class="card-body"><h4>' + esc(t(pl.title)) + '</h4><ul>' + bullets + '</ul>'
+        + '<div class="card-actions">' + btn + cartBtnHtml(pl) + '</div></div></div>';
+    }
+    // Colour codes of a palette (last 3 digits of every bullet), the same in every language.
+    function palCodes(pl) {
+      var out = [];
+      (t(pl.bullets) || []).forEach(function (b) {
+        var mm = /(\d{3})\s*$/.exec(b || '');
+        if (mm && out.indexOf(mm[1]) === -1) { out.push(mm[1]); }
+      });
+      return out;
+    }
+    // "1 bag per colour" button: 12 inch (R12) of every colour, hidden unless the shop
+    // shows prices to this account (class stx-shop-on on the root, set by stxShop).
+    function cartBtnHtml(pl) {
+      var codes = palCodes(pl);
+      if (!codes.length) { return ''; }
+      return '<button type="button" class="btn-cart js-cart js-pal-cart" data-codes="' + codes.join(',') + '"'
+        + ' data-title="' + esc(t(pl.title)) + '" title="' + esc(STR.pal_cart_tip) + '">' + esc(STR.pal_cart) + '</button>';
     }
     if (!isSaved) {
       grid.innerHTML = CONFIG.palettes.map(cardHtml).join('');
@@ -2113,6 +2156,15 @@
       if (imEl) { imEl.setAttribute('src', pl.img); }
       var btn = card.querySelector('a.js-dl');
       if (btn) { btn.setAttribute('href', pl.img); }
+      var body = card.querySelector('.card-body');
+      if (body && !card.querySelector('.js-pal-cart')) {
+        var acts = card.querySelector('.card-actions');
+        if (!acts) {
+          acts = document.createElement('div'); acts.className = 'card-actions';
+          if (btn && btn.parentNode) { btn.parentNode.insertBefore(acts, btn); acts.appendChild(btn); } else { body.appendChild(acts); }
+        }
+        acts.insertAdjacentHTML('beforeend', cartBtnHtml(pl));
+      }
       Array.prototype.slice.call(card.querySelectorAll('ul li')).forEach(function (li) {
         if (!li.querySelector('a')) { li.innerHTML = bulletInner(li.textContent); }
       });
@@ -2430,6 +2482,26 @@
       tab.inner = sel.inner.rangeIdx; tab.outer = sel.outer.rangeIdx;
       paint();
     });
+    // "Both colours in your cart": 1 bag of 12 inch (R12) per chosen colour. Built here so it
+    // also exists on a builder-saved copy; visible only with class stx-shop-on (see stxShop).
+    (function calcCart() {
+      var swap = root.querySelector('#swap-btn');
+      if (!swap) { return; }
+      var btn = root.querySelector('#calc-cart');
+      if (!btn) {
+        btn = document.createElement('button');
+        btn.type = 'button'; btn.id = 'calc-cart'; btn.className = 'btn-cart js-cart';
+        swap.parentNode.insertBefore(btn, swap.nextSibling);
+      }
+      btn.textContent = STR.calc_cart; btn.title = STR.calc_cart_tip;
+      btn.addEventListener('click', function () {
+        if (!root.stxShop) { return; }
+        var ic = colorOf('inner'), oc = colorOf('outer');
+        var codes = [ic.code];
+        if (oc.code !== ic.code) { codes.push(oc.code); }
+        root.stxShop.addR12(codes, btn, 'calc_cart', { inner: ic.n + ' ' + ic.code, outer: oc.n + ' ' + oc.code });
+      });
+    })();
     paint();
   })();
 
@@ -2465,6 +2537,14 @@
     if (igp) { track('instagram_click', {}); }
     var shop = e.target.closest ? e.target.closest('a.js-shop') : null;
     if (shop) { track('palette_shop_click', { colour: shop.getAttribute('data-code') || '' }); return; }
+    var pc = e.target.closest ? e.target.closest('button.js-pal-cart') : null;
+    if (pc) {
+      e.preventDefault();
+      if (root.stxShop) {
+        root.stxShop.addR12((pc.getAttribute('data-codes') || '').split(',').filter(Boolean), pc, 'palette_cart', { palette: pc.getAttribute('data-title') || '' });
+      }
+      return;
+    }
     var zip = e.target.closest ? e.target.closest('a[download]') : null;
     if (zip && !zip.classList.contains('js-dl')) {
       track('inspiration_download', { file: (zip.getAttribute('href') || '').split('/').pop() });
@@ -2747,6 +2827,7 @@
     renderCatNote();
   }
   function renderCatNote() {
+    shopFlag();
     var el = $('cc-cat-note'); if (!el) return;
     var msg = catalogLive ? t('cat_note_live', { n: CATALOG.length }) : t('cat_note');
     if (pricesOk === true) msg += ' ' + t('price_note_on'); else if (pricesOk === false) msg += ' ' + t('price_note_off');
@@ -2766,17 +2847,26 @@
       var packs = Math.max(1, Math.ceil(num(r.qty) / (r.packSize || 1)));
       lines.push({ name: r.name, tid: r.template_id, packs: packs });
     });
+    cartAddLines(lines, btn, skipped, 'cost_calc_cart', {});
+  }
+  /* Adds lines [{name, tid, packs}] to the cart one by one, with progress and result toasts.
+     btn is disabled while busy. Shared by the cost calculator, the colour palettes and the
+     double stuffing calculator (through root.stxShop). */
+  function cartAddLines(lines, btn, skipped, evt, extra) {
+    if (btn && btn.disabled) return;
     if (!lines.length) { toast(t('cart_none')); return; }
-    btn.disabled = true;
+    if (btn) btn.disabled = true;
     var done = 0, packsTotal = 0, failed = [];
     function finish() {
-      btn.disabled = false;
+      if (btn) btn.disabled = false;
       var msg = esc(t('cart_done', { n: packsTotal, l: done }));
       if (skipped) msg += ' ' + esc(t('cart_skipped', { n: skipped }));
       if (failed.length) msg += ' ' + esc(t('cart_failed', { names: failed.join(', ') }));
       msg += ' <a href="/shop/cart">' + esc(t('cart_view')) + '</a>';
       toast(msg, true, 9000);
-      track('cost_calc_cart', { lines: done, packs: packsTotal, skipped: skipped, failed: failed.length });
+      var ev = { lines: done, packs: packsTotal, skipped: skipped, failed: failed.length };
+      Object.keys(extra || {}).forEach(function (k) { ev[k] = extra[k]; });
+      track(evt || 'cost_calc_cart', ev);
     }
     function step(k) {
       if (k >= lines.length) { finish(); return; }
@@ -2797,6 +2887,32 @@
     }
     step(0);
   }
+
+  /* ---------------- shop bridge for the rest of the page ----------------
+     The colour palettes and the double stuffing calculator add 12 inch bags (SKU R12 + colour
+     code, 50 pieces) to the cart. Their buttons only show when this account sees prices AND
+     the catalogue is loaded: class stx-shop-on on the root (shopFlag, called from renderCatNote). */
+  function r12Product(code) {
+    for (var k = 0; k < CATALOG.length; k++) { if (CATALOG[k].sku === 'R12' + code) return CATALOG[k]; }
+    return null;
+  }
+  function shopFlag() {
+    if (root && root.classList) root.classList.toggle('stx-shop-on', pricesOk === true && catalogLive);
+  }
+  root.stxShop = {
+    ready: function () { return pricesOk === true && catalogLive; },
+    addR12: function (codes, btn, evt, extra) {
+      if (pricesOk !== true) return;
+      var lines = [], missing = 0;
+      (codes || []).forEach(function (c) {
+        var p = r12Product(c);
+        if (p) lines.push({ name: p.name, tid: p.template_id, packs: 1 }); else missing++;
+      });
+      var ev = { codes: (codes || []).join(',') };
+      Object.keys(extra || {}).forEach(function (k) { ev[k] = extra[k]; });
+      cartAddLines(lines, btn, missing, evt, ev);
+    }
+  };
 
   /* Catalogue sources:
      1. CC_CATALOG_URL: JSON with the Sempertex catalogue (sku, name, pack_size, template_id),
@@ -3196,6 +3312,7 @@
   if (!$('cc-view-calc')) return;
   document.addEventListener('focusin', function (e) { if (e.target && e.target.type === 'number' && e.target.closest('.stx-cc')) e.target.select(); });
   init(true);
+  (function () { var tst = $('cc-toast'); if (tst && root && tst.parentNode !== root) root.appendChild(tst); })();
   loadCatalog();
   checkPriceVisibility();
   window.STXCostCalc = { calc: calc, settings: function () { return settings; }, state: function () { return state; } };
