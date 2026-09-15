@@ -506,7 +506,7 @@
 
   /* ---- TOAST ---- */
   .stx-insp .cc-toast { position: fixed; left: 50%; bottom: 26px; transform: translateX(-50%) translateY(20px); background: var(--dark); color: #fff; padding: 12px 18px; border-radius: 10px; font-weight: 700; font-size: 14px; opacity: 0; pointer-events: none; transition: opacity 0.2s ease, transform 0.2s ease; z-index: 2100; box-shadow: 0 10px 30px rgba(27,7,61,0.35); }
-  .stx-insp .cc-toast.cc-on { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .stx-insp .cc-toast.cc-on { opacity: 1; transform: translateX(-50%) translateY(0); pointer-events: auto; }
 
   /* ---- RESPONSIVE ---- */
   @media (max-width: 980px) {
@@ -2917,7 +2917,7 @@
       var msg = esc(t('cart_done', { n: packsTotal, l: done }));
       if (skipped) msg += ' ' + esc(t(skippedKey || 'cart_skipped', { n: skipped }));
       if (failed.length) msg += ' ' + esc(t('cart_failed', { names: failed.join(', ') }));
-      msg += ' <a href="/shop/cart">' + esc(t('cart_view')) + '</a>';
+      msg += ' <a href="' + shopPrefix + '/shop/cart">' + esc(t('cart_view')) + '</a>';
       toast(msg, true, 9000);
       var ev = { lines: done, packs: packsTotal, skipped: skipped, failed: failed.length };
       Object.keys(extra || {}).forEach(function (k) { ev[k] = extra[k]; });
