@@ -129,6 +129,12 @@
 .stx-why .col-code{display:block;font-size:clamp(11px,.85vw,12px);font-weight:800;color:var(--purple);letter-spacing:.06em;margin-top:3px}
 .stx-why .photo{margin:clamp(20px,2.4vw,28px) 0 0}
 .stx-why .photo img{width:100%;height:auto;border-radius:12px}
+/* Hero-variant: staat direct onder een sec-head, spant de volle
+   breedte van de content-kolom en maakt de foto onmogelijk te
+   missen. Aspect-ratio houdt de ruimte gereserveerd zodat er geen
+   layout-shift is tijdens het laden. */
+.stx-why .photo-hero{margin:clamp(18px,2vw,26px) 0 clamp(28px,3vw,40px)}
+.stx-why .photo-hero img{width:100%;height:auto;aspect-ratio:912/513;object-fit:cover;background:var(--purple-light);border-radius:12px;box-shadow:0 12px 34px rgba(27,7,61,.14)}
 .stx-why .notice{background:var(--purple-light);border-left:4px solid var(--purple);border-radius:8px;padding:clamp(12px,1.4vw,16px) clamp(14px,1.6vw,20px);margin-top:clamp(18px,2.2vw,28px)}
 .stx-why .notice p{font-size:clamp(13.5px,1.05vw,15px);font-weight:600;max-width:none;margin:0}
 
@@ -301,18 +307,18 @@
         <h2 data-i18n="mil_h2">Certificaten en wat ze precies dekken</h2>
         <p class="lede" data-i18n="mil_lede">Zakelijke klanten en eventorganisatoren vragen hier steeds vaker naar. Hieronder staat welke certificeringen er zijn en wat elk van hen dekt.</p>
       </div>
+      <figure class="photo photo-hero">
+        <img src="https://cdn.jsdelivr.net/gh/RobinRuttenBE/stx-website-custom-code@main/assets/photos/sempertex-latex-tapping.jpg"
+             alt="Natuurlijk rubberlatex druppelt uit een ingesneden rubberboom in een opvangkom"
+             data-i18n-alt="mil_photo_alt"
+             width="912" height="513" decoding="async">
+      </figure>
       <div class="duo">
         <div class="body">
           <p data-i18n="mil_p1">Voor het natuurlijke rubberlatex is de volledige toeleveringsketen FSC&reg; Chain of Custody-gecertificeerd, van de plantage tot in de fabriek. Die certificering gaat over herkomst en traceerbaarheid van dat materiaal. Over de verpakking of over de ballon als geheel zegt ze niets.</p>
           <p data-i18n="mil_p2">Het milieumanagementsysteem van de fabriek is gecertificeerd volgens ISO 14001:2015. Die norm beoordeelt hoe een bedrijf zijn milieu-impact meet en bijstuurt. Het is dus geen keurmerk voor het product.</p>
           <p data-i18n="mil_p3">De cijfers hiernaast komen uit de rapportering van Sempertex en gaan over de bedrijfsactiviteiten. Ze gaan niet over de milieu-impact van &eacute;&eacute;n ballon.</p>
           <p><a data-href="/sempertex-certificaten" data-i18n="mil_link">Bekijk de certificaten en de onderbouwing</a></p>
-          <figure class="photo">
-            <img src="https://cdn.jsdelivr.net/gh/RobinRuttenBE/stx-website-custom-code@main/assets/photos/sempertex-latex-tapping.jpg"
-                 alt="Natuurlijk rubberlatex druppelt uit een ingesneden rubberboom in een opvangkom"
-                 data-i18n-alt="mil_photo_alt"
-                 width="912" height="513" loading="lazy" decoding="async">
-          </figure>
         </div>
         <div>
           <div class="data-wrap">
