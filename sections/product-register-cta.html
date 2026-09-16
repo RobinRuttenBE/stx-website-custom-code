@@ -19,8 +19,11 @@
 
      BETA: zolang BETA hieronder op true staat, toont de knop alleen
      in een browser waar je een productpagina ooit opende met
-     ?stxbeta=1 achter de URL (wordt onthouden in localStorage).
-     ?stxbeta=0 zet het weer uit. Echt live voor iedereen:
+     #stxbeta achter de URL (wordt onthouden in localStorage).
+     #stxbeta-uit zet het weer uit. De hash mag achter elke URL,
+     ook als Odoo er al ?attribute_values=... in heeft gezet.
+     (?stxbeta=1 / ?stxbeta=0 werkt ook, maar alleen als de URL
+     nog geen vraagteken heeft.) Echt live voor iedereen:
      BETA op false zetten.
      ============================================================ -->
 <style>
@@ -47,13 +50,20 @@
   var BETA = true; // false = live voor iedereen
   var BETA_KEY = 'stx_register_beta';
 
-  // Beta-schakelaar: ?stxbeta=1 in de URL zet hem aan voor deze browser, ?stxbeta=0 uit.
+  // Beta-schakelaar: #stxbeta achter de URL zet hem aan voor deze browser, #stxbeta-uit uit.
+  // (?stxbeta=1 / ?stxbeta=0 als query werkt ook.)
   function betaOn() {
-    var m = /[?&]stxbeta=([01])/.exec(window.location.search);
+    var h = (window.location.hash || '').toLowerCase();
+    var q = /[?&]stxbeta=([01])/.exec(window.location.search);
+    var want = null;
+    if (h === '#stxbeta' || h === '#stxbeta=1' || h === '#stxbeta-on' || h === '#stxbeta-aan') { want = true; }
+    else if (h === '#stxbeta=0' || h === '#stxbeta-off' || h === '#stxbeta-uit') { want = false; }
+    else if (q) { want = q[1] === '1'; }
     try {
-      if (m) { if (m[1] === '1') { localStorage.setItem(BETA_KEY, '1'); } else { localStorage.removeItem(BETA_KEY); } }
+      if (want === true) { localStorage.setItem(BETA_KEY, '1'); }
+      else if (want === false) { localStorage.removeItem(BETA_KEY); }
       return localStorage.getItem(BETA_KEY) === '1';
-    } catch (e) { return !!(m && m[1] === '1'); }
+    } catch (e) { return want === true; }
   }
 
   function lang() {
