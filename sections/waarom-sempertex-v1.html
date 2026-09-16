@@ -403,12 +403,16 @@
 
   var PAGE_PATHS = ['/why-sempertex', '/waarom-sempertex'];
 
-  /* ---- Duplicaten opruimen (Odoo kan bij een save een kopie in
-     de pagina bewaren; we houden er 1) ---- */
+  /* ---- Duplicaten opruimen. Voorheen hielden we index [0] en
+     verwijderden we de rest, maar dan won een server-side kopie
+     die iemand per ongeluk in de Odoo pagina had geplakt (die is
+     unstyled omdat Odoo <style>/<script> uit body-content strippt).
+     Nu winnen wij: de LAATSTE stx-why-root is de kopie die de
+     loader zojuist injecteerde, dus die is de goede. Alle oudere
+     kopieen gaan weg. ---- */
   var allRoots = document.querySelectorAll('#stx-why-root');
-  var root = allRoots[0];
-  var isSaved = allRoots.length > 1;
-  for (var ri = 1; ri < allRoots.length; ri++) {
+  var root = allRoots[allRoots.length - 1] || null;
+  for (var ri = 0; ri < allRoots.length - 1; ri++) {
     if (allRoots[ri].parentNode) { allRoots[ri].parentNode.removeChild(allRoots[ri]); }
   }
   if (!root) { return; }
@@ -436,11 +440,12 @@
     return;
   }
 
-  /* ---- POSITIONERING: in #wrap zetten, anders bovenaan main/footer ---- */
-  if (!isFile && !isSaved) {
+  /* ---- POSITIONERING: in #wrap zetten (verhuizen als hij nog aan
+     de body-eind hangt na injectie door de loader). ---- */
+  if (!isFile) {
     var mount = document.getElementById('wrap') || document.querySelector('main');
-    if (mount) { mount.appendChild(root); }
-    else {
+    if (mount && root.parentNode !== mount) { mount.appendChild(root); }
+    else if (!mount) {
       var foot = document.querySelector('footer');
       if (foot && foot.parentNode) { foot.parentNode.insertBefore(root, foot); }
     }
