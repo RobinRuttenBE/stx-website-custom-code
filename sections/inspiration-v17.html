@@ -439,6 +439,9 @@
   .stx-cc .cc-field .cc-in { text-align: left; }
   .stx-cc .cc-field textarea.cc-in { min-height: 70px; resize: vertical; }
   .stx-cc .cc-field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  /* Twee velden naast elkaar: labels mogen verschillen in hoogte, de invoervelden staan op één lijn. */
+  .stx-cc .cc-field-row .cc-field { display: flex; flex-direction: column; }
+  .stx-cc .cc-field-row .cc-field label { flex: 1 0 auto; display: flex; align-items: flex-end; }
   .stx-cc .cc-logo-drop { border: 2px dashed var(--rule); border-radius: 10px; padding: 14px; text-align: center; font-size: 13.5px; color: var(--ink-soft); cursor: pointer; }
   .stx-cc .cc-logo-drop img { max-height: 60px; margin: 0 auto 8px; }
   .stx-cc .cc-drawer h3 { font-size: 15px; font-weight: 800; margin: 22px 0 10px; padding-bottom: 6px; border-bottom: 2px solid var(--dark); }
