@@ -17,7 +17,8 @@
      dat en zet onze knop mee aan of uit. Verwijderen = dit blok
      weghalen.
 
-     BETA: zolang BETA hieronder op true staat, toont de knop alleen
+     BETA (nu uit, live voor iedereen sinds 2026-09-16): staat BETA
+     hieronder op true, dan toont de knop alleen
      in een browser waar je een productpagina ooit opende met
      #stxbeta achter de URL (wordt onthouden in localStorage).
      #stxbeta-uit zet het weer uit. De hash mag achter elke URL,
@@ -47,7 +48,7 @@
     de: 'Registrieren, um zu kaufen'
   };
   var PAGE = '/registratie';
-  var BETA = true; // false = live voor iedereen
+  var BETA = false; // true = alleen zichtbaar na #stxbeta (testmodus), false = live voor iedereen
   var BETA_KEY = 'stx_register_beta';
   var beta = false; // gezet door betaOn() hieronder
 
