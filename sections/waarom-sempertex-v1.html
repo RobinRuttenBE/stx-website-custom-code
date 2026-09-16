@@ -307,6 +307,12 @@
           <p data-i18n="mil_p2">Het milieumanagementsysteem van de fabriek is gecertificeerd volgens ISO 14001:2015. Die norm beoordeelt hoe een bedrijf zijn milieu-impact meet en bijstuurt. Het is dus geen keurmerk voor het product.</p>
           <p data-i18n="mil_p3">De cijfers hiernaast komen uit de rapportering van Sempertex en gaan over de bedrijfsactiviteiten. Ze gaan niet over de milieu-impact van &eacute;&eacute;n ballon.</p>
           <p><a data-href="/sempertex-certificaten" data-i18n="mil_link">Bekijk de certificaten en de onderbouwing</a></p>
+          <figure class="photo">
+            <img src="https://cdn.jsdelivr.net/gh/RobinRuttenBE/stx-website-custom-code@main/assets/photos/sempertex-latex-tapping.jpg"
+                 alt="Natuurlijk rubberlatex druppelt uit een ingesneden rubberboom in een opvangkom"
+                 data-i18n-alt="mil_photo_alt"
+                 width="912" height="513" loading="lazy" decoding="async">
+          </figure>
         </div>
         <div>
           <div class="data-wrap">
@@ -508,6 +514,7 @@
       mil_r5_h: 'Recycling in 2024', mil_r5_v: '4.4 tonnes of balloons collected and processed into DUR pet toys',
       mil_r6_h: 'Packaging', mil_r6_v: 'The new international packaging contains 20 percent recycled plastic from post-consumer waste',
       mil_foot: 'Two goals from the same report: the new packaging fully rolled out by 2027, and the collection pilot for used balloons expanded. Both are described with milestones in the <a data-href="/sempertex-certificaten" data-i18n="mil_foot_a">published report</a>.', mil_foot_a: 'published report',
+      mil_photo_alt: 'Natural rubber latex dripping from a tapped rubber tree into a collection cup',
       voo_eyebrow: 'Why Sempertex / In short',
       voo_h2: 'In short',
       voo_c1_h: '93 colours in 8 ranges', voo_c1_b: 'Glossy, matte, metallic, neon, mirror and velvet-like.',
@@ -580,6 +587,7 @@
       mil_r5_h: 'Recyclage en 2024', mil_r5_v: '4,4 tonnes de ballons collectés et transformés en jouets DUR pour animaux',
       mil_r6_h: 'Emballage', mil_r6_v: 'Le nouvel emballage international contient 20 pour cent de plastique recyclé issu de déchets post-consommation',
       mil_foot: 'Deux objectifs issus du même rapport : le nouvel emballage déployé sur toute la gamme d’ici 2027, et le pilote de collecte des ballons usagés élargi. Les deux sont décrits avec des étapes intermédiaires dans le <a data-href="/sempertex-certificaten" data-i18n="mil_foot_a">rapport publié</a>.', mil_foot_a: 'rapport publié',
+      mil_photo_alt: 'Latex naturel qui s’écoule d’un hévéa incisé dans un bol de récolte',
       voo_eyebrow: 'Pourquoi Sempertex / En résumé',
       voo_h2: 'En résumé',
       voo_c1_h: '93 couleurs sur 8 séries', voo_c1_b: 'Brillant, mat, métallisé, néon, miroir et effet velours.',
@@ -652,6 +660,7 @@
       mil_r5_h: 'Recycling 2024', mil_r5_v: '4,4 Tonnen Ballons gesammelt und zu DUR-Haustierspielzeug verarbeitet',
       mil_r6_h: 'Verpackung', mil_r6_v: 'Die neue internationale Verpackung enthält 20 Prozent Recycling-Kunststoff aus Post-Consumer-Abfällen',
       mil_foot: 'Zwei Ziele aus demselben Report: die neue Verpackung bis 2027 vollständig ausgerollt und das Sammelpilotprojekt für gebrauchte Ballons erweitert. Beide sind mit Zwischenschritten im <a data-href="/sempertex-certificaten" data-i18n="mil_foot_a">veröffentlichten Report</a> beschrieben.', mil_foot_a: 'veröffentlichten Report',
+      mil_photo_alt: 'Natürlicher Kautschuklatex tropft aus einem angeritzten Kautschukbaum in eine Auffangschale',
       voo_eyebrow: 'Warum Sempertex / Kurz gefasst',
       voo_h2: 'Kurz gefasst',
       voo_c1_h: '93 Farben in 8 Serien', voo_c1_b: 'Glänzend, matt, metallic, neon, spiegelnd und samtig.',
@@ -987,6 +996,12 @@
     [].slice.call(root.querySelectorAll('[data-i18n]')).forEach(function (el) {
       var k = el.getAttribute('data-i18n');
       if (STR[k] != null) { el.innerHTML = STR[k]; }
+    });
+    /* Alt-attributen (afbeeldingen) via een aparte hook, want innerHTML
+       zou de <img> anders leegmaken. */
+    [].slice.call(root.querySelectorAll('[data-i18n-alt]')).forEach(function (el) {
+      var k = el.getAttribute('data-i18n-alt');
+      if (STR[k] != null) { el.setAttribute('alt', STR[k]); }
     });
     /* Na innerHTML-vervanging bevatten nieuwe <a data-href="..."> geen href.
        Doe die pas hier zodat ze de juiste taalprefix krijgen. */
