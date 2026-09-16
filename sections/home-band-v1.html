@@ -1,0 +1,314 @@
+<!-- ============================================================
+     STX EU / HOMEPAGE BAND v1 (sectiebestand voor de section loader)
+     Twee kaders bovenaan de homepage (= shoppagina zonder categorie):
+     links een carrousel (Nozzle Up 2027, Tools, Inspiratie, Workshops),
+     rechts de registratiekaart. Daaronder wordt het categorie-overzicht
+     iets compacter (5 tegels per rij op desktop) zodat de rijen zichtbaar
+     blijven. Op mobiel staan de kaders onder elkaar en kleiner.
+
+     Paden: /, /shop en de taalversies (/en_GB, /fr, /de, /en_GB/shop, ...).
+     Niet op categorie- of zoekpagina's, niet in de Odoo editor.
+
+     BETA (nu aan): met BETA = true toont de band alleen in een browser
+     waar je de homepage ooit opende met #stxhome achter de URL
+     (onthouden in localStorage). #stxhome-uit zet het weer uit.
+     ?stxhome=1 / ?stxhome=0 werkt ook. Live voor iedereen: BETA op false.
+
+     Beelden komen uit assets/home/ in de repo, gepind op een commit hash.
+     ============================================================ -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rethink+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+
+<style>
+  .stx-home { --purple: #6b3fb9; --purple-light: #f1d9ff; --purple-bg: #faf4ff; --dark: #1b073d; --yellow: #ffdb5a; --ink-soft: rgba(27,7,61,0.62);
+    font-family: 'Rethink Sans', sans-serif; color: var(--dark); line-height: 1.45; }
+  .stx-home *, .stx-home *::before, .stx-home *::after { box-sizing: border-box; }
+  .stx-home a { color: inherit; text-decoration: none; }
+  .stx-home h2, .stx-home p { margin: 0; }
+  .stx-home button { font-family: inherit; cursor: pointer; }
+  .stx-home img { max-width: 100%; }
+
+  .stx-home .sh-band { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 16px; margin: 18px 0 6px; }
+  .stx-home .sh-band.sh-solo { grid-template-columns: minmax(0, 1fr); }
+
+  /* ---- carrousel ---- */
+  .stx-home .sh-caro { position: relative; border-radius: 14px; overflow: hidden; background: var(--purple-light); min-height: 280px; }
+  .stx-home .sh-slide { position: absolute; inset: 0; display: grid; grid-template-columns: minmax(0, 1fr) 260px; align-items: center; padding: 20px 56px 30px; opacity: 0; transition: opacity 0.5s ease; pointer-events: none; }
+  .stx-home .sh-slide.on { opacity: 1; pointer-events: auto; }
+  .stx-home .sh-kicker { font-size: 13px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--purple); margin-bottom: 8px; }
+  .stx-home .sh-slide h2 { font-size: clamp(24px, 2.2vw, 34px); font-weight: 800; line-height: 1.06; letter-spacing: -0.02em; margin-bottom: 14px; max-width: 20ch; color: var(--dark); }
+  .stx-home .sh-hl { background: var(--yellow); padding: 0 0.12em; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+  .stx-home .sh-slide p { font-size: 16.5px; color: var(--ink-soft); max-width: 46ch; margin-bottom: 14px; }
+  .stx-home .sh-chips { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+  .stx-home .sh-chip { background: #fff; border-radius: 999px; padding: 8px 14px; font-size: 14px; font-weight: 700; color: var(--purple); transition: transform 0.14s ease, box-shadow 0.14s ease; }
+  .stx-home .sh-chip:hover { transform: scale(1.05); box-shadow: 0 8px 22px rgba(107,63,185,0.25); color: var(--purple); }
+  .stx-home .sh-cta { display: inline-block; background: var(--dark); color: var(--yellow); font-weight: 800; padding: 13px 22px; border-radius: 8px; font-size: 16px; transition: transform 0.14s ease, box-shadow 0.14s ease; }
+  .stx-home .sh-cta.big { padding: 16px 28px; font-size: 17.5px; }
+  .stx-home .sh-cta:hover { transform: scale(1.03); box-shadow: 0 10px 30px rgba(27,7,61,0.3); color: var(--yellow); }
+  .stx-home .sh-art { display: flex; justify-content: flex-end; align-items: flex-end; height: 220px; }
+  .stx-home .sh-art img { filter: drop-shadow(0 12px 18px rgba(27,7,61,0.28)); width: auto; }
+  .stx-home .sh-art .b1 { height: 210px; z-index: 3; position: relative; }
+  .stx-home .sh-art .b2 { height: 168px; margin-left: -44px; margin-bottom: 8px; z-index: 2; position: relative; }
+  .stx-home .sh-art .b3 { height: 144px; margin-left: -34px; margin-bottom: 16px; z-index: 1; position: relative; }
+  .stx-home .sh-art.photo img { height: 220px; width: 220px; object-fit: cover; border-radius: 16px; filter: none; box-shadow: 0 14px 34px rgba(27,7,61,0.25); }
+  .stx-home .sh-art.logo img { height: 200px; filter: drop-shadow(0 10px 20px rgba(27,7,61,0.35)); }
+  .stx-home .sh-dots { position: absolute; left: 56px; bottom: 12px; display: flex; gap: 6px; z-index: 5; }
+  .stx-home .sh-dots button { width: 8px; height: 8px; border-radius: 50%; border: none; background: rgba(27,7,61,0.25); padding: 0; transition: width 0.2s ease; }
+  .stx-home .sh-dots button.on { background: var(--dark); width: 22px; border-radius: 999px; }
+  .stx-home .sh-arrow { position: absolute; top: 50%; transform: translateY(-50%); width: 34px; height: 34px; border-radius: 50%; border: none; background: rgba(255,255,255,0.85); color: var(--dark); font-weight: 800; font-size: 18px; line-height: 1; z-index: 6; box-shadow: 0 4px 12px rgba(27,7,61,0.15); }
+  .stx-home .sh-arrow.l { left: 10px; } .stx-home .sh-arrow.r { right: 10px; }
+
+  /* Nozzle Up slide: zelfde kaartkleur, bos en sterren erbovenop */
+  .stx-home .sh-slide.ench::before { content: ""; position: absolute; inset: 0; background: var(--sh-forest) center / cover no-repeat; opacity: 0.85;
+    -webkit-mask-image: linear-gradient(90deg, rgba(0,0,0,0.08) 0%, rgba(0,0,0,0.22) 35%, rgba(0,0,0,0.6) 60%, rgba(0,0,0,1) 85%);
+    mask-image: linear-gradient(90deg, rgba(0,0,0,0.08) 0%, rgba(0,0,0,0.22) 35%, rgba(0,0,0,0.6) 60%, rgba(0,0,0,1) 85%); pointer-events: none; }
+  .stx-home .sh-slide.ench::after { content: ""; position: absolute; inset: 0; pointer-events: none;
+    background-image: radial-gradient(circle, #ffdb5a 0 1.5px, transparent 2px), radial-gradient(circle, #fff 0 1px, transparent 1.6px), radial-gradient(circle, #ffdb5a 0 1px, transparent 1.6px);
+    background-size: 140px 90px, 90px 70px, 200px 120px; background-position: 20px 10px, 60px 40px, 0 30px; opacity: 0.7; animation: sh-twinkle 3.2s ease-in-out infinite alternate; }
+  @keyframes sh-twinkle { from { opacity: 0.35; } to { opacity: 0.9; } }
+  .stx-home .sh-slide.ench > * { position: relative; z-index: 1; }
+  .stx-home .sh-slide.ench p { color: rgba(27,7,61,0.85); font-weight: 600; }
+
+  /* ---- registratiekaart ---- */
+  .stx-home .sh-reg { background: var(--dark); color: #fff; border-radius: 14px; padding: 20px 24px; display: flex; flex-direction: column; justify-content: center; position: relative; overflow: hidden; }
+  .stx-home .sh-reg .sh-kicker { color: var(--yellow); }
+  .stx-home .sh-reg h2 { font-size: 22px; font-weight: 800; line-height: 1.15; letter-spacing: -0.01em; margin-bottom: 10px; color: #fff; }
+  .stx-home .sh-reg p { font-size: 14.5px; color: rgba(255,255,255,0.82); margin-bottom: 14px; line-height: 1.45; }
+  .stx-home .sh-reg .sh-btns { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+  .stx-home .sh-btn-y { background: var(--yellow); color: var(--dark); font-weight: 800; padding: 13px 22px; border-radius: 8px; font-size: 15.5px; transition: transform 0.14s ease, box-shadow 0.14s ease; }
+  .stx-home .sh-btn-y:hover { transform: scale(1.03); box-shadow: 0 8px 24px rgba(255,219,90,0.5); color: var(--dark); }
+  .stx-home .sh-login { font-size: 14px; color: rgba(255,255,255,0.8); text-decoration: underline; }
+  .stx-home .sh-login:hover { color: #fff; }
+  .stx-home .sh-glow { position: absolute; right: -30px; top: -30px; width: 130px; height: 130px; border-radius: 50%; background: rgba(255,255,255,0.05); }
+
+  /* ---- shop eronder iets compacter, alleen als de band er staat ---- */
+  body.stx-home-on #o_wsale_products_header { padding-top: 0.75rem !important; padding-bottom: 0.5rem !important; }
+  body.stx-home-on .sempertex_wsale_category_tiles { margin-top: 0.75rem !important; margin-bottom: 2rem !important; }
+  body.stx-home-on .sempertex_wsale_category_intro { margin-bottom: 0.9rem !important; }
+  body.stx-home-on .sempertex_wsale_category_tile_content { padding: 0.5rem 0.6rem 0.6rem; gap: 0.25rem; }
+  @media (min-width: 1200px) {
+    body.stx-home-on .sempertex_wsale_category_masonry { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0.7rem; }
+  }
+
+  @media (max-width: 1100px) { .stx-home .sh-band { grid-template-columns: 1fr; } }
+  @media (prefers-reduced-motion: reduce) { .stx-home .sh-slide.ench::after { animation: none; } }
+
+  /* ---- mobiel: kaders kleiner, registratie eerst ---- */
+  @media (max-width: 760px) {
+    .stx-home .sh-band { gap: 10px; margin: 10px 0 4px; }
+    .stx-home .sh-reg { order: 0; padding: 14px 16px 16px; border-radius: 12px; }
+    .stx-home .sh-reg .sh-kicker { margin-bottom: 4px; }
+    .stx-home .sh-reg h2 { font-size: 19px; margin-bottom: 6px; }
+    .stx-home .sh-reg p { font-size: 13.5px; margin-bottom: 10px; line-height: 1.4; }
+    .stx-home .sh-btn-y { padding: 11px 16px; font-size: 14.5px; }
+    .stx-home .sh-caro { order: 1; min-height: 210px; border-radius: 12px; }
+    .stx-home .sh-slide { grid-template-columns: minmax(0, 1fr) 112px; gap: 6px; padding: 14px 12px 26px 14px; }
+    .stx-home .sh-kicker { font-size: 11.5px; margin-bottom: 3px; }
+    .stx-home .sh-slide h2 { font-size: 19px; margin-bottom: 8px; max-width: none; }
+    .stx-home .sh-slide p { font-size: 13.5px; margin-bottom: 8px; line-height: 1.35; }
+    .stx-home .sh-chips { gap: 6px; margin-bottom: 8px; }
+    .stx-home .sh-chip { font-size: 12.5px; padding: 5px 10px; }
+    .stx-home .sh-cta, .stx-home .sh-cta.big { padding: 10px 14px; font-size: 14px; white-space: nowrap; }
+    .stx-home .sh-art { height: 146px; justify-content: center; }
+    .stx-home .sh-art .b1 { height: 118px; } .stx-home .sh-art .b2 { height: 88px; margin-left: -30px; margin-bottom: 4px; } .stx-home .sh-art .b3 { display: none; }
+    .stx-home .sh-art.photo img { width: 112px; height: 146px; border-radius: 12px; }
+    .stx-home .sh-art.logo img { height: auto; width: 118px; margin-right: -6px; }
+    .stx-home .sh-arrow { display: none; }
+    .stx-home .sh-dots { left: 14px; bottom: 8px; }
+  }
+</style>
+
+<script>
+(function () {
+  'use strict';
+  var BETA = true; // true = alleen zichtbaar na #stxhome (testmodus), false = live voor iedereen
+  var BETA_KEY = 'stx_home_beta';
+  var ASSETS = 'https://cdn.jsdelivr.net/gh/RobinRuttenBE/stx-website-custom-code@695ce774e6d980e760016ddf2715870b6d449da7/assets/home/';
+
+  function wallDone() { if (window.stxLoadwallHide) { window.stxLoadwallHide(); } }
+
+  /* Beta-schakelaar: #stxhome achter de URL zet hem aan voor deze browser, #stxhome-uit uit.
+     (?stxhome=1 / ?stxhome=0 als query werkt ook.) Het inline blok in de Odoo custom code
+     leest dezelfde hash al bij het laden, dit is het vangnet. */
+  function betaOn() {
+    var h = (window.location.hash || '').toLowerCase();
+    var q = /[?&]stxhome=([01])/.exec(window.location.search);
+    var want = null;
+    if (h === '#stxhome' || h === '#stxhome=1' || h === '#stxhome-on' || h === '#stxhome-aan') { want = true; }
+    else if (h === '#stxhome=0' || h === '#stxhome-off' || h === '#stxhome-uit') { want = false; }
+    else if (q) { want = q[1] === '1'; }
+    try {
+      if (want === true) { localStorage.setItem(BETA_KEY, '1'); }
+      else if (want === false) { localStorage.removeItem(BETA_KEY); }
+      return localStorage.getItem(BETA_KEY) === '1';
+    } catch (e) { return want === true; }
+  }
+
+  /* ---- GUARD: alleen de shop-landingspagina (homepage), alle talen ---- */
+  var rawPath = window.location.pathname || '/';
+  var p = rawPath.toLowerCase();
+  while (p.length > 1 && p.charAt(p.length - 1) === '/') { p = p.slice(0, -1); }
+  var m = /^\/(en_gb|fr|de)(\/|$)/.exec(p);
+  var rest = m ? p.slice(m[1].length + 1) : p;
+  if (rest === '') { rest = '/'; }
+  var isHome = (rest === '/' || rest === '/shop') && !/[?&]search=/.test(window.location.search);
+  var isFile = window.location.protocol === 'file:';
+  if (!isHome && !isFile) { wallDone(); return; }
+  if (BETA && !betaOn()) { wallDone(); return; }
+  if (document.body.classList.contains('editor_enable') || document.querySelector('.odoo-editor-editable') || document.querySelector('#wrap.o_editable')) { wallDone(); return; }
+  var container = document.getElementById('o_wsale_container');
+  if (!container || !document.querySelector('.sempertex_wsale_category_tiles')) { wallDone(); return; }
+  if (document.getElementById('stx-home')) { wallDone(); return; }
+
+  /* ---- TAAL + LINKPREFIX ---- */
+  var seg = (rawPath.split('/')[1] || '');
+  var lang = m ? (m[1] === 'en_gb' ? 'en' : m[1]) : 'nl';
+  var prefix = m ? '/' + seg : '';
+
+  var T = {
+    nl: {
+      nu_k: 'Nozzle Up 2027', nu_h: 'Schrijf je in voor |de wachtlijst|', nu_p: 'Het grootste ballonevenement van Europa komt eraan', nu_b: 'Naar de wachtlijst',
+      tl_k: 'Gratis tools', tl_h: 'Combineer kleuren, bereken kosten |& meer!|', tl_b: 'Open de tools',
+      in_k: 'Inspiratie', in_h: 'Tutorials, kleurencombinaties en |gratis downloads|', in_c1: 'Educatieve tutorials', in_c2: 'Kleurencombinaties', in_b: 'Naar inspiratie',
+      ws_k: 'Workshops', ws_h: 'Leer het vak van |de besten|', ws_p: 'Start Your Balloon Business, technische workshops & community building', ws_b: 'Bekijk de workshops',
+      rg_k: 'Enkel voor professionals', rg_h: 'Prijzen zien en bestellen? Registreer je eerst.', rg_p: 'Vul je gegevens in, registreer, en we beoordelen het binnen 1 werkdag. Daarna zie je onze prijzen, voorraad en de winkelwagen.', rg_b: 'Registreren', rg_l: 'Al klant? Inloggen',
+      prev: 'Vorige', next: 'Volgende'
+    },
+    en: {
+      nu_k: 'Nozzle Up 2027', nu_h: 'Join |the waiting list|', nu_p: "Europe's biggest balloon event is on its way", nu_b: 'Join the waiting list',
+      tl_k: 'Free tools', tl_h: 'Match colours, calculate costs |& more!|', tl_b: 'Open the tools',
+      in_k: 'Inspiration', in_h: 'Tutorials, colour combinations and |free downloads|', in_c1: 'Educational tutorials', in_c2: 'Colour combinations', in_b: 'Go to inspiration',
+      ws_k: 'Workshops', ws_h: 'Learn the craft from |the best|', ws_p: 'Start Your Balloon Business, technical workshops & community building', ws_b: 'See the workshops',
+      rg_k: 'For professionals only', rg_h: 'Want to see prices and order? Register first.', rg_p: 'Fill in your details and register. We review it within 1 working day. After that you see our prices, stock and the cart.', rg_b: 'Register', rg_l: 'Already a customer? Sign in',
+      prev: 'Previous', next: 'Next'
+    },
+    fr: {
+      nu_k: 'Nozzle Up 2027', nu_h: 'Inscrivez-vous sur |la liste d’attente|', nu_p: 'Le plus grand événement ballon d’Europe arrive', nu_b: 'Vers la liste d’attente',
+      tl_k: 'Outils gratuits', tl_h: 'Combinez les couleurs, calculez vos coûts |& plus !|', tl_b: 'Ouvrir les outils',
+      in_k: 'Inspiration', in_h: 'Tutoriels, combinaisons de couleurs et |téléchargements gratuits|', in_c1: 'Tutoriels', in_c2: 'Combinaisons de couleurs', in_b: 'Vers l’inspiration',
+      ws_k: 'Workshops', ws_h: 'Apprenez le métier avec |les meilleurs|', ws_p: 'Start Your Balloon Business, ateliers techniques & community building', ws_b: 'Voir les workshops',
+      rg_k: 'Réservé aux professionnels', rg_h: 'Voir les prix et commander ? Créez d’abord un compte.', rg_p: 'Remplissez vos coordonnées et inscrivez-vous. Nous validons sous 1 jour ouvrable. Ensuite vous voyez nos prix, le stock et le panier.', rg_b: 'Créer un compte', rg_l: 'Déjà client ? Se connecter',
+      prev: 'Précédent', next: 'Suivant'
+    },
+    de: {
+      nu_k: 'Nozzle Up 2027', nu_h: 'Trag dich in |die Warteliste| ein', nu_p: 'Europas größtes Ballon-Event kommt', nu_b: 'Zur Warteliste',
+      tl_k: 'Kostenlose Tools', tl_h: 'Farben kombinieren, Kosten berechnen |& mehr!|', tl_b: 'Tools öffnen',
+      in_k: 'Inspiration', in_h: 'Tutorials, Farbkombinationen und |kostenlose Downloads|', in_c1: 'Tutorials', in_c2: 'Farbkombinationen', in_b: 'Zur Inspiration',
+      ws_k: 'Workshops', ws_h: 'Lern das Handwerk von |den Besten|', ws_p: 'Start Your Balloon Business, technische Workshops & Community Building', ws_b: 'Workshops ansehen',
+      rg_k: 'Nur für Profis', rg_h: 'Preise sehen und bestellen? Registriere dich zuerst.', rg_p: 'Trag deine Daten ein und registriere dich. Wir prüfen es innerhalb von 1 Werktag. Danach siehst du unsere Preise, den Lagerbestand und den Warenkorb.', rg_b: 'Registrieren', rg_l: 'Schon Kunde? Anmelden',
+      prev: 'Zurück', next: 'Weiter'
+    }
+  };
+  var S = T[lang] || T.nl;
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function hl(s) { return esc(s).replace(/\|([^|]+)\|/g, '<span class="sh-hl">$1</span>'); }
+
+  var LINKS = {
+    nozzle: 'https://www.nozzleup.eu/waitinglist',
+    tools: prefix + '/tools',
+    inspiration: prefix + '/inspiration',
+    tutorials: prefix + '/inspiration#tutorials',
+    colours: prefix + '/inspiration#colours',
+    workshops: prefix + '/events',
+    register: prefix + '/registratie',
+    login: '/web/login'
+  };
+
+  /* Ingelogd (uitlog- of portaallink in de pagina): de registratiekaart is dan niet van
+     toepassing, de carrousel krijgt de volle breedte. */
+  var loggedIn = !!document.querySelector('a[href*="/web/session/logout"], a[href*="/my/home"], a[href*="/my/account"]');
+
+  function track(ev, params) {
+    try {
+      params = params || {};
+      params.page_lang = lang;
+      if (typeof window.gtag === 'function') { window.gtag('event', ev, params); }
+      else if (window.dataLayer && window.dataLayer.push) { window.dataLayer.push(Object.assign({ event: ev }, params)); }
+      if (window.posthog && window.posthog.capture) { window.posthog.capture(ev, params); }
+    } catch (e) {}
+  }
+
+  /* ---- MARKUP ---- */
+  var host = document.createElement('div');
+  host.className = 'container stx-home';
+  host.id = 'stx-home';
+  host.setAttribute('data-nosnippet', '');
+  host.innerHTML =
+    '<section class="sh-band' + (loggedIn ? ' sh-solo' : '') + '">' +
+      '<div class="sh-caro" id="sh-caro" style="--sh-forest:url(' + ASSETS + 'enchanted-forest.jpg)">' +
+        '<div class="sh-slide ench on" data-slide="nozzle-up">' +
+          '<div><div class="sh-kicker">' + esc(S.nu_k) + '</div><h2>' + hl(S.nu_h) + '</h2><p>' + esc(S.nu_p) + '</p>' +
+          '<a class="sh-cta" href="' + LINKS.nozzle + '" target="_blank" rel="noopener" data-track="nozzle-up">' + esc(S.nu_b) + '</a></div>' +
+          '<div class="sh-art logo"><img src="' + ASSETS + 'nozzle-up-2027.png" alt="Nozzle Up 2027" loading="eager"></div>' +
+        '</div>' +
+        '<div class="sh-slide" data-slide="tools">' +
+          '<div><div class="sh-kicker">' + esc(S.tl_k) + '</div><h2>' + hl(S.tl_h) + '</h2>' +
+          '<a class="sh-cta big" href="' + LINKS.tools + '" data-track="tools">' + esc(S.tl_b) + '</a></div>' +
+          '<div class="sh-art"><img class="b1" src="' + ASSETS + 'tools-1.png" alt="" loading="lazy"><img class="b2" src="' + ASSETS + 'tools-2.png" alt="" loading="lazy"><img class="b3" src="' + ASSETS + 'tools-3.png" alt="" loading="lazy"></div>' +
+        '</div>' +
+        '<div class="sh-slide" data-slide="inspiration">' +
+          '<div><div class="sh-kicker">' + esc(S.in_k) + '</div><h2>' + hl(S.in_h) + '</h2>' +
+          '<div class="sh-chips"><a class="sh-chip" href="' + LINKS.tutorials + '" data-track="tutorials">' + esc(S.in_c1) + '</a><a class="sh-chip" href="' + LINKS.colours + '" data-track="colours">' + esc(S.in_c2) + '</a></div>' +
+          '<a class="sh-cta" href="' + LINKS.inspiration + '" data-track="inspiration">' + esc(S.in_b) + '</a></div>' +
+          '<div class="sh-art"><img class="b1" src="' + ASSETS + 'inspiration-1.png" alt="" loading="lazy"><img class="b2" src="' + ASSETS + 'inspiration-2.png" alt="" loading="lazy"><img class="b3" src="' + ASSETS + 'inspiration-3.png" alt="" loading="lazy"></div>' +
+        '</div>' +
+        '<div class="sh-slide" data-slide="workshops">' +
+          '<div><div class="sh-kicker">' + esc(S.ws_k) + '</div><h2>' + hl(S.ws_h) + '</h2><p>' + esc(S.ws_p) + '</p>' +
+          '<a class="sh-cta" href="' + LINKS.workshops + '" data-track="workshops">' + esc(S.ws_b) + '</a></div>' +
+          '<div class="sh-art photo"><img src="' + ASSETS + 'workshops.jpg" alt="" loading="lazy"></div>' +
+        '</div>' +
+        '<button class="sh-arrow l" type="button" data-dir="-1" aria-label="' + esc(S.prev) + '">&#8249;</button>' +
+        '<button class="sh-arrow r" type="button" data-dir="1" aria-label="' + esc(S.next) + '">&#8250;</button>' +
+        '<div class="sh-dots" id="sh-dots"></div>' +
+      '</div>' +
+      (loggedIn ? '' :
+      '<aside class="sh-reg">' +
+        '<div class="sh-glow"></div>' +
+        '<div class="sh-kicker">' + esc(S.rg_k) + '</div>' +
+        '<h2>' + esc(S.rg_h) + '</h2>' +
+        '<p>' + esc(S.rg_p) + '</p>' +
+        '<div class="sh-btns"><a class="sh-btn-y" href="' + LINKS.register + '" data-track="register">' + esc(S.rg_b) + '</a><a class="sh-login" href="' + LINKS.login + '" data-track="login">' + esc(S.rg_l) + '</a></div>' +
+      '</aside>') +
+    '</section>';
+
+  container.parentNode.insertBefore(host, container);
+  document.body.classList.add('stx-home-on');
+
+  /* ---- CARROUSEL ---- */
+  var caro = document.getElementById('sh-caro');
+  var slides = caro.querySelectorAll('.sh-slide');
+  var dots = document.getElementById('sh-dots');
+  var i = 0, timer = null;
+  var autoplay = !(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  Array.prototype.forEach.call(slides, function (s, k) {
+    var b = document.createElement('button'); b.type = 'button'; b.className = k === 0 ? 'on' : '';
+    b.setAttribute('aria-label', s.getAttribute('data-slide'));
+    b.addEventListener('click', function () { go(k); track('home_band_dot', { slide: s.getAttribute('data-slide') }); });
+    dots.appendChild(b);
+  });
+  function go(n) {
+    i = (n + slides.length) % slides.length;
+    Array.prototype.forEach.call(slides, function (s, k) { s.classList.toggle('on', k === i); });
+    Array.prototype.forEach.call(dots.querySelectorAll('button'), function (b, k) { b.classList.toggle('on', k === i); });
+    restart();
+  }
+  function restart() { clearInterval(timer); if (autoplay) { timer = setInterval(function () { go(i + 1); }, 6000); } }
+  Array.prototype.forEach.call(caro.querySelectorAll('.sh-arrow'), function (a) {
+    a.addEventListener('click', function () { go(i + parseInt(a.getAttribute('data-dir'), 10)); });
+  });
+  caro.addEventListener('mouseenter', function () { clearInterval(timer); });
+  caro.addEventListener('mouseleave', restart);
+  var sx = null;
+  caro.addEventListener('touchstart', function (e) { sx = e.touches[0].clientX; }, { passive: true });
+  caro.addEventListener('touchend', function (e) { if (sx == null) { return; } var dx = e.changedTouches[0].clientX - sx; if (Math.abs(dx) > 40) { go(i + (dx < 0 ? 1 : -1)); } sx = null; });
+  host.addEventListener('click', function (e) {
+    var a = e.target.closest ? e.target.closest('a[data-track]') : null;
+    if (a) { track('home_band_click', { target: a.getAttribute('data-track'), slide: slides[i].getAttribute('data-slide') }); }
+  });
+  restart();
+  track('home_band_view', { logged_in: loggedIn });
+  wallDone();
+})();
+</script>
+<!-- ================ EINDE HOMEPAGE BAND ================ -->
