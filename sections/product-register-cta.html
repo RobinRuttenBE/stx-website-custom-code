@@ -8,11 +8,11 @@
      Werking: op elke productpagina (#product_details aanwezig)
      komt onder de knop "Toevoegen aan verlanglijst" een knop naar
      /registratie, met de taalprefix van de pagina (en_GB, fr, de;
-     nl zonder). De knop toont ALLEEN als de knop "Aan winkelmandje
-     toevoegen" niet zichtbaar is: bezoekers die niet ingelogd zijn,
-     en klanten die ingelogd zijn maar op Odoo-niveau geen prijzen
-     zien. Ziet het account prijzen (winkelmandje-knop zichtbaar),
-     dan komt er niets bij. Odoo kan die knop na het laden nog
+     nl zonder). De knop toont ALLEEN voor bezoekers die niet
+     ingelogd zijn (Odoo session info is_public). Ingelogde klanten
+     zien hem nooit, ook niet zonder prijstoegang. Extra vangnet:
+     is de knop "Aan winkelmandje toevoegen" zichtbaar, dan komt er
+     ook niets bij. Odoo kan die knop na het laden nog
      tonen of verbergen (varianten, prijs 0); een observer volgt
      dat en zet onze knop mee aan of uit. Verwijderen = dit blok
      weghalen.
@@ -35,7 +35,6 @@
     font-weight: 600;
   }
   .stx-register-cta .fa { margin-right: 8px; }
-  .stx-register-cta[hidden] { display: none !important; }
 </style>
 <script>
 (function () {
@@ -51,6 +50,10 @@
   var BETA = false; // true = alleen zichtbaar na #stxbeta (testmodus), false = live voor iedereen
   var BETA_KEY = 'stx_register_beta';
   var beta = false; // gezet door betaOn() hieronder
+  // Odoo verwijdert odoo.__session_info__ zodra zijn eigen scripts (defer) starten,
+  // dus we lezen hem nu, terwijl dit inline script tijdens het laden draait.
+  var SI = null;
+  try { SI = (window.odoo && window.odoo.__session_info__) || null; } catch (e) {}
 
   // Beta-schakelaar: #stxbeta achter de URL zet hem aan voor deze browser, #stxbeta-uit uit.
   // (?stxbeta=1 / ?stxbeta=0 als query werkt ook.)
@@ -88,46 +91,57 @@
   function canBuy() {
     return visible(document.querySelector('#product_details #add_to_cart'));
   }
+  // Alleen voor bezoekers die NIET ingelogd zijn. Ingelogde klanten zonder prijzen
+  // krijgen de knop ook niet (Robin, 2026-09-16). Bron: Odoo session info;
+  // zonder session info: ingelogd als er een uitlog- of portaallink staat.
+  function loggedIn() {
+    try {
+      var si = SI || (window.odoo && window.odoo.__session_info__);
+      if (si && typeof si.is_public === 'boolean') { return !si.is_public; }
+      if (si && 'uid' in si) { return !!si.uid; }
+      if (si && typeof si.is_website_user === 'boolean') { return !si.is_website_user; }
+    } catch (e) {}
+    return !!document.querySelector('a[href*="/web/session/logout"], a[href*="/my/home"], a[href*="/my/account"]');
+  }
 
+  function removeAll() {
+    var all = document.querySelectorAll('.stx-register-cta');
+    for (var i = 0; i < all.length; i++) { if (all[i].parentNode) { all[i].parentNode.removeChild(all[i]); } }
+  }
   function place() {
     var details = document.getElementById('product_details');
     if (!details) { return; }
-    var cta = details.querySelector('.stx-register-cta');
-    if (BETA && !beta) {
-      // Uit: knop weg, ook als Odoo hem uit een eigen snapshot terugzet.
-      if (cta && cta.parentNode) { cta.parentNode.removeChild(cta); }
-      return;
-    }
-    if (!cta) {
-      var block = details.querySelector('#product_option_block');
-      var wish = details.querySelector('.o_add_wishlist_dyn, .o_add_wishlist');
-      var anchor = block || (wish && wish.parentNode) || details.querySelector('#o_wsale_cta_wrapper');
-      if (!anchor) { return; }
-      cta = document.createElement('a');
-      cta.className = 'btn btn-primary stx-register-cta';
-      cta.href = prefix() + PAGE;
-      cta.setAttribute('data-stx-register', '1');
-      cta.innerHTML = '<i class="fa fa-user-plus" aria-hidden="true"></i>' + TXT[lang()];
-      if (anchor.id === 'o_wsale_cta_wrapper') { anchor.appendChild(cta); }
-      else { anchor.insertAdjacentElement('afterend', cta); }
-    }
-    cta.hidden = canBuy();
+    // Niet tonen: testmodus uit, ingelogd, of de winkelmandknop is zichtbaar.
+    // Dan komt de knop er nooit in, en gaat een kopie die Odoo uit een eigen
+    // snapshot terugzet meteen weer weg. (Verbergen via een attribuut werkt niet:
+    // Odoo bouwt het detailblok na het laden opnieuw op uit die snapshot.)
+    if ((BETA && !beta) || loggedIn() || canBuy()) { removeAll(); return; }
+    var all = details.querySelectorAll('.stx-register-cta');
+    for (var i = 1; i < all.length; i++) { if (all[i].parentNode) { all[i].parentNode.removeChild(all[i]); } }
+    if (all.length) { return; }
+    var block = details.querySelector('#product_option_block');
+    var wish = details.querySelector('.o_add_wishlist_dyn, .o_add_wishlist');
+    var anchor = block || (wish && wish.parentNode) || details.querySelector('#o_wsale_cta_wrapper');
+    if (!anchor) { return; }
+    var cta = document.createElement('a');
+    cta.className = 'btn btn-primary stx-register-cta';
+    cta.href = prefix() + PAGE;
+    cta.setAttribute('data-stx-register', '1');
+    cta.innerHTML = '<i class="fa fa-user-plus" aria-hidden="true"></i>' + TXT[lang()];
+    if (anchor.id === 'o_wsale_cta_wrapper') { anchor.appendChild(cta); }
+    else { anchor.insertAdjacentElement('afterend', cta); }
   }
-
-  // Meteen lezen: Odoo herschrijft de URL na het laden (replaceState met alleen
-  // attribute_values), dan zijn hash en query weg.
-  beta = betaOn();
 
   var observed = false;
   function observe() {
-    var details = document.getElementById('product_details');
-    if (observed || !details || !window.MutationObserver) { return; }
+    // Op body, niet op #product_details: Odoo vervangt dat blok soms in zijn geheel.
+    if (observed || !window.MutationObserver || !document.body) { return; }
     observed = true;
     var t = null;
     new MutationObserver(function () {
       clearTimeout(t);
       t = setTimeout(place, 60);
-    }).observe(details, { subtree: true, childList: true, attributes: true, attributeFilter: ['class', 'style'] });
+    }).observe(document.body, { subtree: true, childList: true, attributes: true, attributeFilter: ['class', 'style'] });
   }
   function apply() {
     place();
