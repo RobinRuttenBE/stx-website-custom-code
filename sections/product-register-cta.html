@@ -49,6 +49,7 @@
   var PAGE = '/registratie';
   var BETA = true; // false = live voor iedereen
   var BETA_KEY = 'stx_register_beta';
+  var beta = false; // gezet door betaOn() hieronder
 
   // Beta-schakelaar: #stxbeta achter de URL zet hem aan voor deze browser, #stxbeta-uit uit.
   // (?stxbeta=1 / ?stxbeta=0 als query werkt ook.)
@@ -91,6 +92,11 @@
     var details = document.getElementById('product_details');
     if (!details) { return; }
     var cta = details.querySelector('.stx-register-cta');
+    if (BETA && !beta) {
+      // Uit: knop weg, ook als Odoo hem uit een eigen snapshot terugzet.
+      if (cta && cta.parentNode) { cta.parentNode.removeChild(cta); }
+      return;
+    }
     if (!cta) {
       var block = details.querySelector('#product_option_block');
       var wish = details.querySelector('.o_add_wishlist_dyn, .o_add_wishlist');
@@ -107,19 +113,33 @@
     cta.hidden = canBuy();
   }
 
-  function run() {
-    if (BETA && !betaOn()) { return; }
-    place();
+  // Meteen lezen: Odoo herschrijft de URL na het laden (replaceState met alleen
+  // attribute_values), dan zijn hash en query weg.
+  beta = betaOn();
+
+  var observed = false;
+  function observe() {
     var details = document.getElementById('product_details');
-    if (!details || !window.MutationObserver) { return; }
+    if (observed || !details || !window.MutationObserver) { return; }
+    observed = true;
     var t = null;
     new MutationObserver(function () {
       clearTimeout(t);
       t = setTimeout(place, 60);
     }).observe(details, { subtree: true, childList: true, attributes: true, attributeFilter: ['class', 'style'] });
+  }
+  function apply() {
+    place();
+    observe();
     // Odoo rondt de productpagina soms pas na het laden af (combinatie-info, prijs).
     setTimeout(place, 600);
     setTimeout(place, 2000);
+  }
+  function run() {
+    apply();
+    // #stxbeta achter de URL typen herlaadt de pagina niet (alleen de hash wijzigt),
+    // dus we luisteren mee en zetten de knop meteen aan of uit.
+    window.addEventListener('hashchange', function () { beta = betaOn(); apply(); });
   }
 
   if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', run); }
