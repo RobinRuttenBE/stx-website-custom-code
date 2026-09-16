@@ -1,0 +1,100 @@
+<!-- ============================================================
+     STX EU / PRODUCTPAGINA: knop "Registreer om te kopen"
+     Dit blok staat INLINE in het einde-body Custom Code veld van
+     Odoo (Instellingen > Website > Custom Code), net als de
+     menu-gloed. Dit bestand is de kopie in de repo; de section
+     loader laadt het NIET (productpaden zijn /shop/<slug>-<id>).
+
+     Werking: op elke productpagina (#product_details aanwezig)
+     komt onder de knop "Toevoegen aan verlanglijst" een knop naar
+     /registratie, met de taalprefix van de pagina (en_GB, fr, de;
+     nl zonder). De knop toont ALLEEN als de knop "Aan winkelmandje
+     toevoegen" niet zichtbaar is: bezoekers die niet ingelogd zijn,
+     en klanten die ingelogd zijn maar op Odoo-niveau geen prijzen
+     zien. Ziet het account prijzen (winkelmandje-knop zichtbaar),
+     dan komt er niets bij. Odoo kan die knop na het laden nog
+     tonen of verbergen (varianten, prijs 0); een observer volgt
+     dat en zet onze knop mee aan of uit. Verwijderen = dit blok
+     weghalen.
+     ============================================================ -->
+<style>
+  .stx-register-cta {
+    flex: 0 0 100%;
+    width: 100%;
+    margin-top: 2px;
+    font-weight: 600;
+  }
+  .stx-register-cta .fa { margin-right: 8px; }
+  .stx-register-cta[hidden] { display: none !important; }
+</style>
+<script>
+(function () {
+  'use strict';
+
+  var TXT = {
+    nl: 'Registreer om te kopen',
+    en: 'Register to buy',
+    fr: 'Créer un compte pour acheter',
+    de: 'Registrieren, um zu kaufen'
+  };
+  var PAGE = '/registratie';
+
+  function lang() {
+    var l = (document.documentElement.getAttribute('lang') || '').toLowerCase().slice(0, 2);
+    return TXT[l] ? l : 'nl';
+  }
+  // Taalprefix uit het pad: /en_GB/shop/..., /fr/shop/..., /de/shop/...; nl heeft geen prefix.
+  function prefix() {
+    var seg = (window.location.pathname.split('/')[1] || '');
+    return /^[a-z]{2}(_[A-Za-z]{2})?$/.test(seg) ? '/' + seg : '';
+  }
+  function visible(el) {
+    if (!el || el.classList.contains('d-none')) { return false; }
+    var cs = window.getComputedStyle(el);
+    if (cs.display === 'none' || cs.visibility === 'hidden') { return false; }
+    var wrap = el.closest('#add_to_cart_wrap');
+    if (wrap && (wrap.classList.contains('d-none') || window.getComputedStyle(wrap).display === 'none')) { return false; }
+    return true;
+  }
+  function canBuy() {
+    return visible(document.querySelector('#product_details #add_to_cart'));
+  }
+
+  function place() {
+    var details = document.getElementById('product_details');
+    if (!details) { return; }
+    var cta = details.querySelector('.stx-register-cta');
+    if (!cta) {
+      var block = details.querySelector('#product_option_block');
+      var wish = details.querySelector('.o_add_wishlist_dyn, .o_add_wishlist');
+      var anchor = block || (wish && wish.parentNode) || details.querySelector('#o_wsale_cta_wrapper');
+      if (!anchor) { return; }
+      cta = document.createElement('a');
+      cta.className = 'btn btn-primary stx-register-cta';
+      cta.href = prefix() + PAGE;
+      cta.setAttribute('data-stx-register', '1');
+      cta.innerHTML = '<i class="fa fa-user-plus" aria-hidden="true"></i>' + TXT[lang()];
+      if (anchor.id === 'o_wsale_cta_wrapper') { anchor.appendChild(cta); }
+      else { anchor.insertAdjacentElement('afterend', cta); }
+    }
+    cta.hidden = canBuy();
+  }
+
+  function run() {
+    place();
+    var details = document.getElementById('product_details');
+    if (!details || !window.MutationObserver) { return; }
+    var t = null;
+    new MutationObserver(function () {
+      clearTimeout(t);
+      t = setTimeout(place, 60);
+    }).observe(details, { subtree: true, childList: true, attributes: true, attributeFilter: ['class', 'style'] });
+    // Odoo rondt de productpagina soms pas na het laden af (combinatie-info, prijs).
+    setTimeout(place, 600);
+    setTimeout(place, 2000);
+  }
+
+  if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', run); }
+  else { run(); }
+})();
+</script>

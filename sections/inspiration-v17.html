@@ -555,7 +555,7 @@
   }
 </style>
 
-<div class="stx-insp" id="stx-insp-root" data-stx-v="29" style="display:none">
+<div class="stx-insp" id="stx-insp-root" data-stx-v="30" style="display:none">
   <div class="wrap">
     <div class="layout">
 
@@ -728,8 +728,8 @@
           </div>
           <div class="cc-row cc-tim">
             <div class="cc-lbl"><span data-i18n="cc_time_overhead">Share of your fixed monthly costs</span><small id="cc-overhead-note"></small></div>
-            <div></div>
-            <div class="cc-num cc-soft cc-col-rate">&nbsp;</div>
+            <div class="cc-num cc-soft" id="cc-overhead-h">0 h</div>
+            <div class="cc-num cc-soft cc-col-rate" id="cc-overhead-rate"></div>
             <div class="cc-in-wrap"><input class="cc-in" type="number" id="cc-overhead" min="0" step="1"></div>
           </div>
           <div class="cc-row cc-total cc-tim">
@@ -895,10 +895,10 @@
   </div>
   <div class="cc-field-row">
     <div class="cc-field"><label data-i18n="cc_set_overhead">Fixed costs per month (overhead)</label><input class="cc-in" type="number" id="cc-s-overhead" min="0" step="10" placeholder="400"></div>
-    <div class="cc-field"><label data-i18n="cc_set_jobs">Jobs per month</label><input class="cc-in" type="number" id="cc-s-jobs" min="1" step="1"></div>
+    <div class="cc-field"><label data-i18n="cc_set_hours">Hours on jobs per month</label><input class="cc-in" type="number" id="cc-s-hours" min="1" step="1" placeholder="40"></div>
   </div>
-  <p class="cc-hint" data-i18n="cc_set_overhead_hint">Add up everything you pay every month, even in a month without a single job: van or car, insurance, storage or studio rent, software, phone, website, accountant. Fill in that monthly total here. The tool divides it by your jobs per month, so every job carries its share.</p>
-  <p class="cc-hint" data-i18n="cc_set_overhead_ex">Example: van 150 + insurance 60 + storage 120 + software 30 + phone 40 = 400 per month. With 8 jobs a month, each job carries 50.</p>
+  <p class="cc-hint" data-i18n="cc_set_overhead_hint">Add up everything you pay every month, even in a month without a single job: van or car, insurance, storage or studio rent, software, phone, website, accountant. Fill in that monthly total, plus the hours you spend on jobs in a normal month. The tool turns that into an overhead rate per hour. A pillar of 20 minutes carries a small share, a full day of inflating and installing carries a big one.</p>
+  <p class="cc-hint" data-i18n="cc_set_overhead_ex">Example: van 150 + insurance 60 + storage 120 + software 30 + phone 40 = 400 per month. With 40 hours on jobs a month that is 10 per hour. A job of 4 hours carries 40, a job of 1 hour carries 10.</p>
   <div class="cc-field-row">
     <div class="cc-field"><label data-i18n="cc_set_currency">Currency</label>
       <select class="cc-in cc-text" id="cc-s-currency"><option value="EUR">EUR</option><option value="GBP">GBP</option></select></div>
@@ -967,7 +967,7 @@
   // en blijft dit script van statische content af.
   // MAAR: is de opgeslagen kopie van een OUDERE structuurversie, dan
   // wordt hij automatisch opgeruimd en bouwt het script alles vers op.
-  var STX_V = '29';
+  var STX_V = '30';
   if (saved && fresh && saved.getAttribute('data-stx-v') !== STX_V) {
     if (saved.parentNode) { saved.parentNode.removeChild(saved); }
     saved = null;
@@ -1214,7 +1214,7 @@
       cc_t_admin: 'Client contact and admin',
       cc_t_admin_s: 'Calls, messages, this quote',
       cc_travel_note: 'about {h} h on the road, plus {r} per km',
-      cc_overhead_note: '{m} fixed costs per month over {j} jobs',
+      cc_overhead_note: '{m} per month over {hm} h = {r} per hour',
       cc_fin_h: 'Final price',
       cc_fin_hint: 'Costs plus profit. 1.30 to 1.50 is the usual range for decoration work.',
       cc_fin_mat: 'Materials subtotal',
@@ -1274,8 +1274,8 @@
       cc_set_hourly: 'Hourly rate',
       cc_set_km: 'Rate per km',
       cc_set_overhead: 'Fixed costs per month (overhead)',
-      cc_set_jobs: 'Jobs per month',
-      cc_set_overhead_hint: 'Add up everything you pay every month, even in a month without a single job: van or car, insurance, storage or studio rent, software, phone, website, accountant. Fill in that monthly total here. The tool divides it by your jobs per month, so every job carries its share.',
+      cc_set_hours: 'Hours on jobs per month',
+      cc_set_overhead_hint: 'Add up everything you pay every month, even in a month without a single job: van or car, insurance, storage or studio rent, software, phone, website, accountant. Fill in that monthly total, plus the hours you spend on jobs in a normal month. The tool turns that into an overhead rate per hour. A pillar of 20 minutes carries a small share, a full day of inflating and installing carries a big one.',
       cc_set_currency: 'Currency',
       cc_set_vat: 'VAT rate %',
       cc_set_business: 'Your business, on the quote',
@@ -1324,7 +1324,7 @@
       cc_ac_more: '{n} more. Keep typing to narrow down.',
       cc_price_note_on: 'Prices follow the pricelist of your shop account.',
       cc_price_note_off: 'Your shop account does not show prices, so they are not filled in here either. Type your own purchase price per piece.',
-      cc_set_overhead_ex: 'Example: van 150 + insurance 60 + storage 120 + software 30 + phone 40 = 400 per month. With 8 jobs a month, each job carries 50.',
+      cc_set_overhead_ex: 'Example: van 150 + insurance 60 + storage 120 + software 30 + phone 40 = 400 per month. With 40 hours on jobs a month that is 10 per hour. A job of 4 hours carries 40, a job of 1 hour carries 10.',
       cc_ph_item: 'Search the catalogue or type your own item',
       cc_ph_client: 'Client name and address',
       cc_ph_event: 'Event, date and venue',
@@ -1403,7 +1403,7 @@
       cc_t_admin: 'Kundenkontakt und Verwaltung',
       cc_t_admin_s: 'Anrufe, Nachrichten, dieses Angebot',
       cc_travel_note: 'etwa {h} h unterwegs, plus {r} pro km',
-      cc_overhead_note: '{m} feste Kosten pro Monat auf {j} Auftr\u00e4ge',
+      cc_overhead_note: '{m} pro Monat auf {hm} h = {r} pro Stunde',
       cc_fin_h: 'Endpreis',
       cc_fin_hint: 'Kosten plus Gewinn. 1,30 bis 1,50 ist bei Dekorationsarbeit \u00fcblich.',
       cc_fin_mat: 'Zwischensumme Material',
@@ -1463,8 +1463,8 @@
       cc_set_hourly: 'Stundensatz',
       cc_set_km: 'Satz pro km',
       cc_set_overhead: 'Feste Kosten pro Monat (Gemeinkosten)',
-      cc_set_jobs: 'Auftr\u00e4ge pro Monat',
-      cc_set_overhead_hint: 'Z\u00e4hle alles zusammen, was du jeden Monat zahlst, auch in einem Monat ohne einen einzigen Auftrag: Lieferwagen oder Auto, Versicherung, Lager oder Atelier, Software, Telefon, Website, Buchhalter. Trage diese Monatssumme hier ein. Das Tool teilt sie durch deine Auftr\u00e4ge pro Monat, so tr\u00e4gt jeder Auftrag seinen Anteil.',
+      cc_set_hours: 'Stunden f\u00fcr Auftr\u00e4ge pro Monat',
+      cc_set_overhead_hint: 'Z\u00e4hle alles zusammen, was du jeden Monat zahlst, auch in einem Monat ohne einen einzigen Auftrag: Lieferwagen oder Auto, Versicherung, Lager oder Atelier, Software, Telefon, Website, Buchhalter. Trage diese Monatssumme ein, plus die Stunden, die du in einem normalen Monat an Auftr\u00e4gen arbeitest. Das Tool macht daraus einen Gemeinkostensatz pro Stunde. Eine S\u00e4ule von 20 Minuten tr\u00e4gt einen kleinen Anteil, ein ganzer Tag Aufblasen und Aufbau einen gro\u00dfen.',
       cc_set_currency: 'W\u00e4hrung',
       cc_set_vat: 'MwSt.-Satz %',
       cc_set_business: 'Dein Unternehmen, auf dem Angebot',
@@ -1513,7 +1513,7 @@
       cc_ac_more: '{n} weitere. Tippe weiter, um einzugrenzen.',
       cc_price_note_on: 'Preise folgen der Preisliste deines Shop-Kontos.',
       cc_price_note_off: 'Dein Shop-Konto zeigt keine Preise, deshalb werden sie auch hier nicht ausgef\u00fcllt. Gib deinen eigenen Einkaufspreis pro St\u00fcck ein.',
-      cc_set_overhead_ex: 'Beispiel: Lieferwagen 150 + Versicherung 60 + Lager 120 + Software 30 + Telefon 40 = 400 pro Monat. Bei 8 Auftr\u00e4gen im Monat tr\u00e4gt jeder Auftrag 50.',
+      cc_set_overhead_ex: 'Beispiel: Lieferwagen 150 + Versicherung 60 + Lager 120 + Software 30 + Telefon 40 = 400 pro Monat. Bei 40 Stunden f\u00fcr Auftr\u00e4ge im Monat sind das 10 pro Stunde. Ein Auftrag von 4 Stunden tr\u00e4gt 40, ein Auftrag von 1 Stunde tr\u00e4gt 10.',
       cc_ph_item: 'Katalog durchsuchen oder eigenen Artikel eingeben',
       cc_ph_client: 'Name und Adresse des Kunden',
       cc_ph_event: 'Event, Datum und Ort',
@@ -1592,7 +1592,7 @@
       cc_t_admin: 'Contact client et administration',
       cc_t_admin_s: 'Appels, messages, ce devis',
       cc_travel_note: 'environ {h} h sur la route, plus {r} par km',
-      cc_overhead_note: '{m} de frais fixes par mois sur {j} missions',
+      cc_overhead_note: '{m} par mois sur {hm} h = {r} par heure',
       cc_fin_h: 'Prix final',
       cc_fin_hint: 'Co\u00fbts plus b\u00e9n\u00e9fice. 1,30 \u00e0 1,50 est la fourchette habituelle en d\u00e9coration.',
       cc_fin_mat: 'Sous-total mat\u00e9riel',
@@ -1652,8 +1652,8 @@
       cc_set_hourly: 'Taux horaire',
       cc_set_km: 'Tarif par km',
       cc_set_overhead: 'Frais fixes par mois (frais g\u00e9n\u00e9raux)',
-      cc_set_jobs: 'Missions par mois',
-      cc_set_overhead_hint: 'Additionnez tout ce que vous payez chaque mois, m\u00eame un mois sans aucune mission : camionnette ou voiture, assurance, stockage ou atelier, logiciels, t\u00e9l\u00e9phone, site web, comptable. Indiquez ce total mensuel ici. L\'outil le divise par vos missions par mois, chaque mission porte ainsi sa part.',
+      cc_set_hours: 'Heures de missions par mois',
+      cc_set_overhead_hint: 'Additionnez tout ce que vous payez chaque mois, m\u00eame un mois sans aucune mission : camionnette ou voiture, assurance, stockage ou atelier, logiciels, t\u00e9l\u00e9phone, site web, comptable. Indiquez ce total mensuel, plus les heures que vous passez sur des missions dans un mois normal. L\'outil en fait un taux de frais g\u00e9n\u00e9raux par heure. Une colonne de 20 minutes porte une petite part, une journ\u00e9e enti\u00e8re de gonflage et d\'installation une grande part.',
       cc_set_currency: 'Devise',
       cc_set_vat: 'Taux de TVA %',
       cc_set_business: 'Votre entreprise, sur le devis',
@@ -1702,7 +1702,7 @@
       cc_ac_more: '{n} de plus. Continuez \u00e0 taper pour affiner.',
       cc_price_note_on: 'Les prix suivent la liste de prix de votre compte boutique.',
       cc_price_note_off: 'Votre compte boutique n\'affiche pas les prix, ils ne sont donc pas remplis ici non plus. Tapez votre propre prix d\'achat par pi\u00e8ce.',
-      cc_set_overhead_ex: 'Exemple : camionnette 150 + assurance 60 + stockage 120 + logiciels 30 + t\u00e9l\u00e9phone 40 = 400 par mois. Avec 8 missions par mois, chaque mission porte 50.',
+      cc_set_overhead_ex: 'Exemple : camionnette 150 + assurance 60 + stockage 120 + logiciels 30 + t\u00e9l\u00e9phone 40 = 400 par mois. Avec 40 heures de missions par mois, cela fait 10 par heure. Une mission de 4 heures porte 40, une mission de 1 heure porte 10.',
       cc_ph_item: 'Chercher dans le catalogue ou taper votre article',
       cc_ph_client: 'Nom et adresse du client',
       cc_ph_event: '\u00c9v\u00e9nement, date et lieu',
@@ -1781,7 +1781,7 @@
       cc_t_admin: 'Klantcontact en administratie',
       cc_t_admin_s: 'Bellen, berichten, deze offerte',
       cc_travel_note: 'ongeveer {h} u onderweg, plus {r} per km',
-      cc_overhead_note: '{m} vaste kosten per maand over {j} jobs',
+      cc_overhead_note: '{m} per maand over {hm} u = {r} per uur',
       cc_fin_h: 'Eindprijs',
       cc_fin_hint: 'Kosten plus winst. 1,30 tot 1,50 is gebruikelijk voor decoratiewerk.',
       cc_fin_mat: 'Subtotaal materiaal',
@@ -1841,8 +1841,8 @@
       cc_set_hourly: 'Uurtarief',
       cc_set_km: 'Tarief per km',
       cc_set_overhead: 'Vaste kosten per maand (overhead)',
-      cc_set_jobs: 'Jobs per maand',
-      cc_set_overhead_hint: 'Tel alles op wat je elke maand betaalt, ook in een maand zonder \u00e9\u00e9n job: bestelwagen of auto, verzekering, opslag of atelier, software, telefoon, website, boekhouder. Vul dat maandtotaal hier in. De tool deelt het door je jobs per maand, zo draagt elke job zijn deel.',
+      cc_set_hours: 'Uren aan jobs per maand',
+      cc_set_overhead_hint: 'Tel alles op wat je elke maand betaalt, ook in een maand zonder \u00e9\u00e9n job: bestelwagen of auto, verzekering, opslag of atelier, software, telefoon, website, boekhouder. Vul dat maandtotaal in, plus de uren die je in een normale maand aan jobs werkt. De tool maakt daar een overheadtarief per uur van. Een pilaar van 20 minuten draagt een klein deel, een volle dag opblazen en installeren een groot deel.',
       cc_set_currency: 'Munt',
       cc_set_vat: 'Btw-tarief %',
       cc_set_business: 'Jouw zaak, op de offerte',
@@ -1891,7 +1891,7 @@
       cc_ac_more: 'Nog {n}. Typ verder om te verfijnen.',
       cc_price_note_on: 'Prijzen volgen de prijslijst van je shopaccount.',
       cc_price_note_off: 'Je shopaccount toont geen prijzen, dus worden ze hier ook niet ingevuld. Typ je eigen aankoopprijs per stuk.',
-      cc_set_overhead_ex: 'Voorbeeld: bestelwagen 150 + verzekering 60 + opslag 120 + software 30 + telefoon 40 = 400 per maand. Met 8 jobs per maand draagt elke job 50.',
+      cc_set_overhead_ex: 'Voorbeeld: bestelwagen 150 + verzekering 60 + opslag 120 + software 30 + telefoon 40 = 400 per maand. Met 40 uur aan jobs per maand is dat 10 per uur. Een job van 4 uur draagt 40, een job van 1 uur draagt 10.',
       cc_ph_item: 'Zoek in de catalogus of typ je eigen item',
       cc_ph_client: 'Naam en adres van de klant',
       cc_ph_event: 'Event, datum en locatie',
@@ -2642,7 +2642,7 @@
 
   /* ---------------- defaults ---------------- */
   var DEFAULT_SETTINGS = {
-    hourly: 0, km: 0, overhead: 0, jobs: 8, currency: 'EUR', vat: 21, // rates start at 0: the user sets their own in Settings first
+    hourly: 0, km: 0, overhead: 0, hoursMonth: 40, currency: 'EUR', vat: 21, // rates start at 0: the user sets their own in Settings first
     logo: '', name: '', details: '', valid: 14, deposit: 30, footer: '', accent: '#6b3fb9', lang: 'en'
   };
   var TIME_KEYS = [
@@ -2659,6 +2659,13 @@
 
   /* ---------------- state ---------------- */
   var settings = load('stx_quote_settings', DEFAULT_SETTINGS);
+  // Overhead used to be split per job (jobs per month). It is now split per hour worked,
+  // so a 20 minute pillar carries less than a full day install. Old settings: 5 h per job.
+  if (settings.hoursMonth == null) {
+    settings.hoursMonth = num(settings.jobs) > 0 ? num(settings.jobs) * 5 : DEFAULT_SETTINGS.hoursMonth;
+    delete settings.jobs;
+    save('stx_quote_settings', settings);
+  }
   // lang, STR, I18N and track come from the inspiration section (outer scope).
   var state = load('stx_quote_draft', null) || freshState();
   if (!state.v) { state = freshState(); } // drafts from the demo build carried sample prices
@@ -2708,7 +2715,9 @@
     var travelCost = kmCost + travelH * num(se.hourly);
     var hours = hoursWork + travelH;
     var timeCost = labour + kmCost;
-    var overheadDefault = num(se.jobs) > 0 ? num(se.overhead) / num(se.jobs) : 0;
+    // overhead follows the hours on this job: monthly fixed costs / hours on jobs per month = rate per hour
+    var ohRate = num(se.hoursMonth) > 0 ? num(se.overhead) / num(se.hoursMonth) : 0;
+    var overheadDefault = ohRate * hours;
     var overhead = st.overheadOverride == null ? overheadDefault : num(st.overheadOverride);
     var timeSub = timeCost + overhead;
     var cost = matSub + timeSub;
@@ -2724,7 +2733,7 @@
     var hourly = hours > 0 ? keep / hours : 0;
     return {
       matBase: matBase, waste: waste, matSub: matSub, hoursWork: hoursWork, travelH: travelH, travelCost: travelCost, hours: hours,
-      kmCost: kmCost, labour: labour, timeCost: timeCost, overheadDefault: overheadDefault, overhead: overhead, timeSub: timeSub, cost: cost, price: price,
+      kmCost: kmCost, labour: labour, timeCost: timeCost, ohRate: ohRate, overheadDefault: overheadDefault, overhead: overhead, timeSub: timeSub, cost: cost, price: price,
       priceIncl: price * (1 + num(se.vat) / 100), margin: margin, expenses: expenses, keep: keep, profit: keep, hourly: hourly
     };
   }
@@ -3120,9 +3129,12 @@
     $('cc-travel-rate').textContent = money(settings.km) + '/km';
     $('cc-travel-total').textContent = money(c.travelCost);
     $('cc-travel-note').textContent = t('travel_note', { h: c.travelH.toFixed(1).replace('.0', ''), r: money(settings.km) });
-    $('cc-overhead-note').textContent = t('overhead_note', { m: money(settings.overhead), j: settings.jobs });
+    var hoursTxt = (Math.round(c.hours * 10) / 10) + ' h';
+    $('cc-overhead-note').textContent = t('overhead_note', { m: money(settings.overhead), hm: settings.hoursMonth, r: money(c.ohRate) });
+    $('cc-overhead-h').textContent = hoursTxt;
+    $('cc-overhead-rate').textContent = money(c.ohRate) + '/h';
     if (document.activeElement !== $('cc-overhead')) $('cc-overhead').value = Math.round(c.overhead);
-    $('cc-hours-total').textContent = (Math.round(c.hours * 10) / 10) + ' h';
+    $('cc-hours-total').textContent = hoursTxt;
     $('cc-time-sub').textContent = money(c.timeSub);
     $('cc-f-mat').textContent = money(c.matSub);
     $('cc-f-time').textContent = money(c.timeSub);
@@ -3289,13 +3301,13 @@
 
   /* ---------------- settings ---------------- */
   function fillSettings() {
-    $('cc-s-hourly').value = settings.hourly; $('cc-s-km').value = settings.km; $('cc-s-overhead').value = settings.overhead; $('cc-s-jobs').value = settings.jobs;
+    $('cc-s-hourly').value = settings.hourly; $('cc-s-km').value = settings.km; $('cc-s-overhead').value = settings.overhead; $('cc-s-hours').value = settings.hoursMonth;
     $('cc-s-currency').value = settings.currency; $('cc-s-vat').value = settings.vat; $('cc-s-name').value = settings.name || ''; $('cc-s-details').value = settings.details || '';
     $('cc-s-valid').value = settings.valid; $('cc-s-deposit').value = settings.deposit; $('cc-s-footer').value = settings.footer || ''; $('cc-s-accent').value = settings.accent || '#6b3fb9';
     $('cc-logo-preview').innerHTML = settings.logo ? '<img src="' + settings.logo + '" alt="">' : '';
   }
   function readSettings() {
-    settings.hourly = num($('cc-s-hourly').value); settings.km = num($('cc-s-km').value); settings.overhead = num($('cc-s-overhead').value); settings.jobs = Math.max(1, num($('cc-s-jobs').value));
+    settings.hourly = num($('cc-s-hourly').value); settings.km = num($('cc-s-km').value); settings.overhead = num($('cc-s-overhead').value); settings.hoursMonth = Math.max(1, num($('cc-s-hours').value));
     settings.currency = $('cc-s-currency').value; settings.vat = num($('cc-s-vat').value); settings.name = $('cc-s-name').value; settings.details = $('cc-s-details').value;
     settings.valid = Math.max(1, num($('cc-s-valid').value)); settings.deposit = clamp(num($('cc-s-deposit').value), 0, 100); settings.footer = $('cc-s-footer').value; settings.accent = $('cc-s-accent').value;
     save('stx_quote_settings', settings);
