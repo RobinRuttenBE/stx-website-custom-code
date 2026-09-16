@@ -215,8 +215,8 @@
     login: '/web/login'
   };
 
-  /* Ingelogd (uitlog- of portaallink in de pagina): de registratiekaart is dan niet van
-     toepassing, de carrousel krijgt de volle breedte. */
+  /* Ingelogd (uitlog- of portaallink in de pagina): alleen voor tracking. De registratiekaart
+     toont voor iedereen, ook ingelogd (Robin, 2026-09-16). */
   var loggedIn = !!document.querySelector('a[href*="/web/session/logout"], a[href*="/my/home"], a[href*="/my/account"]');
 
   function track(ev, params) {
@@ -235,7 +235,7 @@
   host.id = 'stx-home';
   host.setAttribute('data-nosnippet', '');
   host.innerHTML =
-    '<section class="sh-band' + (loggedIn ? ' sh-solo' : '') + '">' +
+    '<section class="sh-band">' +
       '<div class="sh-caro" id="sh-caro" style="--sh-forest:url(' + ASSETS + 'enchanted-forest.jpg)">' +
         '<div class="sh-slide ench on" data-slide="nozzle-up">' +
           '<div><div class="sh-kicker">' + esc(S.nu_k) + '</div><h2>' + hl(S.nu_h) + '</h2><p>' + esc(S.nu_p) + '</p>' +
@@ -262,14 +262,13 @@
         '<button class="sh-arrow r" type="button" data-dir="1" aria-label="' + esc(S.next) + '">&#8250;</button>' +
         '<div class="sh-dots" id="sh-dots"></div>' +
       '</div>' +
-      (loggedIn ? '' :
       '<aside class="sh-reg">' +
         '<div class="sh-glow"></div>' +
         '<div class="sh-kicker">' + esc(S.rg_k) + '</div>' +
         '<h2>' + esc(S.rg_h) + '</h2>' +
         '<p>' + esc(S.rg_p) + '</p>' +
         '<div class="sh-btns"><a class="sh-btn-y" href="' + LINKS.register + '" data-track="register">' + esc(S.rg_b) + '</a><a class="sh-login" href="' + LINKS.login + '" data-track="login">' + esc(S.rg_l) + '</a></div>' +
-      '</aside>') +
+      '</aside>' +
     '</section>';
 
   container.parentNode.insertBefore(host, container);
