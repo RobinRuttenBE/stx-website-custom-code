@@ -1,0 +1,1196 @@
+<!-- ============================================================
+     STX EU / WAAROM SEMPERTEX (sectiebestand voor de section loader)
+     Stand: v1 (15/09/2026).
+     Wordt door stx-loader geladen op:
+       /why-sempertex, /waarom-sempertex (alle taalversies).
+     NIET los in Odoo plakken. Odoo-pagina zelf mag leeg blijven,
+     de content wordt hier volledig door geinjecteerd.
+
+     Werking:
+     - Sidebar met scroll-spy links naar 6 secties.
+     - Hero met kerncijfers (feiten).
+     - 8 kleurreeksen met tabs (93 kleuren totaal), afbeeldingen
+       vanuit assets/balloons/ in DEZE repo (via jsDelivr CDN
+       gepind op de commit hash die de loader ook gebruikt).
+     - Kwaliteit / Levering / Milieu / Voordelen / FAQ / CTA.
+     - Viertalig via data-i18n patroon (NL = markup, en/fr/de
+       vertaald via I18N dict). Product-URLs zijn id-only
+       (/shop/category/<id>), Odoo redirect zelf naar de juiste
+       vertaalde slug.
+     - JSON-LD (Organization, AboutPage, BreadcrumbList, FAQPage)
+       wordt per taal in de <head> geinjecteerd.
+     - Editor-guard: nooit draaien of sporen achterlaten in Odoo
+       bewerkmodus, net als blog/family-tree.
+     - Meldt zich klaar bij het laadscherm (stxLoadwallHide).
+
+     Balloon PNG naamconventie in assets/balloons/:
+       <code>_<Name-Hyphenated>.png (bv. 005_White.png,
+       027_Eucalyptus.png, 660_Malibu-Peach.png).
+     ============================================================ -->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rethink+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+
+<style>
+.stx-why{
+  --purple:#6b3fb9;
+  --purple-light:#f1d9ff;
+  --purple-bg:#faf4ff;
+  --dark:#1b073d;
+  --yellow:#ffdb5a;
+  --warn:#cd0b5c;
+  --paper:#ffffff;
+  --rule:#e8dcf5;
+  --glow:0 10px 34px rgba(107,63,185,.35);
+  --glow-y:0 8px 26px rgba(255,219,90,.6);
+  /* Ruimte die de vaste Odoo-header inneemt. Als de titel na het scrollen
+     half onder de menubalk staat, verhoog deze waarde. */
+  --nav-offset:104px;
+
+  font-family:'Rethink Sans',sans-serif;
+  background:#fff;
+  color:var(--dark);
+  line-height:1.55;
+  font-size:clamp(15px,1.1vw,17px);
+  max-width:100%;
+}
+.stx-why *,.stx-why *::before,.stx-why *::after{box-sizing:border-box}
+.stx-why h1,.stx-why h2,.stx-why h3,.stx-why h4,.stx-why p,.stx-why ul,.stx-why ol,.stx-why dl,.stx-why dd,.stx-why figure,.stx-why figcaption,.stx-why blockquote{margin:0;padding:0}
+.stx-why img{max-width:100%;display:block}
+.stx-why button{font-family:inherit}
+.stx-why a{color:var(--purple);text-decoration:none}
+.stx-why a:hover{color:var(--dark)}
+.stx-why :focus-visible{outline:3px solid var(--purple);outline-offset:3px;border-radius:6px}
+
+.stx-why .skip{position:absolute;left:-9999px;background:var(--dark);color:var(--yellow);padding:12px 16px;z-index:99;border-radius:6px;font-weight:800}
+.stx-why .skip:focus{left:8px;top:8px}
+
+.stx-why .wrap{max-width:1680px;margin:0 auto;padding:clamp(24px,3.5vw,48px) clamp(14px,3vw,40px) clamp(56px,8vw,110px);overflow-x:clip}
+.stx-why .layout{display:grid;grid-template-columns:clamp(190px,16vw,240px) minmax(0,1fr);gap:clamp(24px,3.5vw,56px);align-items:start}
+.stx-why .content,.stx-why .side{min-width:0}
+
+/* ---- SIDEBAR ---- */
+.stx-why .side{position:sticky;top:calc(var(--nav-offset) + 16px)}
+.stx-why .side-label{font-size:clamp(11px,1vw,13px);font-weight:800;letter-spacing:.12em;text-transform:uppercase;padding-bottom:14px;border-bottom:2px solid var(--dark);margin-bottom:14px}
+.stx-why .side a{display:block;padding:11px 8px;font-size:clamp(14px,1.1vw,16px);font-weight:600;color:var(--purple);border-bottom:1px solid var(--rule);border-radius:6px;transition:transform .16s ease,box-shadow .16s ease,background .16s ease}
+.stx-why .side a:hover{color:var(--dark);transform:scale(1.03);box-shadow:var(--glow);background:#fff}
+.stx-why .side a.active{color:var(--dark);font-weight:800}
+.stx-why .side a.active::before{content:"";display:inline-block;width:8px;height:8px;background:var(--yellow);margin-right:10px}
+
+/* ---- TYPO ---- */
+.stx-why .eyebrow{font-size:clamp(11px,1vw,13px);font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--purple);margin-bottom:clamp(10px,1.2vw,14px)}
+.stx-why h1{font-size:clamp(30px,4.6vw,62px);font-weight:800;line-height:1.03;letter-spacing:-.025em;margin-bottom:clamp(14px,1.6vw,20px)}
+.stx-why h2{font-size:clamp(26px,3.4vw,48px);font-weight:800;line-height:1.05;letter-spacing:-.02em;margin-bottom:clamp(12px,1.5vw,18px)}
+.stx-why h3{font-size:clamp(19px,1.9vw,25px);font-weight:800;letter-spacing:-.01em}
+.stx-why h4{font-size:clamp(15px,1.3vw,18px);font-weight:800;letter-spacing:-.01em}
+.stx-why .hl{background:var(--yellow);padding:0 .15em;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.stx-why .lede{font-size:clamp(16px,1.5vw,20px);font-weight:500;line-height:1.5;max-width:66ch}
+.stx-why .body p{max-width:72ch;margin-bottom:1em}
+.stx-why .body p:last-child{margin-bottom:0}
+
+.stx-why section:focus{outline:none}
+.stx-why section{scroll-margin-top:var(--nav-offset);padding-top:clamp(44px,5.5vw,80px)}
+.stx-why section:first-of-type{padding-top:0}
+.stx-why .sec-head{margin-bottom:clamp(20px,2.4vw,32px)}
+.stx-why .sec-head .lede{margin-top:clamp(8px,1vw,12px)}
+
+/* ---- BUTTONS ---- */
+.stx-why .btn-y,.stx-why .btn-dark{display:inline-block;font-size:clamp(13px,1.1vw,15px);font-weight:800;padding:clamp(11px,1vw,13px) clamp(16px,1.8vw,24px);border:none;border-radius:6px;cursor:pointer;text-align:center;transition:transform .16s ease,box-shadow .16s ease}
+.stx-why .btn-y{background:var(--yellow);color:var(--dark)}
+.stx-why .btn-y:hover{transform:scale(1.04);box-shadow:var(--glow);color:var(--dark)}
+.stx-why .btn-dark{background:var(--dark);color:var(--yellow)}
+.stx-why .btn-dark:hover{transform:scale(1.04);box-shadow:var(--glow-y);color:var(--yellow)}
+.stx-why .btn-row{display:flex;flex-wrap:wrap;gap:clamp(10px,1.2vw,14px);margin-top:clamp(22px,2.6vw,32px)}
+
+/* ---- FEITEN ---- */
+.stx-why .facts{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(12px,1.6vw,22px);margin-top:clamp(34px,4vw,56px)}
+.stx-why .fact{background:#fff;border:1px solid var(--rule);border-radius:10px;padding:clamp(14px,1.6vw,22px);transition:transform .18s ease,box-shadow .18s ease}
+.stx-why .fact:hover{transform:translateY(-4px);box-shadow:var(--glow)}
+.stx-why .fact dt{font-size:clamp(24px,2.6vw,38px);font-weight:800;line-height:1;letter-spacing:-.03em}
+.stx-why .fact dd{font-size:clamp(13px,1.05vw,15px);font-weight:500;margin-top:8px;line-height:1.4}
+
+/* ---- KLEURREEKSEN ---- */
+.stx-why .range-tabs{display:flex;flex-wrap:wrap;gap:clamp(5px,.6vw,7px);margin-bottom:clamp(18px,2.2vw,28px)}
+.stx-why .range-tab{font-size:clamp(10px,.85vw,11.5px);font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:clamp(6px,.6vw,8px) clamp(11px,1vw,14px);border:1.5px solid var(--rule);background:#fff;color:var(--purple);border-radius:999px;cursor:pointer;transition:transform .14s ease,box-shadow .14s ease}
+.stx-why .range-tab:hover{transform:scale(1.06);box-shadow:var(--glow)}
+.stx-why .range-tab.active{background:var(--dark);color:var(--yellow);border-color:var(--dark)}
+.stx-why .panel[hidden]{display:none}
+.stx-why .panel-head{margin-bottom:clamp(16px,2vw,24px)}
+.stx-why .finish{font-size:clamp(11px,.9vw,12.5px);font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--purple);margin-top:8px}
+.stx-why .col-grid{list-style:none;display:grid;grid-template-columns:repeat(auto-fill,minmax(clamp(96px,8vw,124px),1fr));gap:clamp(8px,1.1vw,16px)}
+.stx-why .col-item{background:#fff;border:1px solid var(--rule);border-radius:10px;padding:clamp(8px,.9vw,12px) 6px clamp(9px,1vw,12px);text-align:center;transition:transform .16s ease,box-shadow .16s ease}
+.stx-why .col-item:hover{transform:translateY(-4px) scale(1.02);box-shadow:var(--glow)}
+.stx-why .col-link{display:block;text-decoration:none;color:inherit}
+.stx-why .col-link:hover .col-name{color:var(--purple)}
+.stx-why .col-item img{width:auto;height:clamp(74px,6.6vw,104px);margin:0 auto 8px;filter:drop-shadow(0 5px 12px rgba(27,7,61,.16))}
+.stx-why .col-name{display:block;font-size:clamp(12px,.95vw,13.5px);font-weight:700;line-height:1.25}
+.stx-why .col-code{display:block;font-size:clamp(11px,.85vw,12px);font-weight:800;color:var(--purple);letter-spacing:.06em;margin-top:3px}
+.stx-why .photo{margin:clamp(20px,2.4vw,28px) 0 0}
+.stx-why .photo img{width:100%;height:auto;border-radius:12px}
+.stx-why .notice{background:var(--purple-light);border-left:4px solid var(--purple);border-radius:8px;padding:clamp(12px,1.4vw,16px) clamp(14px,1.6vw,20px);margin-top:clamp(18px,2.2vw,28px)}
+.stx-why .notice p{font-size:clamp(13.5px,1.05vw,15px);font-weight:600;max-width:none;margin:0}
+
+/* ---- TWEE KOLOMMEN ---- */
+.stx-why .duo{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:clamp(20px,2.8vw,44px);align-items:start}
+
+/* ---- CHECKLIST ---- */
+.stx-why .checks{list-style:none;display:grid;gap:clamp(12px,1.4vw,18px)}
+.stx-why .checks li{position:relative;padding-left:26px;max-width:66ch}
+.stx-why .checks li::before{content:"";position:absolute;left:0;top:9px;width:9px;height:9px;background:var(--yellow);border:1px solid var(--dark)}
+.stx-why .checks strong{display:block;font-weight:800}
+
+/* ---- TABEL ---- */
+.stx-why .data{width:100%;border-collapse:collapse;text-align:left;font-size:clamp(13.5px,1.05vw,15px)}
+.stx-why .data caption{text-align:left;font-size:clamp(11px,.9vw,12.5px);font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--purple);padding-bottom:12px}
+.stx-why .data th,.stx-why .data td{padding:12px 14px;border-bottom:1px solid var(--rule);vertical-align:top}
+.stx-why .data th{font-weight:800;width:36%}
+.stx-why .data tr:last-child th,.stx-why .data tr:last-child td{border-bottom:0}
+.stx-why .data-wrap{background:#fff;border:2px solid var(--dark);border-radius:10px;padding:clamp(16px,2vw,28px)}
+
+/* ---- FAQ ---- */
+.stx-why .faq{max-width:88ch}
+.stx-why .faq details{border-bottom:1px solid var(--rule)}
+.stx-why .faq summary{font-size:clamp(15.5px,1.35vw,19px);font-weight:800;letter-spacing:-.01em;padding:16px 40px 16px 0;cursor:pointer;list-style:none;position:relative}
+.stx-why .faq summary::-webkit-details-marker{display:none}
+.stx-why .faq summary:hover{color:var(--purple)}
+.stx-why .faq summary::after{content:"+";position:absolute;right:6px;top:12px;font-size:26px;font-weight:800;line-height:1;color:var(--purple)}
+.stx-why .faq details[open] summary::after{content:"\2013"}
+.stx-why .faq .answer{padding:0 0 20px;font-weight:500}
+.stx-why .faq .answer p{max-width:80ch;margin-bottom:.8em}
+.stx-why .faq .answer p:last-child{margin-bottom:0}
+
+/* ---- CTA ---- */
+.stx-why .cta{background:var(--dark);border-radius:14px;padding:clamp(24px,3.4vw,52px);margin-top:clamp(44px,5.5vw,80px);color:#fff}
+.stx-why .cta h2{color:#fff}
+.stx-why .cta .lede{color:#e6dcf7}
+.stx-why .cta .eyebrow{color:var(--yellow)}
+
+@media (max-width:1000px){
+  .stx-why .layout{grid-template-columns:1fr}
+  .stx-why .side{position:static;margin-bottom:24px}
+  .stx-why .side nav{display:flex;flex-wrap:wrap;gap:6px}
+  .stx-why .side a{border-bottom:none;border:1px solid var(--rule);padding:8px 12px;font-size:14px}
+  .stx-why .facts{grid-template-columns:repeat(2,1fr)}
+}
+@media (max-width:520px){
+  .stx-why .facts{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){
+  .stx-why *{transition:none!important;animation:none!important}
+}
+</style>
+
+<div class="stx-why" id="stx-why-root">
+<a class="skip" href="#stx-why-content" data-i18n="skip">Naar de inhoud</a>
+<div class="wrap">
+<div class="layout">
+
+  <aside class="side">
+    <div class="side-label" id="stx-why-side-label" data-i18n="side_label">Waarom Sempertex</div>
+    <nav aria-labelledby="stx-why-side-label">
+      <a href="#kleuren" data-i18n="nav_kleuren">Kleurreeksen</a>
+      <a href="#kwaliteit" data-i18n="nav_kwaliteit">Kwaliteit</a>
+      <a href="#levering" data-i18n="nav_levering">Voorraad en levering</a>
+      <a href="#milieu" data-i18n="nav_milieu">Certificaten en cijfers</a>
+      <a href="#voordelen" data-i18n="nav_voordelen">Wat je eraan hebt</a>
+      <a href="#faq" data-i18n="nav_faq">Veelgestelde vragen</a>
+    </nav>
+  </aside>
+
+  <main class="content" id="stx-why-content">
+
+    <!-- ============ HERO ============ -->
+    <section aria-labelledby="stx-why-title">
+      <p class="eyebrow" data-i18n="hero_eyebrow">Waarom Sempertex / Professionals</p>
+      <h1 id="stx-why-title" data-i18n="hero_h1">Dezelfde kleur, <span class="hl">elke bestelling</span></h1>
+      <p class="lede" data-i18n="hero_lede">Sempertex maakt latex ballonnen sinds 1938. Het Europese assortiment telt 93 kleuren in 8 reeksen en ligt op voorraad in Genk.</p>
+      <div class="btn-row">
+        <a class="btn-y" data-href="/shop" data-i18n="hero_btn_shop">Bekijk het assortiment</a>
+        <a class="btn-dark" data-href="/become-a-distributor" data-i18n="hero_btn_wholesale">Word wholesaler</a>
+      </div>
+
+      <dl class="facts">
+        <div class="fact"><dt data-i18n="fact1_dt">1938</dt><dd data-i18n="fact1_dd">Sempertex maakt sindsdien ballonnen</dd></div>
+        <div class="fact"><dt data-i18n="fact2_dt">93 kleuren</dt><dd data-i18n="fact2_dd">Verdeeld over 8 reeksen, elk met een eigen bestelcode</dd></div>
+        <div class="fact"><dt data-i18n="fact3_dt">70+ landen</dt><dd data-i18n="fact3_dd">Daar wordt het merk verkocht</dd></div>
+        <div class="fact"><dt data-i18n="fact4_dt">3 certificaten</dt><dd data-i18n="fact4_dd">ISO 9001, ISO 14001, FSC&reg; Chain of Custody</dd></div>
+      </dl>
+    </section>
+
+    <!-- ============ KLEURREEKSEN ============ -->
+    <section id="kleuren">
+      <div class="sec-head">
+        <p class="eyebrow" data-i18n="col_eyebrow">Waarom Sempertex / Kleuren</p>
+        <h2 data-i18n="col_h2">8 reeksen, 93 kleuren</h2>
+        <p class="lede" data-i18n="col_lede">Klik een reeks aan voor het overzicht. Een klik op een ballon brengt je naar die kleur in de webshop, met alle maten en verpakkingen.</p>
+      </div>
+
+      <!-- Range tabs + panels worden door JS gerenderd op basis van RANGES -->
+      <div class="range-tabs" role="tablist" aria-label="Sempertex kleurreeksen" id="stx-why-tabs"></div>
+      <div id="stx-why-panels"></div>
+
+      <div class="notice">
+        <p data-i18n="col_notice">Twee kleuren combineren tot &eacute;&eacute;n nieuwe tint? De <a data-href="/inspiration#calculator" data-i18n="col_notice_a1">double stuffing calculator</a> toont het resultaat voor je een ballon opblaast. Samengestelde paletten en de volledige kleurenkaart staan op de <a data-href="/inspiration" data-i18n="col_notice_a2">inspiratiepagina</a>.</p>
+      </div>
+    </section>
+
+    <!-- ============ KWALITEIT ============ -->
+    <section id="kwaliteit">
+      <div class="sec-head">
+        <p class="eyebrow" data-i18n="qua_eyebrow">Waarom Sempertex / Kwaliteit</p>
+        <h2 data-i18n="qua_h2">Elke zak dezelfde tint</h2>
+      </div>
+      <div class="duo">
+        <div class="body">
+          <p data-i18n="qua_p1">Sempertex behaalde de hercertificering voor ISO 9001:2015, de norm voor kwaliteitsmanagement, na een audit door Bureau Veritas. De productiestappen liggen vast en worden gecontroleerd, van de inkoop van het latex tot het moment dat een doos het magazijn verlaat.</p>
+          <p data-i18n="qua_p2">In de praktijk betekent dat het volgende. Code 010 die je vandaag bestelt, is dezelfde tint als code 010 van zes maanden geleden. Daardoor kan je een bestaande installatie later aanvullen, en kan je een klant een kleur toezeggen die nog besteld moet worden.</p>
+          <p><a data-href="/sempertex-certificaten" data-i18n="qua_link">Bekijk alle certificaten</a></p>
+        </div>
+        <div>
+          <h3 data-i18n="qua_h3">Wat dat oplevert</h3>
+          <ul class="checks" style="margin-top:16px">
+            <li><strong data-i18n="qua_c1_h">Kleur van zak tot zak</strong><span data-i18n="qua_c1_b">Een boog van driehonderd ballonnen blijft &eacute;&eacute;n geheel.</span></li>
+            <li><strong data-i18n="qua_c2_h">Gelijkmatig opblazen</strong><span data-i18n="qua_c2_b">Minder uitval tijdens de opbouw, en dus minder tijdverlies.</span></li>
+            <li><strong data-i18n="qua_c3_h">Nabestellen</strong><span data-i18n="qua_c3_b">Uitbreiden zonder zichtbaar kleurverschil met wat er al staat.</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ LEVERING ============ -->
+    <section id="levering">
+      <div class="sec-head">
+        <p class="eyebrow" data-i18n="lev_eyebrow">Waarom Sempertex / Levering</p>
+        <h2 data-i18n="lev_h2">Voorraad in Genk</h2>
+      </div>
+      <div class="duo">
+        <div class="body">
+          <p data-i18n="lev_p1">Sempertex Europe is gevestigd in Genk. Vanuit daar verzenden we de bestellingen naar heel Europa. Dat betekent kortere wachttijden dan wanneer elke zending eerst vanuit Colombia moet komen.</p>
+          <p data-i18n="lev_p2">Online bestellingen kan je ook zelf komen ophalen, van maandag tot donderdag tussen 10u en 12u en tussen 13u en 16u. Je krijgt bericht zodra je order klaarstaat.</p>
+          <p data-i18n="lev_p3"><a data-href="/shop" data-i18n="lev_link1">Naar de webshop</a> of <a data-href="/helpdesk" data-i18n="lev_link2">stel je vraag aan het team</a></p>
+        </div>
+        <div>
+          <h3 data-i18n="lev_h3">Wat er nog bij hoort</h3>
+          <ul class="checks" style="margin-top:16px">
+            <li><strong data-i18n="lev_c1_h">Workshops</strong><span data-i18n="lev_c1_b">Technieken leren van ervaren decorateurs. <a data-href="/events" data-i18n="lev_c1_a">Bekijk de agenda</a>.</span></li>
+            <li><strong data-i18n="lev_c2_h">Kleurencombinaties</strong><span data-i18n="lev_c2_b">Samengestelde paletten met de bijhorende codes. <a data-href="/inspiration" data-i18n="lev_c2_a">Naar inspiratie</a>.</span></li>
+            <li><strong data-i18n="lev_c3_h">Productfoto&#769;s en design sheets</strong><span data-i18n="lev_c3_b">Voor je eigen offertes en moodboards. <a data-href="/inspiration#downloads" data-i18n="lev_c3_a">Naar de downloads</a>.</span></li>
+            <li><strong data-i18n="lev_c4_h">Wholesale</strong><span data-i18n="lev_c4_b">Sempertex verkopen in je eigen markt. <a data-href="/become-a-distributor" data-i18n="lev_c4_a">Voorwaarden en aanvraag</a>.</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CERTIFICATEN EN MILIEUCIJFERS ============ -->
+    <!--
+      EmpCo (Richtlijn EU 2024/825), van toepassing vanaf 27 september 2026.
+      Elke milieu-uitspraak hier is specifiek en toewijsbaar. Voeg NIET toe:
+        - losse termen als duurzaam, groen, milieuvriendelijk, ecologisch,
+          verantwoord, biodegradeerbaar, klimaatneutraal, CO2-neutraal
+        - claims over de hele ballon op basis van een onderdeel
+          (FSC dekt het latex, niet de verpakking of het product als geheel)
+        - eigen gemaakte eco-logo's, badges of blad-iconen
+        - toekomstbeloftes zonder publiek plan met tussendoelen en
+          onafhankelijke controle
+    -->
+    <section id="milieu">
+      <div class="sec-head">
+        <p class="eyebrow" data-i18n="mil_eyebrow">Waarom Sempertex / Certificaten</p>
+        <h2 data-i18n="mil_h2">Certificaten en wat ze precies dekken</h2>
+        <p class="lede" data-i18n="mil_lede">Zakelijke klanten en eventorganisatoren vragen hier steeds vaker naar. Hieronder staat welke certificeringen er zijn en wat elk van hen dekt.</p>
+      </div>
+      <div class="duo">
+        <div class="body">
+          <p data-i18n="mil_p1">Voor het natuurlijke rubberlatex is de volledige toeleveringsketen FSC&reg; Chain of Custody-gecertificeerd, van de plantage tot in de fabriek. Die certificering gaat over herkomst en traceerbaarheid van dat materiaal. Over de verpakking of over de ballon als geheel zegt ze niets.</p>
+          <p data-i18n="mil_p2">Het milieumanagementsysteem van de fabriek is gecertificeerd volgens ISO 14001:2015. Die norm beoordeelt hoe een bedrijf zijn milieu-impact meet en bijstuurt. Het is dus geen keurmerk voor het product.</p>
+          <p data-i18n="mil_p3">De cijfers hiernaast komen uit de rapportering van Sempertex en gaan over de bedrijfsactiviteiten. Ze gaan niet over de milieu-impact van &eacute;&eacute;n ballon.</p>
+          <p><a data-href="/sempertex-certificaten" data-i18n="mil_link">Bekijk de certificaten en de onderbouwing</a></p>
+        </div>
+        <div>
+          <div class="data-wrap">
+            <table class="data">
+              <caption data-i18n="mil_caption">Gemeten op bedrijfsniveau</caption>
+              <tbody>
+                <tr><th scope="row" data-i18n="mil_r1_h">Uitstoot eigen activiteiten</th><td data-i18n="mil_r1_v">Scope 1 en 2 gedaald van 7.773 naar 6.501 ton CO<sub>2</sub>eq, ruim 16 procent lager. Gemeten daling, zonder compensatie via emissierechten.</td></tr>
+                <tr><th scope="row" data-i18n="mil_r2_h">Elektriciteit</th><td data-i18n="mil_r2_v">100 procent hernieuwbaar, aangekocht met certificaten van oorsprong</td></tr>
+                <tr><th scope="row" data-i18n="mil_r3_h">Herkomst latex</th><td data-i18n="mil_r3_v">FSC&reg; Chain of Custody over de volledige keten van natuurlijk rubberlatex</td></tr>
+                <tr><th scope="row" data-i18n="mil_r4_h">Milieumanagement</th><td data-i18n="mil_r4_v">ISO 14001:2015, certificering van het managementsysteem van de fabriek</td></tr>
+                <tr><th scope="row" data-i18n="mil_r5_h">Recyclage in 2024</th><td data-i18n="mil_r5_v">4,4 ton ballonnen ingezameld en verwerkt tot DUR-speelgoed voor huisdieren</td></tr>
+                <tr><th scope="row" data-i18n="mil_r6_h">Verpakking</th><td data-i18n="mil_r6_v">De nieuwe internationale verpakking bevat 20 procent gerecycleerd plastic uit post-consumer afval</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p style="font-size:clamp(12.5px,1vw,14px);margin-top:16px;opacity:.8" data-i18n="mil_foot">Twee doelstellingen uit dezelfde rapportering: de nieuwe verpakking volledig uitgerold tegen 2027, en de inzamelpilot voor gebruikte ballonnen uitgebreid. Beide staan met tussendoelen beschreven in de <a data-href="/sempertex-certificaten" data-i18n="mil_foot_a">gepubliceerde rapportering</a>.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ VOORDELEN ============ -->
+    <section id="voordelen">
+      <div class="sec-head">
+        <p class="eyebrow" data-i18n="voo_eyebrow">Waarom Sempertex / Samengevat</p>
+        <h2 data-i18n="voo_h2">Kort samengevat</h2>
+      </div>
+      <div class="duo">
+        <ul class="checks">
+          <li><strong data-i18n="voo_c1_h">93 kleuren in 8 reeksen</strong><span data-i18n="voo_c1_b">Glanzend, mat, metallic, neon, spiegelend en fluweelachtig.</span></li>
+          <li><strong data-i18n="voo_c2_h">Elke kleur heeft een code</strong><span data-i18n="voo_c2_b">Nabestellen levert dezelfde tint op, ook een half jaar later.</span></li>
+          <li><strong data-i18n="voo_c3_h">Voorraad in Genk</strong><span data-i18n="voo_c3_b">Zelf ophalen kan, en bijbestellen tijdens een lopend project ook.</span></li>
+        </ul>
+        <ul class="checks">
+          <li><strong data-i18n="voo_c4_h">ISO 9001 en 14001, FSC&reg; Chain of Custody</strong><span data-i18n="voo_c4_b">De documenten kan je doorsturen aan een klant die ernaar vraagt.</span></li>
+          <li><strong data-i18n="voo_c5_h">Workshops en materiaal</strong><span data-i18n="voo_c5_b">Technieken, kleurencombinaties, productfoto&#769;s en design sheets.</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ============ FAQ ============ -->
+    <section id="faq">
+      <div class="sec-head">
+        <p class="eyebrow" data-i18n="faq_eyebrow">Waarom Sempertex / FAQ</p>
+        <h2 data-i18n="faq_h2">Veelgestelde vragen</h2>
+      </div>
+      <div class="faq" id="stx-why-faq">
+        <!-- Vragen worden door JS gerenderd uit FAQ i18n, zodat NL/EN/FR/DE
+             telkens dezelfde volgorde en styling houden. -->
+      </div>
+    </section>
+
+    <!-- ============ CTA ============ -->
+    <div class="cta">
+      <p class="eyebrow" data-i18n="cta_eyebrow">Aan de slag</p>
+      <h2 data-i18n="cta_h2">Bestellen of doorverkopen</h2>
+      <p class="lede" data-i18n="cta_lede">Het volledige assortiment staat in de webshop. Om te bestellen heb je een account nodig, dat je hieronder aanvraagt. Wie Sempertex zelf wil verkopen, komt bij wholesale terecht.</p>
+      <div class="btn-row">
+        <a class="btn-y" data-href="/shop" data-i18n="cta_btn1">Naar de webshop</a>
+        <a class="btn-y" data-href="/registratie" data-i18n="cta_btn2">Account aanvragen</a>
+        <a class="btn-y" data-href="/become-a-distributor" data-i18n="cta_btn3">Word wholesaler</a>
+      </div>
+    </div>
+
+  </main>
+</div>
+</div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ==========================================================
+     CONFIG: bron voor de 93 balloon PNG's. Standaard @main,
+     omdat de assets zelden veranderen en jsDelivr ze 12u cachet
+     (voldoende voor rustige statische afbeeldingen). Wil je ze
+     mee versionen met de loader, vervang 'main' door dezelfde
+     commit hash die in de loader staat.
+     ========================================================== */
+  var BALLOON_REF = 'main';
+  var BALLOON_BASE = 'https://cdn.jsdelivr.net/gh/RobinRuttenBE/stx-website-custom-code@' + BALLOON_REF + '/assets/balloons/';
+
+  var PAGE_PATHS = ['/why-sempertex', '/waarom-sempertex'];
+
+  /* ---- Duplicaten opruimen (Odoo kan bij een save een kopie in
+     de pagina bewaren; we houden er 1) ---- */
+  var allRoots = document.querySelectorAll('#stx-why-root');
+  var root = allRoots[0];
+  var isSaved = allRoots.length > 1;
+  for (var ri = 1; ri < allRoots.length; ri++) {
+    if (allRoots[ri].parentNode) { allRoots[ri].parentNode.removeChild(allRoots[ri]); }
+  }
+  if (!root) { return; }
+
+  var isFile = window.location.protocol === 'file:';
+  var p = (window.location.pathname || '').replace(/\/+$/, '');
+  var onPage = PAGE_PATHS.some(function (pp) { return p.slice(-pp.length) === pp; });
+
+  /* ---- Editor-guard: nooit draaien in Odoo bewerkmodus ---- */
+  function inEdit() {
+    return document.body.classList.contains('editor_enable')
+      || !!document.querySelector('.odoo-editor-editable')
+      || !!document.querySelector('#wrap.o_editable');
+  }
+  function wallDone() { if (window.stxLoadwallHide) { window.stxLoadwallHide(); } }
+
+  if (!isFile && !onPage) {
+    if (root.parentNode) { root.parentNode.removeChild(root); }
+    wallDone();
+    return;
+  }
+  if (inEdit()) {
+    if (root.parentNode) { root.parentNode.removeChild(root); }
+    wallDone();
+    return;
+  }
+
+  /* ---- POSITIONERING: in #wrap zetten, anders bovenaan main/footer ---- */
+  if (!isFile && !isSaved) {
+    var mount = document.getElementById('wrap') || document.querySelector('main');
+    if (mount) { mount.appendChild(root); }
+    else {
+      var foot = document.querySelector('footer');
+      if (foot && foot.parentNode) { foot.parentNode.insertBefore(root, foot); }
+    }
+  }
+
+  /* ---- TAAL: eerste padsegment. Geen prefix = NL (standaardtaal) ---- */
+  var seg = (p.split('/')[1] || '').toLowerCase();
+  function langFrom(s) {
+    if (s === 'en' || s.indexOf('en_') === 0 || s.indexOf('en-') === 0) return 'en';
+    if (s === 'de' || s.indexOf('de_') === 0 || s.indexOf('de-') === 0) return 'de';
+    if (s === 'fr' || s.indexOf('fr_') === 0 || s.indexOf('fr-') === 0) return 'fr';
+    return 'nl';
+  }
+  var lang = isFile ? 'nl' : langFrom(seg);
+  var langPrefix = (lang !== 'nl') ? '/' + seg : '';
+
+  /* ==========================================================
+     I18N: NL zit in de markup, en/fr/de vertaald hieronder.
+     Sleutels matchen de data-i18n attributen in de markup.
+     Elke sleutel accepteert HTML (span, sub, a) waar nodig.
+     ========================================================== */
+  var I18N = {
+    en: {
+      skip: 'Skip to content',
+      side_label: 'Why Sempertex',
+      nav_kleuren: 'Colour ranges',
+      nav_kwaliteit: 'Quality',
+      nav_levering: 'Stock and delivery',
+      nav_milieu: 'Certificates and figures',
+      nav_voordelen: 'What you get out of it',
+      nav_faq: 'Frequently asked questions',
+      hero_eyebrow: 'Why Sempertex / Professionals',
+      hero_h1: 'Same colour, <span class="hl">every order</span>',
+      hero_lede: 'Sempertex has been making latex balloons since 1938. The European range counts 93 colours across 8 series and is stocked in Genk.',
+      hero_btn_shop: 'Browse the range',
+      hero_btn_wholesale: 'Become a wholesaler',
+      fact1_dt: '1938', fact1_dd: 'Sempertex has been making balloons since then',
+      fact2_dt: '93 colours', fact2_dd: 'Split across 8 ranges, each with its own order code',
+      fact3_dt: '70+ countries', fact3_dd: 'That is where the brand is sold',
+      fact4_dt: '3 certificates', fact4_dd: 'ISO 9001, ISO 14001, FSC&reg; Chain of Custody',
+      col_eyebrow: 'Why Sempertex / Colours',
+      col_h2: '8 ranges, 93 colours',
+      col_lede: 'Click a range to see the overview. Clicking a balloon takes you to that colour in the shop, with all sizes and pack options.',
+      col_notice: 'Want to combine two colours into a new tint? The <a data-href="/inspiration#calculator" data-i18n="col_notice_a1">double stuffing calculator</a> shows the result before you inflate. Combined palettes and the full colour chart live on the <a data-href="/inspiration" data-i18n="col_notice_a2">inspiration page</a>.',
+      qua_eyebrow: 'Why Sempertex / Quality',
+      qua_h2: 'Every bag, the same tint',
+      qua_p1: 'Sempertex was re-certified to ISO 9001:2015, the quality management standard, after an audit by Bureau Veritas. The production steps are documented and controlled, from sourcing the latex to the moment a box leaves the warehouse.',
+      qua_p2: 'In practice this means: code 010 you order today is the same tint as code 010 from six months ago. That lets you top up an existing installation later, and lets you commit a colour to a client that still has to be ordered.',
+      qua_link: 'See all certificates',
+      qua_h3: 'What that gets you',
+      qua_c1_h: 'Colour from bag to bag', qua_c1_b: 'A garland of three hundred balloons stays one whole.',
+      qua_c2_h: 'Even inflation', qua_c2_b: 'Less waste during setup, so less lost time.',
+      qua_c3_h: 'Re-ordering', qua_c3_b: 'Extending without a visible colour difference next to what is already there.',
+      lev_eyebrow: 'Why Sempertex / Delivery',
+      lev_h2: 'Stocked in Genk',
+      lev_p1: 'Sempertex Europe is based in Genk. From there we ship orders across Europe. Shorter waits than when every shipment first has to come in from Colombia.',
+      lev_p2: 'Online orders can also be collected in person, Monday to Thursday between 10 and 12 and between 13 and 16. You get a note as soon as your order is ready.',
+      lev_p3: '<a data-href="/shop" data-i18n="lev_link1">To the webshop</a> or <a data-href="/helpdesk" data-i18n="lev_link2">ask the team a question</a>',
+      lev_link1: 'To the webshop', lev_link2: 'ask the team a question',
+      lev_h3: 'What else is included',
+      lev_c1_h: 'Workshops', lev_c1_b: 'Learn techniques from experienced decorators. <a data-href="/events" data-i18n="lev_c1_a">See the calendar</a>.', lev_c1_a: 'See the calendar',
+      lev_c2_h: 'Colour combinations', lev_c2_b: 'Combined palettes with the matching codes. <a data-href="/inspiration" data-i18n="lev_c2_a">To inspiration</a>.', lev_c2_a: 'To inspiration',
+      lev_c3_h: 'Product photos and design sheets', lev_c3_b: 'For your own quotes and moodboards. <a data-href="/inspiration#downloads" data-i18n="lev_c3_a">To the downloads</a>.', lev_c3_a: 'To the downloads',
+      lev_c4_h: 'Wholesale', lev_c4_b: 'Sell Sempertex in your own market. <a data-href="/become-a-distributor" data-i18n="lev_c4_a">Terms and application</a>.', lev_c4_a: 'Terms and application',
+      mil_eyebrow: 'Why Sempertex / Certificates',
+      mil_h2: 'Certificates and what they cover exactly',
+      mil_lede: 'Business customers and event organisers ask about this more and more often. Below is what each certification actually covers.',
+      mil_p1: 'For the natural rubber latex, the entire supply chain is FSC&reg; Chain of Custody-certified, from the plantation to the factory. That certification covers origin and traceability of that material. It says nothing about the packaging or the balloon as a whole.',
+      mil_p2: 'The factory’s environmental management system is certified to ISO 14001:2015. That standard reviews how a company measures and steers its environmental impact. So it is not a product label.',
+      mil_p3: 'The figures on the right come from Sempertex’s own reporting and cover company activities. They are not about the environmental impact of a single balloon.',
+      mil_link: 'See the certificates and the underlying documents',
+      mil_caption: 'Measured at company level',
+      mil_r1_h: 'Emissions from own activities', mil_r1_v: 'Scope 1 and 2 down from 7,773 to 6,501 tonnes CO<sub>2</sub>eq, a drop of over 16 percent. Measured reduction, without offsetting via emission rights.',
+      mil_r2_h: 'Electricity', mil_r2_v: '100 percent renewable, bought with guarantees of origin',
+      mil_r3_h: 'Latex origin', mil_r3_v: 'FSC&reg; Chain of Custody over the full supply chain of natural rubber latex',
+      mil_r4_h: 'Environmental management', mil_r4_v: 'ISO 14001:2015, certification of the factory’s management system',
+      mil_r5_h: 'Recycling in 2024', mil_r5_v: '4.4 tonnes of balloons collected and processed into DUR pet toys',
+      mil_r6_h: 'Packaging', mil_r6_v: 'The new international packaging contains 20 percent recycled plastic from post-consumer waste',
+      mil_foot: 'Two goals from the same report: the new packaging fully rolled out by 2027, and the collection pilot for used balloons expanded. Both are described with milestones in the <a data-href="/sempertex-certificaten" data-i18n="mil_foot_a">published report</a>.', mil_foot_a: 'published report',
+      voo_eyebrow: 'Why Sempertex / In short',
+      voo_h2: 'In short',
+      voo_c1_h: '93 colours in 8 ranges', voo_c1_b: 'Glossy, matte, metallic, neon, mirror and velvet-like.',
+      voo_c2_h: 'Every colour has a code', voo_c2_b: 'Re-orders give you the same tint, also six months later.',
+      voo_c3_h: 'Stocked in Genk', voo_c3_b: 'Pick-up is possible, and topping up during a running project too.',
+      voo_c4_h: 'ISO 9001 and 14001, FSC&reg; Chain of Custody', voo_c4_b: 'The documents can be forwarded to a client who asks for them.',
+      voo_c5_h: 'Workshops and materials', voo_c5_b: 'Techniques, colour combinations, product photos and design sheets.',
+      faq_eyebrow: 'Why Sempertex / FAQ',
+      faq_h2: 'Frequently asked questions',
+      cta_eyebrow: 'Get started',
+      cta_h2: 'Order or resell',
+      cta_lede: 'The full range is in the webshop. To order you need an account, which you can request below. If you want to sell Sempertex yourself, wholesale is the way in.',
+      cta_btn1: 'To the webshop', cta_btn2: 'Request an account', cta_btn3: 'Become a wholesaler'
+    },
+
+    fr: {
+      skip: 'Aller au contenu',
+      side_label: 'Pourquoi Sempertex',
+      nav_kleuren: 'Gammes de couleurs',
+      nav_kwaliteit: 'Qualité',
+      nav_levering: 'Stock et livraison',
+      nav_milieu: 'Certificats et chiffres',
+      nav_voordelen: 'Ce que vous en tirez',
+      nav_faq: 'Questions fréquentes',
+      hero_eyebrow: 'Pourquoi Sempertex / Professionnels',
+      hero_h1: 'La même couleur, <span class="hl">à chaque commande</span>',
+      hero_lede: 'Sempertex fabrique des ballons en latex depuis 1938. La gamme européenne compte 93 couleurs réparties sur 8 séries et est stockée à Genk.',
+      hero_btn_shop: 'Découvrir la gamme',
+      hero_btn_wholesale: 'Devenir grossiste',
+      fact1_dt: '1938', fact1_dd: 'Sempertex fabrique des ballons depuis',
+      fact2_dt: '93 couleurs', fact2_dd: 'Réparties sur 8 séries, chacune avec son propre code',
+      fact3_dt: '70+ pays', fact3_dd: 'La marque y est distribuée',
+      fact4_dt: '3 certificats', fact4_dd: 'ISO 9001, ISO 14001, FSC&reg; Chain of Custody',
+      col_eyebrow: 'Pourquoi Sempertex / Couleurs',
+      col_h2: '8 séries, 93 couleurs',
+      col_lede: 'Cliquez sur une série pour voir son aperçu. Un clic sur un ballon vous mène à cette couleur dans la boutique, avec toutes les tailles et conditionnements.',
+      col_notice: 'Combiner deux couleurs pour créer une nouvelle teinte ? Le <a data-href="/inspiration#calculator" data-i18n="col_notice_a1">calculateur double stuffing</a> montre le résultat avant que vous ne gonfliez un ballon. Les palettes assemblées et le nuancier complet se trouvent sur la <a data-href="/inspiration" data-i18n="col_notice_a2">page inspiration</a>.',
+      qua_eyebrow: 'Pourquoi Sempertex / Qualité',
+      qua_h2: 'Chaque sachet, la même teinte',
+      qua_p1: 'Sempertex a obtenu la recertification ISO 9001:2015, la norme de management de la qualité, après un audit de Bureau Veritas. Les étapes de production sont définies et contrôlées, de l’achat du latex au moment où le carton quitte l’entrepôt.',
+      qua_p2: 'En pratique : le code 010 commandé aujourd’hui est la même teinte que le code 010 d’il y a six mois. Vous pouvez donc compléter une installation plus tard, et confirmer une couleur à un client alors qu’elle est encore à commander.',
+      qua_link: 'Voir tous les certificats',
+      qua_h3: 'Ce que ça vous apporte',
+      qua_c1_h: 'Couleur constante d’un sachet à l’autre', qua_c1_b: 'Une arche de trois cents ballons reste un ensemble homogène.',
+      qua_c2_h: 'Gonflage régulier', qua_c2_b: 'Moins de pertes au montage, donc moins de temps perdu.',
+      qua_c3_h: 'Réassortiment', qua_c3_b: 'Agrandir sans différence visible avec l’existant.',
+      lev_eyebrow: 'Pourquoi Sempertex / Livraison',
+      lev_h2: 'Stock à Genk',
+      lev_p1: 'Sempertex Europe est basé à Genk. Nous expédions les commandes dans toute l’Europe depuis là. Des délais plus courts que lorsque chaque envoi doit d’abord venir de Colombie.',
+      lev_p2: 'Les commandes en ligne peuvent aussi être retirées sur place, du lundi au jeudi entre 10h et 12h et entre 13h et 16h. Vous recevez un message dès que votre commande est prête.',
+      lev_p3: '<a data-href="/shop" data-i18n="lev_link1">Vers la boutique</a> ou <a data-href="/helpdesk" data-i18n="lev_link2">poser votre question à l’équipe</a>',
+      lev_link1: 'Vers la boutique', lev_link2: 'poser votre question à l’équipe',
+      lev_h3: 'Ce qui va avec',
+      lev_c1_h: 'Ateliers', lev_c1_b: 'Apprendre les techniques avec des décorateurs expérimentés. <a data-href="/events" data-i18n="lev_c1_a">Voir l’agenda</a>.', lev_c1_a: 'Voir l’agenda',
+      lev_c2_h: 'Combinaisons de couleurs', lev_c2_b: 'Palettes assemblées avec les codes correspondants. <a data-href="/inspiration" data-i18n="lev_c2_a">Vers l’inspiration</a>.', lev_c2_a: 'Vers l’inspiration',
+      lev_c3_h: 'Photos produits et fiches design', lev_c3_b: 'Pour vos devis et moodboards. <a data-href="/inspiration#downloads" data-i18n="lev_c3_a">Vers les téléchargements</a>.', lev_c3_a: 'Vers les téléchargements',
+      lev_c4_h: 'Wholesale', lev_c4_b: 'Vendre Sempertex sur votre marché. <a data-href="/become-a-distributor" data-i18n="lev_c4_a">Conditions et demande</a>.', lev_c4_a: 'Conditions et demande',
+      mil_eyebrow: 'Pourquoi Sempertex / Certificats',
+      mil_h2: 'Les certificats et ce qu’ils couvrent exactement',
+      mil_lede: 'Les clients professionnels et les organisateurs d’évènements posent de plus en plus souvent la question. Voici ce que chaque certification couvre réellement.',
+      mil_p1: 'Pour le latex naturel, toute la chaîne d’approvisionnement est certifiée FSC&reg; Chain of Custody, de la plantation à l’usine. Cette certification porte sur l’origine et la traçabilité de ce matériau. Elle ne dit rien sur l’emballage ni sur le ballon en tant que tel.',
+      mil_p2: 'Le système de management environnemental de l’usine est certifié ISO 14001:2015. Cette norme évalue la façon dont une entreprise mesure et pilote son impact environnemental. Ce n’est donc pas un label produit.',
+      mil_p3: 'Les chiffres ci-contre proviennent du reporting de Sempertex et concernent les activités de l’entreprise. Ils ne portent pas sur l’impact environnemental d’un seul ballon.',
+      mil_link: 'Voir les certificats et les documents à l’appui',
+      mil_caption: 'Mesuré au niveau de l’entreprise',
+      mil_r1_h: 'Émissions de nos activités', mil_r1_v: 'Scope 1 et 2 en baisse de 7 773 à 6 501 tonnes CO<sub>2</sub>eq, soit plus de 16 pour cent en moins. Réduction mesurée, sans compensation via des droits d’émission.',
+      mil_r2_h: 'Électricité', mil_r2_v: '100 pour cent renouvelable, achetée avec des garanties d’origine',
+      mil_r3_h: 'Origine du latex', mil_r3_v: 'FSC&reg; Chain of Custody sur toute la chaîne du latex naturel',
+      mil_r4_h: 'Management environnemental', mil_r4_v: 'ISO 14001:2015, certification du système de management de l’usine',
+      mil_r5_h: 'Recyclage en 2024', mil_r5_v: '4,4 tonnes de ballons collectés et transformés en jouets DUR pour animaux',
+      mil_r6_h: 'Emballage', mil_r6_v: 'Le nouvel emballage international contient 20 pour cent de plastique recyclé issu de déchets post-consommation',
+      mil_foot: 'Deux objectifs issus du même rapport : le nouvel emballage déployé sur toute la gamme d’ici 2027, et le pilote de collecte des ballons usagés élargi. Les deux sont décrits avec des étapes intermédiaires dans le <a data-href="/sempertex-certificaten" data-i18n="mil_foot_a">rapport publié</a>.', mil_foot_a: 'rapport publié',
+      voo_eyebrow: 'Pourquoi Sempertex / En résumé',
+      voo_h2: 'En résumé',
+      voo_c1_h: '93 couleurs sur 8 séries', voo_c1_b: 'Brillant, mat, métallisé, néon, miroir et effet velours.',
+      voo_c2_h: 'Chaque couleur a un code', voo_c2_b: 'Un réassort donne la même teinte, même six mois plus tard.',
+      voo_c3_h: 'Stock à Genk', voo_c3_b: 'Retrait possible, et réassort en cours de projet aussi.',
+      voo_c4_h: 'ISO 9001 et 14001, FSC&reg; Chain of Custody', voo_c4_b: 'Les documents peuvent être transmis à un client qui les demande.',
+      voo_c5_h: 'Ateliers et supports', voo_c5_b: 'Techniques, combinaisons de couleurs, photos produits et fiches design.',
+      faq_eyebrow: 'Pourquoi Sempertex / FAQ',
+      faq_h2: 'Questions fréquentes',
+      cta_eyebrow: 'Passer à l’action',
+      cta_h2: 'Commander ou revendre',
+      cta_lede: 'Toute la gamme est dans la boutique. Pour commander, vous avez besoin d’un compte, à demander ci-dessous. Pour vendre Sempertex vous-même, direction wholesale.',
+      cta_btn1: 'Vers la boutique', cta_btn2: 'Demander un compte', cta_btn3: 'Devenir grossiste'
+    },
+
+    de: {
+      skip: 'Zum Inhalt',
+      side_label: 'Warum Sempertex',
+      nav_kleuren: 'Farbserien',
+      nav_kwaliteit: 'Qualität',
+      nav_levering: 'Lager und Lieferung',
+      nav_milieu: 'Zertifikate und Zahlen',
+      nav_voordelen: 'Was du davon hast',
+      nav_faq: 'Häufige Fragen',
+      hero_eyebrow: 'Warum Sempertex / Profis',
+      hero_h1: 'Dieselbe Farbe, <span class="hl">bei jeder Bestellung</span>',
+      hero_lede: 'Sempertex fertigt Latexballons seit 1938. Das europäische Sortiment umfasst 93 Farben in 8 Serien und liegt in Genk auf Lager.',
+      hero_btn_shop: 'Sortiment ansehen',
+      hero_btn_wholesale: 'Wholesaler werden',
+      fact1_dt: '1938', fact1_dd: 'Seitdem stellt Sempertex Ballons her',
+      fact2_dt: '93 Farben', fact2_dd: 'Verteilt auf 8 Serien, jede mit eigenem Bestellcode',
+      fact3_dt: '70+ Länder', fact3_dd: 'Dort wird die Marke verkauft',
+      fact4_dt: '3 Zertifikate', fact4_dd: 'ISO 9001, ISO 14001, FSC&reg; Chain of Custody',
+      col_eyebrow: 'Warum Sempertex / Farben',
+      col_h2: '8 Serien, 93 Farben',
+      col_lede: 'Klicke eine Serie an für die Übersicht. Ein Klick auf einen Ballon bringt dich zu dieser Farbe im Shop, mit allen Größen und Verpackungen.',
+      col_notice: 'Zwei Farben zu einem neuen Ton kombinieren? Der <a data-href="/inspiration#calculator" data-i18n="col_notice_a1">Double-Stuffing-Rechner</a> zeigt das Ergebnis, bevor du einen Ballon aufbläst. Kombinierte Paletten und die vollständige Farbkarte findest du auf der <a data-href="/inspiration" data-i18n="col_notice_a2">Inspirationsseite</a>.',
+      qua_eyebrow: 'Warum Sempertex / Qualität',
+      qua_h2: 'Jeder Beutel derselbe Ton',
+      qua_p1: 'Sempertex hat nach einem Audit durch Bureau Veritas die Rezertifizierung nach ISO 9001:2015 erhalten, der Norm für Qualitätsmanagement. Die Produktionsschritte sind festgelegt und werden kontrolliert, vom Einkauf des Latex bis zum Moment, in dem eine Box das Lager verlässt.',
+      qua_p2: 'Konkret bedeutet das: Code 010, den du heute bestellst, ist derselbe Ton wie Code 010 von vor sechs Monaten. So kannst du eine bestehende Installation später ergänzen und einem Kunden eine Farbe zusagen, die noch bestellt werden muss.',
+      qua_link: 'Alle Zertifikate ansehen',
+      qua_h3: 'Was das bringt',
+      qua_c1_h: 'Farbe von Beutel zu Beutel', qua_c1_b: 'Ein Bogen aus dreihundert Ballons bleibt ein Ganzes.',
+      qua_c2_h: 'Gleichmäßiges Aufblasen', qua_c2_b: 'Weniger Ausschuss beim Aufbau, weniger Zeitverlust.',
+      qua_c3_h: 'Nachbestellen', qua_c3_b: 'Erweitern ohne sichtbaren Farbunterschied zum bereits Vorhandenen.',
+      lev_eyebrow: 'Warum Sempertex / Lieferung',
+      lev_h2: 'Lager in Genk',
+      lev_p1: 'Sempertex Europe hat seinen Sitz in Genk. Von dort versenden wir Bestellungen in ganz Europa. Kürzere Wartezeiten, als wenn jede Sendung erst aus Kolumbien kommen muss.',
+      lev_p2: 'Online-Bestellungen kannst du auch selbst abholen, montags bis donnerstags zwischen 10 und 12 Uhr und zwischen 13 und 16 Uhr. Du bekommst Bescheid, sobald deine Bestellung bereitliegt.',
+      lev_p3: '<a data-href="/shop" data-i18n="lev_link1">Zum Webshop</a> oder <a data-href="/helpdesk" data-i18n="lev_link2">Frage an das Team stellen</a>',
+      lev_link1: 'Zum Webshop', lev_link2: 'Frage an das Team stellen',
+      lev_h3: 'Was noch dazugehört',
+      lev_c1_h: 'Workshops', lev_c1_b: 'Techniken lernen von erfahrenen Dekorateuren. <a data-href="/events" data-i18n="lev_c1_a">Termine ansehen</a>.', lev_c1_a: 'Termine ansehen',
+      lev_c2_h: 'Farbkombinationen', lev_c2_b: 'Kombinierte Paletten mit den passenden Codes. <a data-href="/inspiration" data-i18n="lev_c2_a">Zur Inspiration</a>.', lev_c2_a: 'Zur Inspiration',
+      lev_c3_h: 'Produktfotos und Design-Sheets', lev_c3_b: 'Für deine Angebote und Moodboards. <a data-href="/inspiration#downloads" data-i18n="lev_c3_a">Zu den Downloads</a>.', lev_c3_a: 'Zu den Downloads',
+      lev_c4_h: 'Wholesale', lev_c4_b: 'Sempertex im eigenen Markt verkaufen. <a data-href="/become-a-distributor" data-i18n="lev_c4_a">Bedingungen und Antrag</a>.', lev_c4_a: 'Bedingungen und Antrag',
+      mil_eyebrow: 'Warum Sempertex / Zertifikate',
+      mil_h2: 'Zertifikate und was sie genau abdecken',
+      mil_lede: 'Geschäftskunden und Event-Organisatoren fragen immer häufiger danach. Hier steht, welche Zertifizierungen es gibt und was jede davon abdeckt.',
+      mil_p1: 'Für den natürlichen Kautschuklatex ist die gesamte Lieferkette FSC&reg; Chain of Custody-zertifiziert, von der Plantage bis in die Fabrik. Diese Zertifizierung betrifft Herkunft und Rückverfolgbarkeit dieses Materials. Über die Verpackung oder den Ballon insgesamt sagt sie nichts aus.',
+      mil_p2: 'Das Umweltmanagementsystem der Fabrik ist nach ISO 14001:2015 zertifiziert. Diese Norm bewertet, wie ein Unternehmen seine Umweltwirkung misst und steuert. Es ist also kein Produktsiegel.',
+      mil_p3: 'Die Zahlen daneben stammen aus dem Reporting von Sempertex und beziehen sich auf die Unternehmensaktivitäten. Sie sagen nichts über die Umweltwirkung eines einzelnen Ballons.',
+      mil_link: 'Zertifikate und Belege ansehen',
+      mil_caption: 'Gemessen auf Unternehmensebene',
+      mil_r1_h: 'Emissionen eigener Aktivitäten', mil_r1_v: 'Scope 1 und 2 gesunken von 7.773 auf 6.501 Tonnen CO<sub>2</sub>eq, gut 16 Prozent weniger. Gemessene Reduktion, ohne Kompensation über Emissionsrechte.',
+      mil_r2_h: 'Strom', mil_r2_v: '100 Prozent erneuerbar, gekauft mit Herkunftsnachweisen',
+      mil_r3_h: 'Herkunft Latex', mil_r3_v: 'FSC&reg; Chain of Custody über die gesamte Kette des natürlichen Kautschuklatex',
+      mil_r4_h: 'Umweltmanagement', mil_r4_v: 'ISO 14001:2015, Zertifizierung des Managementsystems der Fabrik',
+      mil_r5_h: 'Recycling 2024', mil_r5_v: '4,4 Tonnen Ballons gesammelt und zu DUR-Haustierspielzeug verarbeitet',
+      mil_r6_h: 'Verpackung', mil_r6_v: 'Die neue internationale Verpackung enthält 20 Prozent Recycling-Kunststoff aus Post-Consumer-Abfällen',
+      mil_foot: 'Zwei Ziele aus demselben Report: die neue Verpackung bis 2027 vollständig ausgerollt und das Sammelpilotprojekt für gebrauchte Ballons erweitert. Beide sind mit Zwischenschritten im <a data-href="/sempertex-certificaten" data-i18n="mil_foot_a">veröffentlichten Report</a> beschrieben.', mil_foot_a: 'veröffentlichten Report',
+      voo_eyebrow: 'Warum Sempertex / Kurz gefasst',
+      voo_h2: 'Kurz gefasst',
+      voo_c1_h: '93 Farben in 8 Serien', voo_c1_b: 'Glänzend, matt, metallic, neon, spiegelnd und samtig.',
+      voo_c2_h: 'Jede Farbe hat einen Code', voo_c2_b: 'Nachbestellen ergibt denselben Ton, auch ein halbes Jahr später.',
+      voo_c3_h: 'Lager in Genk', voo_c3_b: 'Selbst abholen geht, und Nachbestellen während eines laufenden Projekts auch.',
+      voo_c4_h: 'ISO 9001 und 14001, FSC&reg; Chain of Custody', voo_c4_b: 'Die Dokumente kannst du an Kunden weiterleiten, die danach fragen.',
+      voo_c5_h: 'Workshops und Material', voo_c5_b: 'Techniken, Farbkombinationen, Produktfotos und Design-Sheets.',
+      faq_eyebrow: 'Warum Sempertex / FAQ',
+      faq_h2: 'Häufige Fragen',
+      cta_eyebrow: 'Loslegen',
+      cta_h2: 'Bestellen oder weiterverkaufen',
+      cta_lede: 'Das komplette Sortiment ist im Webshop. Zum Bestellen brauchst du einen Account, den du unten anfragst. Wer Sempertex selbst verkaufen möchte, landet bei Wholesale.',
+      cta_btn1: 'Zum Webshop', cta_btn2: 'Account anfragen', cta_btn3: 'Wholesaler werden'
+    }
+  };
+
+  /* NL fallback voor keys die door JS worden opgevraagd (naast wat er
+     al in de markup staat via data-i18n) */
+  var NL = {
+    lev_link1: 'Naar de webshop', lev_link2: 'stel je vraag aan het team',
+    lev_c1_a: 'Bekijk de agenda', lev_c2_a: 'Naar inspiratie',
+    lev_c3_a: 'Naar de downloads', lev_c4_a: 'Voorwaarden en aanvraag',
+    mil_foot_a: 'gepubliceerde rapportering'
+  };
+
+  /* ==========================================================
+     KLEURDATA: 93 kleuren over 8 reeksen. Elke reeks krijgt
+     een panel met een grid van col-items. shopId is de Odoo
+     categorie-id (id-only URL redirect naar de vertaalde slug).
+     'file' is de bestandsnaam in assets/balloons/.
+     ========================================================== */
+  var RANGES = [
+    {
+      id: 'fashion',
+      label: { nl: 'Fashion', en: 'Fashion', fr: 'Fashion', de: 'Fashion' },
+      finish: { nl: 'Glans, standaardafwerking, 41 kleuren', en: 'Gloss, standard finish, 41 colours', fr: 'Brillant, finition standard, 41 couleurs', de: 'Glänzend, Standardfinish, 41 Farben' },
+      colors: [
+        {code:'005', name:'White',           file:'005_White.png',           shopId:3836},
+        {code:'006', name:'Almond White',    file:'006_Almond-White.png',    shopId:4076},
+        {code:'008', name:'Candy Pink',      file:'008_Candy-Pink.png',      shopId:4086},
+        {code:'009', name:'Pink',            file:'009_Pink.png',            shopId:3837},
+        {code:'010', name:'Rosewood',        file:'010_Rosewood.png',        shopId:3838},
+        {code:'011', name:'Rose',            file:'011_Rose.png',            shopId:3839},
+        {code:'012', name:'Fuchsia',         file:'012_Fuchsia.png',         shopId:3840},
+        {code:'013', name:'Cosmo Pink',      file:'013_Cosmo-Pink.png',      shopId:4085},
+        {code:'015', name:'Red',             file:'015_Red.png',             shopId:3842},
+        {code:'016', name:'Imperial Red',    file:'016_Imperial-Red.png',    shopId:3843},
+        {code:'018', name:'Merlot',          file:'018_Merlot.png',          shopId:3844},
+        {code:'020', name:'Yellow',          file:'020_Yellow.png',          shopId:3845},
+        {code:'021', name:'Honey Yellow',    file:'021_Honey-Yellow.png',    shopId:3846},
+        {code:'023', name:'Mustard',         file:'023_Mustard.png',         shopId:3847},
+        {code:'027', name:'Eucalyptus',      file:'027_Eucalyptus.png',      shopId:3848},
+        {code:'029', name:'Shamrock Green',  file:'029_Shamrock-Green.png',  shopId:3849},
+        {code:'030', name:'Green',           file:'030_Green.png',           shopId:3850},
+        {code:'031', name:'Lime Green',      file:'031_Lime-Green.png',      shopId:3851},
+        {code:'032', name:'Forest Green',    file:'032_Forest-Green.png',    shopId:3852},
+        {code:'035', name:'Deep Teal',       file:'035_Deep-Teal.png',       shopId:3853},
+        {code:'037', name:'Aquamarina',      file:'037_Aquamarina.png',      shopId:3854},
+        {code:'038', name:'Caribbean Blue',  file:'038_Caribbean-Blue.png',  shopId:3855},
+        {code:'040', name:'Blue',            file:'040_Blue.png',            shopId:3856},
+        {code:'041', name:'Royal Blue',      file:'041_Royal-Blue.png',      shopId:3857},
+        {code:'042', name:'Periwinkle Blue', file:'042_Periwinkle-Blue.png', shopId:3858},
+        {code:'044', name:'Navy Blue',       file:'044_Navy-Blue.png',       shopId:3859},
+        {code:'050', name:'Lilac',           file:'050_Lilac.png',           shopId:3860},
+        {code:'051', name:'Violet',          file:'051_Violet.png',          shopId:3861},
+        {code:'058', name:'Creamy Blush',    file:'058_Creamy-Blush.png',    shopId:4077},
+        {code:'060', name:'Peach Blush',     file:'060_Peach-Blush.png',     shopId:3864},
+        {code:'061', name:'Orange',          file:'061_Orange.png',          shopId:3865},
+        {code:'062', name:'Sunset Orange',   file:'062_Sunset-Orange.png',   shopId:3866},
+        {code:'070', name:'Mocha',           file:'070_Mocha.png',           shopId:3867},
+        {code:'071', name:'White Sand',      file:'071_White-Sand.png',      shopId:3868},
+        {code:'073', name:'Latte',           file:'073_Latte.png',           shopId:3869},
+        {code:'074', name:'Coffee',          file:'074_Coffee.png',          shopId:3870},
+        {code:'076', name:'Chocolate',       file:'076_Chocolate.png',       shopId:3871},
+        {code:'080', name:'Black',           file:'080_Black.png',           shopId:3872},
+        {code:'081', name:'Grey',            file:'081_Grey.png',            shopId:3873},
+        {code:'082', name:'Urban Grey',      file:'082_Urban-Grey.png',      shopId:4078},
+        {code:'390', name:'Crystal Clear',   file:'390_Crystal-Clear.png',   shopId:3887}
+      ]
+    },
+    {
+      id: 'pastel-dusk',
+      label: { nl: 'Pastel Dusk', en: 'Pastel Dusk', fr: 'Pastel Dusk', de: 'Pastel Dusk' },
+      finish: { nl: 'Zachte tinten, gedempt, 5 kleuren', en: 'Soft muted tones, 5 colours', fr: 'Teintes douces feutrées, 5 couleurs', de: 'Weiche gedämpfte Töne, 5 Farben' },
+      colors: [
+        {code:'107', name:'Cream',       file:'107_Cream.png',       shopId:3875},
+        {code:'110', name:'Rose',        file:'110_Rose.png',        shopId:3876},
+        {code:'126', name:'Green Tea',   file:'126_Green-Tea.png',   shopId:3877},
+        {code:'140', name:'Blue',        file:'140_Blue.png',        shopId:3879},
+        {code:'150', name:'Lavender',    file:'150_Lavender.png',    shopId:3880}
+      ]
+    },
+    {
+      id: 'neon',
+      label: { nl: 'Neon', en: 'Neon', fr: 'Néon', de: 'Neon' },
+      finish: { nl: 'Fluorescerend, 5 kleuren', en: 'Fluorescent, 5 colours', fr: 'Fluorescent, 5 couleurs', de: 'Fluoreszierend, 5 Farben' },
+      colors: [
+        {code:'212', name:'Fuchsia',     file:'212_Fuchsia.png',     shopId:3882},
+        {code:'220', name:'Yellow',      file:'220_Yellow.png',      shopId:3883},
+        {code:'230', name:'Green',       file:'230_Green.png',       shopId:3884},
+        {code:'240', name:'Blue',        file:'240_Blue.png',        shopId:3885},
+        {code:'261', name:'Orange',      file:'261_Orange.png',      shopId:3886}
+      ]
+    },
+    {
+      id: 'pearl',
+      label: { nl: 'Pearl', en: 'Pearl', fr: 'Pearl', de: 'Pearl' },
+      finish: { nl: 'Perlemoerglans, 7 kleuren', en: 'Pearlescent sheen, 7 colours', fr: 'Éclat nacré, 7 couleurs', de: 'Perlmuttglanz, 7 Farben' },
+      colors: [
+        {code:'405', name:'White',       file:'405_White.png',       shopId:3889},
+        {code:'406', name:'Pearl',       file:'406_Pearl.png',       shopId:3890},
+        {code:'409', name:'Pink',        file:'409_Pink.png',        shopId:3891},
+        {code:'430', name:'Green',       file:'430_Green.png',       shopId:3892},
+        {code:'440', name:'Blue',        file:'440_Blue.png',        shopId:3893},
+        {code:'450', name:'Lilac',       file:'450_Lilac.png',       shopId:3894},
+        {code:'481', name:'Silver',      file:'481_Silver.png',      shopId:3895}
+      ]
+    },
+    {
+      id: 'metallic',
+      label: { nl: 'Metallic', en: 'Metallic', fr: 'Métallisé', de: 'Metallic' },
+      finish: { nl: 'Metallic, 7 kleuren', en: 'Metallic, 7 colours', fr: 'Métallisé, 7 couleurs', de: 'Metallic, 7 Farben' },
+      colors: [
+        {code:'512', name:'Fuchsia',     file:'512_Fuchsia.png',     shopId:3897},
+        {code:'515', name:'Red',         file:'515_Red.png',         shopId:3898},
+        {code:'530', name:'Green',       file:'530_Green.png',       shopId:3899},
+        {code:'540', name:'Blue',        file:'540_Blue.png',        shopId:3900},
+        {code:'568', name:'Rose Gold',   file:'568_Rose-Gold.png',   shopId:3901},
+        {code:'570', name:'Gold',        file:'570_Gold.png',        shopId:3902},
+        {code:'580', name:'Black',       file:'580_Black.png',       shopId:3903}
+      ]
+    },
+    {
+      id: 'pastel-matte',
+      label: { nl: 'Pastel Matte', en: 'Pastel Matte', fr: 'Pastel Matte', de: 'Pastel Matte' },
+      finish: { nl: 'Mat, geen glans, 8 kleuren', en: 'Matte, no gloss, 8 colours', fr: 'Mat, sans brillance, 8 couleurs', de: 'Matt, ohne Glanz, 8 Farben' },
+      colors: [
+        {code:'609', name:'Pink',            file:'609_Pink.png',           shopId:3905},
+        {code:'620', name:'Yellow',          file:'620_Yellow.png',         shopId:3906},
+        {code:'630', name:'Green',           file:'630_Green.png',          shopId:3907},
+        {code:'640', name:'Blue',            file:'640_Blue.png',           shopId:3908},
+        {code:'650', name:'Lilac',           file:'650_Lilac.png',          shopId:3909},
+        {code:'660', name:'Malibu Peach',    file:'660_Malibu-Peach.png',   shopId:3910},
+        {code:'661', name:'Nude',            file:'661_Nude.png',           shopId:3911},
+        {code:'663', name:'Melon',           file:'663_Melon.png',          shopId:3912}
+      ]
+    },
+    {
+      id: 'silk',
+      label: { nl: 'Silk', en: 'Silk', fr: 'Silk', de: 'Silk' },
+      finish: { nl: 'Fluweelachtige textuur, 8 kleuren', en: 'Velvet-like texture, 8 colours', fr: 'Texture veloutée, 8 couleurs', de: 'Samtige Textur, 8 Farben' },
+      colors: [
+        {code:'806', name:'Oyster White',    file:'806_Oyster-White.png',    shopId:3914},
+        {code:'809', name:'Pink Blossom',    file:'809_Pink-Blossom.png',    shopId:3915},
+        {code:'826', name:'Cool Mint',       file:'826_Cool-Mint.png',       shopId:3916},
+        {code:'839', name:'Arctic Blue',     file:'839_Arctic-Blue.png',     shopId:3917},
+        {code:'850', name:'Light Amethyst',  file:'850_Light-Amethyst.png',  shopId:3918},
+        {code:'870', name:'Gold Dust',       file:'870_Gold-Dust.png',       shopId:3919},
+        {code:'873', name:'Cream Pearl',     file:'873_Cream-Pearl.png',     shopId:3920},
+        {code:'880', name:'Midnight Grey',   file:'880_Midnight-Grey.png',   shopId:3921}
+      ]
+    },
+    {
+      id: 'reflex',
+      label: { nl: 'Reflex', en: 'Reflex', fr: 'Reflex', de: 'Reflex' },
+      finish: { nl: 'Spiegeleffect, 12 kleuren', en: 'Mirror finish, 12 colours', fr: 'Effet miroir, 12 couleurs', de: 'Spiegeleffekt, 12 Farben' },
+      colors: [
+        {code:'909', name:'Pink',            file:'909_Pink.png',            shopId:3923},
+        {code:'912', name:'Fuchsia',         file:'912_Fuchsia.png',         shopId:3924},
+        {code:'915', name:'Red',             file:'915_Red.png',             shopId:3925},
+        {code:'931', name:'Lime Green',      file:'931_Lime-Green.png',      shopId:3926},
+        {code:'932', name:'Aurora Green',    file:'932_Aurora-Green.png',    shopId:3927},
+        {code:'940', name:'Blue',            file:'940_Blue.png',            shopId:3928},
+        {code:'944', name:'Galaxy Blue',     file:'944_Galaxy-Blue.png',     shopId:3929},
+        {code:'951', name:'Violet',          file:'951_Violet.png',          shopId:3930},
+        {code:'968', name:'Rose Gold',       file:'968_Rose-Gold.png',       shopId:3931},
+        {code:'970', name:'Gold',            file:'970_Gold.png',            shopId:3932},
+        {code:'971', name:'Champagne',       file:'971_Champagne.png',       shopId:3933},
+        {code:'981', name:'Silver',          file:'981_Silver.png',          shopId:3934}
+      ]
+    }
+  ];
+
+  /* Klik-titel per taal ("<Range> <Name> <Code> bekijken in de webshop") */
+  var VIEW_TITLE = {
+    nl: function (r, c) { return r + ' ' + c.name + ' ' + c.code + ' bekijken in de webshop'; },
+    en: function (r, c) { return 'View ' + r + ' ' + c.name + ' ' + c.code + ' in the shop'; },
+    fr: function (r, c) { return 'Voir ' + r + ' ' + c.name + ' ' + c.code + ' dans la boutique'; },
+    de: function (r, c) { return r + ' ' + c.name + ' ' + c.code + ' im Shop ansehen'; }
+  };
+  var ALT_TEXT = {
+    nl: function (r, c) { return 'Sempertex ' + r + ' ' + c.name + ' ' + c.code + ' latex ballon'; },
+    en: function (r, c) { return 'Sempertex ' + r + ' ' + c.name + ' ' + c.code + ' latex balloon'; },
+    fr: function (r, c) { return 'Ballon en latex Sempertex ' + r + ' ' + c.name + ' ' + c.code; },
+    de: function (r, c) { return 'Sempertex ' + r + ' ' + c.name + ' ' + c.code + ' Latexballon'; }
+  };
+
+  /* ---- FAQ per taal (schema + rendering delen dezelfde bron) ---- */
+  var FAQ = {
+    nl: [
+      { q: 'Welke kleurreeksen heeft Sempertex?',
+        html: '<p>8: Fashion (glanzende standaardkleuren), Pastel Dusk (gedempte tinten), Neon (fluorescerend), Pearl (perlemoerglans), Metallic, Pastel Matte (mat), Silk (fluweelachtige textuur) en Reflex (spiegeleffect). Samen 93 kleuren, elk met een eigen code. In de webshop heet de Pearl-reeks Satin Pearl en staat Crystal Clear 390 onder Crystal.</p>',
+        text: '8 reeksen: Fashion (glanzende standaardkleuren), Pastel Dusk (gedempte tinten), Neon (fluorescerend), Pearl (perlemoerglans), Metallic, Pastel Matte (mat), Silk (fluweelachtige textuur) en Reflex (spiegeleffect). Samen 93 kleuren, elk met een eigen code. In de webshop heet de Pearl-reeks Satin Pearl en staat Crystal Clear 390 onder Crystal.' },
+      { q: 'Kan ik dezelfde kleur later opnieuw bestellen?',
+        html: '<p>Ja, daar is het codesysteem voor. De productie loopt onder een ISO 9001:2015-gecertificeerd kwaliteitsmanagementsysteem, dus een code die je vandaag bestelt komt overeen met dezelfde code bij een volgende order. Zo kan je een installatie later aanvullen zonder zichtbaar verschil.</p>',
+        text: 'Ja, daar is het codesysteem voor. De productie loopt onder een ISO 9001:2015-gecertificeerd kwaliteitsmanagementsysteem, dus een code die je vandaag bestelt komt overeen met dezelfde code bij een volgende order. Zo kan je een installatie later aanvullen zonder zichtbaar verschil.' },
+      { q: 'Wat is double stuffing en welke ballonnen heb ik daarvoor nodig?',
+        html: '<p>Je schuift &eacute;&eacute;n ballon in een andere om een nieuwe tint te maken. De buitenste is meestal Crystal Clear 390 of een lichte kleur, de binnenste bepaalt de tint. Zo kom je aan kleuren die niet in de kaart staan, met materiaal dat je al hebt.</p><p>De <a data-href="/inspiration#calculator">double stuffing calculator</a> laat het resultaat zien voor je opblaast. Houd er rekening mee dat het een benadering is: opblaasmaat, licht en de finish van de gebruikte ballonnen veranderen het eindresultaat.</p>',
+        text: 'Bij double stuffing schuif je een ballon in een andere om een nieuwe tint te maken. De buitenste ballon is meestal Crystal Clear 390 of een lichte tint, de binnenste bepaalt de kleur. De double stuffing calculator op de inspiratiepagina laat het resultaat zien voor je opblaast. Die weergave is een benadering: de uiteindelijke kleur hangt af van opblaasmaat, licht en finish.' },
+      { q: 'Welke certificaten heeft Sempertex?',
+        html: '<p>Drie, en ze dekken elk iets anders. ISO 9001:2015 gaat over het kwaliteitsmanagementsysteem, gehercertificeerd na een audit door Bureau Veritas. ISO 14001:2015 gaat over het milieumanagementsysteem van de fabriek en niet over het product. FSC&reg; Chain of Custody dekt de toeleveringsketen van het natuurlijke rubberlatex. De documenten staan op de <a data-href="/sempertex-certificaten">pagina met certificaten</a>.</p>',
+        text: 'ISO 9001:2015 certificeert het kwaliteitsmanagementsysteem, gehercertificeerd na een audit door Bureau Veritas. ISO 14001:2015 certificeert het milieumanagementsysteem van de fabriek, niet het product. FSC Chain of Custody dekt de toeleveringsketen van het natuurlijke rubberlatex.' },
+      { q: 'Waar komt het latex van Sempertex-ballonnen vandaan?',
+        html: '<p>Het natuurlijke rubberlatex komt uit een toeleveringsketen met FSC&reg; Chain of Custody-certificering. Daardoor is het materiaal traceerbaar van plantage tot fabriek. Die certificering gaat specifiek over de herkomst van het latex en niet over de verpakking of over de ballon als geheel.</p>',
+        text: 'Het natuurlijke rubberlatex komt uit een toeleveringsketen met FSC Chain of Custody-certificering, waardoor het materiaal traceerbaar is van plantage tot fabriek. Die certificering gaat specifiek over de herkomst van het latex en niet over de verpakking of over de ballon als geheel.' },
+      { q: 'Zijn Sempertex-ballonnen biodegradeerbaar?',
+        html: '<p>Sempertex-ballonnen zijn gemaakt van natuurlijk rubberlatex, een materiaal van plantaardige oorsprong. We gebruiken het woord biodegradeerbaar toch niet als verkoopargument. De afbraaktijd van latex hangt in de praktijk af van temperatuur, vochtigheid en bodemtype, en een ballon bevat naast latex ook kleurstoffen en additieven.</p><p>Het latex is wel FSC&reg; Chain of Custody-gecertificeerd, en gebruikte ballonnen kunnen ingezameld en gerecycleerd worden. In 2024 ging 4,4 ton die weg en werd het speelgoed voor huisdieren. Laat ballonnen na een event dus niet los in de lucht.</p>',
+        text: 'Sempertex-ballonnen worden gemaakt van natuurlijk rubberlatex, een materiaal van plantaardige oorsprong. Het woord biodegradeerbaar gebruiken we niet als verkoopargument, omdat de afbraaktijd van latex afhangt van omstandigheden zoals temperatuur, vochtigheid en bodemtype, en omdat een ballon naast latex ook kleurstoffen en additieven bevat. Het latex is wel FSC Chain of Custody-gecertificeerd en gebruikte ballonnen kunnen ingezameld en gerecycleerd worden.' },
+      { q: 'Hoe bestel ik Sempertex-ballonnen in Europa?',
+        html: '<p>Via de <a data-href="/shop">webshop</a>, na registratie van een account. Je order wordt vanuit Genk verzonden, of je haalt hem op van maandag tot donderdag tussen 10u en 12u en tussen 13u en 16u. Voor doorverkoop is er <a data-href="/become-a-distributor">wholesale</a>.</p>',
+        text: 'Via de webshop van Sempertex Europe. Registreer een account en bestel online. Je order wordt vanuit Genk verzonden of je haalt hem op van maandag tot donderdag tussen 10u en 12u en tussen 13u en 16u. Wil je Sempertex doorverkopen, vraag dan een wholesale-partnerschap aan.' },
+      { q: 'Hoe lang bestaat Sempertex al?',
+        html: '<p>Sinds 1938, dus ruim 85 jaar. Het merk wordt vandaag in meer dan 70 landen verkocht, aan ballondecorateurs, wholesalers en eventbedrijven.</p>',
+        text: 'Sempertex maakt ballonnen sinds 1938, dus meer dan 85 jaar. Het merk is vandaag actief in meer dan 70 landen en wordt gebruikt door professionele ballondecorateurs, wholesalers en eventbedrijven.' }
+    ],
+    en: [
+      { q: 'Which colour ranges does Sempertex offer?',
+        html: '<p>8: Fashion (glossy standard colours), Pastel Dusk (muted tones), Neon (fluorescent), Pearl (pearlescent), Metallic, Pastel Matte (matte), Silk (velvet-like) and Reflex (mirror). 93 colours in total, each with its own code. In the shop the Pearl range is called Satin Pearl and Crystal Clear 390 sits under Crystal.</p>',
+        text: '8 ranges: Fashion, Pastel Dusk, Neon, Pearl, Metallic, Pastel Matte, Silk and Reflex. 93 colours in total, each with its own code. In the shop the Pearl range is called Satin Pearl and Crystal Clear 390 sits under Crystal.' },
+      { q: 'Can I order the same colour again later?',
+        html: '<p>Yes, that is what the code system is for. Production runs under an ISO 9001:2015-certified quality management system, so a code you order today matches the same code on a later order. You can top up an installation later with no visible difference.</p>',
+        text: 'Yes. Production runs under an ISO 9001:2015-certified quality management system, so a code you order today matches the same code on a later order. You can top up an installation later with no visible difference.' },
+      { q: 'What is double stuffing and which balloons do I need for it?',
+        html: '<p>You slide one balloon inside another to create a new tint. The outer is usually Crystal Clear 390 or a light shade, the inner sets the colour. That gives you colours that are not in the chart, with material you already have.</p><p>The <a data-href="/inspiration#calculator">double stuffing calculator</a> shows the result before you inflate. Keep in mind it is an approximation: inflation size, light and the finish of the balloons used affect the final result.</p>',
+        text: 'You slide one balloon inside another to create a new tint. The outer is usually Crystal Clear 390 or a light shade, the inner sets the colour. The double stuffing calculator on the inspiration page shows the result before you inflate. That view is an approximation: the final colour depends on inflation size, light and finish.' },
+      { q: 'Which certificates does Sempertex hold?',
+        html: '<p>Three, each covering something different. ISO 9001:2015 covers the quality management system, re-certified after an audit by Bureau Veritas. ISO 14001:2015 covers the factory’s environmental management system and not the product itself. FSC&reg; Chain of Custody covers the supply chain of the natural rubber latex. The documents live on the <a data-href="/sempertex-certificaten">certificates page</a>.</p>',
+        text: 'ISO 9001:2015 covers the quality management system, re-certified after a Bureau Veritas audit. ISO 14001:2015 covers the factory’s environmental management system, not the product. FSC Chain of Custody covers the supply chain of the natural rubber latex.' },
+      { q: 'Where does the latex for Sempertex balloons come from?',
+        html: '<p>The natural rubber latex comes from a supply chain with FSC&reg; Chain of Custody certification, which makes the material traceable from plantation to factory. That certification is specifically about the origin of the latex, not the packaging or the balloon as a whole.</p>',
+        text: 'The natural rubber latex comes from a supply chain with FSC Chain of Custody certification, which makes the material traceable from plantation to factory. That certification is specifically about the origin of the latex, not the packaging or the balloon as a whole.' },
+      { q: 'Are Sempertex balloons biodegradable?',
+        html: '<p>Sempertex balloons are made from natural rubber latex, a plant-based material. We still do not use the word biodegradable as a selling point. In practice, the breakdown time of latex depends on temperature, humidity and soil type, and a balloon also contains colourants and additives on top of the latex.</p><p>The latex is FSC&reg; Chain of Custody-certified, and used balloons can be collected and recycled. In 2024, 4.4 tonnes went that route and became pet toys. So do not release balloons into the air after an event.</p>',
+        text: 'Sempertex balloons are made from natural rubber latex, a plant-based material. We do not use the word biodegradable as a selling point because the breakdown time of latex depends on temperature, humidity and soil type, and a balloon contains colourants and additives on top of the latex. The latex is FSC Chain of Custody-certified, and used balloons can be collected and recycled.' },
+      { q: 'How do I order Sempertex balloons in Europe?',
+        html: '<p>Through the <a data-href="/shop">webshop</a>, after registering an account. Your order ships from Genk, or you pick it up Monday to Thursday between 10 and 12 and between 13 and 16. For resale there is <a data-href="/become-a-distributor">wholesale</a>.</p>',
+        text: 'Through the Sempertex Europe webshop. Register an account and order online. Your order ships from Genk, or you can pick it up Monday to Thursday between 10 and 12 and between 13 and 16. To resell Sempertex, request a wholesale partnership.' },
+      { q: 'How long has Sempertex existed?',
+        html: '<p>Since 1938, so over 85 years. The brand is now sold in more than 70 countries, to balloon decorators, wholesalers and event companies.</p>',
+        text: 'Sempertex has been making balloons since 1938, so more than 85 years. The brand is active in more than 70 countries and is used by professional balloon decorators, wholesalers and event companies.' }
+    ],
+    fr: [
+      { q: 'Quelles gammes de couleurs propose Sempertex ?',
+        html: '<p>8 : Fashion (couleurs brillantes standard), Pastel Dusk (teintes feutrées), Néon (fluorescent), Pearl (éclat nacré), Métallisé, Pastel Matte (mat), Silk (texture veloutée) et Reflex (effet miroir). Au total 93 couleurs, chacune avec son code. Dans la boutique, la gamme Pearl s’appelle Satin Pearl et Crystal Clear 390 se trouve sous Crystal.</p>',
+        text: '8 gammes : Fashion, Pastel Dusk, Néon, Pearl, Métallisé, Pastel Matte, Silk et Reflex. 93 couleurs au total, chacune avec son code. La gamme Pearl s’appelle Satin Pearl dans la boutique et Crystal Clear 390 se trouve sous Crystal.' },
+      { q: 'Puis-je recommander la même couleur plus tard ?',
+        html: '<p>Oui, c’est à cela que sert le système de codes. La production tourne sous un système de management de la qualité certifié ISO 9001:2015, donc un code commandé aujourd’hui correspond au même code sur une commande ultérieure. Vous pouvez compléter une installation plus tard sans différence visible.</p>',
+        text: 'Oui. La production tourne sous un système de management de la qualité certifié ISO 9001:2015, donc un code commandé aujourd’hui correspond au même code sur une commande ultérieure. Vous pouvez compléter une installation plus tard sans différence visible.' },
+      { q: 'Qu’est-ce que le double stuffing et quels ballons faut-il ?',
+        html: '<p>Vous glissez un ballon dans un autre pour créer une nouvelle teinte. L’extérieur est généralement Crystal Clear 390 ou une teinte claire, l’intérieur définit la couleur. Vous obtenez ainsi des couleurs hors nuancier, avec du matériel que vous avez déjà.</p><p>Le <a data-href="/inspiration#calculator">calculateur double stuffing</a> montre le résultat avant que vous ne gonfliez. C’est une approximation : la taille de gonflage, la lumière et la finition des ballons utilisés modifient le résultat final.</p>',
+        text: 'Vous glissez un ballon dans un autre pour créer une nouvelle teinte. L’extérieur est généralement Crystal Clear 390 ou une teinte claire, l’intérieur définit la couleur. Le calculateur double stuffing sur la page inspiration montre le résultat avant le gonflage. C’est une approximation : la taille de gonflage, la lumière et la finition affectent le résultat.' },
+      { q: 'Quels certificats possède Sempertex ?',
+        html: '<p>Trois, chacun couvrant autre chose. ISO 9001:2015 porte sur le système de management de la qualité, recertifié après un audit de Bureau Veritas. ISO 14001:2015 porte sur le système de management environnemental de l’usine et pas sur le produit. FSC&reg; Chain of Custody couvre la chaîne d’approvisionnement du latex naturel. Les documents sont sur la <a data-href="/sempertex-certificaten">page des certificats</a>.</p>',
+        text: 'ISO 9001:2015 couvre le système de management de la qualité, recertifié après un audit de Bureau Veritas. ISO 14001:2015 couvre le système de management environnemental de l’usine, pas le produit. FSC Chain of Custody couvre la chaîne d’approvisionnement du latex naturel.' },
+      { q: 'D’où vient le latex des ballons Sempertex ?',
+        html: '<p>Le latex naturel provient d’une chaîne d’approvisionnement certifiée FSC&reg; Chain of Custody, ce qui rend le matériau traçable de la plantation à l’usine. Cette certification porte spécifiquement sur l’origine du latex, pas sur l’emballage ni sur le ballon dans son ensemble.</p>',
+        text: 'Le latex naturel provient d’une chaîne d’approvisionnement certifiée FSC Chain of Custody, ce qui rend le matériau traçable de la plantation à l’usine. Cette certification porte spécifiquement sur l’origine du latex, pas sur l’emballage ni sur le ballon dans son ensemble.' },
+      { q: 'Les ballons Sempertex sont-ils biodégradables ?',
+        html: '<p>Les ballons Sempertex sont faits de latex naturel, un matériau d’origine végétale. Nous n’utilisons pourtant pas le mot biodégradable comme argument commercial. En pratique, le temps de dégradation du latex dépend de la température, de l’humidité et du type de sol, et un ballon contient aussi des colorants et additifs.</p><p>Le latex est bien certifié FSC&reg; Chain of Custody, et les ballons usagés peuvent être collectés et recyclés. En 2024, 4,4 tonnes ont pris cette voie pour devenir des jouets pour animaux. Ne relâchez donc pas les ballons après un évènement.</p>',
+        text: 'Les ballons Sempertex sont faits de latex naturel. Nous n’utilisons pas le mot biodégradable comme argument commercial, car le temps de dégradation dépend de la température, de l’humidité et du type de sol, et un ballon contient aussi des colorants et additifs. Le latex est certifié FSC Chain of Custody et les ballons usagés peuvent être collectés et recyclés.' },
+      { q: 'Comment commander des ballons Sempertex en Europe ?',
+        html: '<p>Via la <a data-href="/shop">boutique</a>, après enregistrement d’un compte. Votre commande est expédiée depuis Genk ou vous la récupérez du lundi au jeudi entre 10h et 12h et entre 13h et 16h. Pour la revente, il y a le <a data-href="/become-a-distributor">wholesale</a>.</p>',
+        text: 'Via la boutique Sempertex Europe. Créez un compte et commandez en ligne. Votre commande est expédiée depuis Genk ou vous la récupérez du lundi au jeudi entre 10h et 12h et entre 13h et 16h. Pour revendre, demandez un partenariat wholesale.' },
+      { q: 'Depuis combien de temps Sempertex existe-t-il ?',
+        html: '<p>Depuis 1938, soit plus de 85 ans. La marque est distribuée aujourd’hui dans plus de 70 pays, auprès de décorateurs ballon, de grossistes et d’entreprises événementielles.</p>',
+        text: 'Sempertex fabrique des ballons depuis 1938, soit plus de 85 ans. La marque est active dans plus de 70 pays et est utilisée par des décorateurs ballon, grossistes et entreprises événementielles.' }
+    ],
+    de: [
+      { q: 'Welche Farbserien hat Sempertex?',
+        html: '<p>8: Fashion (glänzende Standardfarben), Pastel Dusk (gedämpfte Töne), Neon (fluoreszierend), Pearl (Perlmuttglanz), Metallic, Pastel Matte (matt), Silk (samtige Textur) und Reflex (Spiegeleffekt). Zusammen 93 Farben, jede mit eigenem Code. Im Shop heißt die Pearl-Serie Satin Pearl und Crystal Clear 390 steht unter Crystal.</p>',
+        text: '8 Serien: Fashion, Pastel Dusk, Neon, Pearl, Metallic, Pastel Matte, Silk und Reflex. Zusammen 93 Farben, jede mit eigenem Code. Im Shop heißt die Pearl-Serie Satin Pearl und Crystal Clear 390 steht unter Crystal.' },
+      { q: 'Kann ich dieselbe Farbe später erneut bestellen?',
+        html: '<p>Ja, dafür ist das Codesystem da. Die Produktion läuft unter einem nach ISO 9001:2015 zertifizierten Qualitätsmanagementsystem, ein heute bestellter Code entspricht also demselben Code bei einer späteren Bestellung. So kannst du eine Installation später ohne sichtbaren Unterschied ergänzen.</p>',
+        text: 'Ja. Die Produktion läuft unter einem nach ISO 9001:2015 zertifizierten Qualitätsmanagementsystem, ein heute bestellter Code entspricht also demselben Code bei einer späteren Bestellung. So kannst du eine Installation später ohne sichtbaren Unterschied ergänzen.' },
+      { q: 'Was ist Double Stuffing und welche Ballons brauche ich dafür?',
+        html: '<p>Du schiebst einen Ballon in einen anderen, um einen neuen Ton zu erzeugen. Der äußere ist meist Crystal Clear 390 oder eine helle Farbe, der innere legt den Ton fest. So bekommst du Farben, die nicht in der Karte stehen, mit vorhandenem Material.</p><p>Der <a data-href="/inspiration#calculator">Double-Stuffing-Rechner</a> zeigt das Ergebnis, bevor du aufbläst. Es ist eine Annäherung: Aufblasgröße, Licht und Finish der verwendeten Ballons verändern das Ergebnis.</p>',
+        text: 'Du schiebst einen Ballon in einen anderen, um einen neuen Ton zu erzeugen. Der äußere ist meist Crystal Clear 390 oder eine helle Farbe, der innere legt den Ton fest. Der Double-Stuffing-Rechner auf der Inspirationsseite zeigt das Ergebnis, bevor du aufbläst. Es ist eine Annäherung: Aufblasgröße, Licht und Finish beeinflussen das Ergebnis.' },
+      { q: 'Welche Zertifikate hat Sempertex?',
+        html: '<p>Drei, jedes deckt etwas anderes ab. ISO 9001:2015 betrifft das Qualitätsmanagementsystem, nach einem Audit durch Bureau Veritas rezertifiziert. ISO 14001:2015 betrifft das Umweltmanagementsystem der Fabrik und nicht das Produkt. FSC&reg; Chain of Custody deckt die Lieferkette des natürlichen Kautschuklatex ab. Die Dokumente stehen auf der <a data-href="/sempertex-certificaten">Zertifikate-Seite</a>.</p>',
+        text: 'ISO 9001:2015 betrifft das Qualitätsmanagementsystem, nach einem Bureau-Veritas-Audit rezertifiziert. ISO 14001:2015 betrifft das Umweltmanagementsystem der Fabrik, nicht das Produkt. FSC Chain of Custody deckt die Lieferkette des natürlichen Kautschuklatex ab.' },
+      { q: 'Woher stammt das Latex der Sempertex-Ballons?',
+        html: '<p>Der natürliche Kautschuklatex kommt aus einer Lieferkette mit FSC&reg; Chain of Custody-Zertifizierung. Dadurch ist das Material von der Plantage bis zur Fabrik rückverfolgbar. Diese Zertifizierung betrifft speziell die Herkunft des Latex und nicht die Verpackung oder den Ballon insgesamt.</p>',
+        text: 'Der natürliche Kautschuklatex kommt aus einer Lieferkette mit FSC Chain of Custody-Zertifizierung, wodurch das Material von der Plantage bis zur Fabrik rückverfolgbar ist. Diese Zertifizierung betrifft speziell die Herkunft des Latex und nicht die Verpackung oder den Ballon insgesamt.' },
+      { q: 'Sind Sempertex-Ballons biologisch abbaubar?',
+        html: '<p>Sempertex-Ballons bestehen aus natürlichem Kautschuklatex, einem pflanzlichen Material. Wir nutzen das Wort biologisch abbaubar dennoch nicht als Verkaufsargument. Die Abbauzeit von Latex hängt in der Praxis von Temperatur, Feuchtigkeit und Bodentyp ab, und ein Ballon enthält neben Latex auch Farbstoffe und Additive.</p><p>Das Latex ist FSC&reg; Chain of Custody-zertifiziert, und gebrauchte Ballons können gesammelt und recycelt werden. 2024 gingen 4,4 Tonnen diesen Weg und wurden zu Spielzeug für Haustiere. Lasse Ballons nach einem Event also nicht in die Luft steigen.</p>',
+        text: 'Sempertex-Ballons bestehen aus natürlichem Kautschuklatex, einem pflanzlichen Material. Wir nutzen das Wort biologisch abbaubar nicht als Verkaufsargument, weil die Abbauzeit von Latex von Temperatur, Feuchtigkeit und Bodentyp abhängt und ein Ballon neben Latex auch Farbstoffe und Additive enthält. Das Latex ist FSC Chain of Custody-zertifiziert und gebrauchte Ballons können gesammelt und recycelt werden.' },
+      { q: 'Wie bestelle ich Sempertex-Ballons in Europa?',
+        html: '<p>Über den <a data-href="/shop">Webshop</a>, nach Registrierung eines Accounts. Deine Bestellung wird aus Genk versendet, oder du holst sie ab, montags bis donnerstags zwischen 10 und 12 Uhr und zwischen 13 und 16 Uhr. Für den Weiterverkauf gibt es <a data-href="/become-a-distributor">Wholesale</a>.</p>',
+        text: 'Über den Sempertex-Europe-Webshop. Registriere einen Account und bestelle online. Deine Bestellung wird aus Genk versendet, oder du holst sie ab, montags bis donnerstags zwischen 10 und 12 Uhr und zwischen 13 und 16 Uhr. Für den Weiterverkauf frage eine Wholesale-Partnerschaft an.' },
+      { q: 'Wie lange gibt es Sempertex schon?',
+        html: '<p>Seit 1938, also über 85 Jahre. Die Marke wird heute in mehr als 70 Ländern verkauft, an Ballondekorateure, Wholesaler und Event-Unternehmen.</p>',
+        text: 'Sempertex fertigt Ballons seit 1938, also über 85 Jahre. Die Marke ist heute in mehr als 70 Ländern aktiv und wird von professionellen Ballondekorateuren, Wholesalern und Event-Unternehmen genutzt.' }
+    ]
+  };
+
+  /* ---- SEO metadata per taal (voor JSON-LD) ---- */
+  var SEO = {
+    nl: { locale: 'nl_BE',   inLang: 'nl-BE', slug: 'why-sempertex', pageName: 'Waarom Sempertex? Professionele latex ballonnen sinds 1938',
+          description: '93 kleuren over 8 reeksen, ISO 9001 en 14001 gecertificeerd, FSC-latex en voorraad in Genk.', crumb: 'Waarom Sempertex', home: 'Startpagina' },
+    en: { locale: 'en_GB',   inLang: 'en-GB', slug: 'why-sempertex', pageName: 'Why Sempertex? Professional latex balloons since 1938',
+          description: '93 colours across 8 ranges, ISO 9001 and 14001 certified, FSC latex and stock in Genk.', crumb: 'Why Sempertex', home: 'Home' },
+    fr: { locale: 'fr_FR',   inLang: 'fr',    slug: 'why-sempertex', pageName: 'Pourquoi Sempertex ? Ballons en latex professionnels depuis 1938',
+          description: '93 couleurs sur 8 séries, certifié ISO 9001 et 14001, latex FSC et stock à Genk.', crumb: 'Pourquoi Sempertex', home: 'Accueil' },
+    de: { locale: 'de_DE',   inLang: 'de',    slug: 'why-sempertex', pageName: 'Warum Sempertex? Professionelle Latexballons seit 1938',
+          description: '93 Farben in 8 Serien, ISO 9001 und 14001 zertifiziert, FSC-Latex und Lager in Genk.', crumb: 'Warum Sempertex', home: 'Startseite' }
+  };
+
+  /* ==========================================================
+     STAP 1: alle data-href attributen prefixen met de taal.
+     Odoo herkent id-only shop URLs en redirect naar het juiste
+     vertaalde slug automatisch (identiek aan de inspiratiepagina).
+     ========================================================== */
+  [].slice.call(root.querySelectorAll('[data-href]')).forEach(function (a) {
+    a.setAttribute('href', langPrefix + a.getAttribute('data-href'));
+  });
+
+  /* ==========================================================
+     STAP 2: I18N toepassen. NL blijft zoals in de markup staat.
+     ========================================================== */
+  var STR = I18N[lang] || {};
+  function applyI18n() {
+    if (lang === 'nl') { return; }
+    [].slice.call(root.querySelectorAll('[data-i18n]')).forEach(function (el) {
+      var k = el.getAttribute('data-i18n');
+      if (STR[k] != null) { el.innerHTML = STR[k]; }
+    });
+    /* Na innerHTML-vervanging bevatten nieuwe <a data-href="..."> geen href.
+       Doe die pas hier zodat ze de juiste taalprefix krijgen. */
+    [].slice.call(root.querySelectorAll('[data-href]')).forEach(function (a) {
+      if (!a.getAttribute('href')) {
+        a.setAttribute('href', langPrefix + a.getAttribute('data-href'));
+      }
+    });
+  }
+  applyI18n();
+
+  function t(key) {
+    if (lang !== 'nl' && STR[key] != null) { return STR[key]; }
+    if (NL[key] != null) { return NL[key]; }
+    return '';
+  }
+
+  /* ==========================================================
+     STAP 3: KLEURPANELS renderen (tabs + panels).
+     ========================================================== */
+  var tabsEl = root.querySelector('#stx-why-tabs');
+  var panelsEl = root.querySelector('#stx-why-panels');
+  function labelOf(v) { return (v && (v[lang] || v.en || v.nl)) || ''; }
+  function esc(s) { var d = document.createElement('div'); d.textContent = s == null ? '' : s; return d.innerHTML; }
+  function panelHtml(range) {
+    var rangeLabel = labelOf(range.label);
+    var items = range.colors.map(function (c) {
+      var title = VIEW_TITLE[lang](rangeLabel, c);
+      var alt = ALT_TEXT[lang](rangeLabel, c);
+      var url = langPrefix + '/shop/category/' + c.shopId;
+      return '<li class="col-item">'
+        + '<a class="col-link" href="' + url + '" title="' + esc(title) + '">'
+        + '<img src="' + BALLOON_BASE + c.file + '" alt="' + esc(alt) + '" width="342" height="478" loading="lazy" decoding="async">'
+        + '<span class="col-name">' + esc(c.name) + '</span>'
+        + '<span class="col-code">' + esc(c.code) + '</span>'
+        + '</a></li>';
+    }).join('');
+    return '<div class="panel-head">'
+      + '<h3>' + esc(rangeLabel) + '</h3>'
+      + '<p class="finish">' + esc(labelOf(range.finish)) + '</p>'
+      + '</div>'
+      + '<ul class="col-grid">' + items + '</ul>';
+  }
+  if (tabsEl && panelsEl) {
+    var tabsHtml = '';
+    var panelsHtml = '';
+    RANGES.forEach(function (r, i) {
+      var on = i === 0;
+      tabsHtml += '<button class="range-tab' + (on ? ' active' : '') + '" role="tab"'
+        + ' id="tab-' + r.id + '"'
+        + ' aria-controls="panel-' + r.id + '"'
+        + ' aria-selected="' + (on ? 'true' : 'false') + '"'
+        + (on ? '' : ' tabindex="-1"')
+        + '>' + esc(labelOf(r.label)) + '</button>';
+      panelsHtml += '<div class="panel" id="panel-' + r.id + '" role="tabpanel"'
+        + ' aria-labelledby="tab-' + r.id + '" tabindex="0"' + (on ? '' : ' hidden') + '>'
+        + panelHtml(r) + '</div>';
+    });
+    tabsEl.innerHTML = tabsHtml;
+    panelsEl.innerHTML = panelsHtml;
+  }
+
+  /* ==========================================================
+     STAP 4: FAQ renderen (dezelfde bron als JSON-LD).
+     ========================================================== */
+  var faqEl = root.querySelector('#stx-why-faq');
+  var faqList = FAQ[lang] || FAQ.nl;
+  if (faqEl && faqList) {
+    faqEl.innerHTML = faqList.map(function (f) {
+      return '<details><summary>' + esc(f.q) + '</summary><div class="answer">' + f.html + '</div></details>';
+    }).join('');
+    /* data-href in FAQ omzetten naar href met taalprefix */
+    [].slice.call(faqEl.querySelectorAll('[data-href]')).forEach(function (a) {
+      if (!a.getAttribute('href')) {
+        a.setAttribute('href', langPrefix + a.getAttribute('data-href'));
+      }
+    });
+  }
+
+  /* ==========================================================
+     STAP 5: SIDE-NAV / SCROLL / TABS-INTERACTIE
+     ========================================================== */
+  var links = [].slice.call(root.querySelectorAll('.side a'));
+  var still = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  function goTo(hash) {
+    var target = root.querySelector(hash);
+    if (!target) { return false; }
+    target.scrollIntoView({ behavior: still.matches ? 'auto' : 'smooth', block: 'start' });
+    links.forEach(function (x) { x.classList.toggle('active', x.getAttribute('href') === hash); });
+    target.setAttribute('tabindex', '-1');
+    try { target.focus({ preventScroll: true }); } catch (e) {}
+    try { history.replaceState(null, '', hash); } catch (e) {}
+    return true;
+  }
+  document.addEventListener('click', function (e) {
+    var a = e.target && e.target.closest ? e.target.closest('.stx-why a[href^="#"]') : null;
+    if (!a) { return; }
+    var hash = a.getAttribute('href');
+    if (!hash || hash.length < 2) { return; }
+    if (goTo(hash)) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (e.stopImmediatePropagation) { e.stopImmediatePropagation(); }
+    }
+  }, true);
+  if (window.location.hash) {
+    setTimeout(function () { goTo(window.location.hash); }, 60);
+  }
+
+  /* Tabs */
+  try {
+    var list = root.querySelector('[role="tablist"]');
+    if (list) {
+      var tabs = [].slice.call(list.querySelectorAll('[role="tab"]'));
+      var pick = function (tab) {
+        tabs.forEach(function (t) {
+          var on = t === tab;
+          t.setAttribute('aria-selected', on ? 'true' : 'false');
+          t.classList.toggle('active', on);
+          t.tabIndex = on ? 0 : -1;
+          var pn = root.querySelector('#' + t.getAttribute('aria-controls'));
+          if (pn) { pn.hidden = !on; }
+        });
+      };
+      tabs.forEach(function (tab, i) {
+        tab.addEventListener('click', function () { pick(tab); });
+        tab.addEventListener('keydown', function (e) {
+          var n = null;
+          if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { n = tabs[(i + 1) % tabs.length]; }
+          if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { n = tabs[(i - 1 + tabs.length) % tabs.length]; }
+          if (e.key === 'Home') { n = tabs[0]; }
+          if (e.key === 'End') { n = tabs[tabs.length - 1]; }
+          if (n) { e.preventDefault(); pick(n); n.focus(); }
+        });
+      });
+    }
+  } catch (e) {}
+
+  /* Scroll-spy */
+  try {
+    var secs = links.map(function (a) { return root.querySelector(a.getAttribute('href')); });
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) {
+          if (!en.isIntersecting) { return; }
+          var i = secs.indexOf(en.target);
+          links.forEach(function (a, j) { a.classList.toggle('active', i === j); });
+        });
+      }, { rootMargin: '-20% 0px -70% 0px' });
+      secs.forEach(function (s) { if (s) { io.observe(s); } });
+    }
+  } catch (e) {}
+
+  /* ==========================================================
+     STAP 6: JSON-LD (Organization, AboutPage, BreadcrumbList,
+     FAQPage) toevoegen aan de <head>, per taal.
+     Verwijdert eerst een eventueel vorige injectie zodat de
+     hoofd-loader bij een taal-wissel niet dubbele blokken laat.
+     ========================================================== */
+  function injectLD(id, obj) {
+    var prev = document.getElementById(id);
+    if (prev && prev.parentNode) { prev.parentNode.removeChild(prev); }
+    var s = document.createElement('script');
+    s.type = 'application/ld+json';
+    s.id = id;
+    s.textContent = JSON.stringify(obj);
+    document.head.appendChild(s);
+  }
+  var meta = SEO[lang] || SEO.nl;
+  var siteBase = 'https://www.sempertexeurope.com';
+  var pageUrl = siteBase + langPrefix + '/' + meta.slug;
+  injectLD('stx-why-ld-org', {
+    '@context': 'https://schema.org', '@type': 'Organization',
+    '@id': siteBase + '/#organization',
+    name: 'Sempertex Europe', url: siteBase + '/',
+    logo: siteBase + '/web/image/website/1/logo?unique=613dd4d',
+    foundingDate: '1938', vatID: 'BE0833747266', telephone: '+32-89-23-57-58',
+    address: { '@type': 'PostalAddress', streetAddress: 'Mieënbroekstraat 43', postalCode: '3600', addressLocality: 'Genk', addressCountry: 'BE' },
+    sameAs: ['https://www.instagram.com/sempertexeurope','https://www.facebook.com/sempertexeurope','https://www.youtube.com/@sempertexeurope']
+  });
+  injectLD('stx-why-ld-page', {
+    '@context': 'https://schema.org', '@type': 'AboutPage',
+    '@id': pageUrl + '#webpage',
+    url: pageUrl, name: meta.pageName, description: meta.description,
+    inLanguage: meta.inLang,
+    isPartOf: { '@id': siteBase + '/#organization' }
+  });
+  injectLD('stx-why-ld-crumb', {
+    '@context': 'https://schema.org', '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: meta.home, item: siteBase + langPrefix + '/' },
+      { '@type': 'ListItem', position: 2, name: meta.crumb, item: pageUrl }
+    ]
+  });
+  injectLD('stx-why-ld-faq', {
+    '@context': 'https://schema.org', '@type': 'FAQPage',
+    mainEntity: faqList.map(function (f) {
+      return { '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.text } };
+    })
+  });
+
+  /* Melden aan het laadscherm dat de sectie klaar is */
+  wallDone();
+})();
+</script>
+<!-- ================ EINDE WAAROM SEMPERTEX SECTIE ================ -->
