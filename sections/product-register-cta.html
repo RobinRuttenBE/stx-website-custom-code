@@ -16,6 +16,12 @@
      tonen of verbergen (varianten, prijs 0); een observer volgt
      dat en zet onze knop mee aan of uit. Verwijderen = dit blok
      weghalen.
+
+     BETA: zolang BETA hieronder op true staat, toont de knop alleen
+     in een browser waar je een productpagina ooit opende met
+     ?stxbeta=1 achter de URL (wordt onthouden in localStorage).
+     ?stxbeta=0 zet het weer uit. Echt live voor iedereen:
+     BETA op false zetten.
      ============================================================ -->
 <style>
   .stx-register-cta {
@@ -38,6 +44,17 @@
     de: 'Registrieren, um zu kaufen'
   };
   var PAGE = '/registratie';
+  var BETA = true; // false = live voor iedereen
+  var BETA_KEY = 'stx_register_beta';
+
+  // Beta-schakelaar: ?stxbeta=1 in de URL zet hem aan voor deze browser, ?stxbeta=0 uit.
+  function betaOn() {
+    var m = /[?&]stxbeta=([01])/.exec(window.location.search);
+    try {
+      if (m) { if (m[1] === '1') { localStorage.setItem(BETA_KEY, '1'); } else { localStorage.removeItem(BETA_KEY); } }
+      return localStorage.getItem(BETA_KEY) === '1';
+    } catch (e) { return !!(m && m[1] === '1'); }
+  }
 
   function lang() {
     var l = (document.documentElement.getAttribute('lang') || '').toLowerCase().slice(0, 2);
@@ -81,6 +98,7 @@
   }
 
   function run() {
+    if (BETA && !betaOn()) { return; }
     place();
     var details = document.getElementById('product_details');
     if (!details || !window.MutationObserver) { return; }
