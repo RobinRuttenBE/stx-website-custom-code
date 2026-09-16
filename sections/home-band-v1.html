@@ -9,10 +9,14 @@
      Paden: /, /shop en de taalversies (/en_GB, /fr, /de, /en_GB/shop, ...).
      Niet op categorie- of zoekpagina's, niet in de Odoo editor.
 
-     BETA (nu aan): met BETA = true toont de band alleen in een browser
-     waar je de homepage ooit opende met #stxhome achter de URL
-     (onthouden in localStorage). #stxhome-uit zet het weer uit.
-     ?stxhome=1 / ?stxhome=0 werkt ook. Live voor iedereen: BETA op false.
+     BETA (nu uit, live voor iedereen sinds 16/09/2026): met BETA = true
+     toont de band alleen in een browser waar je de homepage ooit opende
+     met #stxhome achter de URL (onthouden in localStorage). #stxhome-uit
+     zet het weer uit. ?stxhome=1 / ?stxhome=0 werkt ook.
+
+     Ingelogd (uitlog- of portaallink in de pagina): de registratiekaart
+     blijft staan, zonder knoppen, met de gemarkeerde tekst
+     "Je bent succesvol ingelogd!".
 
      Beelden komen uit assets/home/ in de repo, gepind op een commit hash.
      ============================================================ -->
@@ -73,6 +77,8 @@
   /* ---- registratiekaart ---- */
   .stx-home .sh-reg { background: var(--dark); color: #fff; border-radius: 14px; padding: 20px 24px; display: flex; flex-direction: column; justify-content: center; position: relative; overflow: hidden; }
   .stx-home .sh-reg .sh-kicker { color: var(--yellow); }
+  .stx-home .sh-reg h2 .sh-hl { color: var(--dark); }
+  .stx-home .sh-reg.sh-reg-in p { margin-bottom: 0; }
   .stx-home .sh-reg h2 { font-size: 22px; font-weight: 800; line-height: 1.15; letter-spacing: -0.01em; margin-bottom: 10px; color: #fff; }
   .stx-home .sh-reg p { font-size: 14.5px; color: rgba(255,255,255,0.82); margin-bottom: 14px; line-height: 1.45; }
   .stx-home .sh-reg .sh-btns { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
@@ -122,7 +128,7 @@
 <script>
 (function () {
   'use strict';
-  var BETA = true; // true = alleen zichtbaar na #stxhome (testmodus), false = live voor iedereen
+  var BETA = false; // true = alleen zichtbaar na #stxhome (testmodus), false = live voor iedereen
   var BETA_KEY = 'stx_home_beta';
   var ASSETS = 'https://cdn.jsdelivr.net/gh/RobinRuttenBE/stx-website-custom-code@695ce774e6d980e760016ddf2715870b6d449da7/assets/home/';
 
@@ -170,33 +176,37 @@
     nl: {
       nu_k: 'Nozzle Up 2027', nu_h: 'Schrijf je in voor |de wachtlijst|', nu_p: 'Het grootste ballonevenement van Europa komt eraan', nu_b: 'Naar de wachtlijst',
       tl_k: 'Gratis tools', tl_h: 'Combineer kleuren, bereken kosten |& meer!|', tl_b: 'Open de tools',
-      in_k: 'Inspiratie', in_h: 'Tutorials, kleurencombinaties en |gratis downloads|', in_c1: 'Educatieve tutorials', in_c2: 'Kleurencombinaties', in_b: 'Naar inspiratie',
+      in_k: 'Inspiratie', in_h: 'Tutorials, kleurencombinaties en |gratis downloads|', in_c1: 'Gratis downloads', in_c2: 'Kleurencombinaties', in_b: 'Naar inspiratie',
       ws_k: 'Workshops', ws_h: 'Leer het vak van |de besten|', ws_p: 'Start Your Balloon Business, technische workshops & community building', ws_b: 'Bekijk de workshops',
       rg_k: 'Enkel voor professionals', rg_h: 'Prijzen zien en bestellen? Registreer je eerst.', rg_p: 'Vul je gegevens in, registreer, en we beoordelen het binnen 1 werkdag. Daarna zie je onze prijzen, voorraad en de winkelwagen.', rg_b: 'Registreren', rg_l: 'Al klant? Inloggen',
+      in_k2: 'Welkom terug', in_h2: 'Je bent |succesvol ingelogd!|', in_p2: 'Je ziet onze prijzen, voorraad en de winkelwagen. Veel shopplezier.',
       prev: 'Vorige', next: 'Volgende'
     },
     en: {
       nu_k: 'Nozzle Up 2027', nu_h: 'Join |the waiting list|', nu_p: "Europe's biggest balloon event is on its way", nu_b: 'Join the waiting list',
       tl_k: 'Free tools', tl_h: 'Match colours, calculate costs |& more!|', tl_b: 'Open the tools',
-      in_k: 'Inspiration', in_h: 'Tutorials, colour combinations and |free downloads|', in_c1: 'Educational tutorials', in_c2: 'Colour combinations', in_b: 'Go to inspiration',
+      in_k: 'Inspiration', in_h: 'Tutorials, colour combinations and |free downloads|', in_c1: 'Free downloads', in_c2: 'Colour combinations', in_b: 'Go to inspiration',
       ws_k: 'Workshops', ws_h: 'Learn the craft from |the best|', ws_p: 'Start Your Balloon Business, technical workshops & community building', ws_b: 'See the workshops',
       rg_k: 'For professionals only', rg_h: 'Want to see prices and order? Register first.', rg_p: 'Fill in your details and register. We review it within 1 working day. After that you see our prices, stock and the cart.', rg_b: 'Register', rg_l: 'Already a customer? Sign in',
+      in_k2: 'Welcome back', in_h2: 'You are |successfully logged in!|', in_p2: 'You see our prices, stock and the cart. Happy shopping.',
       prev: 'Previous', next: 'Next'
     },
     fr: {
       nu_k: 'Nozzle Up 2027', nu_h: 'Inscrivez-vous sur |la liste d’attente|', nu_p: 'Le plus grand événement ballon d’Europe arrive', nu_b: 'Vers la liste d’attente',
       tl_k: 'Outils gratuits', tl_h: 'Combinez les couleurs, calculez vos coûts |& plus !|', tl_b: 'Ouvrir les outils',
-      in_k: 'Inspiration', in_h: 'Tutoriels, combinaisons de couleurs et |téléchargements gratuits|', in_c1: 'Tutoriels', in_c2: 'Combinaisons de couleurs', in_b: 'Vers l’inspiration',
+      in_k: 'Inspiration', in_h: 'Tutoriels, combinaisons de couleurs et |téléchargements gratuits|', in_c1: 'Téléchargements gratuits', in_c2: 'Combinaisons de couleurs', in_b: 'Vers l’inspiration',
       ws_k: 'Workshops', ws_h: 'Apprenez le métier avec |les meilleurs|', ws_p: 'Start Your Balloon Business, ateliers techniques & community building', ws_b: 'Voir les workshops',
       rg_k: 'Réservé aux professionnels', rg_h: 'Voir les prix et commander ? Créez d’abord un compte.', rg_p: 'Remplissez vos coordonnées et inscrivez-vous. Nous validons sous 1 jour ouvrable. Ensuite vous voyez nos prix, le stock et le panier.', rg_b: 'Créer un compte', rg_l: 'Déjà client ? Se connecter',
+      in_k2: 'Bon retour', in_h2: 'Vous êtes |bien connecté !|', in_p2: 'Vous voyez nos prix, le stock et le panier. Bon shopping.',
       prev: 'Précédent', next: 'Suivant'
     },
     de: {
       nu_k: 'Nozzle Up 2027', nu_h: 'Trag dich in |die Warteliste| ein', nu_p: 'Europas größtes Ballon-Event kommt', nu_b: 'Zur Warteliste',
       tl_k: 'Kostenlose Tools', tl_h: 'Farben kombinieren, Kosten berechnen |& mehr!|', tl_b: 'Tools öffnen',
-      in_k: 'Inspiration', in_h: 'Tutorials, Farbkombinationen und |kostenlose Downloads|', in_c1: 'Tutorials', in_c2: 'Farbkombinationen', in_b: 'Zur Inspiration',
+      in_k: 'Inspiration', in_h: 'Tutorials, Farbkombinationen und |kostenlose Downloads|', in_c1: 'Kostenlose Downloads', in_c2: 'Farbkombinationen', in_b: 'Zur Inspiration',
       ws_k: 'Workshops', ws_h: 'Lern das Handwerk von |den Besten|', ws_p: 'Start Your Balloon Business, technische Workshops & Community Building', ws_b: 'Workshops ansehen',
       rg_k: 'Nur für Profis', rg_h: 'Preise sehen und bestellen? Registriere dich zuerst.', rg_p: 'Trag deine Daten ein und registriere dich. Wir prüfen es innerhalb von 1 Werktag. Danach siehst du unsere Preise, den Lagerbestand und den Warenkorb.', rg_b: 'Registrieren', rg_l: 'Schon Kunde? Anmelden',
+      in_k2: 'Willkommen zurück', in_h2: 'Du bist |erfolgreich eingeloggt!|', in_p2: 'Du siehst unsere Preise, den Lagerbestand und den Warenkorb. Viel Spaß beim Shoppen.',
       prev: 'Zurück', next: 'Weiter'
     }
   };
@@ -208,15 +218,15 @@
     nozzle: 'https://www.nozzleup.eu/waitinglist',
     tools: prefix + '/tools',
     inspiration: prefix + '/inspiration',
-    tutorials: prefix + '/inspiration#tutorials',
+    downloads: prefix + '/inspiration#downloads',
     colours: prefix + '/inspiration#colours',
     workshops: prefix + '/events',
     register: prefix + '/registratie',
     login: '/web/login'
   };
 
-  /* Ingelogd (uitlog- of portaallink in de pagina): alleen voor tracking. De registratiekaart
-     toont voor iedereen, ook ingelogd (Robin, 2026-09-16). */
+  /* Ingelogd (uitlog- of portaallink in de pagina): zelfde kaart, zonder knoppen, met
+     'Je bent succesvol ingelogd!' (Robin, 2026-09-16). */
   var loggedIn = !!document.querySelector('a[href*="/web/session/logout"], a[href*="/my/home"], a[href*="/my/account"]');
 
   function track(ev, params) {
@@ -249,7 +259,7 @@
         '</div>' +
         '<div class="sh-slide" data-slide="inspiration">' +
           '<div><div class="sh-kicker">' + esc(S.in_k) + '</div><h2>' + hl(S.in_h) + '</h2>' +
-          '<div class="sh-chips"><a class="sh-chip" href="' + LINKS.tutorials + '" data-track="tutorials">' + esc(S.in_c1) + '</a><a class="sh-chip" href="' + LINKS.colours + '" data-track="colours">' + esc(S.in_c2) + '</a></div>' +
+          '<div class="sh-chips"><a class="sh-chip" href="' + LINKS.downloads + '" data-track="downloads">' + esc(S.in_c1) + '</a><a class="sh-chip" href="' + LINKS.colours + '" data-track="colours">' + esc(S.in_c2) + '</a></div>' +
           '<a class="sh-cta" href="' + LINKS.inspiration + '" data-track="inspiration">' + esc(S.in_b) + '</a></div>' +
           '<div class="sh-art"><img class="b1" src="' + ASSETS + 'inspiration-1.png" alt="" loading="lazy"><img class="b2" src="' + ASSETS + 'inspiration-2.png" alt="" loading="lazy"><img class="b3" src="' + ASSETS + 'inspiration-3.png" alt="" loading="lazy"></div>' +
         '</div>' +
@@ -262,13 +272,21 @@
         '<button class="sh-arrow r" type="button" data-dir="1" aria-label="' + esc(S.next) + '">&#8250;</button>' +
         '<div class="sh-dots" id="sh-dots"></div>' +
       '</div>' +
+      (loggedIn ?
+      '<aside class="sh-reg sh-reg-in">' +
+        '<div class="sh-glow"></div>' +
+        '<div class="sh-kicker">' + esc(S.in_k2) + '</div>' +
+        '<h2>' + hl(S.in_h2) + '</h2>' +
+        '<p>' + esc(S.in_p2) + '</p>' +
+      '</aside>'
+      :
       '<aside class="sh-reg">' +
         '<div class="sh-glow"></div>' +
         '<div class="sh-kicker">' + esc(S.rg_k) + '</div>' +
         '<h2>' + esc(S.rg_h) + '</h2>' +
         '<p>' + esc(S.rg_p) + '</p>' +
         '<div class="sh-btns"><a class="sh-btn-y" href="' + LINKS.register + '" data-track="register">' + esc(S.rg_b) + '</a><a class="sh-login" href="' + LINKS.login + '" data-track="login">' + esc(S.rg_l) + '</a></div>' +
-      '</aside>' +
+      '</aside>') +
     '</section>';
 
   container.parentNode.insertBefore(host, container);
