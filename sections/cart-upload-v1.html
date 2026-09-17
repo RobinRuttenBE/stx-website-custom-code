@@ -1,0 +1,549 @@
+<!-- ============================================================
+     STX EU / CART UPLOAD v1 (sectiebestand voor de section loader)
+     Op de winkelmandpagina (/shop/cart, alle talen) komt bovenaan een
+     kaart "Upload your order": de klant kiest een CSV- of Excelbestand
+     (of plakt regels) met per regel een productcode en een aantal,
+     ziet een preview met het gevonden product per regel, en klikt
+     "Add to cart". De regels gaan een voor een in het Odoo-mandje
+     van het ingelogde account (dus ook zichtbaar op een ander toestel).
+
+     Bestandsformaat: kolom 1 = productcode (SAP-code, interne
+     referentie van de shop, bv. R12005, N260080, LOL6015, 20012458),
+     kolom 2 = aantal (in verkoopeenheden van de shop, dus zakken /
+     verpakkingen). Koprij mag ("Supplier Code,Quantity") maar hoeft
+     niet. Komma, puntkomma of tab als scheiding. Excel: eerste blad.
+     Dubbele codes worden opgeteld.
+
+     Productherkenning: per code een call naar de shop-zoekroute
+     (/en_GB/website/snippet/autocomplete, dezelfde als de zoekbalk).
+     1. Exact: product-URL = /shop/<code>-<naam>-<id>  (groen)
+     2. Alleen prefix <code>- maar meerdere hits (bv. R12826 en
+        R12826-punten): klant kiest uit een lijstje (oranje)
+     3. Geen prefix-hit maar precies 1 zoekresultaat (bv. barcode
+        20021027 -> N260013): geaccepteerd, gemarkeerd "check" (oranje)
+     4. Niets gevonden: rood, regel wordt overgeslagen.
+
+     Winkelmand: /website_sale/get_combination_info (variant-id) en
+     daarna /shop/cart/add per regel (JSON-RPC, same origin, sessie-
+     cookie), zelfde routes als de Cost Calculator in inspiration-v18.
+     Aantal = verkoopeenheden (packs). Na afloop herlaadt de pagina en
+     toont de kaart eenmalig het resultaat (sessionStorage).
+
+     Alleen voor ingelogde accounts (Odoo weigert cart-calls van
+     bezoekers). Niet in de Odoo editor.
+
+     BETA: met BETA = true toont de kaart alleen in een browser waar je
+     de winkelmandpagina ooit opende met #stxupload achter de URL
+     (onthouden in localStorage). #stxupload-uit zet het weer uit.
+     ?stxupload=1 / ?stxupload=0 werkt ook. Live zetten = BETA = false.
+
+     Excel wordt gelezen met SheetJS (cdnjs), pas geladen als er een
+     .xlsx/.xls gekozen wordt. CSV heeft geen bibliotheek nodig.
+     ============================================================ -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rethink+Sans:wght@400;500;600;700;800&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+  .stx-upl { --purple: #6b3fb9; --purple-light: #f1d9ff; --purple-bg: #faf4ff; --dark: #1b073d; --yellow: #ffdb5a; --magenta: #cd0b5c; --green: #1f8f5f; --amber: #b7791f; --red: #c0392b; --ink-soft: rgba(27,7,61,0.62);
+    font-family: 'Rethink Sans', sans-serif; color: var(--dark); background: #fff; border: 1.5px solid var(--purple-light); border-radius: 18px; padding: 22px 24px; margin: 0 0 26px; line-height: 1.45; box-shadow: 0 6px 24px rgba(107,63,185,0.08); position: relative; }
+  .stx-upl *, .stx-upl *::before, .stx-upl *::after { box-sizing: border-box; }
+  .stx-upl h3, .stx-upl p { margin: 0; }
+  .stx-upl button, .stx-upl select, .stx-upl textarea { font-family: inherit; }
+  .stx-upl .su-kicker { display: inline-block; font-size: 11px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: var(--magenta); margin-bottom: 4px; }
+  .stx-upl .su-beta { display: inline-block; margin-left: 8px; font-size: 10px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; background: var(--yellow); color: var(--dark); border-radius: 999px; padding: 2px 8px; vertical-align: middle; }
+  .stx-upl h3 { font-size: 22px; font-weight: 800; letter-spacing: -.01em; margin-bottom: 4px; }
+  .stx-upl .su-lede { font-family: 'Lato', sans-serif; font-size: 14.5px; color: var(--ink-soft); max-width: 70ch; }
+  .stx-upl .su-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap; }
+  .stx-upl .su-toggle { background: none; border: 0; color: var(--purple); font-weight: 700; font-size: 14px; cursor: pointer; padding: 6px 0; white-space: nowrap; }
+  .stx-upl .su-toggle::after { content: " \25BE"; }
+  .stx-upl.su-open .su-toggle::after { content: " \25B4"; }
+  .stx-upl .su-body { display: none; margin-top: 16px; }
+  .stx-upl.su-open .su-body { display: block; }
+
+  .stx-upl .su-drop { display: block; border: 2px dashed #cdb3ff; border-radius: 14px; background: var(--purple-bg); padding: 22px 18px; text-align: center; cursor: pointer; transition: border-color .15s, background .15s; }
+  .stx-upl .su-drop:hover, .stx-upl .su-drop.su-over { border-color: var(--purple); background: #f6ecff; }
+  .stx-upl .su-drop strong { font-weight: 800; }
+  .stx-upl .su-drop .su-small { display: block; font-family: 'Lato', sans-serif; font-size: 13px; color: var(--ink-soft); margin-top: 6px; }
+  .stx-upl .su-drop input { display: none; }
+  .stx-upl .su-links { display: flex; gap: 18px; flex-wrap: wrap; margin-top: 10px; font-family: 'Lato', sans-serif; font-size: 13.5px; }
+  .stx-upl .su-links a, .stx-upl .su-links button { color: var(--purple); font-weight: 700; text-decoration: underline; background: none; border: 0; padding: 0; cursor: pointer; font-family: inherit; font-size: inherit; }
+  .stx-upl textarea.su-paste { display: none; width: 100%; min-height: 120px; margin-top: 10px; border: 1.5px solid var(--purple-light); border-radius: 10px; padding: 10px 12px; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 13px; resize: vertical; }
+  .stx-upl.su-pasting textarea.su-paste { display: block; }
+
+  .stx-upl .su-btn { display: inline-flex; align-items: center; gap: 8px; border: 0; border-radius: 999px; padding: 11px 22px; font-weight: 800; font-size: 14.5px; cursor: pointer; background: var(--purple); color: #fff; transition: transform .12s, box-shadow .12s, opacity .12s; }
+  .stx-upl .su-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(107,63,185,0.28); }
+  .stx-upl .su-btn:disabled { opacity: .55; cursor: default; transform: none; box-shadow: none; }
+  .stx-upl .su-btn.su-ghost { background: #fff; color: var(--purple); border: 1.5px solid var(--purple-light); }
+  .stx-upl .su-btn.su-yellow { background: var(--yellow); color: var(--dark); }
+  .stx-upl .su-paste-go { margin-top: 8px; }
+  .stx-upl:not(.su-pasting) .su-paste-go { display: none; }
+
+  .stx-upl .su-status { font-family: 'Lato', sans-serif; font-size: 13.5px; color: var(--ink-soft); margin-top: 12px; min-height: 18px; }
+  .stx-upl .su-bar { height: 6px; border-radius: 999px; background: var(--purple-light); overflow: hidden; margin-top: 8px; display: none; }
+  .stx-upl .su-bar > i { display: block; height: 100%; width: 0; background: var(--purple); transition: width .2s; }
+  .stx-upl.su-busy .su-bar { display: block; }
+
+  .stx-upl .su-sum { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+  .stx-upl .su-pill { font-family: 'Lato', sans-serif; font-size: 13px; font-weight: 700; border-radius: 999px; padding: 5px 12px; background: var(--purple-bg); color: var(--dark); }
+  .stx-upl .su-pill.ok { background: #e3f6ec; color: var(--green); }
+  .stx-upl .su-pill.chk { background: #fff3d6; color: var(--amber); }
+  .stx-upl .su-pill.no { background: #fde4e1; color: var(--red); }
+
+  .stx-upl .su-tablewrap { max-height: 420px; overflow: auto; margin-top: 12px; border: 1.5px solid var(--purple-light); border-radius: 12px; }
+  .stx-upl table { width: 100%; border-collapse: collapse; font-family: 'Lato', sans-serif; font-size: 13.5px; }
+  .stx-upl th { position: sticky; top: 0; background: var(--purple-bg); text-align: left; font-family: 'Rethink Sans', sans-serif; font-weight: 800; font-size: 12px; letter-spacing: .06em; text-transform: uppercase; padding: 9px 12px; border-bottom: 1.5px solid var(--purple-light); }
+  .stx-upl td { padding: 8px 12px; border-bottom: 1px solid #f1e9fb; vertical-align: middle; }
+  .stx-upl tr:last-child td { border-bottom: 0; }
+  .stx-upl td.su-code { font-family: ui-monospace, Menlo, Consolas, monospace; font-weight: 700; white-space: nowrap; }
+  .stx-upl td.su-qty { text-align: right; white-space: nowrap; font-weight: 700; }
+  .stx-upl .su-st { display: inline-block; font-size: 11.5px; font-weight: 700; border-radius: 999px; padding: 2px 9px; white-space: nowrap; }
+  .stx-upl tr.ok .su-st { background: #e3f6ec; color: var(--green); }
+  .stx-upl tr.chk .su-st, .stx-upl tr.multi .su-st { background: #fff3d6; color: var(--amber); }
+  .stx-upl tr.no .su-st { background: #fde4e1; color: var(--red); }
+  .stx-upl tr.no td { color: var(--ink-soft); }
+  .stx-upl tr.done .su-st { background: #e3f6ec; color: var(--green); }
+  .stx-upl tr.fail .su-st { background: #fde4e1; color: var(--red); }
+  .stx-upl select.su-pick { max-width: 100%; border: 1.5px solid var(--purple-light); border-radius: 8px; padding: 4px 8px; font-size: 13px; background: #fff; }
+  .stx-upl .su-actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-top: 14px; }
+  .stx-upl .su-note { font-family: 'Lato', sans-serif; font-size: 12.5px; color: var(--ink-soft); margin-top: 10px; }
+  .stx-upl .su-result { border-radius: 12px; padding: 12px 14px; margin-top: 14px; font-family: 'Lato', sans-serif; font-size: 14px; background: #e3f6ec; color: #145c3d; }
+  .stx-upl .su-result.warn { background: #fff3d6; color: #6b4a0e; }
+  .stx-upl .su-result a { color: inherit; font-weight: 700; }
+  /* Mobiel: geen smalle tabelkolommen maar een kaartje per regel */
+  @media (max-width: 767px) {
+    .stx-upl { padding: 18px 16px; border-radius: 14px; }
+    .stx-upl h3 { font-size: 19px; }
+    .stx-upl .su-lede { font-size: 14px; }
+    .stx-upl .su-tablewrap { max-height: 380px; border: 0; border-radius: 0; }
+    .stx-upl thead { display: none; }
+    .stx-upl table, .stx-upl tbody, .stx-upl tr, .stx-upl td { display: block; width: 100%; }
+    .stx-upl tr { border: 1.5px solid var(--purple-light); border-radius: 12px; padding: 10px 12px; margin-bottom: 8px; position: relative; padding-right: 96px; }
+    .stx-upl tr:last-child { margin-bottom: 0; }
+    .stx-upl td { border: 0; padding: 0; }
+    .stx-upl td.su-code { font-size: 12px; color: var(--ink-soft); }
+    .stx-upl td:nth-child(2) { font-weight: 700; margin: 2px 0 6px; }
+    .stx-upl td.su-qty { position: absolute; top: 10px; right: 12px; text-align: right; width: auto; font-size: 15px; }
+    .stx-upl td.su-qty::after { content: " " attr(data-unit); font-weight: 400; font-size: 11px; color: var(--ink-soft); }
+    .stx-upl td:nth-child(4) { position: absolute; bottom: 10px; right: 12px; width: auto; }
+    .stx-upl select.su-pick { width: 100%; }
+  }
+</style>
+
+<div class="stx-upl" id="stx-upl" hidden>
+  <div class="su-head">
+    <div>
+      <span class="su-kicker" data-k="kicker"></span><span class="su-beta">beta</span>
+      <h3 data-k="title"></h3>
+      <p class="su-lede" data-k="lede"></p>
+    </div>
+    <button type="button" class="su-toggle" data-k="open" id="su-toggle"></button>
+  </div>
+  <div class="su-body">
+    <div class="su-result" id="su-lastresult" hidden></div>
+    <label class="su-drop" id="su-drop">
+      <input type="file" id="su-file" accept=".csv,.txt,.xlsx,.xls,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel">
+      <strong data-k="drop"></strong>
+      <span class="su-small" data-k="drop_sub"></span>
+    </label>
+    <div class="su-links">
+      <a href="#" id="su-template" data-k="template"></a>
+      <button type="button" id="su-pastebtn" data-k="paste"></button>
+    </div>
+    <textarea class="su-paste" id="su-paste" spellcheck="false"></textarea>
+    <button type="button" class="su-btn su-ghost su-paste-go" id="su-paste-go" data-k="paste_go"></button>
+    <div class="su-status" id="su-status"></div>
+    <div class="su-bar"><i id="su-barfill"></i></div>
+    <div id="su-preview" hidden>
+      <div class="su-sum" id="su-sum"></div>
+      <div class="su-tablewrap">
+        <table>
+          <thead><tr><th data-k="th_code"></th><th data-k="th_product"></th><th data-k="th_qty"></th><th data-k="th_status"></th></tr></thead>
+          <tbody id="su-rows"></tbody>
+        </table>
+      </div>
+      <div class="su-actions">
+        <button type="button" class="su-btn" id="su-add"></button>
+        <button type="button" class="su-btn su-ghost" id="su-reset" data-k="reset"></button>
+      </div>
+      <p class="su-note" data-k="note"></p>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  var BETA = true; // true = alleen zichtbaar na #stxupload (testmodus), false = live voor iedereen
+  var BETA_KEY = 'stx_upload_beta';
+  var RESULT_KEY = 'stx_upload_result';
+  var SEARCH_URL = '/en_GB/website/snippet/autocomplete';
+  var XLSX_URL = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+  var PARALLEL = 4;
+
+  function wallDone() { if (window.stxLoadwallHide) { window.stxLoadwallHide(); } }
+
+  /* ---- beta-schakelaar (zelfde patroon als de andere secties) ---- */
+  function betaOn() {
+    try {
+      var h = (location.hash || '').toLowerCase();
+      var q = /[?&]stxupload=(\d)/.exec(location.search || '');
+      var want = null;
+      if (h === '#stxupload') { want = true; }
+      else if (h === '#stxupload-uit' || h === '#stxupload-off') { want = false; }
+      else if (q) { want = q[1] === '1'; }
+      if (want === true) { localStorage.setItem(BETA_KEY, '1'); }
+      else if (want === false) { localStorage.removeItem(BETA_KEY); }
+      return localStorage.getItem(BETA_KEY) === '1';
+    } catch (e) { return false; }
+  }
+  function loggedIn() {
+    try {
+      var si = window.odoo && window.odoo.__session_info__;
+      if (si && typeof si.is_public === 'boolean') { return !si.is_public; }
+      if (si && typeof si.is_website_user === 'boolean') { return !si.is_website_user; }
+    } catch (e) {}
+    return !!document.querySelector('a[href*="/web/session/logout"], a[href*="/my/home"], a[href*="/my/account"], a[href*="/my/orders"]');
+  }
+  var root = document.getElementById('stx-upl');
+  if (!root) { wallDone(); return; }
+  if (BETA && !betaOn()) { wallDone(); return; }
+  if (document.body.classList.contains('editor_enable') || document.querySelector('.odoo-editor-editable') || document.querySelector('#wrap.o_editable')) { wallDone(); return; }
+  if (!loggedIn()) { wallDone(); return; }
+
+  /* ---- taal + teksten ---- */
+  var pm = (location.pathname || '/').toLowerCase().match(/^\/(fr|de|en_gb)(\/|$)/);
+  var lang = pm ? (pm[1] === 'en_gb' ? 'en' : pm[1]) : 'nl';
+  var shopPrefix = pm ? '/' + (pm[1] === 'en_gb' ? 'en_GB' : pm[1]) : '';
+  var T = {
+    en: {
+      kicker: 'Order in one go', title: 'Upload your order as CSV or Excel', lede: 'One line per product: the product code and the number of packs. We look every code up in the shop, show you what we found, and then add it all to this cart.',
+      open: 'Upload a file', drop: 'Choose a file or drop it here', drop_sub: '.csv or .xlsx, column 1 = product code, column 2 = quantity (packs). A header row is fine.',
+      template: 'Download the example file', paste: 'Or paste your lines', paste_go: 'Check pasted lines', reset: 'Start over',
+      th_code: 'Code', th_product: 'Product in the shop', th_qty: 'Packs', th_status: 'Status',
+      reading: 'Reading file...', xlsx_load: 'Loading the Excel reader...', xlsx_fail: 'The Excel reader could not load. Save the sheet as CSV and try again.', empty: 'No lines with a code and a quantity found. Column 1 = code, column 2 = quantity.',
+      matching: 'Checking code {i} of {n} in the shop...', found: '{n} products found', check: '{n} to check', missing: '{n} not found', dup: '{n} duplicate codes merged',
+      st_ok: 'found', st_chk: 'check', st_multi: 'choose', st_no: 'not found', st_done: 'added', st_fail: 'failed', st_skip: 'skipped',
+      add: 'Add {n} lines to cart', adding: 'Adding line {i} of {n}...', none: 'Nothing to add: no line matched a shop product.',
+      done: '{l} lines ({p} packs) added to your cart.', fail: 'Not added: {names}.', skipped: '{n} lines skipped (not found).', reload: 'Refresh cart',
+      note: 'Quantities are packs (sales units of the shop), not single balloons. Lines marked "check" matched through search: check the product name before adding. Lines that are not found are skipped.'
+    },
+    nl: {
+      kicker: 'Bestellen in een keer', title: 'Upload je bestelling als CSV of Excel', lede: 'Een regel per product: de productcode en het aantal zakken. We zoeken elke code op in de shop, tonen wat we vonden en zetten daarna alles in dit winkelmandje.',
+      open: 'Bestand uploaden', drop: 'Kies een bestand of sleep het hierheen', drop_sub: '.csv of .xlsx, kolom 1 = productcode, kolom 2 = aantal (zakken). Een koprij mag.',
+      template: 'Download het voorbeeldbestand', paste: 'Of plak je regels', paste_go: 'Geplakte regels controleren', reset: 'Opnieuw beginnen',
+      th_code: 'Code', th_product: 'Product in de shop', th_qty: 'Zakken', th_status: 'Status',
+      reading: 'Bestand lezen...', xlsx_load: 'Excel-lezer laden...', xlsx_fail: 'De Excel-lezer kon niet laden. Sla het blad op als CSV en probeer opnieuw.', empty: 'Geen regels met een code en een aantal gevonden. Kolom 1 = code, kolom 2 = aantal.',
+      matching: 'Code {i} van {n} opzoeken in de shop...', found: '{n} producten gevonden', check: '{n} te controleren', missing: '{n} niet gevonden', dup: '{n} dubbele codes samengevoegd',
+      st_ok: 'gevonden', st_chk: 'controleer', st_multi: 'kies', st_no: 'niet gevonden', st_done: 'toegevoegd', st_fail: 'mislukt', st_skip: 'overgeslagen',
+      add: '{n} regels in winkelmandje', adding: 'Regel {i} van {n} toevoegen...', none: 'Niets toe te voegen: geen enkele regel matcht een shopproduct.',
+      done: '{l} regels ({p} zakken) toegevoegd aan je winkelmandje.', fail: 'Niet toegevoegd: {names}.', skipped: '{n} regels overgeslagen (niet gevonden).', reload: 'Winkelmandje verversen',
+      note: 'Aantallen zijn zakken (verkoopeenheden van de shop), geen losse ballonnen. Regels met "controleer" zijn via zoeken gematcht: check de productnaam voor je toevoegt. Regels die niet gevonden zijn worden overgeslagen.'
+    },
+    fr: {
+      kicker: 'Commander en une fois', title: 'Importez votre commande en CSV ou Excel', lede: 'Une ligne par produit : le code produit et le nombre de sachets. Nous cherchons chaque code dans la boutique, vous montrons le résultat, puis ajoutons le tout à ce panier.',
+      open: 'Importer un fichier', drop: 'Choisissez un fichier ou déposez-le ici', drop_sub: '.csv ou .xlsx, colonne 1 = code produit, colonne 2 = quantité (sachets). Une ligne de titre est acceptée.',
+      template: 'Télécharger le fichier exemple', paste: 'Ou collez vos lignes', paste_go: 'Vérifier les lignes collées', reset: 'Recommencer',
+      th_code: 'Code', th_product: 'Produit dans la boutique', th_qty: 'Sachets', th_status: 'Statut',
+      reading: 'Lecture du fichier...', xlsx_load: 'Chargement du lecteur Excel...', xlsx_fail: 'Le lecteur Excel n’a pas pu se charger. Enregistrez la feuille en CSV et réessayez.', empty: 'Aucune ligne avec un code et une quantité. Colonne 1 = code, colonne 2 = quantité.',
+      matching: 'Recherche du code {i} sur {n} dans la boutique...', found: '{n} produits trouvés', check: '{n} à vérifier', missing: '{n} introuvables', dup: '{n} codes en double fusionnés',
+      st_ok: 'trouvé', st_chk: 'vérifier', st_multi: 'choisir', st_no: 'introuvable', st_done: 'ajouté', st_fail: 'échec', st_skip: 'ignoré',
+      add: 'Ajouter {n} lignes au panier', adding: 'Ajout de la ligne {i} sur {n}...', none: 'Rien à ajouter : aucune ligne ne correspond à un produit de la boutique.',
+      done: '{l} lignes ({p} sachets) ajoutées à votre panier.', fail: 'Non ajouté : {names}.', skipped: '{n} lignes ignorées (introuvables).', reload: 'Actualiser le panier',
+      note: 'Les quantités sont des sachets (unités de vente de la boutique), pas des ballons à l’unité. Les lignes « vérifier » ont été trouvées via la recherche : vérifiez le nom du produit avant d’ajouter. Les lignes introuvables sont ignorées.'
+    },
+    de: {
+      kicker: 'Auf einmal bestellen', title: 'Bestellung als CSV oder Excel hochladen', lede: 'Eine Zeile pro Produkt: Produktcode und Anzahl Beutel. Wir suchen jeden Code im Shop, zeigen das Ergebnis und legen dann alles in diesen Warenkorb.',
+      open: 'Datei hochladen', drop: 'Datei wählen oder hier ablegen', drop_sub: '.csv oder .xlsx, Spalte 1 = Produktcode, Spalte 2 = Menge (Beutel). Eine Kopfzeile ist erlaubt.',
+      template: 'Beispieldatei herunterladen', paste: 'Oder Zeilen einfügen', paste_go: 'Eingefügte Zeilen prüfen', reset: 'Neu beginnen',
+      th_code: 'Code', th_product: 'Produkt im Shop', th_qty: 'Beutel', th_status: 'Status',
+      reading: 'Datei wird gelesen...', xlsx_load: 'Excel-Leser wird geladen...', xlsx_fail: 'Der Excel-Leser konnte nicht geladen werden. Speichern Sie das Blatt als CSV und versuchen Sie es erneut.', empty: 'Keine Zeilen mit Code und Menge gefunden. Spalte 1 = Code, Spalte 2 = Menge.',
+      matching: 'Code {i} von {n} im Shop suchen...', found: '{n} Produkte gefunden', check: '{n} zu prüfen', missing: '{n} nicht gefunden', dup: '{n} doppelte Codes zusammengefasst',
+      st_ok: 'gefunden', st_chk: 'prüfen', st_multi: 'wählen', st_no: 'nicht gefunden', st_done: 'hinzugefügt', st_fail: 'fehlgeschlagen', st_skip: 'übersprungen',
+      add: '{n} Zeilen in den Warenkorb', adding: 'Zeile {i} von {n} wird hinzugefügt...', none: 'Nichts hinzuzufügen: keine Zeile passt zu einem Shop-Produkt.',
+      done: '{l} Zeilen ({p} Beutel) in Ihren Warenkorb gelegt.', fail: 'Nicht hinzugefügt: {names}.', skipped: '{n} Zeilen übersprungen (nicht gefunden).', reload: 'Warenkorb aktualisieren',
+      note: 'Mengen sind Beutel (Verkaufseinheiten des Shops), keine einzelnen Ballons. Zeilen mit „prüfen“ wurden über die Suche gefunden: prüfen Sie den Produktnamen vor dem Hinzufügen. Nicht gefundene Zeilen werden übersprungen.'
+    }
+  };
+  var S = T[lang] || T.en;
+  function t(k, v) { var s = S[k] || T.en[k] || k; Object.keys(v || {}).forEach(function (x) { s = s.split('{' + x + '}').join(v[x]); }); return s; }
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function $(id) { return document.getElementById(id); }
+  function track(ev, params) { try { if (window.posthog && window.posthog.capture) { window.posthog.capture(ev, params || {}); } } catch (e) {} }
+
+  Array.prototype.forEach.call(root.querySelectorAll('[data-k]'), function (el) { el.textContent = t(el.getAttribute('data-k')); });
+
+  /* ---- plaats: bovenaan de winkelmandpagina, voor de rij met regels + samenvatting ---- */
+  var cart = document.querySelector('.oe_website_sale .oe_cart') || document.querySelector('#shop_cart') || document.querySelector('.oe_website_sale');
+  if (!cart) { wallDone(); return; }
+  if (cart.classList.contains('oe_cart') || cart.id === 'shop_cart') { cart.parentNode.insertBefore(root, cart); }
+  else { cart.insertBefore(root, cart.firstChild); }
+  root.hidden = false;
+  wallDone();
+
+  /* ---- resultaat van de vorige upload (na herladen) ---- */
+  try {
+    var last = sessionStorage.getItem(RESULT_KEY);
+    if (last) {
+      sessionStorage.removeItem(RESULT_KEY);
+      var lr = JSON.parse(last);
+      var box = $('su-lastresult');
+      var msg = esc(t('done', { l: lr.done, p: lr.packs }));
+      if (lr.skipped) { msg += ' ' + esc(t('skipped', { n: lr.skipped })); }
+      if (lr.failed && lr.failed.length) { msg += ' ' + esc(t('fail', { names: lr.failed.join(', ') })); box.classList.add('warn'); }
+      box.innerHTML = msg; box.hidden = false; root.classList.add('su-open');
+    }
+  } catch (e) {}
+
+  /* ---- UI ---- */
+  var state = { lines: [], busy: false };
+  $('su-toggle').addEventListener('click', function () { root.classList.toggle('su-open'); });
+  $('su-pastebtn').addEventListener('click', function () { root.classList.toggle('su-pasting'); if (root.classList.contains('su-pasting')) { $('su-paste').focus(); } });
+  $('su-paste-go').addEventListener('click', function () { handleText($('su-paste').value, 'paste'); });
+  $('su-template').addEventListener('click', function (e) {
+    e.preventDefault();
+    var csv = 'Supplier Code,Quantity\r\nR12005,10\r\nN260080,20\r\nLOL6015,5\r\n';
+    var blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+    var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'sempertex-order-example.csv';
+    document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+    track('cart_upload_template', {});
+  });
+  var drop = $('su-drop');
+  ['dragenter', 'dragover'].forEach(function (ev) { drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.add('su-over'); }); });
+  ['dragleave', 'drop'].forEach(function (ev) { drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.remove('su-over'); }); });
+  drop.addEventListener('drop', function (e) { var f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]; if (f) { handleFile(f); } });
+  $('su-file').addEventListener('change', function () { if (this.files && this.files[0]) { handleFile(this.files[0]); this.value = ''; } });
+  $('su-reset').addEventListener('click', function () { if (state.busy) { return; } state.lines = []; $('su-preview').hidden = true; $('su-rows').innerHTML = ''; $('su-sum').innerHTML = ''; setStatus(''); });
+  $('su-add').addEventListener('click', addAll);
+
+  function setStatus(msg) { $('su-status').textContent = msg || ''; }
+  function setBar(frac) { $('su-barfill').style.width = Math.round(Math.max(0, Math.min(1, frac)) * 100) + '%'; }
+  function busy(on) { state.busy = on; root.classList.toggle('su-busy', on); $('su-add').disabled = on; $('su-reset').disabled = on; if (!on) { setBar(0); } }
+
+  /* ---- bestand lezen ---- */
+  function handleFile(file) {
+    if (state.busy) { return; }
+    var name = (file.name || '').toLowerCase();
+    setStatus(t('reading'));
+    if (/\.xlsx?$/.test(name)) {
+      setStatus(t('xlsx_load'));
+      loadXlsx(function (ok) {
+        if (!ok) { setStatus(t('xlsx_fail')); return; }
+        var fr = new FileReader();
+        fr.onload = function () {
+          try {
+            var wb = window.XLSX.read(new Uint8Array(fr.result), { type: 'array' });
+            var ws = wb.Sheets[wb.SheetNames[0]];
+            var rows = window.XLSX.utils.sheet_to_json(ws, { header: 1, raw: true, defval: '' });
+            handleRows(rows, 'xlsx');
+          } catch (e) { setStatus(t('xlsx_fail')); }
+        };
+        fr.readAsArrayBuffer(file);
+      });
+      return;
+    }
+    var fr = new FileReader();
+    fr.onload = function () { handleText(String(fr.result || ''), 'csv'); };
+    fr.readAsText(file);
+  }
+  function loadXlsx(cb) {
+    if (window.XLSX) { cb(true); return; }
+    var s = document.createElement('script'); s.src = XLSX_URL;
+    s.onload = function () { cb(!!window.XLSX); }; s.onerror = function () { cb(false); };
+    document.head.appendChild(s);
+  }
+  function handleText(text, source) {
+    text = String(text || '').replace(/^﻿/, '');
+    var lines = text.split(/\r\n|\r|\n/).filter(function (l) { return l.trim() !== ''; });
+    var sample = lines.slice(0, 20).join('\n');
+    var delim = ','; var best = -1;
+    [',', ';', '\t', '|'].forEach(function (d) { var n = sample.split(d).length; if (n > best) { best = n; delim = d; } });
+    var rows = lines.map(function (l) { return splitLine(l, delim); });
+    handleRows(rows, source);
+  }
+  function splitLine(line, d) {
+    var out = [], cur = '', q = false;
+    for (var i = 0; i < line.length; i++) {
+      var c = line.charAt(i);
+      if (q) { if (c === '"') { if (line.charAt(i + 1) === '"') { cur += '"'; i++; } else { q = false; } } else { cur += c; } }
+      else if (c === '"') { q = true; }
+      else if (c === d) { out.push(cur); cur = ''; }
+      else { cur += c; }
+    }
+    out.push(cur);
+    return out;
+  }
+  /* rijen -> regels {code, qty}; kolom 1 = code, kolom 2 = aantal; koprij en lege rijen overslaan; dubbele codes optellen */
+  function handleRows(rows, source) {
+    var map = {}, order = [], dup = 0;
+    rows.forEach(function (r) {
+      if (!r || !r.length) { return; }
+      var cells = r.map(function (c) { return String(c == null ? '' : c).trim(); });
+      var ci = -1;
+      for (var i = 0; i < cells.length; i++) { if (cells[i] !== '') { ci = i; break; } }
+      if (ci < 0) { return; }
+      var code = cells[ci].toUpperCase().replace(/\s+/g, '');
+      var qs = ''; for (var j = ci + 1; j < cells.length; j++) { if (cells[j] !== '') { qs = cells[j]; break; } }
+      var qty = parseFloat(qs.replace(/\s/g, '').replace(',', '.'));
+      if (!code || !isFinite(qty) || qty <= 0) { return; }
+      if (!/^[A-Z0-9][A-Z0-9._\/-]*$/.test(code)) { return; }
+      qty = Math.ceil(qty);
+      if (map[code]) { map[code].qty += qty; dup++; } else { map[code] = { code: code, qty: qty }; order.push(code); }
+    });
+    var lines = order.map(function (c) { return map[c]; });
+    if (!lines.length) { setStatus(t('empty')); return; }
+    root.classList.remove('su-pasting');
+    track('cart_upload_parsed', { lines: lines.length, source: source });
+    matchAll(lines, dup);
+  }
+
+  /* ---- productherkenning via de shop-zoekroute ---- */
+  function shopSearch(term, limit, cb) {
+    fetch(SEARCH_URL, {
+      method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ jsonrpc: '2.0', method: 'call', id: Date.now(), params: {
+        search_type: 'products', term: term, order: 'name asc', limit: limit, max_nb_chars: 120,
+        options: { displayDescription: false, displayDetail: true, displayExtraLink: false, displayImage: false, allowFuzzy: false }
+      } })
+    }).then(function (r) { return r.json(); }).then(function (d) { cb(((d && d.result) || {}).results || []); }).catch(function () { cb(null); });
+  }
+  function strip(v) { return String(v == null ? '' : v).replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim(); }
+  function slug(s) {
+    s = String(s || '');
+    try { s = s.normalize('NFKD').replace(/[̀-ͯ]/g, ''); } catch (e) {}
+    return s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+  }
+  function hitsFor(code, results) {
+    var cs = slug(code);
+    var out = [];
+    (results || []).forEach(function (r) {
+      var url = r.website_url || '';
+      var m = /^\/shop\/([^/?#]*)-(\d+)(?:[?#].*)?$/.exec(url);
+      if (!m) { return; }
+      var name = strip(r.name);
+      var body = m[1];
+      var h = { tid: parseInt(m[2], 10), name: name, url: url, exact: false, prefix: false };
+      if (body === cs + '-' + slug(name)) { h.exact = true; h.prefix = true; }
+      else if (body.indexOf(cs + '-') === 0) { h.prefix = true; }
+      out.push(h);
+    });
+    return out;
+  }
+  function matchOne(line, cb) {
+    shopSearch(line.code, 10, function (results) {
+      line.options = [];
+      if (results === null) { line.status = 'no'; cb(); return; }
+      var hits = hitsFor(line.code, results);
+      var exact = hits.filter(function (h) { return h.exact; });
+      var pre = hits.filter(function (h) { return h.prefix; });
+      if (exact.length === 1) { line.pick(exact[0]); line.status = 'ok'; }
+      else if (pre.length === 1) { line.pick(pre[0]); line.status = 'ok'; }
+      else if (pre.length > 1) { line.options = pre; line.pick(pre[0]); line.status = 'multi'; }
+      else if (hits.length === 1) { line.pick(hits[0]); line.status = 'chk'; }
+      else { line.status = 'no'; }
+      cb();
+    });
+  }
+  function matchAll(lines, dup) {
+    lines.forEach(function (l) { l.status = 'no'; l.tid = null; l.name = ''; l.pick = function (h) { this.tid = h.tid; this.name = h.name; this.url = h.url; }; });
+    state.lines = lines;
+    busy(true);
+    var next = 0, done = 0, n = lines.length;
+    function step() {
+      if (next >= n) { return; }
+      var l = lines[next++];
+      matchOne(l, function () {
+        done++; setStatus(t('matching', { i: Math.min(done + 1, n), n: n })); setBar(done / n);
+        if (done >= n) { busy(false); setStatus(''); render(dup); } else { step(); }
+      });
+    }
+    for (var k = 0; k < Math.min(PARALLEL, n); k++) { step(); }
+  }
+
+  /* ---- preview ---- */
+  function counts() {
+    var c = { ok: 0, chk: 0, no: 0 };
+    state.lines.forEach(function (l) { if (l.status === 'ok') { c.ok++; } else if (l.status === 'chk' || l.status === 'multi') { c.chk++; } else { c.no++; } });
+    return c;
+  }
+  function render(dup) {
+    var c = counts();
+    var sum = '<span class="su-pill ok">' + esc(t('found', { n: c.ok })) + '</span>';
+    if (c.chk) { sum += '<span class="su-pill chk">' + esc(t('check', { n: c.chk })) + '</span>'; }
+    if (c.no) { sum += '<span class="su-pill no">' + esc(t('missing', { n: c.no })) + '</span>'; }
+    if (dup) { sum += '<span class="su-pill">' + esc(t('dup', { n: dup })) + '</span>'; }
+    $('su-sum').innerHTML = sum;
+    var tb = $('su-rows'); tb.innerHTML = '';
+    state.lines.forEach(function (l, i) {
+      var tr = document.createElement('tr'); tr.className = l.status; tr.setAttribute('data-i', i);
+      var prod;
+      if (l.status === 'multi') {
+        prod = '<select class="su-pick" data-i="' + i + '">' + l.options.map(function (o, k) { return '<option value="' + k + '">' + esc(o.name) + '</option>'; }).join('') + '</select>';
+      } else if (l.tid) {
+        prod = '<a href="' + esc(shopPrefix + l.url) + '" target="_blank" rel="noopener">' + esc(l.name) + '</a>';
+      } else { prod = '<span>&ndash;</span>'; }
+      var st = { ok: 'st_ok', chk: 'st_chk', multi: 'st_multi', no: 'st_no' }[l.status] || 'st_no';
+      tr.innerHTML = '<td class="su-code">' + esc(l.code) + '</td><td>' + prod + '</td><td class="su-qty" data-unit="' + esc(t('th_qty')) + '">' + l.qty + '</td><td><span class="su-st">' + esc(t(st)) + '</span></td>';
+      tb.appendChild(tr);
+    });
+    Array.prototype.forEach.call(tb.querySelectorAll('select.su-pick'), function (sel) {
+      sel.addEventListener('change', function () { var l = state.lines[parseInt(sel.getAttribute('data-i'), 10)]; l.pick(l.options[parseInt(sel.value, 10)]); });
+    });
+    $('su-add').textContent = t('add', { n: c.ok + c.chk });
+    $('su-add').disabled = (c.ok + c.chk) === 0;
+    $('su-preview').hidden = false;
+    root.classList.add('su-open');
+    track('cart_upload_matched', { lines: state.lines.length, found: c.ok, check: c.chk, missing: c.no });
+  }
+
+  /* ---- in het winkelmandje ---- */
+  function combinationInfo(tid, cb) {
+    fetch('/website_sale/get_combination_info', {
+      method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ jsonrpc: '2.0', method: 'call', id: Date.now(), params: { product_template_id: tid, product_id: false, combination: [], add_qty: 1, parent_combination: [] } })
+    }).then(function (r) { return r.json(); }).then(function (d) { var c = (d && d.result) || {}; cb(c.product_id || null); }).catch(function () { cb(null); });
+  }
+  function cartAdd(tid, pid, qty, cb) {
+    fetch('/shop/cart/add', {
+      method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ jsonrpc: '2.0', method: 'call', id: Date.now(), params: { product_template_id: tid, product_id: pid, quantity: qty } })
+    }).then(function (r) { return r.json(); }).then(function (d) { cb(!!(d && !d.error && d.result)); }).catch(function () { cb(false); });
+  }
+  function addAll() {
+    if (state.busy) { return; }
+    var todo = state.lines.filter(function (l) { return l.tid && l.status !== 'no'; });
+    if (!todo.length) { setStatus(t('none')); return; }
+    busy(true);
+    var done = 0, packs = 0, failed = [], skipped = counts().no;
+    var rowsEl = $('su-rows');
+    function mark(l, cls, key) { var tr = rowsEl.querySelector('tr[data-i="' + state.lines.indexOf(l) + '"]'); if (tr) { tr.className = cls; tr.querySelector('.su-st').textContent = t(key); } }
+    function finish() {
+      busy(false);
+      var res = { done: done, packs: packs, failed: failed, skipped: skipped };
+      track('cart_upload_added', { lines: done, packs: packs, failed: failed.length, skipped: skipped });
+      var msg = esc(t('done', { l: done, p: packs }));
+      if (skipped) { msg += ' ' + esc(t('skipped', { n: skipped })); }
+      if (failed.length) { msg += ' ' + esc(t('fail', { names: failed.join(', ') })); }
+      var box = $('su-lastresult'); box.innerHTML = msg + ' <a href="' + esc(shopPrefix + '/shop/cart') + '">' + esc(t('reload')) + '</a>'; box.hidden = false; box.classList.toggle('warn', failed.length > 0);
+      setStatus('');
+      if (done > 0) {
+        try { sessionStorage.setItem(RESULT_KEY, JSON.stringify(res)); } catch (e) {}
+        setTimeout(function () { location.href = shopPrefix + '/shop/cart'; }, failed.length ? 2500 : 900);
+      }
+    }
+    function step(k) {
+      if (k >= todo.length) { finish(); return; }
+      var l = todo[k];
+      setStatus(t('adding', { i: k + 1, n: todo.length })); setBar(k / todo.length);
+      combinationInfo(l.tid, function (pid) {
+        if (!pid) { failed.push(l.code); mark(l, 'fail', 'st_fail'); step(k + 1); return; }
+        cartAdd(l.tid, pid, l.qty, function (ok) {
+          if (ok) { done++; packs += l.qty; mark(l, 'done', 'st_done'); } else { failed.push(l.code); mark(l, 'fail', 'st_fail'); }
+          step(k + 1);
+        });
+      });
+    }
+    step(0);
+  }
+})();
+</script>
