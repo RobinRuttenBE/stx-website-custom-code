@@ -1,0 +1,506 @@
+<!-- ============================================================
+     STX EU / EVENTS CAROUSEL v1 (sectiebestand voor de section loader)
+     Onderaan elke individuele event- of workshoppagina (Odoo Events,
+     pad /event/<slug>-<id> en /event/<slug>-<id>/register, alle talen)
+     komt automatisch een gecentreerde, branded carrousel met alle
+     andere komende events van de site. Vervangt het handmatige blok
+     "Other events" met 3 vaste kaarten in de eventbeschrijving.
+
+     Bron: de publieke eventlijst van de site zelf (/event, met
+     taalprefix), same-origin opgehaald en uitgelezen. Daardoor staat
+     elk nieuw event er vanzelf in, in de taal van de pagina, met
+     Odoo's eigen cover, datum en plaats.
+     - Uitverkochte events (Odoo-badge "Sold Out" / "Uitverkocht" /
+       "Complet" / "Ausverkauft") worden NIET getoond.
+     - Het event waar je op staat wordt niet getoond.
+     - Afgelopen events staan niet in de standaardlijst van Odoo.
+     - Meerdere pagina's van de lijst (?page=2 ...) worden meegenomen.
+     - Lijst wordt 15 min in sessionStorage bewaard per taal.
+
+     Plaats: direct na #o_wevent_event_main (volle breedte, alles
+     gecentreerd), voor de footer. Niet in de Odoo editor.
+
+     BETA (nu aan): met BETA = true toont de carrousel alleen in een
+     browser waar je een eventpagina ooit opende met #stxevents achter
+     de URL (onthouden in localStorage). #stxevents-uit zet het weer uit.
+     ?stxevents=1 / ?stxevents=0 werkt ook. Live zetten = BETA = false.
+
+     Carrousel: 3 kaarten op desktop, 2 op tablet, 1 op mobiel (met
+     swipe), oneindig doorschuivend met zachte overgang, autoplay 5s
+     (pauzeert bij hover/focus, uit bij prefers-reduced-motion),
+     pijlen, bolletjes, toetsenbord (pijltjes). Minder kaarten dan er
+     passen = gewoon gecentreerd zonder schuiven.
+     ============================================================ -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rethink+Sans:wght@400;500;600;700;800&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+  .stx-events { --purple: #6b3fb9; --purple-light: #f1d9ff; --purple-bg: #faf4ff; --dark: #1b073d; --yellow: #ffdb5a; --magenta: #cd0b5c; --ink-soft: rgba(27,7,61,0.62);
+    font-family: 'Rethink Sans', sans-serif; color: var(--dark); background: var(--purple-bg); padding: 60px 0 52px; margin: 0; position: relative; overflow: hidden; text-align: center; line-height: 1.45; width: 100%; }
+  .stx-events *, .stx-events *::before, .stx-events *::after { box-sizing: border-box; }
+  .stx-events a { color: inherit; text-decoration: none; }
+  .stx-events h2, .stx-events h3, .stx-events p { margin: 0; }
+  .stx-events button { font-family: inherit; cursor: pointer; }
+  .stx-events img { max-width: 100%; }
+
+  /* zachte ballonvormen op de achtergrond */
+  .stx-events::before, .stx-events::after { content: ""; position: absolute; border-radius: 50%; pointer-events: none; z-index: 0; }
+  .stx-events::before { width: 420px; height: 420px; left: -160px; top: -140px; background: radial-gradient(circle at 40% 40%, rgba(241,217,255,0.9), rgba(241,217,255,0) 70%); }
+  .stx-events::after { width: 360px; height: 360px; right: -140px; bottom: -160px; background: radial-gradient(circle at 50% 50%, rgba(255,219,90,0.35), rgba(255,219,90,0) 70%); }
+
+  .stx-events .se-wrap { position: relative; z-index: 1; max-width: 1240px; margin: 0 auto; padding: 0 16px; }
+  .stx-events .se-head { margin-bottom: 30px; }
+  .stx-events .se-kicker { font-size: 13px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--purple); margin-bottom: 8px; }
+  .stx-events .se-head h2 { font-size: clamp(26px, 3vw, 38px); font-weight: 800; letter-spacing: -0.02em; line-height: 1.08; color: var(--dark); }
+  .stx-events .se-hl { background: var(--yellow); padding: 0 0.12em; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+  .stx-events .se-head p { font-family: 'Lato', sans-serif; font-size: 16.5px; color: var(--ink-soft); max-width: 58ch; margin: 10px auto 0; }
+
+  .stx-events .se-stage { position: relative; padding: 0 64px; }
+  .stx-events .se-viewport { overflow: hidden; padding: 14px 0 26px; }
+  .stx-events .se-track { display: flex; gap: var(--gap, 24px); will-change: transform; transition: transform 0.7s cubic-bezier(0.22, 0.61, 0.36, 1); }
+  .stx-events .se-track.se-nomove { transition: none !important; }
+  .stx-events .se-track.se-center { justify-content: center; transform: none !important; }
+
+  .stx-events .se-card { flex: 0 0 var(--w, 352px); width: var(--w, 352px); background: #fff; border-radius: 16px; overflow: hidden; text-align: left; display: flex; flex-direction: column; box-shadow: 0 6px 22px rgba(27,7,61,0.08); transition: transform 0.35s ease, box-shadow 0.35s ease; position: relative; color: var(--dark); }
+  .stx-events .se-card:hover, .stx-events .se-card:focus-visible { transform: translateY(-6px); box-shadow: 0 18px 40px rgba(107,63,185,0.22); color: var(--dark); outline: none; }
+  .stx-events .se-card:focus-visible { box-shadow: 0 0 0 3px var(--yellow), 0 18px 40px rgba(107,63,185,0.22); }
+  .stx-events .se-cover { position: relative; aspect-ratio: 16 / 10; background: linear-gradient(135deg, #6b3fb9 0%, #1b073d 100%); overflow: hidden; }
+  .stx-events .se-cover img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.9s ease; }
+  .stx-events .se-card:hover .se-cover img { transform: scale(1.06); }
+  .stx-events .se-cover-ph { position: absolute; inset: 0; background-image: radial-gradient(circle at 25% 30%, rgba(255,255,255,0.18) 0 60px, transparent 61px), radial-gradient(circle at 70% 65%, rgba(255,219,90,0.35) 0 44px, transparent 45px), radial-gradient(circle at 85% 20%, rgba(241,217,255,0.4) 0 28px, transparent 29px); }
+  .stx-events .se-date { position: absolute; left: 14px; top: 14px; background: #fff; border-radius: 10px; padding: 7px 10px 6px; min-width: 56px; text-align: center; box-shadow: 0 4px 14px rgba(27,7,61,0.2); line-height: 1; }
+  .stx-events .se-date span { display: block; font-size: 11px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--purple); margin-bottom: 4px; }
+  .stx-events .se-date b { display: block; font-size: 22px; font-weight: 800; color: var(--dark); }
+  .stx-events .se-body { padding: 18px 20px 20px; display: flex; flex-direction: column; gap: 10px; flex: 1; }
+  .stx-events .se-card h3 { font-size: 19px; font-weight: 800; line-height: 1.2; letter-spacing: -0.01em; color: var(--dark); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 2.4em; }
+  .stx-events .se-meta { font-family: 'Lato', sans-serif; font-size: 14px; color: var(--ink-soft); display: flex; flex-direction: column; gap: 5px; }
+  .stx-events .se-meta span { display: flex; align-items: center; gap: 8px; }
+  .stx-events .se-meta svg { width: 15px; height: 15px; flex: none; fill: none; stroke: var(--purple); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .stx-events .se-btn { margin-top: auto; align-self: flex-start; display: inline-flex; align-items: center; gap: 8px; background: var(--purple); color: #fff; font-weight: 800; font-size: 15px; padding: 11px 18px; border-radius: 8px; transition: background 0.2s ease, color 0.2s ease; }
+  .stx-events .se-btn svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; transition: transform 0.2s ease; }
+  .stx-events .se-card:hover .se-btn { background: var(--dark); color: var(--yellow); }
+  .stx-events .se-card:hover .se-btn svg { transform: translateX(3px); }
+
+  .stx-events .se-arrow { position: absolute; top: 50%; transform: translateY(-50%); width: 50px; height: 50px; border-radius: 50%; border: none; background: #fff; color: var(--purple); z-index: 5; box-shadow: 0 6px 18px rgba(27,7,61,0.16); display: flex; align-items: center; justify-content: center; padding: 0; transition: transform 0.15s ease, background 0.2s ease, color 0.2s ease; }
+  .stx-events .se-arrow:hover { background: var(--purple); color: #fff; transform: translateY(-50%) scale(1.06); }
+  .stx-events .se-arrow:focus-visible { outline: 3px solid var(--yellow); outline-offset: 2px; }
+  .stx-events .se-arrow svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+  .stx-events .se-arrow.l { left: 0; } .stx-events .se-arrow.r { right: 0; }
+  .stx-events.se-static .se-arrow, .stx-events.se-static .se-dots { display: none; }
+
+  .stx-events .se-dots { display: flex; justify-content: center; gap: 6px; margin-top: 2px; min-height: 8px; }
+  .stx-events .se-dots button { width: 8px; height: 8px; border-radius: 999px; border: none; padding: 0; background: rgba(107,63,185,0.25); transition: width 0.25s ease, background 0.25s ease; }
+  .stx-events .se-dots button.on { width: 24px; background: var(--purple); }
+  .stx-events .se-dots button:focus-visible { outline: 2px solid var(--yellow); outline-offset: 2px; }
+
+  .stx-events .se-all { display: inline-flex; align-items: center; gap: 8px; margin-top: 24px; font-weight: 700; font-size: 15.5px; color: var(--purple); border-bottom: 2px solid transparent; transition: border-color 0.2s ease; }
+  .stx-events .se-all:hover { border-color: var(--purple); color: var(--purple); }
+  .stx-events .se-all svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+
+  @media (max-width: 760px) {
+    .stx-events { padding: 40px 0 36px; }
+    .stx-events .se-head { margin-bottom: 18px; }
+    .stx-events .se-head h2 { font-size: 24px; }
+    .stx-events .se-head p { font-size: 14.5px; }
+    .stx-events .se-stage { padding: 0; }
+    .stx-events .se-arrow { display: none; }
+    .stx-events .se-viewport { padding: 8px 0 18px; }
+    .stx-events .se-card { border-radius: 14px; }
+    .stx-events .se-card h3 { font-size: 17px; }
+    .stx-events .se-body { padding: 14px 16px 16px; gap: 8px; }
+    .stx-events .se-btn { font-size: 14px; padding: 10px 15px; }
+    .stx-events .se-all { margin-top: 14px; font-size: 14.5px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .stx-events .se-track, .stx-events .se-card, .stx-events .se-cover img, .stx-events .se-arrow { transition: none !important; }
+    .stx-events .se-card:hover .se-cover img { transform: none; }
+  }
+</style>
+
+<script>
+(function () {
+  'use strict';
+  var BETA = true; // true = alleen zichtbaar na #stxevents (testmodus), false = live voor iedereen
+  var BETA_KEY = 'stx_events_beta';
+  var CACHE_KEY = 'stx_events_list_v1_';
+  var CACHE_MIN = 15;
+  var SOLD_OUT = ['sold out', 'uitverkocht', 'complet', 'ausverkauft'];
+  var AUTOPLAY_MS = 5000;
+
+  function wallDone() { if (window.stxLoadwallHide) { window.stxLoadwallHide(); } }
+
+  /* Beta-schakelaar: #stxevents achter de URL zet hem aan voor deze browser, #stxevents-uit uit.
+     (?stxevents=1 / ?stxevents=0 als query werkt ook.) */
+  function betaOn() {
+    var h = (window.location.hash || '').toLowerCase();
+    var q = /[?&]stxevents=([01])/.exec(window.location.search);
+    var want = null;
+    if (h === '#stxevents' || h === '#stxevents=1' || h === '#stxevents-on' || h === '#stxevents-aan') { want = true; }
+    else if (h === '#stxevents=0' || h === '#stxevents-off' || h === '#stxevents-uit') { want = false; }
+    else if (q) { want = q[1] === '1'; }
+    try {
+      if (want === true) { localStorage.setItem(BETA_KEY, '1'); }
+      else if (want === false) { localStorage.removeItem(BETA_KEY); }
+      return localStorage.getItem(BETA_KEY) === '1';
+    } catch (e) { return want === true; }
+  }
+
+  /* ---- GUARD: alleen individuele eventpagina's, alle talen ---- */
+  var rawPath = window.location.pathname || '/';
+  var p = rawPath.toLowerCase();
+  while (p.length > 1 && p.charAt(p.length - 1) === '/') { p = p.slice(0, -1); }
+  var m = /^\/(en_gb|fr|de)(\/|$)/.exec(p);
+  var rest = m ? p.slice(m[1].length + 1) : p;
+  var em = /^\/event\/[^\/]+-(\d+)(\/register|\/page\/[^\/]+)?$/.exec(rest);
+  var isFile = window.location.protocol === 'file:';
+  if (!em && !isFile) { wallDone(); return; }
+  if (BETA && !betaOn()) { wallDone(); return; }
+  if (document.body.classList.contains('editor_enable') || document.querySelector('.odoo-editor-editable') || document.querySelector('#wrap.o_editable')) { wallDone(); return; }
+  if (document.getElementById('stx-events')) { wallDone(); return; }
+  var anchor = document.getElementById('o_wevent_event_main') || document.querySelector('#wrap > div > section') || null;
+  if (!anchor) { wallDone(); return; }
+  var currentId = em ? em[1] : null;
+
+  /* ---- TAAL + LINKPREFIX ---- */
+  var seg = (rawPath.split('/')[1] || '');
+  var lang = m ? (m[1] === 'en_gb' ? 'en' : m[1]) : 'nl';
+  var prefix = m ? '/' + seg : '';
+  var LOCALE = { nl: 'nl-BE', en: 'en-GB', fr: 'fr-FR', de: 'de-DE' }[lang] || 'en-GB';
+
+  var T = {
+    nl: { kicker: 'Workshops & events', title: 'Ontdek onze |andere workshops| en events', sub: 'Van Start Your Balloon Business tot technische masterclasses met de beste artiesten van Europa. Kies je volgende datum.', cta: 'Tickets kopen', all: 'Bekijk alle workshops en events', prev: 'Vorige', next: 'Volgende', goto: 'Ga naar' },
+    en: { kicker: 'Workshops & events', title: 'Discover our |other workshops| and events', sub: "From Start Your Balloon Business to technical masterclasses with Europe's best artists. Pick your next date.", cta: 'Get tickets', all: 'See all workshops and events', prev: 'Previous', next: 'Next', goto: 'Go to' },
+    fr: { kicker: 'Workshops & événements', title: 'Découvrez nos |autres workshops| et événements', sub: "De Start Your Balloon Business aux masterclasses techniques avec les meilleurs artistes d'Europe. Choisissez votre prochaine date.", cta: 'Obtenir des tickets', all: 'Voir tous les workshops et événements', prev: 'Précédent', next: 'Suivant', goto: 'Aller à' },
+    de: { kicker: 'Workshops & Events', title: 'Entdecke unsere |anderen Workshops| und Events', sub: 'Von Start Your Balloon Business bis zu technischen Masterclasses mit den besten Artists Europas. Wähl dein nächstes Datum.', cta: 'Tickets sichern', all: 'Alle Workshops und Events ansehen', prev: 'Zurück', next: 'Weiter', goto: 'Gehe zu' }
+  };
+  var S = T[lang] || T.en;
+
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function hl(s) { return esc(s).replace(/\|([^|]+)\|/g, '<span class="se-hl">$1</span>'); }
+  var CHEV_R = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>';
+  var CHEV_L = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>';
+  var ICON_CAL = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>';
+  var ICON_PIN = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>';
+
+  function track(ev, params) {
+    try {
+      params = params || {};
+      params.page_lang = lang;
+      params.current_event = currentId;
+      if (typeof window.gtag === 'function') { window.gtag('event', ev, params); }
+      else if (window.dataLayer && window.dataLayer.push) { window.dataLayer.push(Object.assign({ event: ev }, params)); }
+      if (window.posthog && window.posthog.capture) { window.posthog.capture(ev, params); }
+    } catch (e) { /* stil */ }
+  }
+
+  /* ---- EVENTLIJST OPHALEN (same-origin, Odoo's eigen /event pagina) ---- */
+  function isSoldOut(art) {
+    var nodes = art.querySelectorAll('.o_record_cover_container span.position-absolute, small.fw-bold, .badge, .o_wevent_badge');
+    for (var k = 0; k < nodes.length; k++) {
+      var t = (nodes[k].textContent || '').replace(/\s+/g, ' ').trim().toLowerCase();
+      if (SOLD_OUT.indexOf(t) >= 0) { return true; }
+    }
+    return false;
+  }
+  function parseList(html) {
+    var doc = new DOMParser().parseFromString(html, 'text/html');
+    var arts = doc.querySelectorAll('article[itemtype*="schema.org/Event"], article.card');
+    var out = [];
+    Array.prototype.forEach.call(arts, function (art) {
+      var link = art.querySelector('a[href*="/event/"]') || (art.closest ? art.closest('a[href*="/event/"]') : null);
+      var href = link ? link.getAttribute('href') : '';
+      if (!href) { return; }
+      var idm = /-(\d+)(?:\/|$)/.exec(href.split('?')[0]);
+      var cover = art.querySelector('[data-res-id]');
+      var id = cover ? cover.getAttribute('data-res-id') : (idm ? idm[1] : '');
+      if (!id && idm) { id = idm[1]; }
+      var nameEl = art.querySelector('[itemprop="name"], .card-title');
+      var title = nameEl ? nameEl.textContent.replace(/\s+/g, ' ').trim() : '';
+      var img = art.querySelector('.o_record_cover_image');
+      var bg = img ? (img.getAttribute('style') || '') : '';
+      var bgm = /url\((['"]?)(.*?)\1\)/.exec(bg);
+      var coverUrl = bgm ? bgm[2] : '';
+      var monthEl = art.querySelector('.o_wevent_event_month');
+      var dayEl = art.querySelector('.o_wevent_event_day');
+      var startEl = art.querySelector('meta[itemprop="startDate"]');
+      var loc = art.querySelector('[itemprop="addressLocality"]');
+      var country = art.querySelector('[itemprop="addressCountry"]');
+      var place = [loc ? loc.textContent.trim() : '', country ? country.textContent.trim() : ''].filter(Boolean).join(', ');
+      out.push({
+        id: id, title: title, href: href, cover: coverUrl,
+        month: monthEl ? monthEl.textContent.trim() : '',
+        day: dayEl ? dayEl.textContent.trim() : '',
+        start: startEl ? startEl.getAttribute('content') : '',
+        place: place, soldOut: isSoldOut(art)
+      });
+    });
+    var pages = [];
+    Array.prototype.forEach.call(doc.querySelectorAll('.pagination a[href*="page="]'), function (a) {
+      var h = a.getAttribute('href');
+      if (h && pages.indexOf(h) < 0) { pages.push(h); }
+    });
+    return { events: out, pages: pages };
+  }
+  function fetchText(url) {
+    return fetch(url, { credentials: 'same-origin' }).then(function (r) {
+      if (!r.ok) { throw new Error('HTTP ' + r.status); }
+      return r.text();
+    });
+  }
+  function readCache() {
+    try {
+      var raw = sessionStorage.getItem(CACHE_KEY + lang);
+      if (!raw) { return null; }
+      var obj = JSON.parse(raw);
+      if (!obj || !obj.t || (Date.now() - obj.t) > CACHE_MIN * 60000) { return null; }
+      return obj.events;
+    } catch (e) { return null; }
+  }
+  function writeCache(events) {
+    try { sessionStorage.setItem(CACHE_KEY + lang, JSON.stringify({ t: Date.now(), events: events })); } catch (e) { /* stil */ }
+  }
+  function loadEvents(cb) {
+    var cached = readCache();
+    if (cached) { cb(cached); return; }
+    var listUrl = prefix + '/event';
+    fetchText(listUrl).then(function (html) {
+      var first = parseList(html);
+      var extra = first.pages.filter(function (h) { return !/[?&]page=1(?:&|$)/.test(h); }).slice(0, 4);
+      if (!extra.length) { return first.events; }
+      return Promise.all(extra.map(function (h) {
+        return fetchText(h).then(function (t) { return parseList(t).events; }).catch(function () { return []; });
+      })).then(function (lists) {
+        return lists.reduce(function (acc, l) { return acc.concat(l); }, first.events);
+      });
+    }).then(function (events) {
+      if (events.length) { writeCache(events); }
+      cb(events);
+    }).catch(function (e) {
+      if (window.console && console.warn) { console.warn('[STX events] kon eventlijst niet laden:', e); }
+      wallDone();
+    });
+  }
+
+  function fmtDate(iso) {
+    if (!iso) { return ''; }
+    try {
+      var d = new Date(iso.replace(' ', 'T'));
+      if (isNaN(d.getTime())) { return ''; }
+      return new Intl.DateTimeFormat(LOCALE, { weekday: 'short', day: 'numeric', month: 'long', year: 'numeric' }).format(d);
+    } catch (e) { return ''; }
+  }
+
+  /* ---- OPBOUW ---- */
+  function cardHtml(ev, pos) {
+    var dateText = fmtDate(ev.start);
+    return '<a class="se-card" href="' + esc(ev.href) + '" data-id="' + esc(ev.id) + '" data-pos="' + pos + '">' +
+      '<div class="se-cover">' +
+        (ev.cover ? '<img src="' + esc(ev.cover) + '" alt="" loading="lazy">' : '<div class="se-cover-ph"></div>') +
+        (ev.day ? '<div class="se-date"><span>' + esc(ev.month) + '</span><b>' + esc(ev.day) + '</b></div>' : '') +
+      '</div>' +
+      '<div class="se-body">' +
+        '<h3>' + esc(ev.title) + '</h3>' +
+        '<div class="se-meta">' +
+          (dateText ? '<span>' + ICON_CAL + esc(dateText) + '</span>' : '') +
+          (ev.place ? '<span>' + ICON_PIN + esc(ev.place) + '</span>' : '') +
+        '</div>' +
+        '<span class="se-btn">' + esc(S.cta) + CHEV_R + '</span>' +
+      '</div>' +
+    '</a>';
+  }
+
+  function build(events) {
+    var seen = {};
+    var list = events.filter(function (ev) {
+      if (!ev || !ev.title || !ev.href || ev.soldOut) { return false; }
+      if (currentId && String(ev.id) === String(currentId)) { return false; }
+      if (seen[ev.id]) { return false; }
+      seen[ev.id] = true;
+      return true;
+    }).sort(function (a, b) { return (a.start || '').localeCompare(b.start || ''); });
+    if (!list.length) { wallDone(); return; }
+    if (document.getElementById('stx-events')) { wallDone(); return; }
+
+    var host = document.createElement('section');
+    host.id = 'stx-events';
+    host.className = 'stx-events';
+    host.setAttribute('aria-roledescription', 'carousel');
+    host.setAttribute('aria-label', S.kicker);
+    host.innerHTML =
+      '<div class="se-wrap">' +
+        '<div class="se-head">' +
+          '<div class="se-kicker">' + esc(S.kicker) + '</div>' +
+          '<h2>' + hl(S.title) + '</h2>' +
+          '<p>' + esc(S.sub) + '</p>' +
+        '</div>' +
+        '<div class="se-stage" tabindex="-1">' +
+          '<button type="button" class="se-arrow l" data-dir="-1" aria-label="' + esc(S.prev) + '">' + CHEV_L + '</button>' +
+          '<div class="se-viewport"><div class="se-track" id="se-track"></div></div>' +
+          '<button type="button" class="se-arrow r" data-dir="1" aria-label="' + esc(S.next) + '">' + CHEV_R + '</button>' +
+        '</div>' +
+        '<div class="se-dots" id="se-dots"></div>' +
+        '<a class="se-all" href="' + esc(prefix + '/event') + '" data-track="all">' + esc(S.all) + CHEV_R + '</a>' +
+      '</div>';
+    anchor.parentNode.insertBefore(host, anchor.nextSibling);
+
+    var stage = host.querySelector('.se-stage');
+    var viewport = host.querySelector('.se-viewport');
+    var trackEl = host.querySelector('#se-track');
+    var dotsEl = host.querySelector('#se-dots');
+    var n = list.length;
+    var per = 1, gap = 24, w = 0, i = 0, loop = false, moving = false, timer = null, settleTimer = null;
+    var autoplay = !(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    var paused = false;
+    var real0 = 0;
+
+    function perView() {
+      var vw = viewport.clientWidth;
+      return vw >= 960 ? 3 : (vw >= 600 ? 2 : 1);
+    }
+    function real() { return ((i - per) % n + n) % n; }
+    function offset() { return per === 1 ? Math.round((viewport.clientWidth - w) / 2) : 0; }
+    function setX(animate) {
+      var x = -(i * (w + gap)) + offset();
+      if (!animate) {
+        trackEl.classList.add('se-nomove');
+        trackEl.style.transform = 'translate3d(' + x + 'px,0,0)';
+        void trackEl.offsetWidth;
+        trackEl.classList.remove('se-nomove');
+      } else {
+        trackEl.style.transform = 'translate3d(' + x + 'px,0,0)';
+      }
+    }
+    function render() {
+      per = perView();
+      gap = per === 1 ? 16 : 24;
+      var vw = viewport.clientWidth;
+      w = per === 1 ? Math.round(vw * 0.86) : Math.floor((vw - gap * (per - 1)) / per);
+      trackEl.style.setProperty('--w', w + 'px');
+      trackEl.style.setProperty('--gap', gap + 'px');
+      loop = n > per;
+      var html = '';
+      if (loop) {
+        for (var a = n - per; a < n; a++) { html += cardHtml(list[a], a); }
+        for (var b = 0; b < n; b++) { html += cardHtml(list[b], b); }
+        for (var c = 0; c < per; c++) { html += cardHtml(list[c], c); }
+        host.classList.remove('se-static');
+        trackEl.classList.remove('se-center');
+        i = per + real0;
+        setX(false);
+      } else {
+        for (var d = 0; d < n; d++) { html = html + cardHtml(list[d], d); }
+        host.classList.add('se-static');
+        trackEl.classList.add('se-center');
+        i = 0;
+      }
+      trackEl.innerHTML = html;
+      dots();
+    }
+    function dots() {
+      dotsEl.innerHTML = '';
+      if (!loop) { return; }
+      for (var k = 0; k < n; k++) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = k === real() ? 'on' : '';
+        b.setAttribute('aria-label', S.goto + ' ' + list[k].title);
+        (function (kk) {
+          b.addEventListener('click', function () {
+            if (moving) { return; }
+            var target = per + kk;
+            if (target === i) { return; }
+            moving = true; i = target; setX(true); updateDots(); armSettle(); restart();
+            track('events_carousel_nav', { dir: 'dot', position: kk });
+          });
+        })(k);
+        dotsEl.appendChild(b);
+      }
+    }
+    function updateDots() {
+      var r = real();
+      Array.prototype.forEach.call(dotsEl.querySelectorAll('button'), function (b, k) { b.classList.toggle('on', k === r); });
+    }
+    function settle() {
+      clearTimeout(settleTimer);
+      moving = false;
+      if (!loop) { return; }
+      if (i >= per + n) { i -= n; setX(false); }
+      else if (i < per) { i += n; setX(false); }
+    }
+    function armSettle() { clearTimeout(settleTimer); settleTimer = setTimeout(settle, 900); }
+    function go(delta, source) {
+      if (!loop || moving) { return; }
+      moving = true;
+      i += delta;
+      setX(true);
+      updateDots();
+      armSettle();
+      restart();
+      if (source) { track('events_carousel_nav', { dir: delta > 0 ? 'next' : 'prev', source: source }); }
+    }
+    trackEl.addEventListener('transitionend', function (e) { if (e.target === trackEl) { settle(); } });
+    function restart() {
+      clearInterval(timer);
+      if (autoplay && loop && !paused && !document.hidden) { timer = setInterval(function () { go(1); }, AUTOPLAY_MS); }
+    }
+    Array.prototype.forEach.call(host.querySelectorAll('.se-arrow'), function (a) {
+      a.addEventListener('click', function () { go(parseInt(a.getAttribute('data-dir'), 10), 'arrow'); });
+    });
+    stage.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowRight') { go(1, 'key'); e.preventDefault(); }
+      else if (e.key === 'ArrowLeft') { go(-1, 'key'); e.preventDefault(); }
+    });
+    host.addEventListener('mouseenter', function () { paused = true; clearInterval(timer); });
+    host.addEventListener('mouseleave', function () { paused = false; restart(); });
+    host.addEventListener('focusin', function () { paused = true; clearInterval(timer); });
+    host.addEventListener('focusout', function () { paused = false; restart(); });
+    document.addEventListener('visibilitychange', restart);
+    var sx = null, sy = null;
+    viewport.addEventListener('touchstart', function (e) { sx = e.touches[0].clientX; sy = e.touches[0].clientY; clearInterval(timer); }, { passive: true });
+    viewport.addEventListener('touchend', function (e) {
+      if (sx == null) { restart(); return; }
+      var dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy;
+      if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) { go(dx < 0 ? 1 : -1, 'swipe'); } else { restart(); }
+      sx = null; sy = null;
+    });
+    host.addEventListener('click', function (e) {
+      var a = e.target.closest ? e.target.closest('a') : null;
+      if (!a) { return; }
+      if (a.classList.contains('se-card')) {
+        track('events_carousel_click', { event_id: a.getAttribute('data-id'), position: parseInt(a.getAttribute('data-pos'), 10), title: (a.querySelector('h3') || {}).textContent });
+      } else if (a.getAttribute('data-track') === 'all') {
+        track('events_carousel_all', {});
+      }
+    });
+    var rt = null, lastPer = null;
+    window.addEventListener('resize', function () {
+      clearTimeout(rt);
+      rt = setTimeout(function () {
+        real0 = loop ? real() : 0;
+        var np = perView();
+        if (np !== lastPer) { render(); lastPer = np; }
+        else { var vw = viewport.clientWidth; gap = per === 1 ? 16 : 24; w = per === 1 ? Math.round(vw * 0.86) : Math.floor((vw - gap * (per - 1)) / per); trackEl.style.setProperty('--w', w + 'px'); trackEl.style.setProperty('--gap', gap + 'px'); if (loop) { setX(false); } }
+        restart();
+      }, 120);
+    });
+
+    render();
+    lastPer = per;
+    restart();
+
+    var seenView = false;
+    function onView() { if (seenView) { return; } seenView = true; track('events_carousel_view', { count: n, per_view: per }); }
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (entries) {
+        if (entries.some(function (en) { return en.isIntersecting; })) { onView(); io.disconnect(); }
+      }, { threshold: 0.25 });
+      io.observe(host);
+    } else { onView(); }
+    wallDone();
+  }
+
+  loadEvents(build);
+})();
+</script>
+<!-- ================ EINDE EVENTS CAROUSEL ================ -->
