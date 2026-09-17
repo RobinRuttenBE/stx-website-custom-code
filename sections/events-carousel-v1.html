@@ -20,7 +20,7 @@
      Plaats: direct na #o_wevent_event_main (volle breedte, alles
      gecentreerd), voor de footer. Niet in de Odoo editor.
 
-     BETA (nu aan): met BETA = true toont de carrousel alleen in een
+     BETA (nu uit, live voor iedereen sinds 17/09/2026): met BETA = true toont de carrousel alleen in een
      browser waar je een eventpagina ooit opende met #stxevents achter
      de URL (onthouden in localStorage). #stxevents-uit zet het weer uit.
      ?stxevents=1 / ?stxevents=0 werkt ook. Live zetten = BETA = false.
@@ -121,7 +121,7 @@
 <script>
 (function () {
   'use strict';
-  var BETA = true; // true = alleen zichtbaar na #stxevents (testmodus), false = live voor iedereen
+  var BETA = false; // true = alleen zichtbaar na #stxevents (testmodus), false = live voor iedereen (live sinds 17/09/2026)
   var BETA_KEY = 'stx_events_beta';
   var CACHE_KEY = 'stx_events_list_v1_';
   var CACHE_MIN = 15;
