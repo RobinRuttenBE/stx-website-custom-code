@@ -16,9 +16,16 @@
      - Afgelopen events staan niet in de standaardlijst van Odoo.
      - Meerdere pagina's van de lijst (?page=2 ...) worden meegenomen.
      - Lijst wordt 15 min in sessionStorage bewaard per taal.
+     - De lijst wordt ZONDER cookies opgehaald (credentials omit +
+       Accept-Language van de paginataal): ook een ingelogde admin
+       ziet dus exact wat een bezoeker ziet, nooit ongepubliceerde
+       events. Extra vangnet: badge 'Unpublished' wordt overgeslagen.
 
-     Plaats: direct na #o_wevent_event_main (volle breedte, alles
-     gecentreerd), voor de footer. Niet in de Odoo editor.
+     Plaats desktop (>= 992px): direct na #o_wevent_event_main (volle
+     breedte, alles gecentreerd), voor de footer. Mobiel/tablet
+     (< 992px, de zijbalk staat dan onder de tekst): als afgeronde band
+     in de rij, VOOR de zijbalk (locatie, organisator, delen), zodat de
+     carrousel meteen na de eventtekst komt. Niet in de Odoo editor.
 
      BETA (nu uit, live voor iedereen sinds 17/09/2026): met BETA = true toont de carrousel alleen in een
      browser waar je een eventpagina ooit opende met #stxevents achter
@@ -98,8 +105,11 @@
   .stx-events .se-all:hover { border-color: var(--purple); color: var(--purple); }
   .stx-events .se-all svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
 
+  /* mobiel/tablet: in de rij voor de zijbalk, als afgeronde band */
+  .stx-events.se-inrow { flex: 0 0 100%; width: 100%; max-width: 100%; border-radius: 18px; margin: 18px 0 10px; padding: 40px 0 34px; }
   @media (max-width: 760px) {
     .stx-events { padding: 40px 0 36px; }
+    .stx-events.se-inrow { padding: 32px 0 26px; margin: 12px 0 6px; }
     .stx-events .se-head { margin-bottom: 18px; }
     .stx-events .se-head h2 { font-size: 24px; }
     .stx-events .se-head p { font-size: 14.5px; }
@@ -123,9 +133,10 @@
   'use strict';
   var BETA = false; // true = alleen zichtbaar na #stxevents (testmodus), false = live voor iedereen (live sinds 17/09/2026)
   var BETA_KEY = 'stx_events_beta';
-  var CACHE_KEY = 'stx_events_list_v1_';
+  var CACHE_KEY = 'stx_events_list_v2_';
   var CACHE_MIN = 15;
   var SOLD_OUT = ['sold out', 'uitverkocht', 'complet', 'ausverkauft'];
+  var UNPUBLISHED = ['unpublished', 'niet gepubliceerd', 'non publié', 'non publie', 'unveröffentlicht', 'nicht veröffentlicht'];
   var AUTOPLAY_MS = 5000;
 
   function wallDone() { if (window.stxLoadwallHide) { window.stxLoadwallHide(); } }
@@ -167,6 +178,7 @@
   var lang = m ? (m[1] === 'en_gb' ? 'en' : m[1]) : 'nl';
   var prefix = m ? '/' + seg : '';
   var LOCALE = { nl: 'nl-BE', en: 'en-GB', fr: 'fr-FR', de: 'de-DE' }[lang] || 'en-GB';
+  var ACCEPT = { nl: 'nl-BE,nl;q=0.9', en: 'en-GB,en;q=0.9', fr: 'fr-FR,fr;q=0.9', de: 'de-DE,de;q=0.9' }[lang] || 'en-GB,en;q=0.9';
 
   var T = {
     nl: { kicker: 'Workshops & events', title: 'Ontdek onze |andere workshops| en events', sub: 'Van Start Your Balloon Business tot technische masterclasses met de beste artiesten van Europa. Kies je volgende datum.', cta: 'Tickets kopen', all: 'Bekijk alle workshops en events', prev: 'Vorige', next: 'Volgende', goto: 'Ga naar' },
@@ -195,13 +207,18 @@
   }
 
   /* ---- EVENTLIJST OPHALEN (same-origin, Odoo's eigen /event pagina) ---- */
-  function isSoldOut(art) {
+  function hasBadge(art, words) {
     var nodes = art.querySelectorAll('.o_record_cover_container span.position-absolute, small.fw-bold, .badge, .o_wevent_badge');
     for (var k = 0; k < nodes.length; k++) {
       var t = (nodes[k].textContent || '').replace(/\s+/g, ' ').trim().toLowerCase();
-      if (SOLD_OUT.indexOf(t) >= 0) { return true; }
+      if (words.indexOf(t) >= 0) { return true; }
     }
     return false;
+  }
+  function isSoldOut(art) { return hasBadge(art, SOLD_OUT); }
+  function isUnpublished(art) {
+    if (/unpublished/i.test(art.className || '')) { return true; }
+    return hasBadge(art, UNPUBLISHED);
   }
   function parseList(html) {
     var doc = new DOMParser().parseFromString(html, 'text/html');
@@ -232,7 +249,7 @@
         month: monthEl ? monthEl.textContent.trim() : '',
         day: dayEl ? dayEl.textContent.trim() : '',
         start: startEl ? startEl.getAttribute('content') : '',
-        place: place, soldOut: isSoldOut(art)
+        place: place, soldOut: isSoldOut(art), unpublished: isUnpublished(art)
       });
     });
     var pages = [];
@@ -243,7 +260,9 @@
     return { events: out, pages: pages };
   }
   function fetchText(url) {
-    return fetch(url, { credentials: 'same-origin' }).then(function (r) {
+    /* Zonder cookies: Odoo geeft dan de publieke lijst (alleen gepubliceerde events),
+       ook als je als admin ingelogd bent. Accept-Language houdt de taal van de pagina. */
+    return fetch(url, { credentials: 'omit', headers: { 'Accept-Language': ACCEPT } }).then(function (r) {
       if (!r.ok) { throw new Error('HTTP ' + r.status); }
       return r.text();
     });
@@ -313,7 +332,7 @@
   function build(events) {
     var seen = {};
     var list = events.filter(function (ev) {
-      if (!ev || !ev.title || !ev.href || ev.soldOut) { return false; }
+      if (!ev || !ev.title || !ev.href || ev.soldOut || ev.unpublished) { return false; }
       if (currentId && String(ev.id) === String(currentId)) { return false; }
       if (seen[ev.id]) { return false; }
       seen[ev.id] = true;
@@ -342,7 +361,20 @@
         '<div class="se-dots" id="se-dots"></div>' +
         '<a class="se-all" href="' + esc(prefix + '/event') + '" data-track="all">' + esc(S.all) + CHEV_R + '</a>' +
       '</div>';
-    anchor.parentNode.insertBefore(host, anchor.nextSibling);
+    /* Plaatsing: desktop na de hoofdsectie (volle breedte); smaller dan 992px (Bootstrap lg,
+       de zijbalk staat dan onder de tekst) in de rij voor de zijbalk. */
+    var aside = document.getElementById('o_wevent_event_main_sidebar');
+    function place() {
+      var narrow = window.innerWidth < 992 && aside && aside.parentNode;
+      if (narrow) {
+        if (host.parentNode !== aside.parentNode || host.nextElementSibling !== aside) { aside.parentNode.insertBefore(host, aside); }
+        host.classList.add('se-inrow');
+      } else {
+        if (host.parentNode !== anchor.parentNode || host.previousElementSibling !== anchor) { anchor.parentNode.insertBefore(host, anchor.nextSibling); }
+        host.classList.remove('se-inrow');
+      }
+    }
+    place();
 
     var stage = host.querySelector('.se-stage');
     var viewport = host.querySelector('.se-viewport');
@@ -356,7 +388,7 @@
 
     function perView() {
       var vw = viewport.clientWidth;
-      return vw >= 960 ? 3 : (vw >= 600 ? 2 : 1);
+      return vw >= 960 ? 3 : (vw >= 540 ? 2 : 1);
     }
     function real() { return ((i - per) % n + n) % n; }
     function offset() { return per === 1 ? Math.round((viewport.clientWidth - w) / 2) : 0; }
@@ -478,6 +510,7 @@
       clearTimeout(rt);
       rt = setTimeout(function () {
         real0 = loop ? real() : 0;
+        place();
         var np = perView();
         if (np !== lastPer) { render(); lastPer = np; }
         else { var vw = viewport.clientWidth; gap = per === 1 ? 16 : 24; w = per === 1 ? Math.round(vw * 0.86) : Math.floor((vw - gap * (per - 1)) / per); trackEl.style.setProperty('--w', w + 'px'); trackEl.style.setProperty('--gap', gap + 'px'); if (loop) { setX(false); } }
