@@ -35,10 +35,11 @@
      Alleen voor ingelogde accounts (Odoo weigert cart-calls van
      bezoekers). Niet in de Odoo editor.
 
-     BETA: met BETA = true toont de kaart alleen in een browser waar je
-     de winkelmandpagina ooit opende met #stxupload achter de URL
-     (onthouden in localStorage). #stxupload-uit zet het weer uit.
-     ?stxupload=1 / ?stxupload=0 werkt ook. Live zetten = BETA = false.
+     LIVE sinds 21/09/2026 (BETA = false): de kaart staat er voor elk
+     ingelogd account. Terug in testmodus = BETA = true, dan is de kaart
+     alleen zichtbaar in een browser waar de winkelmandpagina ooit met
+     #stxupload achter de URL geopend werd (onthouden in localStorage),
+     #stxupload-uit zet het weer uit, ?stxupload=1 / ?stxupload=0 ook.
 
      Excel wordt gelezen met SheetJS (cdnjs), pas geladen als er een
      .xlsx/.xls gekozen wordt. CSV heeft geen bibliotheek nodig.
@@ -137,7 +138,7 @@
 <div class="stx-upl" id="stx-upl" hidden>
   <div class="su-head">
     <div>
-      <span class="su-kicker" data-k="kicker"></span><span class="su-beta">beta</span>
+      <span class="su-kicker" data-k="kicker"></span>
       <h3><span class="hl" data-k="title"></span></h3>
       <p class="su-lede" data-k="lede"></p>
     </div>
@@ -178,7 +179,7 @@
 <script>
 (function () {
   'use strict';
-  var BETA = true; // true = alleen zichtbaar na #stxupload (testmodus), false = live voor iedereen
+  var BETA = false; // true = alleen zichtbaar na #stxupload (testmodus), false = live voor iedereen
   var BETA_KEY = 'stx_upload_beta';
   var RESULT_KEY = 'stx_upload_result';
   var SEARCH_URL = '/en_GB/website/snippet/autocomplete';
