@@ -17,8 +17,10 @@ Playwright komt uit `stx-tools/node_modules` (of zet `STX_PLAYWRIGHT` naar een a
 - `/en_GB/website/snippet/autocomplete` antwoordt uit `autocomplete-fixture.json`: echte antwoorden van
   de live shop, opgehaald op 2026-09-17 voor de 108 codes uit `example-order.csv` plus een paar extra.
   Term `MULTI1` is verzonnen en geeft twee prefix-treffers, om de keuzelijst te testen.
-- `/website_sale/get_combination_info` geeft een variant-id terug, `/shop/cart/add` bevestigt, behalve
-  voor template 3773 (N160080): die faalt expres, zodat het foutpad getest wordt.
+- `/website_sale/get_combination_info` geeft een variant-id terug. `/shop/cart/add` gedraagt zich als de
+  echte shop: het **telt op** bij wat er al op de regel staat en geeft `quantity`, `cart_quantity` en het
+  regel-id in `notification_info.lines` terug. `/shop/cart/update` zet een exact aantal. Template 3773
+  (N160080) faalt expres, zodat het foutpad getest wordt.
 
 ## Wat het controleert
 
@@ -26,6 +28,9 @@ Beta-schakelaar (aan via `#stxupload`, uit via `#stxupload-uit`), niets tonen vo
 plaatsing boven de winkelmand, de vier talen, het inlezen van CSV, geplakte tekst en xlsx, samenvoegen van
 dubbele codes, koprij en rommelregels overslaan, de vier matchstatussen, aantallen die als verpakkingen
 doorgaan, de keuzelijst bij meerdere treffers, en de resultaatmelding die een herlaadbeurt overleeft.
+
+En sinds 21/09/2026: het aantal uit het bestand is ook het aantal dat in het mandje staat. Een tweede
+upload van een product dat er al in zit telt niet op maar corrigeert de regel via `/shop/cart/update`.
 
 ## example-order.csv
 

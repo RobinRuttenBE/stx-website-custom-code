@@ -10,7 +10,16 @@ const FIX = JSON.parse(fs.readFileSync(path.join(__dirname, 'autocomplete-fixtur
 const OUT = __dirname;
 
 let cartCalls = [];
+let updateCalls = [];
 let comboCalls = 0;
+// Fake Odoo cart. /shop/cart/add ADDS to what is already on the line (that is what the live shop
+// does, tested 21/09/2026) and /shop/cart/update sets an exact quantity. The section has to end up
+// with the quantity from the file, whatever was in the cart before.
+let fakeCart = {};   // line_id -> { tid, qty }
+let lineByTid = {};  // template id -> line_id
+let nextLineId = 1000;
+function cartTotal() { return Object.keys(fakeCart).reduce((a, k) => a + fakeCart[k].qty, 0); }
+function cartQtyOf(tid) { const lid = lineByTid[tid]; return lid ? fakeCart[lid].qty : 0; }
 function readBody(req) { return new Promise(r => { let b = ''; req.on('data', c => b += c); req.on('end', () => r(b)); }); }
 
 function cartPage(lang, loggedIn) {
@@ -47,7 +56,22 @@ const server = http.createServer(async (req, res) => {
       return res.end(JSON.stringify({ jsonrpc: '2.0', id: 1, result: FIX[term] || { results_count: 0, results: [] } }));
     }
     if (u.pathname === '/website_sale/get_combination_info') { comboCalls++; return res.end(JSON.stringify({ jsonrpc: '2.0', id: 1, result: { product_id: body.params.product_template_id * 10, price: 1 } })); }
-    if (u.pathname === '/shop/cart/add') { cartCalls.push(body.params); if (body.params.product_template_id === 3773) return res.end(JSON.stringify({ jsonrpc: '2.0', id: 1, error: { message: 'boom' } })); return res.end(JSON.stringify({ jsonrpc: '2.0', id: 1, result: { cart_quantity: cartCalls.length } })); }
+    if (u.pathname === '/shop/cart/add') {
+      cartCalls.push(body.params);
+      const tid = body.params.product_template_id;
+      if (tid === 3773) return res.end(JSON.stringify({ jsonrpc: '2.0', id: 1, error: { message: 'boom' } }));
+      let lid = lineByTid[tid];
+      if (!lid) { lid = ++nextLineId; lineByTid[tid] = lid; fakeCart[lid] = { tid, qty: 0 }; }
+      fakeCart[lid].qty += body.params.quantity;
+      return res.end(JSON.stringify({ jsonrpc: '2.0', id: 1, result: { quantity: fakeCart[lid].qty, cart_quantity: cartTotal(), notification_info: { warning: '', lines: [{ id: lid, quantity: fakeCart[lid].qty, name: 'x' }] } } }));
+    }
+    if (u.pathname === '/shop/cart/update') {
+      updateCalls.push(body.params);
+      const lid = body.params.line_id;
+      const before = fakeCart[lid] ? fakeCart[lid].qty : 0;
+      if (fakeCart[lid]) fakeCart[lid].qty = body.params.quantity;
+      return res.end(JSON.stringify({ jsonrpc: '2.0', id: 1, result: { line_id: lid, quantity: body.params.quantity, added_qty: body.params.quantity - before, cart_quantity: cartTotal() } }));
+    }
   }
   res.statusCode = 404; res.end('nope');
 });
@@ -98,6 +122,9 @@ function assert(c, msg) { if (!c) { console.error('FAIL', msg); process.exitCode
   const resultTxt = await page.textContent('#su-lastresult'); console.log('   result:', resultTxt.trim());
   assert(cartCalls.length === 108, '108 cart calls (' + cartCalls.length + ')');
   assert(cartCalls.some(c => c.quantity === 440), 'quantity passed through as packs (440 line)');
+  const c440 = cartCalls.find(c => c.quantity === 440);
+  assert(cartQtyOf(c440.product_template_id) === 440, 'cart holds exactly 440 for that product (' + cartQtyOf(c440.product_template_id) + ')');
+  assert(updateCalls.length === 0, 'empty cart: no correction needed (' + updateCalls.length + ' updates)');
   assert(resultTxt.includes('107 regels') && resultTxt.includes('N160080'), 'result: 107 added, N160080 failed (mocked cart error)');
   await page.screenshot({ path: path.join(OUT, 'done-nl.png'), fullPage: true });
   await page.waitForURL(/\/shop\/cart$/, { timeout: 8000 });
@@ -114,9 +141,17 @@ function assert(c, msg) { if (!c) { console.error('FAIL', msg); process.exitCode
   assert(rows2.length === 4 && rows2[0] === 'R12005:5:ok' && rows2[1] === 'N260080:1:ok' && rows2[2] === 'FOOBAR1:4:no' && rows2[3] === 'MULTI1:9:multi', 'paste: merged, header skipped, junk skipped, unknown red, ambiguous dropdown');
   assert((await page.textContent('#su-add')).trim() === '3 regels in winkelmandje', 'paste: 3 addable');
   await page.selectOption('#su-rows tr.multi select', '1');
-  cartCalls = []; await page.click('#su-add');
+  const qtyBefore = {}; Object.keys(lineByTid).forEach(tid => { qtyBefore[tid] = cartQtyOf(Number(tid)); });
+  cartCalls = []; updateCalls = []; await page.click('#su-add');
   await page.waitForFunction(() => !document.querySelector('#su-lastresult').hidden && document.querySelector('#su-lastresult').textContent.includes('3 regels'), null, { timeout: 20000 });
   assert(cartCalls.some(c => c.product_template_id === 222 && c.quantity === 9), 'dropdown choice (Something B, tid 222) went to the cart');
+  // The bug Robin hit: /shop/cart/add sums, so a product that was already in the cart ended up too high.
+  const reAdded = cartCalls.filter(c => qtyBefore[c.product_template_id] > 0);
+  assert(reAdded.length >= 1, 'at least one product was already in the cart from the 108-line run (' + reAdded.length + ')');
+  const wrong = cartCalls.filter(c => cartQtyOf(c.product_template_id) !== c.quantity)
+    .map(c => c.product_template_id + ': asked ' + c.quantity + ', cart has ' + cartQtyOf(c.product_template_id));
+  assert(wrong.length === 0, 'every line ends at the quantity from the file, not added on top: ' + (wrong.join(' | ') || 'all correct'));
+  assert(updateCalls.length === reAdded.length, 'each line that was already in the cart got a /shop/cart/update correction (' + updateCalls.length + ' updates for ' + reAdded.length + ')');
   await page.waitForURL(/\/shop\/cart$/, { timeout: 8000 }); await page.waitForSelector('#stx-upl:not([hidden])');
   // 7. xlsx: build one in the browser with SheetJS and upload it
   const xp = await ctx.newPage();

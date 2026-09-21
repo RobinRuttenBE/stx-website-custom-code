@@ -1,6 +1,6 @@
 <!-- ============================================================
      STX EU / INSPIRATION + TOOLS SECTIE (v18, meertalig nl/en/de/fr)
-     v18 (16/09/2026): derde tool op /tools, de Colour Tool (#colour):
+     v18 (16/09/2026): derde tool op /tools, de Colour Matching Tool (#colour):
      kies een kleur (RGB, foto, colour chart), dichtstbijzijnde Sempertex-
      ballonnen, drie palettes met shoplinks, Save/Copy/Add to cart (zakken
      5, 12 en 18 inch via root.stxShop). Ballonfotos (assets/balloons) zijn
@@ -8,7 +8,7 @@
      Sinds 15/09/2026 draait dit bestand op twee paginas (loader: zelfde
      bestand, paden /inspiration, /inspiratie, /test-inspo EN /tools):
      - /inspiration: Tutorials, Colour Combinations, Downloads
-     - /tools: Double Stuffing Calculator (#calculator), Cost Calculator (#cost), Colour Tool (#colour)
+     - /tools: Double Stuffing Calculator (#calculator), Cost Calculator (#cost), Colour Matching Tool (#colour)
      Het pad bepaalt de views en het zijmenu (zie PAGINA bij de guard en de
      ROUTER). Een hash van de andere pagina stuurt door naar die pagina.
      v17: nieuwe view "Cost Calculator" (#cost). Teksten: I18N keys cost_* en cc_*.
@@ -744,7 +744,7 @@
         <a href="#colours" data-view="colours" data-i18n="nav_colours">Colour Combinations</a>
         <a href="#calculator" data-view="calculator" data-i18n="nav_calc">Double Stuffing Calculator</a>
         <a href="#cost" data-view="cost" data-i18n="nav_cost">Cost Calculator</a>
-        <a href="#colour" data-view="colour" data-i18n="nav_colour">Colour Tool</a>
+        <a href="#colour" data-view="colour" data-i18n="nav_colour">Colour Matching Tool</a>
         <a href="#downloads" data-view="downloads" data-i18n="nav_downloads">Download Inspiration</a>
       </nav>
 
@@ -1117,8 +1117,8 @@
           <div class="stx-ct" id="ct-root">
             <div class="ct-head">
               <div>
-                <div class="eyebrow" data-i18n="ct_eyebrow">Tools / Colour tool</div>
-                <h2 data-i18n="ct_h">Colour <span class="hl">tool</span></h2>
+                <div class="eyebrow" data-i18n="ct_eyebrow">Tools / Colour matching tool</div>
+                <h2 data-i18n="ct_h">Colour matching <span class="hl">tool</span></h2>
                 <p class="lede" data-i18n="ct_lede">Pick any colour, tap it in a photo or start from a Sempertex colour you know. You get the closest balloons and palettes that work, every one a real product.</p>
               </div>
               <button class="ct-pill" type="button" id="ct-open-saved" data-i18n="ct_btn_saved">Saved palettes</button>
@@ -1369,6 +1369,7 @@
 
     // -- 3. KLEURENPALETTEN (carousel) --
     palettes: [
+      {"img": "https://cdn.jsdelivr.net/gh/RobinRuttenBE/stx-website-custom-code@9080adeda32fb93cdb81d859f4bce022105f4757/assets/palettes/006-008-013-932.png", "title": {"nl": "Almond White, Candy Pink, Cosmo Pink, Aurora Green", "en": "Almond White, Candy Pink, Cosmo Pink, Aurora Green"}, "bullets": {"nl": ["Fashion Almond White 006", "Fashion Candy Pink 008", "Fashion Cosmo Pink 013", "Reflex Aurora Green 932"], "en": ["Fashion Almond White 006", "Fashion Candy Pink 008", "Fashion Cosmo Pink 013", "Reflex Aurora Green 932"]}},
       {"img": "https://cdn.jsdelivr.net/gh/RobinRuttenBE/stx-website-custom-code@eea390d417046c977d19d81ad1fddf0f10bbd6a8/assets/palettes/008-013-016-058.png", "title": {"nl": "Pink Ballerina", "en": "Pink Ballerina"}, "bullets": {"nl": ["Fashion Candy Pink 008", "Fashion Cosmo Pink 013", "Fashion Imperial Red 016", "Fashion Creamy Blush 058"], "en": ["Fashion Candy Pink 008", "Fashion Cosmo Pink 013", "Fashion Imperial Red 016", "Fashion Creamy Blush 058"]}},
       {"img": "https://cdn.jsdelivr.net/gh/RobinRuttenBE/stx-website-custom-code@af2532b66d19a114071110f6ecf87e9fc21a4134/assets/palettes/010-021-027-062-074.png", "title": {"nl": "Rosewood, Honey Yellow, Eucalyptus, Sunset Orange +1", "en": "Rosewood, Honey Yellow, Eucalyptus, Sunset Orange +1"}, "bullets": {"nl": ["Fashion Rosewood 010", "Fashion Honey Yellow 021", "Fashion Eucalyptus 027", "Fashion Sunset Orange 062", "Fashion Coffee 074"], "en": ["Fashion Rosewood 010", "Fashion Honey Yellow 021", "Fashion Eucalyptus 027", "Fashion Sunset Orange 062", "Fashion Coffee 074"]}},
       {"img": "https://cdn.jsdelivr.net/gh/RobinRuttenBE/stx-website-custom-code@af2532b66d19a114071110f6ecf87e9fc21a4134/assets/palettes/010-027-035-126-809.png", "title": {"nl": "Rosewood, Eucalyptus, Deep Teal, Green Tea +1", "en": "Rosewood, Eucalyptus, Deep Teal, Green Tea +1"}, "bullets": {"nl": ["Fashion Rosewood 010", "Fashion Eucalyptus 027", "Fashion Deep Teal 035", "Pastel Dusk Green Tea 126", "Silk Pink Blossom 809"], "en": ["Fashion Rosewood 010", "Fashion Eucalyptus 027", "Fashion Deep Teal 035", "Pastel Dusk Green Tea 126", "Silk Pink Blossom 809"]}},
@@ -1478,9 +1479,9 @@
       calc_cart_tip: '1 bag of each, 12 inch, 50 pieces per bag',
       dl_items: 'items',
       nav_cost: 'Cost Calculator',
-      nav_colour: 'Colour Tool',
-      ct_eyebrow: 'Tools / Colour tool',
-      ct_h: 'Colour <span class="hl">tool</span>',
+      nav_colour: 'Colour Matching Tool',
+      ct_eyebrow: 'Tools / Colour matching tool',
+      ct_h: 'Colour matching <span class="hl">tool</span>',
       ct_lede: 'Pick any colour, tap it in a photo or start from a Sempertex colour you know. You get the closest balloons and palettes that work, every one a real product.',
       ct_btn_saved: 'Saved palettes',
       ct_pick_h: 'Give me a colour',
@@ -1557,7 +1558,7 @@
       cc_t_setup_s: 'Including waiting for the room',
       cc_t_admin: 'Client contact and admin',
       cc_t_admin_s: 'Calls, messages, this quote',
-      cc_travel_note: 'about {h} h on the road, plus {r} per km',
+      cc_travel_note: '{r} per km, time on the road is not billed',
       cc_overhead_note: '{m} per month over {hm} h = {r} per hour',
       cc_fin_h: 'Final price',
       cc_fin_hint: 'Costs plus profit. 1.30 to 1.50 is the usual range for decoration work.',
@@ -1719,9 +1720,9 @@
       calc_cart_tip: 'Je 1 Beutel, 12 Zoll, 50 St\u00fcck pro Beutel',
       dl_items: 'Dateien',
       nav_cost: 'Kostenrechner',
-      nav_colour: 'Farbtool',
-      ct_eyebrow: 'Tools / Farbtool',
-      ct_h: 'Farb<span class="hl">tool</span>',
+      nav_colour: 'Farbabgleich-Tool',
+      ct_eyebrow: 'Tools / Farbabgleich-Tool',
+      ct_h: 'Farbabgleich-<span class="hl">Tool</span>',
       ct_lede: 'Wähle irgendeine Farbe, tippe sie in einem Foto an oder starte mit einer Sempertex-Farbe, die du kennst. Du bekommst die nächsten Ballons und Paletten, die funktionieren, jeder ein echtes Produkt.',
       ct_btn_saved: 'Gespeicherte Paletten',
       ct_pick_h: 'Gib mir eine Farbe',
@@ -1798,7 +1799,7 @@
       cc_t_setup_s: 'Inklusive Wartezeit auf den Raum',
       cc_t_admin: 'Kundenkontakt und Verwaltung',
       cc_t_admin_s: 'Anrufe, Nachrichten, dieses Angebot',
-      cc_travel_note: 'etwa {h} h unterwegs, plus {r} pro km',
+      cc_travel_note: '{r} pro km, die Fahrzeit wird nicht berechnet',
       cc_overhead_note: '{m} pro Monat auf {hm} h = {r} pro Stunde',
       cc_fin_h: 'Endpreis',
       cc_fin_hint: 'Kosten plus Gewinn. 1,30 bis 1,50 ist bei Dekorationsarbeit \u00fcblich.',
@@ -1960,9 +1961,9 @@
       calc_cart_tip: '1 sachet chacune, 12 pouces, 50 pi\u00e8ces par sachet',
       dl_items: '\u00e9l\u00e9ments',
       nav_cost: 'Calculateur de co\u00fbts',
-      nav_colour: 'Outil couleurs',
-      ct_eyebrow: 'Outils / Outil couleurs',
-      ct_h: 'Outil <span class="hl">couleurs</span>',
+      nav_colour: 'Outil de correspondance couleurs',
+      ct_eyebrow: 'Outils / Outil de correspondance couleurs',
+      ct_h: 'Outil de correspondance <span class="hl">couleurs</span>',
       ct_lede: 'Choisissez n’importe quelle couleur, touchez-la dans une photo ou partez d’une couleur Sempertex que vous connaissez. Vous obtenez les ballons les plus proches et des palettes qui fonctionnent, chacun un vrai produit.',
       ct_btn_saved: 'Palettes enregistrées',
       ct_pick_h: 'Donnez-moi une couleur',
@@ -2039,7 +2040,7 @@
       cc_t_setup_s: 'Attente de la salle comprise',
       cc_t_admin: 'Contact client et administration',
       cc_t_admin_s: 'Appels, messages, ce devis',
-      cc_travel_note: 'environ {h} h sur la route, plus {r} par km',
+      cc_travel_note: '{r} par km, le temps de route n’est pas facturé',
       cc_overhead_note: '{m} par mois sur {hm} h = {r} par heure',
       cc_fin_h: 'Prix final',
       cc_fin_hint: 'Co\u00fbts plus b\u00e9n\u00e9fice. 1,30 \u00e0 1,50 est la fourchette habituelle en d\u00e9coration.',
@@ -2201,9 +2202,9 @@
       calc_cart_tip: '1 zakje van elk, 12 inch, 50 stuks per zakje',
       dl_items: 'items',
       nav_cost: 'Kostprijscalculator',
-      nav_colour: 'Kleurtool',
-      ct_eyebrow: 'Tools / Kleurtool',
-      ct_h: 'Kleur<span class="hl">tool</span>',
+      nav_colour: 'Kleurmatch-tool',
+      ct_eyebrow: 'Tools / Kleurmatch-tool',
+      ct_h: 'Kleurmatch-<span class="hl">tool</span>',
       ct_lede: 'Kies eender welke kleur, tik hem aan in een foto of vertrek van een Sempertex-kleur die je kent. Je krijgt de dichtstbijzijnde ballonnen en palettes die werken, elk een echt product.',
       ct_btn_saved: 'Opgeslagen palettes',
       ct_pick_h: 'Geef me een kleur',
@@ -2280,7 +2281,7 @@
       cc_t_setup_s: 'Inclusief wachten op de zaal',
       cc_t_admin: 'Klantcontact en administratie',
       cc_t_admin_s: 'Bellen, berichten, deze offerte',
-      cc_travel_note: 'ongeveer {h} u onderweg, plus {r} per km',
+      cc_travel_note: '{r} per km, rijtijd wordt niet aangerekend',
       cc_overhead_note: '{m} per maand over {hm} u = {r} per uur',
       cc_fin_h: 'Eindprijs',
       cc_fin_hint: 'Kosten plus winst. 1,30 tot 1,50 is gebruikelijk voor decoratiewerk.',
@@ -3155,7 +3156,6 @@
   var CC_CATALOG = [];
   var catalogLive = false;
   var CATALOG = CC_CATALOG;
-  var TRAVEL_SPEED = 50; // km/h used to turn km into hours on the road
 
   /* ---------------- state ---------------- */
   var settings = load('stx_quote_settings', DEFAULT_SETTINGS);
@@ -3209,11 +3209,11 @@
     var waste = matBase * clamp(num(st.waste), 0, 50) / 100;
     var matSub = matBase + waste;
     var hoursWork = st.time.reduce(function (a, r) { return a + num(r.hours); }, 0);
-    var travelH = num(st.travelKm) / TRAVEL_SPEED;
+    // Time on the road is not billed: only the kilometres count, at the rate per km.
     var kmCost = num(st.travelKm) * num(se.km);
-    var labour = (hoursWork + travelH) * num(se.hourly);
-    var travelCost = kmCost + travelH * num(se.hourly);
-    var hours = hoursWork + travelH;
+    var labour = hoursWork * num(se.hourly);
+    var travelCost = kmCost;
+    var hours = hoursWork;
     var timeCost = labour + kmCost;
     // overhead follows the hours on this job: monthly fixed costs / hours on jobs per month = rate per hour
     var ohRate = num(se.hoursMonth) > 0 ? num(se.overhead) / num(se.hoursMonth) : 0;
@@ -3232,7 +3232,7 @@
     var keep = price - expenses;
     var hourly = hours > 0 ? keep / hours : 0;
     return {
-      matBase: matBase, waste: waste, matSub: matSub, hoursWork: hoursWork, travelH: travelH, travelCost: travelCost, hours: hours,
+      matBase: matBase, waste: waste, matSub: matSub, hoursWork: hoursWork, travelCost: travelCost, hours: hours,
       kmCost: kmCost, labour: labour, timeCost: timeCost, ohRate: ohRate, overheadDefault: overheadDefault, overhead: overhead, timeSub: timeSub, cost: cost, price: price,
       priceIncl: price * (1 + num(se.vat) / 100), margin: margin, expenses: expenses, keep: keep, profit: keep, hourly: hourly
     };
@@ -3628,7 +3628,7 @@
     $('cc-mat-sub').textContent = money(c.matSub);
     $('cc-travel-rate').textContent = money(settings.km) + '/km';
     $('cc-travel-total').textContent = money(c.travelCost);
-    $('cc-travel-note').textContent = t('travel_note', { h: c.travelH.toFixed(1).replace('.0', ''), r: money(settings.km) });
+    $('cc-travel-note').textContent = t('travel_note', { r: money(settings.km) });
     var hoursTxt = (Math.round(c.hours * 10) / 10) + ' h';
     $('cc-overhead-note').textContent = t('overhead_note', { m: money(settings.overhead), hm: settings.hoursMonth, r: money(c.ohRate) });
     $('cc-overhead-h').textContent = hoursTxt;
