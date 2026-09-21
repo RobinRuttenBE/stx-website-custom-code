@@ -253,11 +253,15 @@
     '  --purple-bg: ' + P.brandLight + ';',
     '  --dark: ' + P.brandDark + ';',
     '  --yellow: ' + P.accent + ';',
+    '  --warn: ' + P.brand + ';',
     '  --rule: rgba(0,0,0,.12);',
     '  --glow: 0 10px 28px rgba(0,0,0,.18);',
     '  --glow-y: 0 8px 22px rgba(0,0,0,.18);',
     '  font-family: ' + P.font + ';',
     '}',
+    /* De balk met de benaderings-melding staat met een vaste Sempertex
+       lila in het sectiebestand, niet op een variabele. Hier overschreven. */
+    '.stx-partner-page .stx-insp .calc-notice { background: ' + P.brandLight + ' !important; }',
 
     /* -- Partner header -- */
     '.stx-pt-bar { font-family: ' + P.font + '; background: #fff; border-bottom: 1px solid rgba(0,0,0,.1); }',
