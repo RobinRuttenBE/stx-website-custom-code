@@ -1,0 +1,453 @@
+<!-- ============================================================
+     STX EU / PARTNER CALCULATOR (white-label skin) v1
+     Bestand hoort in de repo onder /sections/ en wordt door de
+     stx-loader geladen op elk pad dat eindigt op /tools EN begint
+     met /partner/<slug>/ (zie PATH_RE onderaan de CONFIG).
+     NIET los in Odoo plakken.
+
+     WAT DIT DOET
+     Dit bestand maakt GEEN tweede calculator. Het is een SKIN.
+     De Odoo pagina /partner/liragram/tools eindigt op "/tools",
+     dus inspiration-v18.html laadt daar vanzelf (endsWith-guard,
+     isTools = true). Dit bestand doet er drie dingen bovenop:
+       1. Verbergt alle Sempertex chrome (header, menu, footer,
+          zijmenu, Cost Calculator en Colour Matching Tool).
+       2. Zet de huisstijl van de distributeur erover heen
+          (logo, kleuren, font) + eigen header en footer.
+       3. Vervangt de Sempertex winkelmandknop door een
+          bestelblok dat terugverwijst naar de webshop van de
+          distributeur, met de twee gekozen kleurcodes erbij.
+
+     MAINTENANCE = 1 BESTAND
+     De calculator zelf blijft inspiration-v18.html. Een fix of
+     nieuwe kleur daar geldt meteen voor elke partnerpagina.
+     Een partner toevoegen = 1 blok in PARTNERS hieronder, geen
+     nieuwe code.
+
+     TAAL
+     De calculator kent nl/en/de/fr, geen Spaans. Dit bestand legt
+     er per partner een vertaling overheen: strings hieronder
+     overschrijft elke zichtbare tekst in de calculator-view, dus
+     de basistaal van de pagina maakt niet uit. Kleurnamen,
+     finishnamen en de naam van elke reeks blijven Engels: dat zijn
+     de officiele Sempertex benamingen die ook op de doos en in de
+     shop staan.
+
+     PUBLICEREN: zolang Robin zelf test vanuit de backend mag de
+     pagina onuitgegeven blijven. Voor de demo naar Liragram moet
+     hij gepubliceerd zijn, anders krijgt Mayte een 404. Uit het
+     menu houden + de noindex hieronder doet hetzelfde werk zonder
+     de link te breken.
+     ============================================================ -->
+
+<script>
+(function () {
+  'use strict';
+
+  /* ==========================================================
+     CONFIG: DIT IS JOUW DEEL.
+     Een partner toevoegen = een blok erbij, sleutel = de <slug>
+     uit het pad /partner/<slug>/tools.
+     ========================================================== */
+  var PARTNERS = {
+
+    liragram: {
+      name: 'Liragram',
+
+      /* -- HUISSTIJL --
+         Logo staat hier als data-URI: vrijgemaakte achtergrond,
+         bijgesneden, 137x100, 5,6 KB. Zo hangen we niet aan hun
+         server (hotlink) en hoeft er geen assethash bijgehouden
+         te worden. Nieuw logo = dit veld vervangen.
+         Kleuren zijn rechtstreeks uit het logo geprikt:
+           roze   #fc3995  (de bel en de naam)
+           geel   #ffcf03  (regenboog en stip)
+           groen  #8ad000  (regenboog en stip)
+           blauw  #00b7f2  (regenboog en stippen)
+           tekst  #008ad9  ("The Party People")
+         Roze is de primaire, geel de highlight, en als donkere
+         tekstkleur een verdiepte versie van hun eigen blauw. */
+      logo: 'data:image/png;base64,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',
+      logoHeight: 50,
+      homeUrl: 'https://liragram.com/es/index.html',
+      shopUrl: 'https://liragram.com/es/globos-latex-sempertex-36/',
+
+      brand: '#fc3995',        // primaire kleur (knoppen, accenten)
+      brandDark: '#0e3d5c',    // donkere tekstkleur
+      brandLight: '#ffeaf3',   // lichte vlakken
+      accent: '#ffcf03',       // highlight achter woorden
+      font: "'Nunito', 'Quicksand', 'Helvetica Neue', Helvetica, Arial, sans-serif",
+      /* Afgerond, speels, ligt dicht bij hun logoletter. Laat
+         fontUrl leeg als een partner gewoon systeemfonts wil. */
+      fontUrl: 'https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap',
+
+      /* -- TAB EN FAVICON --
+         Zonder dit staat er "Tools | Sempertex Europe" in het
+         tabblad en hangt ons pictogram ernaast. favicon leeg laten
+         = het logo hierboven wordt gebruikt. */
+      pageTitle: 'Calculadora de double stuffing | Liragram',
+      favicon: '',
+
+      /* -- TAAL --
+         strings overschrijft elke tekst in de calculator-view.
+         Sleutel = de data-i18n naam in inspiration-v18.html. */
+      strings: {
+        calcp_eyebrow: 'Herramientas / Calculadora',
+        calcp_h: 'Calculadora de <span class="hl">double stuffing</span>',
+        calcp_lede: 'Elige un globo interior y uno exterior y mira el color resultante antes de inflar un solo globo.',
+        calc_inner: 'Globo interior',
+        calc_outer: 'Globo exterior',
+        calc_result: 'Resultado',
+        calc_lbl_inner: 'Interior',
+        calc_lbl_outer: 'Exterior',
+        calc_lbl_result: 'Resultado',
+        calc_swap: 'Intercambiar interior y exterior',
+        calc_note: 'Esta vista previa es una aproximacion. El color final depende del tamano de inflado, la luz y el acabado de los globos utilizados.'
+      },
+
+      /* -- HEADER / FOOTER -- */
+      backLabel: 'Volver a la tienda',
+      footerText: 'Herramienta desarrollada por Sempertex Europe para Liragram.',
+
+      /* -- BESTELBLOK ONDER DE CALCULATOR -- */
+      order: {
+        title: 'Pide estos globos en Liragram',
+        lead: 'Anota los codigos y busca los globos en la tienda. Necesitas una cuenta Liragram para ver precios y comprar.',
+        innerLabel: 'Interior',
+        outerLabel: 'Exterior',
+        mainBtn: 'Ver globos Sempertex',
+        copyBtn: 'Copiar codigos',
+        copiedBtn: 'Copiado',
+        sizesLabel: 'O ve directamente a la medida:',
+        /* TODO Robin: als Liragram een zoek-URL heeft (bv.
+           /es/buscador.html?texto=XXX) zet die dan in searchUrl,
+           met {q} als plaatshouder. Dan linken we rechtstreeks op
+           kleurcode en wordt dit pas echt sterk. Laat searchUrl
+           leeg als je die niet hebt: dan tonen we alleen de
+           categorieknoppen hieronder. */
+        searchUrl: '',
+        sizes: [
+          { label: 'R5 - 12,5 cm', url: 'https://liragram.com/es/r5-125cm-48/' },
+          { label: 'R9 - 22,5 cm', url: 'https://liragram.com/es/r9-225cm-544/' },
+          { label: 'R12 - 30 cm', url: 'https://liragram.com/es/r12-30cm-698/' },
+          { label: 'R18 stuffing', url: 'https://liragram.com/es/r18-stuffing-67/' }
+        ]
+      }
+    }
+
+    /* Volgende partner hier, zelfde vorm:
+    hahaentertainment: { name: 'Haha Entertainment', ... }
+    */
+  };
+  /* ================= EINDE CONFIG ================= */
+
+  /* Pad: /partner/<slug>/tools, met of zonder taalprefix. */
+  var PATH_RE = /^(?:\/(?:fr|de|en_gb))?\/partner\/([a-z0-9-]+)\/tools$/;
+
+  var path = (window.location.pathname || '/').toLowerCase().replace(/\/+$/, '');
+  var m = PATH_RE.exec(path);
+  if (!m) { return; }
+  var P = PARTNERS[m[1]];
+  if (!P) { return; }
+
+  /* Nooit draaien in de Odoo editor. */
+  function inEdit() {
+    return document.body.classList.contains('editor_enable')
+      || !!document.querySelector('.odoo-editor-editable')
+      || !!document.querySelector('#wrap.o_editable');
+  }
+  if (inEdit()) { return; }
+
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  /* Eigen tracking: GA4, GTM en PostHog als ze er zijn. */
+  function track(ev, params) {
+    try {
+      params = params || {};
+      params.partner = P.name;
+      params.page_section = 'partner_calculator';
+      if (typeof window.gtag === 'function') { window.gtag('event', ev, params); }
+      else if (window.dataLayer && window.dataLayer.push) { window.dataLayer.push(Object.assign({ event: ev }, params)); }
+      if (window.posthog && window.posthog.capture) { window.posthog.capture(ev, params); }
+    } catch (e) { /* tracking mag de pagina nooit breken */ }
+  }
+
+  /* ---------- 1. CHROME WEG + HUISSTIJL EROVER ---------- */
+  document.documentElement.classList.add('stx-partner');
+  document.body.classList.add('stx-partner');
+
+  /* Deze pagina hoort niet in Google: het is de tool van de partner. */
+  (function noindex() {
+    if (document.querySelector('meta[name="robots"][data-stx-partner]')) { return; }
+    var mt = document.createElement('meta');
+    mt.setAttribute('name', 'robots');
+    mt.setAttribute('content', 'noindex,nofollow');
+    mt.setAttribute('data-stx-partner', '1');
+    document.head.appendChild(mt);
+  })();
+
+  /* Tabblad: titel en pictogram van de partner. Odoo zet zelf
+     "<paginanaam> | Sempertex Europe" in de titel, dus die moet weg. */
+  if (P.pageTitle) {
+    document.title = P.pageTitle;
+    /* Odoo's website-code herschrijft de titel soms na het laden. */
+    setTimeout(function () { document.title = P.pageTitle; }, 400);
+  }
+  (function favicon() {
+    var href = P.favicon || P.logo;
+    if (!href) { return; }
+    var olds = document.querySelectorAll('link[rel~="icon"], link[rel="shortcut icon"], link[rel="apple-touch-icon"]');
+    for (var i = 0; i < olds.length; i++) {
+      if (olds[i].parentNode) { olds[i].parentNode.removeChild(olds[i]); }
+    }
+    var ic = document.createElement('link');
+    ic.rel = 'icon';
+    ic.href = href;
+    ic.setAttribute('data-stx-partner', '1');
+    document.head.appendChild(ic);
+  })();
+
+  if (P.fontUrl) {
+    var fl = document.createElement('link');
+    fl.rel = 'stylesheet';
+    fl.href = P.fontUrl;
+    document.head.appendChild(fl);
+  }
+
+  var css = document.createElement('style');
+  css.setAttribute('data-stx-partner', '1');
+  css.textContent = [
+    /* -- Sempertex chrome onzichtbaar -- */
+    'html.stx-partner header#top,',
+    'html.stx-partner #wrapwrap > header,',
+    'html.stx-partner .o_header_standard,',
+    'html.stx-partner .o_navbar_mobile,',
+    'html.stx-partner #top_menu_container,',
+    'html.stx-partner #wrapwrap > footer,',
+    'html.stx-partner footer#bottom,',
+    'html.stx-partner .o_footer,',
+    'html.stx-partner .o_livechat_button,',
+    'html.stx-partner .o_newsletter_popup,',
+    'html.stx-partner .o_scroll_button { display: none !important; }',
+    'html.stx-partner #wrap { padding: 0 !important; margin: 0 !important; min-height: 0 !important; }',
+    'html.stx-partner body { background: #fff; }',
+
+    /* -- Laadscherm in de kleur van de partner -- */
+    '#stx-loadwall .stx-spin { border-color: ' + P.brandLight + ' !important; border-top-color: ' + P.brand + ' !important; }',
+
+    /* -- Alleen de double stuffing calculator, geen zijmenu -- */
+    '.stx-partner-page .stx-insp .side { display: none !important; }',
+    '.stx-partner-page .stx-insp .layout { display: block !important; }',
+    '.stx-partner-page .stx-insp #view-cost,',
+    '.stx-partner-page .stx-insp #view-colour { display: none !important; }',
+    '.stx-partner-page .stx-insp .wrap { max-width: 1280px; padding-top: 8px; padding-bottom: 32px; }',
+
+    /* -- Huisstijl van de partner over de calculator heen -- */
+    '.stx-partner-page .stx-insp {',
+    '  --purple: ' + P.brand + ';',
+    '  --purple-light: ' + P.brandLight + ';',
+    '  --purple-bg: ' + P.brandLight + ';',
+    '  --dark: ' + P.brandDark + ';',
+    '  --yellow: ' + P.accent + ';',
+    '  --rule: rgba(0,0,0,.12);',
+    '  --glow: 0 10px 28px rgba(0,0,0,.18);',
+    '  --glow-y: 0 8px 22px rgba(0,0,0,.18);',
+    '  font-family: ' + P.font + ';',
+    '}',
+
+    /* -- Partner header -- */
+    '.stx-pt-bar { font-family: ' + P.font + '; background: #fff; border-bottom: 1px solid rgba(0,0,0,.1); }',
+    '.stx-pt-bar .stx-pt-in { max-width: 1280px; margin: 0 auto; padding: 14px clamp(14px,3vw,40px); display: flex; align-items: center; gap: 20px; }',
+    '.stx-pt-bar img { height: ' + P.logoHeight + 'px; width: auto; display: block; }',
+    '.stx-pt-back { margin-left: auto; font-size: 14px; font-weight: 700; text-decoration: none; color: ' + P.brandDark + '; border: 2px solid ' + P.brand + '; border-radius: 999px; padding: 8px 18px; transition: background .15s ease, color .15s ease; }',
+    '.stx-pt-back:hover { background: ' + P.brand + '; color: #fff; }',
+
+    /* -- Partner footer -- */
+    '.stx-pt-foot { font-family: ' + P.font + '; border-top: 1px solid rgba(0,0,0,.1); margin-top: 8px; }',
+    '.stx-pt-foot .stx-pt-in { max-width: 1280px; margin: 0 auto; padding: 22px clamp(14px,3vw,40px); font-size: 13px; opacity: .7; }',
+
+    /* -- Bestelblok -- */
+    '.stx-pt-order { font-family: ' + P.font + '; background: ' + P.brandLight + '; border: 2px solid ' + P.brand + '; border-radius: 12px; padding: clamp(20px,2.4vw,30px); margin-top: clamp(22px,2.6vw,34px); }',
+    '.stx-pt-order h3 { font-size: clamp(20px,2.2vw,28px); font-weight: 800; letter-spacing: -.01em; margin: 0 0 8px; color: ' + P.brandDark + '; }',
+    '.stx-pt-order p.stx-pt-lead { font-size: 15px; margin: 0 0 18px; color: ' + P.brandDark + '; opacity: .85; }',
+    '.stx-pt-picks { display: flex; flex-wrap: wrap; gap: 14px; margin: 0 0 18px; }',
+    '.stx-pt-pick { display: flex; align-items: center; gap: 10px; background: #fff; border-radius: 10px; padding: 10px 16px; }',
+    '.stx-pt-dot { width: 26px; height: 26px; border-radius: 50%; flex: none; border: 1px solid rgba(0,0,0,.18); }',
+    '.stx-pt-pick .stx-pt-lbl { font-size: 11px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; opacity: .6; }',
+    '.stx-pt-pick .stx-pt-val { font-size: 15px; font-weight: 800; color: ' + P.brandDark + '; }',
+    '.stx-pt-actions { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }',
+    '.stx-pt-btn { display: inline-block; font-family: inherit; font-size: 15px; font-weight: 800; padding: 13px 24px; border-radius: 8px; border: 2px solid ' + P.brand + '; background: ' + P.brand + '; color: #fff; text-decoration: none; cursor: pointer; transition: transform .15s ease, box-shadow .15s ease; }',
+    '.stx-pt-btn:hover { transform: scale(1.03); box-shadow: 0 10px 26px rgba(0,0,0,.18); }',
+    '.stx-pt-btn.ghost { background: #fff; color: ' + P.brandDark + '; }',
+    '.stx-pt-sizes { margin-top: 16px; font-size: 13px; }',
+    '.stx-pt-sizes span { font-weight: 700; opacity: .7; margin-right: 8px; }',
+    '.stx-pt-sizes a { display: inline-block; margin: 6px 8px 0 0; font-size: 13px; font-weight: 700; text-decoration: none; color: ' + P.brandDark + '; background: #fff; border-radius: 999px; padding: 7px 14px; }',
+    '.stx-pt-sizes a:hover { background: ' + P.brand + '; color: #fff; }',
+    '@media (max-width: 600px) { .stx-pt-bar .stx-pt-in { flex-wrap: wrap; } .stx-pt-back { margin-left: 0; } }'
+  ].join('\n');
+  document.head.appendChild(css);
+
+  /* ---------- 2. Meteen naar de calculator-view ---------- */
+  /* Werkt of dit bestand nu voor of na inspiration-v18 binnenkomt:
+     komt het eerder, dan leest de router straks #calculator;
+     komt het later, dan vuurt hashchange en schakelt de router om. */
+  if ((window.location.hash || '').toLowerCase() !== '#calculator') {
+    try { window.location.hash = 'calculator'; } catch (e) {}
+  }
+
+  /* ---------- 3. Wachten op de calculator, dan opmaken ---------- */
+  var built = false;
+
+  function pick(which) {
+    var box = document.querySelector('#picked-' + which + ' .picked-name');
+    var sw = document.querySelector('#rs-' + which);
+    var txt = box ? (box.textContent || '').trim() : '';
+    var code = (txt.match(/(\d{3})\s*$/) || [])[1] || '';
+    return {
+      text: txt,
+      code: code,
+      hex: sw ? window.getComputedStyle(sw).backgroundColor : 'transparent'
+    };
+  }
+
+  function refreshPicks() {
+    var host = document.getElementById('stx-pt-picks');
+    if (!host) { return; }
+    var i = pick('inner'), o = pick('outer');
+    host.innerHTML =
+      '<div class="stx-pt-pick"><span class="stx-pt-dot" style="background:' + esc(i.hex) + '"></span>'
+      + '<span><span class="stx-pt-lbl">' + esc(P.order.innerLabel) + '</span><br>'
+      + '<span class="stx-pt-val">' + esc(i.text) + '</span></span></div>'
+      + '<div class="stx-pt-pick"><span class="stx-pt-dot" style="background:' + esc(o.hex) + '"></span>'
+      + '<span><span class="stx-pt-lbl">' + esc(P.order.outerLabel) + '</span><br>'
+      + '<span class="stx-pt-val">' + esc(o.text) + '</span></span></div>';
+
+    /* Hoofdknop: op kleurcode zoeken als de partner een zoek-URL heeft,
+       anders gewoon naar de Sempertex categorie van de partner. */
+    var main = document.getElementById('stx-pt-main');
+    if (main) {
+      var url = P.shopUrl;
+      if (P.order.searchUrl && i.code) {
+        url = P.order.searchUrl.replace('{q}', encodeURIComponent(i.code));
+      }
+      main.href = url;
+      main.setAttribute('data-codes', [i.code, o.code].filter(Boolean).join(', '));
+    }
+  }
+
+  function build(root) {
+    if (built) { return; }
+    built = true;
+    document.body.classList.add('stx-partner-page');
+
+    /* -- Teksten van de calculator vervangen -- */
+    var S = P.strings || {};
+    Object.keys(S).forEach(function (key) {
+      var el = root.querySelector('[data-i18n="' + key + '"]');
+      if (el) { el.innerHTML = S[key]; }
+    });
+
+    /* -- Sempertex winkelmandknop weg: die hoort hier niet -- */
+    var cart = root.querySelector('#calc-cart');
+    if (cart && cart.parentNode) { cart.parentNode.removeChild(cart); }
+    root.classList.remove('stx-shop-on');
+
+    /* -- Header boven de tool -- */
+    var bar = document.createElement('div');
+    bar.className = 'stx-pt-bar';
+    bar.innerHTML = '<div class="stx-pt-in">'
+      + '<a href="' + esc(P.homeUrl) + '"><img src="' + esc(P.logo) + '" alt="' + esc(P.name) + '"></a>'
+      + '<a class="stx-pt-back" href="' + esc(P.shopUrl) + '">' + esc(P.backLabel) + '</a>'
+      + '</div>';
+    root.parentNode.insertBefore(bar, root);
+
+    /* -- Bestelblok onder de calculator -- */
+    var view = root.querySelector('#view-calculator .calc');
+    if (view) {
+      var O = P.order;
+      var box = document.createElement('div');
+      box.className = 'stx-pt-order';
+      box.innerHTML = '<h3>' + esc(O.title) + '</h3>'
+        + '<p class="stx-pt-lead">' + esc(O.lead) + '</p>'
+        + '<div class="stx-pt-picks" id="stx-pt-picks"></div>'
+        + '<div class="stx-pt-actions">'
+        + '<a class="stx-pt-btn" id="stx-pt-main" href="' + esc(P.shopUrl) + '" target="_blank" rel="noopener">' + esc(O.mainBtn) + '</a>'
+        + '<button type="button" class="stx-pt-btn ghost" id="stx-pt-copy">' + esc(O.copyBtn) + '</button>'
+        + '</div>'
+        + (O.sizes && O.sizes.length
+            ? '<div class="stx-pt-sizes"><span>' + esc(O.sizesLabel) + '</span>'
+              + O.sizes.map(function (s) {
+                  return '<a href="' + esc(s.url) + '" target="_blank" rel="noopener" data-size="' + esc(s.label) + '">' + esc(s.label) + '</a>';
+                }).join('')
+              + '</div>'
+            : '');
+      view.appendChild(box);
+
+      box.addEventListener('click', function (e) {
+        var a = e.target.closest('a[data-size]');
+        if (a) { track('partner_order_click', { target: 'size', size: a.getAttribute('data-size') }); return; }
+        if (e.target.closest('#stx-pt-main')) {
+          track('partner_order_click', { target: 'shop', codes: document.getElementById('stx-pt-main').getAttribute('data-codes') || '' });
+          return;
+        }
+        var cp = e.target.closest('#stx-pt-copy');
+        if (cp) {
+          var codes = (document.getElementById('stx-pt-main').getAttribute('data-codes') || '');
+          try {
+            if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(codes); }
+          } catch (err) {}
+          cp.textContent = O.copiedBtn;
+          setTimeout(function () { cp.textContent = O.copyBtn; }, 1600);
+          track('partner_order_click', { target: 'copy', codes: codes });
+        }
+      });
+    }
+
+    /* -- Footer onder de tool -- */
+    if (P.footerText) {
+      var foot = document.createElement('div');
+      foot.className = 'stx-pt-foot';
+      foot.innerHTML = '<div class="stx-pt-in">' + esc(P.footerText) + '</div>';
+      if (root.nextSibling) { root.parentNode.insertBefore(foot, root.nextSibling); }
+      else { root.parentNode.appendChild(foot); }
+    }
+
+    refreshPicks();
+
+    /* De picker herschrijft zijn blokken bij elke klik: meelezen. */
+    ['inner', 'outer'].forEach(function (which) {
+      var el = document.getElementById('picked-' + which);
+      if (!el || !window.MutationObserver) { return; }
+      var t = null;
+      new MutationObserver(function () {
+        clearTimeout(t);
+        t = setTimeout(refreshPicks, 40);
+      }).observe(el, { childList: true, subtree: true, characterData: true });
+    });
+
+    track('partner_calc_open', {});
+  }
+
+  /* De loader haalt inspiration-v18.html los op, dus wachten we
+     tot de root er staat en zichtbaar is gemaakt. */
+  (function waitForRoot() {
+    var tries = 0;
+    var timer = setInterval(function () {
+      tries++;
+      var root = document.getElementById('stx-insp-root');
+      if (root && root.querySelector('#view-calculator .calc-grid')) {
+        clearInterval(timer);
+        build(root);
+      } else if (tries > 200) {           /* 20 seconden, dan opgeven */
+        clearInterval(timer);
+        if (window.console && console.warn) { console.warn('[STX partner] calculator niet gevonden'); }
+      }
+    }, 100);
+  })();
+})();
+</script>
+<!-- ================ EINDE PARTNER CALCULATOR ================ -->

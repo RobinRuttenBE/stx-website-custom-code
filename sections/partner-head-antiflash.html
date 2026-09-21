@@ -1,0 +1,49 @@
+<!-- ============================================================
+     STX EU / PARTNERPAGINA ANTI-FLITS (head)
+     Dit blok staat INLINE in het <head> veld van Odoo
+     (Instellingen > Website > Custom Code), onderaan toegevoegd,
+     na laadscherm deel 1 en voor Google Tag Manager. Dit bestand
+     is de kopie in de repo; de section loader laadt het NIET
+     (het moet draaien voor de eerste paint, dus voor de loader).
+
+     Waarom: op /partner/<slug>/tools haalt de section loader het
+     skinbestand pas na het laden op. Tussen de eerste paint en dat
+     moment zou de Sempertex header, het menu en de footer in beeld
+     flitsen. Op een white-label pagina is dat precies het enige wat
+     niet mag gebeuren. Dit blokje zet die elementen weg voordat er
+     iets getekend wordt; sections/partner-calculator-v1.html neemt
+     het daarna over en doet de rest (huisstijl, header, bestelblok).
+
+     Het laadscherm zelf komt van deel 1 hierboven: /tools staat in
+     SECTION_PATHS en de endsWith-match pakt dit pad dus ook al mee.
+     Alleen de spinner is daar Sempertex-paars, en dat is op een
+     partnerpagina het verkeerde signaal. Hier zetten we hem neutraal
+     grijs; zodra de skin binnen is kleurt die hem in de kleur van de
+     partner (zie #stx-loadwall .stx-spin in het sectiebestand).
+
+     Verwijderen = dit blok weghalen. Sinds 21/09/2026.
+     ============================================================ -->
+<script>
+(function () {
+  'use strict';
+  var p = (window.location.pathname || '/').toLowerCase().replace(/\/+$/, '');
+  if (!/^(?:\/(?:fr|de|en_gb))?\/partner\/[a-z0-9-]+\/tools$/.test(p)) { return; }
+  /* Nooit in de Odoo editor of in een iframe. */
+  try { if (window.frameElement) { return; } } catch (e) { return; }
+  if (/enable_editor|debug=assets/.test(window.location.search)) { return; }
+  document.documentElement.classList.add('stx-partner');
+  var s = document.createElement('style');
+  s.textContent =
+    'html.stx-partner header#top,html.stx-partner #wrapwrap > header,'
+    + 'html.stx-partner .o_header_standard,html.stx-partner .o_navbar_mobile,'
+    + 'html.stx-partner #top_menu_container,html.stx-partner #wrapwrap > footer,'
+    + 'html.stx-partner footer#bottom,html.stx-partner .o_footer,'
+    + 'html.stx-partner .o_livechat_button{display:none!important}'
+    + 'html.stx-partner #wrap{padding:0!important;margin:0!important}'
+    /* Spinner van laadscherm deel 1 neutraal houden op een partnerpagina. */
+    + 'html.stx-partner.stx-loading::after{border-color:#e6e6e6!important;'
+    + 'border-top-color:#9a9a9a!important}';
+  document.head.appendChild(s);
+})();
+</script>
+<!-- ============ EINDE PARTNERPAGINA ANTI-FLITS ============ -->
