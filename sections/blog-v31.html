@@ -13,7 +13,8 @@
      achtergrond (na 30 min); laadscherm gaat weg zodra hero en
      filters staan; hero gecentreerd over de volle breedte; het
      gepinde artikel wordt gedeeld met de Blog-menuknop via
-     localStorage stx_blog_pin_v1. v29 = v28 + laadscherm-koppeling,
+     localStorage stx_blog_pin_v1 (vervallen sinds 21/09/2026, de
+     Blog-menuknop heeft geen popup meer). v29 = v28 + laadscherm-koppeling,
      auteur enkel Sempertex Europe, editor-cachebypass,
      brede artikelen, editor-guard, backend-artikeldetectie.
 
@@ -278,7 +279,6 @@
 
   /* ---------- artikellijst opbouwen via sitemap ---------- */
   var CACHE_KEY = 'stxBlogIndex_v5_' + LANG;
-  var PIN_KEY = 'stx_blog_pin_v1';        /* gedeeld met de Blog-menuknop in de custom code */
   var CACHE_STALE_HOURS = 24;             /* zo lang mag een oude lijst meteen getoond worden, daarna wachten op verse data */
   /* Ingelogde editors krijgen altijd verse data (geen sessie-cache,
      geen browsercache), bezoekers houden de snelle cache. */
@@ -358,20 +358,6 @@
   function readIndexCache(){
     try { return JSON.parse(localStorage.getItem(CACHE_KEY) || 'null'); } catch(e){ return null; }
   }
-  /* Gepind artikel delen met de Blog-menuknop (custom code, elke pagina). */
-  function sharePin(items){
-    var feat = null;
-    items.some(function(it){ if (it.featured && it.published !== false) { feat = it; return true; } return false; });
-    if (!feat) items.some(function(it){ if (it.published !== false) { feat = it; return true; } return false; });
-    if (!feat) return;
-    try {
-      var c = JSON.parse(localStorage.getItem(PIN_KEY) || 'null');
-      if (!c || c.slug !== feat.slug) c = { t: Date.now(), slug: feat.slug, titles: {} };
-      c.t = Date.now();
-      c.titles[LANG] = feat.title;
-      localStorage.setItem(PIN_KEY, JSON.stringify(c));
-    } catch(e){}
-  }
   function loadIndex(cb, onPartial){
     var cached = null;
     var c = readIndexCache();
@@ -446,7 +432,6 @@
           items.sort(function(a,b){ return (b.date||'').localeCompare(a.date||''); });
           if (!items.length && cached) return;   /* verversen mislukt: oude lijst blijft staan */
           if (items.length) {
-            sharePin(items);
             try { localStorage.setItem(CACHE_KEY, JSON.stringify({t:Date.now(), items:items})); } catch(e){}
           }
           if (cached && JSON.stringify(cached.items) === JSON.stringify(items)) return;
