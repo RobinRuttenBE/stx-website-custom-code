@@ -24,7 +24,7 @@ Playwright komt uit `stx-tools/node_modules` (of zet `STX_PLAYWRIGHT` naar een a
 
 ## Wat het controleert
 
-Beta-schakelaar (aan via `#stxupload`, uit via `#stxupload-uit`), niets tonen voor uitgelogde bezoekers,
+De kaart tonen voor elk ingelogd account (live sinds 21/09/2026, `BETA = false`) en niets tonen voor uitgelogde bezoekers,
 plaatsing boven de winkelmand, de vier talen, het inlezen van CSV, geplakte tekst en xlsx, samenvoegen van
 dubbele codes, koprij en rommelregels overslaan, de vier matchstatussen, aantallen die als verpakkingen
 doorgaan, de keuzelijst bij meerdere treffers, en de resultaatmelding die een herlaadbeurt overleeft.

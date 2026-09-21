@@ -86,10 +86,11 @@ function assert(c, msg) { if (!c) { console.error('FAIL', msg); process.exitCode
   const page = await ctx.newPage();
   page.on('pageerror', e => { console.error('PAGEERROR', e.message); process.exitCode = 1; });
 
-  // 1. beta off: nothing shows
-  await page.goto(base + '/en_GB/shop/cart'); await page.waitForTimeout(400);
-  assert(await page.$('#stx-upl') === null || await page.$eval('#stx-upl', e => e.hidden), 'beta off: card hidden');
-  // 2. beta on via hash
+  // 1. live (BETA = false): the card shows on a plain visit, no hash needed
+  await page.goto(base + '/en_GB/shop/cart'); await page.waitForSelector('#stx-upl:not([hidden])', { timeout: 8000 });
+  assert(await page.$eval('#stx-upl', e => !e.hidden), 'live: card shows without #stxupload');
+  assert(await page.$('#stx-upl .su-beta') === null, 'live: no beta badge left');
+  // 2. the hash still works and changes nothing
   await page.goto('about:blank'); await page.goto(base + '/en_GB/shop/cart#stxupload'); await page.waitForSelector('#stx-upl:not([hidden])');
   assert(await page.$eval('#stx-upl', e => e.nextElementSibling && e.nextElementSibling.classList.contains('oe_cart')), 'card placed before .oe_cart');
   assert((await page.textContent('#stx-upl h3')).includes('Upload your order'), 'english copy');
@@ -170,12 +171,12 @@ function assert(c, msg) { if (!c) { console.error('FAIL', msg); process.exitCode
   const rows3 = await page.$$eval('#su-rows tr', trs => trs.map(tr => tr.querySelector('.su-code').textContent + ':' + tr.querySelector('.su-qty').textContent + ':' + tr.className));
   console.log('   xlsx rows:', rows3.join(' | '));
   assert(rows3.length === 2 && rows3[0] === 'R12005:7:ok' && rows3[1] === 'LOL6015:2:ok', 'xlsx read via SheetJS');
-  // 8. beta off via hash
-  await page.goto('about:blank'); await page.goto(base + '/shop/cart#stxupload-uit'); await page.waitForTimeout(400);
-  assert(await page.$eval('#stx-upl', e => e.hidden), '#stxupload-uit hides again');
+  // 8. live: #stxupload-uit no longer hides the card
+  await page.goto('about:blank'); await page.goto(base + '/shop/cart#stxupload-uit'); await page.waitForSelector('#stx-upl:not([hidden])', { timeout: 8000 });
+  assert(await page.$eval('#stx-upl', e => !e.hidden), 'live: #stxupload-uit does not hide it any more');
   // mobile screenshot
   const mp = await b.newPage({ viewport: { width: 390, height: 800 } });
-  await mp.goto(base + '/en_GB/shop/cart#stxupload'); await mp.waitForSelector('#stx-upl:not([hidden])'); await mp.click('#su-toggle');
+  await mp.goto(base + '/en_GB/shop/cart'); await mp.waitForSelector('#stx-upl:not([hidden])'); await mp.click('#su-toggle');
   await mp.setInputFiles('#su-file', CSV); await mp.waitForSelector('#su-preview:not([hidden])', { timeout: 20000 });
   await mp.screenshot({ path: path.join(OUT, 'preview-mobile.png'), fullPage: false });
   await b.close(); server.close();
