@@ -24,9 +24,12 @@
      4. Niets gevonden: rood, regel wordt overgeslagen.
 
      Winkelmand: /website_sale/get_combination_info (variant-id) en
-     daarna /shop/cart/add per regel (JSON-RPC, same origin, sessie-
+     daarna /shop/cart/add per product (JSON-RPC, same origin, sessie-
      cookie), zelfde routes als de Cost Calculator in inspiration-v18.
-     Aantal = verkoopeenheden (packs). Na afloop herlaadt de pagina en
+     Aantal = verkoopeenheden (packs). /shop/cart/add telt op bij wat er
+     al ligt, dus wordt de regel teruggelezen en met /shop/cart/update op
+     het exacte aantal uit het bestand gezet; het bestand is de waarheid.
+     Codes die op hetzelfde product uitkomen worden eerst samengeteld. Na afloop herlaadt de pagina en
      toont de kaart eenmalig het resultaat (sessionStorage).
 
      Alleen voor ingelogde accounts (Odoo weigert cart-calls van
@@ -53,6 +56,7 @@
   .stx-upl .su-kicker { display: inline-block; font-size: 11px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: var(--magenta); margin-bottom: 4px; }
   .stx-upl .su-beta { display: inline-block; margin-left: 8px; font-size: 10px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; background: var(--yellow); color: var(--dark); border-radius: 999px; padding: 2px 8px; vertical-align: middle; }
   .stx-upl h3 { font-size: 22px; font-weight: 800; letter-spacing: -.01em; margin-bottom: 4px; }
+  .stx-upl h3 .hl { background: var(--yellow); padding: 0 .15em; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
   .stx-upl .su-lede { font-family: 'Lato', sans-serif; font-size: 14.5px; color: var(--ink-soft); max-width: 70ch; }
   .stx-upl .su-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap; }
   .stx-upl .su-toggle { background: none; border: 0; color: var(--purple); font-weight: 700; font-size: 14px; cursor: pointer; padding: 6px 0; white-space: nowrap; }
@@ -134,7 +138,7 @@
   <div class="su-head">
     <div>
       <span class="su-kicker" data-k="kicker"></span><span class="su-beta">beta</span>
-      <h3 data-k="title"></h3>
+      <h3><span class="hl" data-k="title"></span></h3>
       <p class="su-lede" data-k="lede"></p>
     </div>
     <button type="button" class="su-toggle" data-k="open" id="su-toggle"></button>
@@ -217,52 +221,56 @@
   var shopPrefix = pm ? '/' + (pm[1] === 'en_gb' ? 'en_GB' : pm[1]) : '';
   var T = {
     en: {
-      kicker: 'Order in one go', title: 'Upload your order as CSV or Excel', lede: 'One line per product: the product code and the number of packs. We look every code up in the shop, show you what we found, and then add it all to this cart.',
+      kicker: 'Order in one go', title: 'Upload your order as CSV or Excel', lede: 'The first column is the product code, the second column is the number of packs you\'d like to order.',
       open: 'Upload a file', drop: 'Choose a file or drop it here', drop_sub: '.csv or .xlsx, column 1 = product code, column 2 = quantity (packs). A header row is fine.',
       template: 'Download the example file', paste: 'Or paste your lines', paste_go: 'Check pasted lines', reset: 'Start over',
       th_code: 'Code', th_product: 'Product in the shop', th_qty: 'Packs', th_status: 'Status',
       reading: 'Reading file...', xlsx_load: 'Loading the Excel reader...', xlsx_fail: 'The Excel reader could not load. Save the sheet as CSV and try again.', empty: 'No lines with a code and a quantity found. Column 1 = code, column 2 = quantity.',
       matching: 'Checking code {i} of {n} in the shop...', found: '{n} products found', check: '{n} to check', missing: '{n} not found', dup: '{n} duplicate codes merged',
-      st_ok: 'found', st_chk: 'check', st_multi: 'choose', st_no: 'not found', st_done: 'added', st_fail: 'failed', st_skip: 'skipped',
+      st_ok: 'found', st_chk: 'check', st_multi: 'choose', st_no: 'not found', st_done: 'added', st_fail: 'failed', st_skip: 'skipped', st_qty: 'in cart: {n}',
       add: 'Add {n} lines to cart', adding: 'Adding line {i} of {n}...', none: 'Nothing to add: no line matched a shop product.',
-      done: '{l} lines ({p} packs) added to your cart.', fail: 'Not added: {names}.', skipped: '{n} lines skipped (not found).', reload: 'Refresh cart',
-      note: 'Quantities are packs (sales units of the shop), not single balloons. Lines marked "check" matched through search: check the product name before adding. Lines that are not found are skipped.'
+      done: '{l} lines ({p} packs) added to your cart.', fail: 'Not added: {names}.', skipped: '{n} lines skipped (not found).', qty_warn: '{n} products ended up with a different quantity: check them in the cart.', reload: 'Refresh cart',
+      note: 'Quantities are packs (sales units of the shop), not single balloons. A product that is already in your cart gets the quantity from your file.'
+        + '  Lines marked "check" matched through search: check the product name before adding. Lines that are not found are skipped.'
     },
     nl: {
-      kicker: 'Bestellen in een keer', title: 'Upload je bestelling als CSV of Excel', lede: 'Een regel per product: de productcode en het aantal zakken. We zoeken elke code op in de shop, tonen wat we vonden en zetten daarna alles in dit winkelmandje.',
+      kicker: 'Bestellen in een keer', title: 'Upload je bestelling als CSV of Excel', lede: 'De eerste kolom is de productcode, de tweede kolom is het aantal zakken dat je wil bestellen.',
       open: 'Bestand uploaden', drop: 'Kies een bestand of sleep het hierheen', drop_sub: '.csv of .xlsx, kolom 1 = productcode, kolom 2 = aantal (zakken). Een koprij mag.',
       template: 'Download het voorbeeldbestand', paste: 'Of plak je regels', paste_go: 'Geplakte regels controleren', reset: 'Opnieuw beginnen',
       th_code: 'Code', th_product: 'Product in de shop', th_qty: 'Zakken', th_status: 'Status',
       reading: 'Bestand lezen...', xlsx_load: 'Excel-lezer laden...', xlsx_fail: 'De Excel-lezer kon niet laden. Sla het blad op als CSV en probeer opnieuw.', empty: 'Geen regels met een code en een aantal gevonden. Kolom 1 = code, kolom 2 = aantal.',
       matching: 'Code {i} van {n} opzoeken in de shop...', found: '{n} producten gevonden', check: '{n} te controleren', missing: '{n} niet gevonden', dup: '{n} dubbele codes samengevoegd',
-      st_ok: 'gevonden', st_chk: 'controleer', st_multi: 'kies', st_no: 'niet gevonden', st_done: 'toegevoegd', st_fail: 'mislukt', st_skip: 'overgeslagen',
+      st_ok: 'gevonden', st_chk: 'controleer', st_multi: 'kies', st_no: 'niet gevonden', st_done: 'toegevoegd', st_fail: 'mislukt', st_skip: 'overgeslagen', st_qty: 'in mandje: {n}',
       add: '{n} regels in winkelmandje', adding: 'Regel {i} van {n} toevoegen...', none: 'Niets toe te voegen: geen enkele regel matcht een shopproduct.',
-      done: '{l} regels ({p} zakken) toegevoegd aan je winkelmandje.', fail: 'Niet toegevoegd: {names}.', skipped: '{n} regels overgeslagen (niet gevonden).', reload: 'Winkelmandje verversen',
-      note: 'Aantallen zijn zakken (verkoopeenheden van de shop), geen losse ballonnen. Regels met "controleer" zijn via zoeken gematcht: check de productnaam voor je toevoegt. Regels die niet gevonden zijn worden overgeslagen.'
+      done: '{l} regels ({p} zakken) toegevoegd aan je winkelmandje.', fail: 'Niet toegevoegd: {names}.', skipped: '{n} regels overgeslagen (niet gevonden).', qty_warn: '{n} producten staan met een ander aantal in je mandje: controleer ze.', reload: 'Winkelmandje verversen',
+      note: 'Aantallen zijn zakken (verkoopeenheden van de shop), geen losse ballonnen. Een product dat al in je winkelmandje zit, krijgt het aantal uit je bestand.'
+        + '  Regels met "controleer" zijn via zoeken gematcht: check de productnaam voor je toevoegt. Regels die niet gevonden zijn worden overgeslagen.'
     },
     fr: {
-      kicker: 'Commander en une fois', title: 'Importez votre commande en CSV ou Excel', lede: 'Une ligne par produit : le code produit et le nombre de sachets. Nous cherchons chaque code dans la boutique, vous montrons le résultat, puis ajoutons le tout à ce panier.',
+      kicker: 'Commander en une fois', title: 'Importez votre commande en CSV ou Excel', lede: 'La première colonne est le code produit, la deuxième colonne le nombre de sachets que vous souhaitez commander.',
       open: 'Importer un fichier', drop: 'Choisissez un fichier ou déposez-le ici', drop_sub: '.csv ou .xlsx, colonne 1 = code produit, colonne 2 = quantité (sachets). Une ligne de titre est acceptée.',
       template: 'Télécharger le fichier exemple', paste: 'Ou collez vos lignes', paste_go: 'Vérifier les lignes collées', reset: 'Recommencer',
       th_code: 'Code', th_product: 'Produit dans la boutique', th_qty: 'Sachets', th_status: 'Statut',
       reading: 'Lecture du fichier...', xlsx_load: 'Chargement du lecteur Excel...', xlsx_fail: 'Le lecteur Excel n’a pas pu se charger. Enregistrez la feuille en CSV et réessayez.', empty: 'Aucune ligne avec un code et une quantité. Colonne 1 = code, colonne 2 = quantité.',
       matching: 'Recherche du code {i} sur {n} dans la boutique...', found: '{n} produits trouvés', check: '{n} à vérifier', missing: '{n} introuvables', dup: '{n} codes en double fusionnés',
-      st_ok: 'trouvé', st_chk: 'vérifier', st_multi: 'choisir', st_no: 'introuvable', st_done: 'ajouté', st_fail: 'échec', st_skip: 'ignoré',
+      st_ok: 'trouvé', st_chk: 'vérifier', st_multi: 'choisir', st_no: 'introuvable', st_done: 'ajouté', st_fail: 'échec', st_skip: 'ignoré', st_qty: 'dans le panier : {n}',
       add: 'Ajouter {n} lignes au panier', adding: 'Ajout de la ligne {i} sur {n}...', none: 'Rien à ajouter : aucune ligne ne correspond à un produit de la boutique.',
-      done: '{l} lignes ({p} sachets) ajoutées à votre panier.', fail: 'Non ajouté : {names}.', skipped: '{n} lignes ignorées (introuvables).', reload: 'Actualiser le panier',
-      note: 'Les quantités sont des sachets (unités de vente de la boutique), pas des ballons à l’unité. Les lignes « vérifier » ont été trouvées via la recherche : vérifiez le nom du produit avant d’ajouter. Les lignes introuvables sont ignorées.'
+      done: '{l} lignes ({p} sachets) ajoutées à votre panier.', fail: 'Non ajouté : {names}.', skipped: '{n} lignes ignorées (introuvables).', qty_warn: '{n} produits se retrouvent avec une autre quantité : vérifiez-les dans le panier.', reload: 'Actualiser le panier',
+      note: 'Les quantités sont des sachets (unités de vente de la boutique), pas des ballons à l’unité. Un produit déjà présent dans votre panier reçoit la quantité de votre fichier.'
+        + '  Les lignes « vérifier » ont été trouvées via la recherche : vérifiez le nom du produit avant d’ajouter. Les lignes introuvables sont ignorées.'
     },
     de: {
-      kicker: 'Auf einmal bestellen', title: 'Bestellung als CSV oder Excel hochladen', lede: 'Eine Zeile pro Produkt: Produktcode und Anzahl Beutel. Wir suchen jeden Code im Shop, zeigen das Ergebnis und legen dann alles in diesen Warenkorb.',
+      kicker: 'Auf einmal bestellen', title: 'Bestellung als CSV oder Excel hochladen', lede: 'Die erste Spalte ist der Produktcode, die zweite Spalte die Anzahl Beutel, die Sie bestellen möchten.',
       open: 'Datei hochladen', drop: 'Datei wählen oder hier ablegen', drop_sub: '.csv oder .xlsx, Spalte 1 = Produktcode, Spalte 2 = Menge (Beutel). Eine Kopfzeile ist erlaubt.',
       template: 'Beispieldatei herunterladen', paste: 'Oder Zeilen einfügen', paste_go: 'Eingefügte Zeilen prüfen', reset: 'Neu beginnen',
       th_code: 'Code', th_product: 'Produkt im Shop', th_qty: 'Beutel', th_status: 'Status',
       reading: 'Datei wird gelesen...', xlsx_load: 'Excel-Leser wird geladen...', xlsx_fail: 'Der Excel-Leser konnte nicht geladen werden. Speichern Sie das Blatt als CSV und versuchen Sie es erneut.', empty: 'Keine Zeilen mit Code und Menge gefunden. Spalte 1 = Code, Spalte 2 = Menge.',
       matching: 'Code {i} von {n} im Shop suchen...', found: '{n} Produkte gefunden', check: '{n} zu prüfen', missing: '{n} nicht gefunden', dup: '{n} doppelte Codes zusammengefasst',
-      st_ok: 'gefunden', st_chk: 'prüfen', st_multi: 'wählen', st_no: 'nicht gefunden', st_done: 'hinzugefügt', st_fail: 'fehlgeschlagen', st_skip: 'übersprungen',
+      st_ok: 'gefunden', st_chk: 'prüfen', st_multi: 'wählen', st_no: 'nicht gefunden', st_done: 'hinzugefügt', st_fail: 'fehlgeschlagen', st_skip: 'übersprungen', st_qty: 'im Warenkorb: {n}',
       add: '{n} Zeilen in den Warenkorb', adding: 'Zeile {i} von {n} wird hinzugefügt...', none: 'Nichts hinzuzufügen: keine Zeile passt zu einem Shop-Produkt.',
-      done: '{l} Zeilen ({p} Beutel) in Ihren Warenkorb gelegt.', fail: 'Nicht hinzugefügt: {names}.', skipped: '{n} Zeilen übersprungen (nicht gefunden).', reload: 'Warenkorb aktualisieren',
-      note: 'Mengen sind Beutel (Verkaufseinheiten des Shops), keine einzelnen Ballons. Zeilen mit „prüfen“ wurden über die Suche gefunden: prüfen Sie den Produktnamen vor dem Hinzufügen. Nicht gefundene Zeilen werden übersprungen.'
+      done: '{l} Zeilen ({p} Beutel) in Ihren Warenkorb gelegt.', fail: 'Nicht hinzugefügt: {names}.', skipped: '{n} Zeilen übersprungen (nicht gefunden).', qty_warn: '{n} Produkte liegen mit einer anderen Menge im Warenkorb: bitte prüfen.', reload: 'Warenkorb aktualisieren',
+      note: 'Mengen sind Beutel (Verkaufseinheiten des Shops), keine einzelnen Ballons. Ein Produkt, das bereits im Warenkorb liegt, erhält die Menge aus Ihrer Datei.'
+        + '  Zeilen mit „prüfen“ wurden über die Suche gefunden: prüfen Sie den Produktnamen vor dem Hinzufügen. Nicht gefundene Zeilen werden übersprungen.'
     }
   };
   var S = T[lang] || T.en;
@@ -496,49 +504,90 @@
     track('cart_upload_matched', { lines: state.lines.length, found: c.ok, check: c.chk, missing: c.no });
   }
 
-  /* ---- in het winkelmandje ---- */
-  function combinationInfo(tid, cb) {
-    fetch('/website_sale/get_combination_info', {
+  /* ---- in het winkelmandje ----
+     /shop/cart/add telt OP bij wat er al in het mandje ligt (getest op de live shop op
+     21/09/2026: quantity 1 op een regel van 1 gaf 2, daarna quantity 5 gaf 7). Het aantal
+     uit het bestand is bedoeld als het aantal dat in het mandje moet staan, dus lezen we
+     de regel terug en corrigeren we die met /shop/cart/update, die wel een exact aantal
+     zet (antwoord: added_qty, line_id, quantity). Regels die op hetzelfde shopproduct
+     uitkomen (bv. een barcode en de interne referentie) worden eerst samengeteld, anders
+     zou de tweede het aantal van de eerste overschrijven. */
+  function rpc(url, params, cb) {
+    fetch(url, {
       method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ jsonrpc: '2.0', method: 'call', id: Date.now(), params: { product_template_id: tid, product_id: false, combination: [], add_qty: 1, parent_combination: [] } })
-    }).then(function (r) { return r.json(); }).then(function (d) { var c = (d && d.result) || {}; cb(c.product_id || null); }).catch(function () { cb(null); });
+      body: JSON.stringify({ jsonrpc: '2.0', method: 'call', id: Date.now(), params: params })
+    }).then(function (r) { return r.json(); })
+      .then(function (d) { cb(d && !d.error && d.result ? d.result : null); })
+      .catch(function () { cb(null); });
   }
-  function cartAdd(tid, pid, qty, cb) {
-    fetch('/shop/cart/add', {
-      method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ jsonrpc: '2.0', method: 'call', id: Date.now(), params: { product_template_id: tid, product_id: pid, quantity: qty } })
-    }).then(function (r) { return r.json(); }).then(function (d) { cb(!!(d && !d.error && d.result)); }).catch(function () { cb(false); });
+  function combinationInfo(tid, cb) {
+    rpc('/website_sale/get_combination_info', { product_template_id: tid, product_id: false, combination: [], add_qty: 1, parent_combination: [] },
+      function (c) { cb(c ? (c.product_id || null) : null); });
+  }
+  /* Regel-id van de zojuist toegevoegde regel: Odoo geeft die mee in de toastgegevens. */
+  function lineIdOf(res) {
+    var ls = res && res.notification_info && res.notification_info.lines;
+    if (ls && ls.length && ls[0] && ls[0].id) { return ls[0].id; }
+    return (res && res.line_id) || null;
+  }
+  /* Zet het aantal van een product in het mandje op precies qty. cb(gelukt, aantal in het mandje). */
+  function cartSet(tid, pid, qty, cb) {
+    rpc('/shop/cart/add', { product_template_id: tid, product_id: pid, quantity: qty }, function (res) {
+      if (!res) { cb(false, 0); return; }
+      var got = parseFloat(res.quantity);
+      if (!isFinite(got)) { got = qty; }
+      var lid = lineIdOf(res);
+      if (got === qty || !lid) { cb(true, got); return; }
+      rpc('/shop/cart/update', { line_id: lid, product_id: pid, quantity: qty }, function (up) {
+        var fin = up ? parseFloat(up.quantity) : NaN;
+        cb(true, isFinite(fin) ? fin : got);
+      });
+    });
   }
   function addAll() {
     if (state.busy) { return; }
-    var todo = state.lines.filter(function (l) { return l.tid && l.status !== 'no'; });
-    if (!todo.length) { setStatus(t('none')); return; }
+    var groups = [], byTid = {};
+    state.lines.forEach(function (l) {
+      if (!l.tid || l.status === 'no') { return; }
+      var g = byTid[l.tid];
+      if (g) { g.qty += l.qty; g.lines.push(l); } else { g = { tid: l.tid, qty: l.qty, code: l.code, lines: [l] }; byTid[l.tid] = g; groups.push(g); }
+    });
+    if (!groups.length) { setStatus(t('none')); return; }
     busy(true);
-    var done = 0, packs = 0, failed = [], skipped = counts().no;
+    var done = 0, packs = 0, failed = [], skipped = counts().no, adjusted = 0;
     var rowsEl = $('su-rows');
-    function mark(l, cls, key) { var tr = rowsEl.querySelector('tr[data-i="' + state.lines.indexOf(l) + '"]'); if (tr) { tr.className = cls; tr.querySelector('.su-st').textContent = t(key); } }
+    function mark(l, cls, key, vars) {
+      var tr = rowsEl.querySelector('tr[data-i="' + state.lines.indexOf(l) + '"]');
+      if (tr) { tr.className = cls; tr.querySelector('.su-st').textContent = t(key, vars || {}); }
+    }
+    function markGroup(g, cls, key, vars) { g.lines.forEach(function (l) { mark(l, cls, key, vars); }); }
     function finish() {
       busy(false);
-      var res = { done: done, packs: packs, failed: failed, skipped: skipped };
-      track('cart_upload_added', { lines: done, packs: packs, failed: failed.length, skipped: skipped });
+      var res = { done: done, packs: packs, failed: failed, skipped: skipped, adjusted: adjusted };
+      track('cart_upload_added', { lines: done, packs: packs, failed: failed.length, skipped: skipped, adjusted: adjusted });
       var msg = esc(t('done', { l: done, p: packs }));
       if (skipped) { msg += ' ' + esc(t('skipped', { n: skipped })); }
+      if (adjusted) { msg += ' ' + esc(t('qty_warn', { n: adjusted })); }
       if (failed.length) { msg += ' ' + esc(t('fail', { names: failed.join(', ') })); }
-      var box = $('su-lastresult'); box.innerHTML = msg + ' <a href="' + esc(shopPrefix + '/shop/cart') + '">' + esc(t('reload')) + '</a>'; box.hidden = false; box.classList.toggle('warn', failed.length > 0);
+      var box = $('su-lastresult'); box.innerHTML = msg + ' <a href="' + esc(shopPrefix + '/shop/cart') + '">' + esc(t('reload')) + '</a>'; box.hidden = false; box.classList.toggle('warn', failed.length > 0 || adjusted > 0);
       setStatus('');
       if (done > 0) {
         try { sessionStorage.setItem(RESULT_KEY, JSON.stringify(res)); } catch (e) {}
-        setTimeout(function () { location.href = shopPrefix + '/shop/cart'; }, failed.length ? 2500 : 900);
+        setTimeout(function () { location.href = shopPrefix + '/shop/cart'; }, (failed.length || adjusted) ? 2500 : 900);
       }
     }
     function step(k) {
-      if (k >= todo.length) { finish(); return; }
-      var l = todo[k];
-      setStatus(t('adding', { i: k + 1, n: todo.length })); setBar(k / todo.length);
-      combinationInfo(l.tid, function (pid) {
-        if (!pid) { failed.push(l.code); mark(l, 'fail', 'st_fail'); step(k + 1); return; }
-        cartAdd(l.tid, pid, l.qty, function (ok) {
-          if (ok) { done++; packs += l.qty; mark(l, 'done', 'st_done'); } else { failed.push(l.code); mark(l, 'fail', 'st_fail'); }
+      if (k >= groups.length) { finish(); return; }
+      var g = groups[k];
+      setStatus(t('adding', { i: k + 1, n: groups.length })); setBar(k / groups.length);
+      combinationInfo(g.tid, function (pid) {
+        if (!pid) { failed.push(g.code); markGroup(g, 'fail', 'st_fail'); step(k + 1); return; }
+        cartSet(g.tid, pid, g.qty, function (ok, actual) {
+          if (!ok) { failed.push(g.code); markGroup(g, 'fail', 'st_fail'); }
+          else {
+            done += g.lines.length; packs += actual;
+            if (actual !== g.qty) { adjusted++; markGroup(g, 'chk', 'st_qty', { n: actual }); } else { markGroup(g, 'done', 'st_done'); }
+          }
           step(k + 1);
         });
       });
