@@ -270,10 +270,22 @@ function check(name, ok, extra) {
     check('gekozen kleuren staan in het bestelblok', picks.length === 2 && /\d{3}$/.test(picks[0]) && /\d{3}$/.test(picks[1]),
       JSON.stringify(picks));
     const codes = await page.getAttribute('#stx-pt-main', 'data-codes');
-    check('kleurcodes staan klaar om te kopieren', /^\d{3}, \d{3}$/.test(codes || ''), codes);
+    check('kleurcodes gaan mee in de tracking', /^\d{3}, \d{3}$/.test(codes || ''), codes);
+
+    check('geen kopieerknop meer', (await page.$('#stx-pt-copy')) === null);
 
     const href = await page.getAttribute('#stx-pt-main', 'href');
     check('bestelknop gaat naar de shop van Liragram', /^https:\/\/liragram\.com\//.test(href || ''), href);
+
+    // Elke link naar Liragram opent een nieuw tabblad, anders is de calculator weg
+    // zodra iemand op "Volver a la tienda" of op het logo klikt.
+    const tabs = await page.$$eval('.stx-pt-bar a, .stx-pt-order a', (els) => els.map((e) => ({
+      waar: e.className || 'logo', target: e.getAttribute('target'), rel: e.getAttribute('rel')
+    })));
+    const fout = tabs.filter((t) => t.target !== '_blank' || !/noopener/.test(t.rel || ''));
+    check('alle partnerlinks openen een nieuw tabblad', fout.length === 0, JSON.stringify(fout));
+    check('terugknop opent een nieuw tabblad',
+      (await page.getAttribute('.stx-pt-back', 'target')) === '_blank');
 
     // Sempertex mag als PRODUCTnaam wel: Liragram verkoopt onze ballonnen en hun eigen
     // categorie heet ook zo. Wat niet mag is een link terug naar onze site of een

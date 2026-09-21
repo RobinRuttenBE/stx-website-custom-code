@@ -17,6 +17,8 @@
        3. Vervangt de Sempertex winkelmandknop door een
           bestelblok dat terugverwijst naar de webshop van de
           distributeur, met de twee gekozen kleurcodes erbij.
+     Alle links naar de distributeur openen in een nieuw tabblad,
+     zodat de calculator openblijft terwijl er besteld wordt.
 
      MAINTENANCE = 1 BESTAND
      De calculator zelf blijft inspiration-v18.html. Een fix of
@@ -116,8 +118,6 @@
         innerLabel: 'Interior',
         outerLabel: 'Exterior',
         mainBtn: 'Ver globos Sempertex',
-        copyBtn: 'Copiar codigos',
-        copiedBtn: 'Copiado',
         sizesLabel: 'O ve directamente a la medida:',
         /* TODO Robin: als Liragram een zoek-URL heeft (bv.
            /es/buscador.html?texto=XXX) zet die dan in searchUrl,
@@ -286,7 +286,6 @@
     '.stx-pt-actions { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }',
     '.stx-pt-btn { display: inline-block; font-family: inherit; font-size: 15px; font-weight: 800; padding: 13px 24px; border-radius: 8px; border: 2px solid ' + P.brand + '; background: ' + P.brand + '; color: #fff; text-decoration: none; cursor: pointer; transition: transform .15s ease, box-shadow .15s ease; }',
     '.stx-pt-btn:hover { transform: scale(1.03); box-shadow: 0 10px 26px rgba(0,0,0,.18); }',
-    '.stx-pt-btn.ghost { background: #fff; color: ' + P.brandDark + '; }',
     '.stx-pt-sizes { margin-top: 16px; font-size: 13px; }',
     '.stx-pt-sizes span { font-weight: 700; opacity: .7; margin-right: 8px; }',
     '.stx-pt-sizes a { display: inline-block; margin: 6px 8px 0 0; font-size: 13px; font-weight: 700; text-decoration: none; color: ' + P.brandDark + '; background: #fff; border-radius: 999px; padding: 7px 14px; }',
@@ -364,8 +363,8 @@
     var bar = document.createElement('div');
     bar.className = 'stx-pt-bar';
     bar.innerHTML = '<div class="stx-pt-in">'
-      + '<a href="' + esc(P.homeUrl) + '"><img src="' + esc(P.logo) + '" alt="' + esc(P.name) + '"></a>'
-      + '<a class="stx-pt-back" href="' + esc(P.shopUrl) + '">' + esc(P.backLabel) + '</a>'
+      + '<a href="' + esc(P.homeUrl) + '" target="_blank" rel="noopener"><img src="' + esc(P.logo) + '" alt="' + esc(P.name) + '"></a>'
+      + '<a class="stx-pt-back" href="' + esc(P.shopUrl) + '" target="_blank" rel="noopener">' + esc(P.backLabel) + '</a>'
       + '</div>';
     root.parentNode.insertBefore(bar, root);
 
@@ -380,7 +379,6 @@
         + '<div class="stx-pt-picks" id="stx-pt-picks"></div>'
         + '<div class="stx-pt-actions">'
         + '<a class="stx-pt-btn" id="stx-pt-main" href="' + esc(P.shopUrl) + '" target="_blank" rel="noopener">' + esc(O.mainBtn) + '</a>'
-        + '<button type="button" class="stx-pt-btn ghost" id="stx-pt-copy">' + esc(O.copyBtn) + '</button>'
         + '</div>'
         + (O.sizes && O.sizes.length
             ? '<div class="stx-pt-sizes"><span>' + esc(O.sizesLabel) + '</span>'
@@ -397,16 +395,6 @@
         if (e.target.closest('#stx-pt-main')) {
           track('partner_order_click', { target: 'shop', codes: document.getElementById('stx-pt-main').getAttribute('data-codes') || '' });
           return;
-        }
-        var cp = e.target.closest('#stx-pt-copy');
-        if (cp) {
-          var codes = (document.getElementById('stx-pt-main').getAttribute('data-codes') || '');
-          try {
-            if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(codes); }
-          } catch (err) {}
-          cp.textContent = O.copiedBtn;
-          setTimeout(function () { cp.textContent = O.copyBtn; }, 1600);
-          track('partner_order_click', { target: 'copy', codes: codes });
         }
       });
     }
