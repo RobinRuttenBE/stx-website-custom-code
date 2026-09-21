@@ -1,7 +1,9 @@
-// Check for sections/mbp-v1.html: the public MBP page at /mbp.
+// Check for the two public MBP pages:
+//   sections/mbp-v1.html          -> /mbp, the explanation
+//   sections/mbp-listing-v1.html  -> /mbp-listing, the directory
 //
 // Serves a rebuilt Odoo page and injects the section the way the loader does,
-// on /mbp and on the language versions. No connection to the live site.
+// on both paths and on the language versions. No connection to the live site.
 //
 //   node test.js
 //
@@ -12,7 +14,18 @@ const fs = require('fs');
 const path = require('path');
 const { chromium } = require(process.env.STX_PLAYWRIGHT || '../../../stx-tools/node_modules/playwright');
 
-const SECTION = fs.readFileSync(path.resolve(__dirname, '../../sections/mbp-v1.html'), 'utf8');
+const SECTIONS = {
+  '/mbp': fs.readFileSync(path.resolve(__dirname, '../../sections/mbp-v1.html'), 'utf8'),
+  '/mbp-listing': fs.readFileSync(path.resolve(__dirname, '../../sections/mbp-listing-v1.html'), 'utf8'),
+};
+
+// Welke sectie de loader op welk pad zou laden: endsWith, net als de echte loader.
+function sectionFor(urlPath) {
+  const p = urlPath.replace(/\/+$/, '').toLowerCase();
+  if (p.endsWith('/mbp-listing')) return SECTIONS['/mbp-listing'];
+  if (p.endsWith('/mbp')) return SECTIONS['/mbp'];
+  return '';
+}
 
 function page() {
   return `<!doctype html><html lang="nl"><head><meta charset="utf-8"><title>MBP | Sempertex Europe</title></head><body>
@@ -25,19 +38,22 @@ function page() {
 </div>
 <script>
 // Wat de section loader doet: markup injecteren en de scripts erin uitvoeren.
-fetch('/section.html').then(function (r) { return r.text(); }).then(function (html) {
-  var tpl = document.createElement('template');
-  tpl.innerHTML = html;
-  var scripts = Array.prototype.slice.call(tpl.content.querySelectorAll('script'));
-  scripts.forEach(function (s) { s.parentNode.removeChild(s); });
-  document.body.appendChild(tpl.content);
-  scripts.forEach(function (old) {
-    var s = document.createElement('script');
-    s.text = old.text;
-    document.body.appendChild(s);
+fetch('/section.html?p=' + encodeURIComponent(location.pathname))
+  .then(function (r) { return r.text(); })
+  .then(function (html) {
+    if (!html) { window.__injected = true; return; }
+    var tpl = document.createElement('template');
+    tpl.innerHTML = html;
+    var scripts = Array.prototype.slice.call(tpl.content.querySelectorAll('script'));
+    scripts.forEach(function (s) { s.parentNode.removeChild(s); });
+    document.body.appendChild(tpl.content);
+    scripts.forEach(function (old) {
+      var s = document.createElement('script');
+      s.text = old.text;
+      document.body.appendChild(s);
+    });
+    window.__injected = true;
   });
-  window.__injected = true;
-});
 </script>
 </body></html>`;
 }
@@ -45,10 +61,11 @@ fetch('/section.html').then(function (r) { return r.text(); }).then(function (ht
 function serve() {
   return new Promise((res) => {
     const s = http.createServer((req, rsp) => {
-      const url = req.url.split('?')[0];
+      const [url, qs] = req.url.split('?');
       if (url === '/section.html') {
+        const params = new URLSearchParams(qs || '');
         rsp.writeHead(200, { 'content-type': 'text/html; charset=utf-8' });
-        rsp.end(SECTION);
+        rsp.end(sectionFor(params.get('p') || '/'));
         return;
       }
       rsp.writeHead(200, { 'content-type': 'text/html; charset=utf-8' });
@@ -73,71 +90,47 @@ function check(name, ok, extra) {
     const ctx = await browser.newContext({ viewport: { width, height: 1000 } });
     const pg = await ctx.newPage();
     pg.on('pageerror', (e) => { check('geen scriptfout op ' + p, false, e.message); });
-    await pg.route('**', (r) => (r.request().url().startsWith(base) ? r.continue() : r.abort()));
+    // Alleen onze server, de Google fonts en de Sempertex CDN (de profielfoto's).
+    await pg.route('**', (r) => {
+      const u = r.request().url();
+      if (u.startsWith(base)) return r.continue();
+      if (/fonts\.(googleapis|gstatic)|sempertex\.com\/cdn/.test(u)) return r.continue();
+      return r.abort();
+    });
     await pg.goto(base + p, { waitUntil: 'domcontentloaded' });
-    await pg.waitForTimeout(700);
+    await pg.waitForTimeout(800);
     return { ctx, pg };
   }
 
-  console.log('\n/mbp (Nederlands)');
+  console.log('\n/mbp: de uitleg (Nederlands)');
   {
     const { ctx, pg } = await open('/mbp');
 
-    check('sectie staat er', (await pg.$('#stx-mbp-root')) !== null);
-    const vis = await pg.evaluate(() => {
+    check('sectie staat er en is zichtbaar', await pg.evaluate(() => {
       const n = document.querySelector('#stx-mbp-root');
-      return n ? getComputedStyle(n).display !== 'none' : false;
-    });
-    check('sectie is zichtbaar', vis);
-
-    const inWrap = await pg.evaluate(() => !!document.querySelector('#wrap #stx-mbp-root'));
-    check('sectie zit in #wrap, zoals de andere secties', inWrap);
+      return !!n && getComputedStyle(n).display !== 'none';
+    }));
+    check('sectie zit in #wrap', await pg.evaluate(() => !!document.querySelector('#wrap #stx-mbp-root')));
 
     const h1 = await pg.textContent('#stx-mbp-root h1');
-    check('titel staat in het Nederlands', /Master Balloon Professional/.test(h1) && /Word/.test(h1), h1);
-
-    const total = await pg.textContent('#mbp-count-total');
-    const eu = await pg.textContent('#mbp-count-eu');
-    check('aantallen kloppen', total === '266' && eu === '63', total + ' / ' + eu);
+    check('titel staat in het Nederlands', /Word/.test(h1) && /Master Balloon Professional/.test(h1), h1);
 
     const crit = await pg.$$eval('#mbp-p1 li, #mbp-p2 li', (e) => e.length);
     const pts = await pg.$$eval('#mbp-p1 b, #mbp-p2 b', (e) =>
       e.reduce((a, x) => a + parseInt(x.textContent, 10), 0));
     check('acht criteria, samen 100 punten', crit === 8 && pts === 100, crit + ' criteria, ' + pts + ' punten');
 
-    const euCards = await pg.$$eval('#mbp-eu-grid .p', (e) => e.length);
-    check('alle Europese MBPs staan er', euCards === 63, String(euCards));
+    check('de lijst staat hier NIET meer', (await pg.$('#mbpl-eu-grid')) === null);
+    check('wel een doorverwijzing naar de lijst', (await pg.$('#mbp-listing-link')) !== null);
+    const link = await pg.getAttribute('#mbp-listing-link', 'href');
+    check('die wijst naar /mbp-listing', link === '/mbp-listing', link);
 
-    const euChips = await pg.$$eval('#mbp-eu-filters button', (e) => e.length);
-    check('landenfilter voor Europa', euChips === 14, euChips + ' knoppen');
-
-    await pg.click('#mbp-eu-filters [data-c="Italy"]');
-    await pg.waitForTimeout(200);
-    const italy = await pg.$$eval('#mbp-eu-grid .p', (e) => e.length);
-    check('filteren op land werkt', italy === 27, String(italy));
-
-    await pg.click('#mbp-eu-filters [data-c="__all__"]');
-    await pg.fill('#mbp-search', 'audrey');
-    await pg.waitForTimeout(200);
-    const found = await pg.$$eval('#mbp-eu-grid .p', (e) => e.map((x) => x.textContent));
-    check('zoeken op naam werkt', found.length === 1 && /Audrey Parsons/.test(found[0]), JSON.stringify(found));
-
-    await pg.fill('#mbp-search', '');
-    await pg.waitForTimeout(200);
-    const restShown = await pg.$$eval('#mbp-rest-grid .p', (e) => e.length);
-    await pg.click('#mbp-rest-toggle');
-    await pg.waitForTimeout(250);
-    const restAll = await pg.$$eval('#mbp-rest-grid .p', (e) => e.length);
-    check('rest van de wereld staat ingeklapt onder Europa', restShown === 16 && restAll === 203,
-      restShown + ' -> ' + restAll);
-
-    // Europa moet prominenter staan dan de rest: hoger op de pagina en met zoekveld.
-    const order = await pg.evaluate(() => {
-      const eu = document.querySelector('#mbp-eu-grid').getBoundingClientRect().top;
-      const rest = document.querySelector('#mbp-rest-grid').getBoundingClientRect().top;
-      return { eu, rest, search: !!document.querySelector('#mbp-search') };
-    });
-    check('Europa staat boven de rest van de wereld', order.eu < order.rest && order.search);
+    const counts = await pg.evaluate(() => [
+      document.getElementById('mbp-count-total').textContent,
+      document.getElementById('mbp-count-eu').textContent,
+      document.getElementById('mbp-count-eu2').textContent,
+    ]);
+    check('aantallen kloppen op beide plekken', counts.join(',') === '266,63,63', counts.join(','));
 
     const book = await pg.getAttribute('#mbp-book', 'href');
     check('examenknop gaat naar de eventpagina', book === '/events', book);
@@ -146,38 +139,160 @@ function check(name, ok, extra) {
     await ctx.close();
   }
 
-  console.log('\n/en_GB/mbp (Engels, met taalprefix)');
+  console.log('\n/mbp-listing: de lijst (Nederlands)');
   {
-    const { ctx, pg } = await open('/en_GB/mbp');
-    const h1 = await pg.textContent('#stx-mbp-root h1');
-    check('titel staat in het Engels', /Become a/.test(h1), h1);
-    const book = await pg.getAttribute('#mbp-book', 'href');
-    check('links houden de taalprefix', book === '/en_GB/events', book);
+    const { ctx, pg } = await open('/mbp-listing');
+
+    check('sectie staat er en is zichtbaar', await pg.evaluate(() => {
+      const n = document.querySelector('#stx-mbpl-root');
+      return !!n && getComputedStyle(n).display !== 'none';
+    }));
+
+    const h1 = await pg.textContent('#stx-mbpl-root h1');
+    check('titel staat in het Nederlands', /MBP-lijst/.test(h1), h1);
+
+    const euCards = await pg.$$eval('#mbpl-eu-grid .p', (e) => e.length);
+    check('alle 63 Europese MBPs staan er', euCards === 63, String(euCards));
+
+    const photos = await pg.$$eval('#mbpl-eu-grid .pic img', (e) => e.length);
+    check('elke Europese MBP heeft een profielfoto', photos === 63, String(photos));
+
+    const loaded = await pg.$$eval('#mbpl-eu-grid .pic img', (e) => e.filter((x) => x.naturalWidth > 0).length);
+    check('die fotos laden ook echt van de CDN', loaded >= 55, loaded + ' van ' + photos);
+
+    const euChips = await pg.$$eval('#mbpl-eu-filters button', (e) => e.length);
+    check('landenfilter voor Europa', euChips === 14, euChips + ' knoppen');
+
+    await pg.click('#mbpl-eu-filters [data-c="Italy"]');
+    await pg.waitForTimeout(200);
+    check('filteren op land werkt', (await pg.$$eval('#mbpl-eu-grid .p', (e) => e.length)) === 27);
+
+    await pg.click('#mbpl-eu-filters [data-c="__all__"]');
+    await pg.fill('#mbpl-search', 'audrey');
+    await pg.waitForTimeout(200);
+    const found = await pg.$$eval('#mbpl-eu-grid .p', (e) => e.map((x) => x.textContent));
+    check('zoeken op naam werkt', found.length === 1 && /Audrey Parsons/.test(found[0]), JSON.stringify(found));
+    await pg.fill('#mbpl-search', '');
+    await pg.waitForTimeout(200);
+
+    const restShown = await pg.$$eval('#mbpl-rest-grid .p', (e) => e.length);
+    await pg.click('#mbpl-rest-toggle');
+    await pg.waitForTimeout(250);
+    const restAll = await pg.$$eval('#mbpl-rest-grid .p', (e) => e.length);
+    check('rest van de wereld staat ingeklapt onder Europa', restShown === 16 && restAll === 203,
+      restShown + ' -> ' + restAll);
+
+    const order = await pg.evaluate(() => {
+      const eu = document.querySelector('#mbpl-eu-grid').getBoundingClientRect().top;
+      const rest = document.querySelector('#mbpl-rest-grid').getBoundingClientRect().top;
+      return eu < rest && !!document.querySelector('#mbpl-search');
+    });
+    check('Europa staat boven de rest, met het zoekveld', order);
+
+    // Profiel: socials en portfolio
+    await pg.click('#mbpl-eu-grid .p:has-text("Mazzocca")');
+    await pg.waitForTimeout(400);
+    const sheet = await pg.evaluate(() => {
+      const n = document.querySelector('.stx-mbpl-sheet .in');
+      if (!n) return null;
+      return {
+        name: n.querySelector('h3').textContent.trim(),
+        socials: [...n.querySelectorAll('.soc a')].map((a) => a.getAttribute('href')),
+        gallery: n.querySelectorAll('.track figure').length,
+        photo: !!n.querySelector('.big img'),
+      };
+    });
+    check('profiel toont naam, kanalen en portfolio',
+      sheet && /Mazzocca/.test(sheet.name) && sheet.socials.length >= 1 && sheet.gallery === 2 && sheet.photo,
+      JSON.stringify(sheet));
+    check('de kanaallink gaat naar Instagram',
+      sheet && /instagram\.com\/balloonmagico/.test(sheet.socials[0] || ''), (sheet || {}).socials);
+
+    await pg.screenshot({ path: path.resolve(__dirname, 'mbp-profile.png') });
+    await pg.keyboard.press('Escape');
+    await pg.waitForTimeout(300);
+    check('profiel sluit met Escape', (await pg.$('.stx-mbpl-sheet')) === null);
+
+    // Iemand zonder portfolio krijgt een nette lege staat, geen kapotte carrousel.
+    await pg.click('#mbpl-eu-grid .p:has-text("Bjorn de Weirdt")');
+    await pg.waitForTimeout(350);
+    const empty = await pg.evaluate(() => {
+      const n = document.querySelector('.stx-mbpl-sheet .in');
+      return n ? { none: !!n.querySelector('.none'), track: !!n.querySelector('.track'),
+                   socials: n.querySelectorAll('.soc a').length } : null;
+    });
+    check('zonder portfolio: nette melding, geen lege carrousel',
+      empty && empty.none && !empty.track && empty.socials === 3, JSON.stringify(empty));
+    await pg.keyboard.press('Escape');
+
+    const back = await pg.getAttribute('#mbpl-about', 'href');
+    check('link terug naar de uitleg', back === '/mbp', back);
+
+    await pg.screenshot({ path: path.resolve(__dirname, 'mbp-listing-nl.png'), fullPage: true });
     await ctx.close();
   }
 
-  console.log('\n/fr/mbp en /de/mbp');
-  for (const [p, needle] of [['/fr/mbp', 'Devenez'], ['/de/mbp', 'Werde']]) {
+  console.log('\nTaalversies');
+  for (const [p, sel, needle] of [
+    ['/en_GB/mbp', '#stx-mbp-root h1', 'Become a'],
+    ['/fr/mbp', '#stx-mbp-root h1', 'Devenez'],
+    ['/de/mbp', '#stx-mbp-root h1', 'Werde'],
+    ['/en_GB/mbp-listing', '#stx-mbpl-root h1', 'The '],
+    ['/fr/mbp-listing', '#stx-mbpl-root h1', 'annuaire'],
+    ['/de/mbp-listing', '#stx-mbpl-root h1', 'Verzeichnis'],
+  ]) {
     const { ctx, pg } = await open(p);
-    const h1 = await pg.textContent('#stx-mbp-root h1');
-    check(p + ' is vertaald', h1.indexOf(needle) === 0, h1);
+    const h1 = await pg.textContent(sel);
+    check(p + ' is vertaald', h1.indexOf(needle) > -1, h1);
     await ctx.close();
   }
 
-  console.log('\n/shop (de sectie hoort daar niet te staan)');
+  console.log('\nTaalprefix blijft staan zoals Odoo hem schrijft');
   {
-    const { ctx, pg } = await open('/shop');
-    check('sectie verwijdert zichzelf buiten /mbp', (await pg.$('#stx-mbp-root')) === null);
+    const { ctx, pg } = await open('/en_GB/mbp-listing');
+    const about = await pg.getAttribute('#mbpl-about', 'href');
+    const book = await pg.getAttribute('#mbpl-book', 'href');
+    check('links houden /en_GB', about === '/en_GB/mbp' && book === '/en_GB/events', about + ' | ' + book);
+    await ctx.close();
+  }
+
+  console.log('\nBuiten de eigen paden');
+  for (const [p, sel] of [['/shop', '#stx-mbp-root'], ['/shop', '#stx-mbpl-root']]) {
+    const { ctx, pg } = await open(p);
+    check('sectie ' + sel + ' staat niet op ' + p, (await pg.$(sel)) === null);
+    await ctx.close();
+  }
+  {
+    // /mbp-listing eindigt niet op /mbp, dus de uitlegpagina mag daar niet opduiken.
+    const { ctx, pg } = await open('/mbp-listing');
+    check('de uitlegsectie duikt niet op in de lijst', (await pg.$('#stx-mbp-root')) === null);
     await ctx.close();
   }
 
   console.log('\nTelefoonformaat');
-  {
-    const { ctx, pg } = await open('/mbp', 390);
+  for (const p of ['/mbp', '/mbp-listing']) {
+    const { ctx, pg } = await open(p, 390);
     const scroll = await pg.evaluate(() =>
       document.documentElement.scrollWidth - document.documentElement.clientWidth);
-    check('geen horizontale scroll', scroll <= 2, scroll + 'px');
-    await pg.screenshot({ path: path.resolve(__dirname, 'mbp-mobile.png'), fullPage: true });
+    check('geen horizontale scroll op ' + p, scroll <= 2, scroll + 'px');
+    await pg.screenshot({ path: path.resolve(__dirname, 'mbp-mobile' + p.replace(/\//g, '-') + '.png'), fullPage: true });
+    await ctx.close();
+  }
+
+  console.log('\nAlles in Rethink Sans');
+  for (const p of ['/mbp', '/mbp-listing']) {
+    const { ctx, pg } = await open(p);
+    const bad = await pg.evaluate(() => {
+      const root = document.querySelector('#stx-mbp-root, #stx-mbpl-root');
+      const out = new Set();
+      root.querySelectorAll('*').forEach((n) => {
+        if (!n.textContent.trim() || n.children.length) return;
+        const f = getComputedStyle(n).fontFamily;
+        if (!/Rethink Sans/.test(f)) out.add(n.tagName + ': ' + f);
+      });
+      return [...out];
+    });
+    check('geen ander font op ' + p, bad.length === 0, bad.slice(0, 3).join(' | '));
     await ctx.close();
   }
 

@@ -1,0 +1,828 @@
+<!-- ============================================================
+     STX EU / MBP LIJST v1
+     Bestand hoort in de repo onder /sections/ en wordt door de
+     stx-loader geladen op /mbp-listing (en de taalversies).
+     NIET los in Odoo plakken.
+
+     WAT DIT DOET
+     De publieke lijst van alle Master Balloon Professionals.
+     /mbp legt uit wat de certificering is; deze pagina toont wie
+     hem behaald heeft.
+       - Europa staat bovenaan met zoekveld en landenfilters, want
+         dat is onze markt. De rest van de wereld staat eronder,
+         compacter en ingeklapt.
+       - Elke kaart heeft de profielfoto uit het register. Klik erop
+         en je ziet hun Instagram, Facebook, TikTok en website, plus
+         een carrousel met hun werk als dat er is.
+     Bron: sempertex.com/blogs/directorio-mbp, overgenomen in MBPS
+     onderaan dit bestand. De fotos komen rechtstreeks van de
+     Sempertex CDN, die hoeven we dus niet te kopieren.
+
+     EEN NIEUWE GECERTIFICEERDE TOEVOEGEN
+     Een regel bij in MBPS, met:
+       n  naam
+       c  land
+       t  stad (optioneel)
+       e  1 als het Europa is (dan staat hij bovenaan)
+       p  profielfoto: het stuk na /cdn/shop/articles/
+       g  portfoliofotos: het stuk na /cdn/shop/files/
+       s  kanalen: i instagram, f facebook, k tiktok, w website
+
+     Sinds 21/09/2026.
+     ============================================================ -->
+
+<link href="https://fonts.googleapis.com/css2?family=Rethink+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,700&display=swap" rel="stylesheet">
+
+<div class="stx-mbpl" id="stx-mbpl-root" style="display:none">
+  <div class="wrap">
+
+    <section class="head">
+      <div class="eyebrow" data-i18n="l_eyebrow">Certification</div>
+      <h1 data-i18n="l_h">The <span class="hl">MBP directory</span></h1>
+      <p class="lede" data-i18n="l_lede">
+        Every professional who passed the Master Balloon Professional exam. Looking for someone to
+        work with, or to hand a job to in another country? Start here.
+      </p>
+      <a class="btn ghost" id="mbpl-about" href="/mbp" data-i18n="l_about">What is MBP?</a>
+    </section>
+
+    <section class="sec">
+      <div class="dir-head">
+        <div class="dir-title">
+          <span class="pill d" data-i18n="l_eu_tag">Europe</span>
+          <h2 data-i18n="l_eu_h">Professionals in Europe</h2>
+          <p id="mbpl-eu-lede"></p>
+        </div>
+        <div class="search">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>
+          <input type="search" id="mbpl-search" data-i18n-ph="l_ph" placeholder="Search by name or country">
+        </div>
+      </div>
+      <div class="chips filters" id="mbpl-eu-filters"></div>
+      <p class="count" id="mbpl-eu-count"></p>
+      <div class="people" id="mbpl-eu-grid"></div>
+    </section>
+
+    <section class="sec">
+      <div class="rest-head">
+        <div>
+          <h2 data-i18n="l_rest_h">Elsewhere in the world</h2>
+          <p data-i18n="l_rest_p">Certified through the other Sempertex offices.</p>
+        </div>
+        <button type="button" class="more" id="mbpl-rest-toggle"></button>
+      </div>
+      <div class="chips filters" id="mbpl-rest-filters"></div>
+      <div class="people compact" id="mbpl-rest-grid"></div>
+    </section>
+
+    <section class="sec">
+      <div class="join">
+        <div>
+          <div class="eyebrow" data-i18n="l_join_eyebrow">Want to be on this page?</div>
+          <h2 data-i18n="l_join_h">Take the <span class="hl">MBP exam</span></h2>
+          <p data-i18n="l_join_p">
+            One practical exam, scored out of 100 by a jury of professionals. Pass it and your name,
+            your photo and your work appear here, where clients look for a decorator in their region.
+          </p>
+        </div>
+        <div class="join-cta">
+          <a class="btn big" id="mbpl-book" href="/events" data-i18n="l_join_cta">Book your exam</a>
+          <a class="more" id="mbpl-about2" href="/mbp" data-i18n="l_join_more">Read what the exam asks</a>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<style>
+  .stx-mbpl {
+    --purple: #6b3fb9; --purple-light: #f1d9ff; --purple-bg: #faf4ff;
+    --dark: #1b073d; --yellow: #ffdb5a; --magenta: #cd0b5c;
+    --rule: #e8dcf5; --g100: #f4f4f5; --g400: #8e8e97; --g600: #4a4a54;
+    --ease: cubic-bezier(.2, .7, .3, 1);
+    font-family: 'Rethink Sans', system-ui, sans-serif;
+    color: var(--dark); background: #fff;
+  }
+  .stx-mbpl .wrap { max-width: 1280px; margin: 0 auto; padding: clamp(26px, 3.5vw, 52px) clamp(14px, 3vw, 40px) clamp(56px, 8vw, 110px); }
+  .stx-mbpl h1, .stx-mbpl h2, .stx-mbpl h3 { margin: 0; letter-spacing: -.02em; line-height: 1.12; }
+  .stx-mbpl h1 { font-size: clamp(32px, 4.2vw, 50px); font-weight: 800; }
+  .stx-mbpl h2 { font-size: clamp(24px, 2.8vw, 34px); font-weight: 800; }
+  .stx-mbpl h3 { font-size: clamp(18px, 1.7vw, 22px); font-weight: 800; }
+  .stx-mbpl p { margin: 0; }
+  .stx-mbpl .lede { font-size: clamp(16px, 1.3vw, 19px); color: var(--g600); max-width: 62ch; margin: 14px 0 0; }
+  .stx-mbpl .eyebrow { font-size: 13px; font-weight: 800; letter-spacing: .13em; text-transform: uppercase; color: var(--purple); margin-bottom: 10px; }
+  .stx-mbpl .hl { background: var(--yellow); padding: 0 .16em; box-decoration-break: clone; -webkit-box-decoration-break: clone; border-radius: 3px; }
+  .stx-mbpl .sec { margin-top: clamp(38px, 4.5vw, 70px); }
+  .stx-mbpl .head .btn { margin-top: 24px; }
+
+  .stx-mbpl .btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 13px 26px; border-radius: 11px; font-size: 16px; font-weight: 700;
+    text-decoration: none; border: 2px solid var(--purple); background: var(--purple); color: #fff;
+    transition: transform .16s var(--ease), box-shadow .16s var(--ease), background .16s var(--ease);
+  }
+  .stx-mbpl .btn:hover { background: #5c35a1; border-color: #5c35a1; color: #fff; transform: translateY(-2px); box-shadow: 0 8px 22px rgba(27,7,61,.18); }
+  .stx-mbpl .btn.ghost { background: #fff; color: var(--purple); }
+  .stx-mbpl .btn.ghost:hover { background: var(--purple-light); color: var(--purple); border-color: var(--purple); }
+  .stx-mbpl .btn.big { padding: 16px 32px; font-size: 17px; }
+
+  .stx-mbpl .pill { font-size: 12px; font-weight: 800; letter-spacing: .07em; text-transform: uppercase; padding: 5px 12px; border-radius: 999px; background: var(--purple-light); color: var(--purple); }
+  .stx-mbpl .pill.d { background: var(--dark); color: var(--yellow); }
+
+  .stx-mbpl .dir-head { display: flex; flex-wrap: wrap; gap: 22px; align-items: flex-end; background: var(--purple-light); border-radius: 18px; padding: clamp(20px, 2.4vw, 32px); }
+  .stx-mbpl .dir-title { flex: 1 1 320px; }
+  .stx-mbpl .dir-title h2 { margin-top: 12px; }
+  .stx-mbpl .dir-title p { font-size: 15.5px; color: var(--g600); margin-top: 12px; max-width: 54ch; }
+  .stx-mbpl .search { display: flex; align-items: center; gap: 11px; background: #fff; border: 1.5px solid transparent; border-radius: 999px; padding: 12px 20px; flex: 1 1 280px; max-width: 420px; color: var(--g400); transition: border-color .15s var(--ease), box-shadow .15s var(--ease); }
+  .stx-mbpl .search:hover { border-color: var(--purple); }
+  .stx-mbpl .search:focus-within { border-color: var(--purple); box-shadow: 0 0 0 4px rgba(107,63,185,.16); }
+  .stx-mbpl .search input { border: none; outline: none; font: inherit; font-size: 16px; flex: 1; min-width: 0; background: none; color: var(--dark); }
+
+  .stx-mbpl .chips { display: flex; flex-wrap: wrap; gap: 9px; }
+  .stx-mbpl .filters { margin-top: 22px; }
+  .stx-mbpl .filters button {
+    border: 1.5px solid var(--rule); background: #fff; color: var(--g600);
+    border-radius: 999px; padding: 8px 16px; font: inherit; font-size: 14.5px; font-weight: 700;
+    cursor: pointer;
+    transition: border-color .15s var(--ease), color .15s var(--ease), background .15s var(--ease), transform .15s var(--ease);
+  }
+  .stx-mbpl .filters button:hover { border-color: var(--purple); color: var(--purple); background: var(--purple-bg); transform: translateY(-1px); }
+  .stx-mbpl .filters button.on { background: var(--dark); border-color: var(--dark); color: var(--yellow); }
+  .stx-mbpl .filters button i { font-style: normal; opacity: .55; margin-left: 6px; }
+
+  .stx-mbpl .count { font-size: 14.5px; color: var(--g600); margin-top: 20px; }
+  .stx-mbpl .people { display: grid; grid-template-columns: repeat(auto-fill, minmax(275px, 1fr)); gap: 15px; margin-top: 15px; }
+  .stx-mbpl .people.compact { grid-template-columns: repeat(auto-fill, minmax(225px, 1fr)); }
+  .stx-mbpl .p {
+    display: flex; align-items: center; gap: 14px; width: 100%; text-align: left;
+    background: #fff; border: 1px solid var(--rule); border-radius: 14px; padding: 14px 16px;
+    font: inherit; cursor: pointer;
+    transition: border-color .15s var(--ease), transform .15s var(--ease), box-shadow .15s var(--ease);
+  }
+  .stx-mbpl .p:hover { border-color: var(--purple); transform: translateY(-3px); box-shadow: 0 10px 24px rgba(27,7,61,.1); }
+  .stx-mbpl .p .pic {
+    width: 50px; height: 50px; border-radius: 50%; flex: none; overflow: hidden;
+    display: grid; place-items: center; background: var(--purple-light); color: var(--purple);
+    font-weight: 800; font-size: 16px;
+  }
+  .stx-mbpl .p .pic img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .25s var(--ease); }
+  .stx-mbpl .p:hover .pic img { transform: scale(1.08); }
+  .stx-mbpl .p .n { font-weight: 800; font-size: 16.5px; display: block; line-height: 1.3; }
+  .stx-mbpl .p .c { font-size: 14px; color: var(--g600); display: block; line-height: 1.45; }
+  .stx-mbpl .people.compact .p { padding: 11px 13px; gap: 12px; }
+  .stx-mbpl .people.compact .pic { width: 40px; height: 40px; font-size: 14px; }
+  .stx-mbpl .people.compact .n { font-size: 15px; }
+  .stx-mbpl .people.compact .c { font-size: 13px; }
+
+  .stx-mbpl .rest-head { display: flex; align-items: flex-end; gap: 16px; flex-wrap: wrap; }
+  .stx-mbpl .rest-head p { font-size: 15.5px; color: var(--g600); margin-top: 10px; }
+  .stx-mbpl .more { background: none; border: none; cursor: pointer; font: inherit; font-size: 15.5px; font-weight: 700; color: var(--purple); text-decoration: none; border-bottom: 2px solid transparent; padding: 0 0 2px; transition: border-color .15s var(--ease); }
+  .stx-mbpl .rest-head .more { margin-left: auto; }
+  .stx-mbpl .more:hover { border-bottom-color: var(--yellow); }
+
+  .stx-mbpl .join { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 300px); gap: clamp(24px, 3.5vw, 48px); align-items: center; background: var(--purple-light); border-radius: 20px; padding: clamp(26px, 3.5vw, 48px); }
+  .stx-mbpl .join p { font-size: 16.5px; color: var(--g600); margin-top: 16px; max-width: 58ch; }
+  .stx-mbpl .join-cta { text-align: center; display: flex; flex-direction: column; gap: 16px; align-items: center; }
+
+  /* Profielpaneel */
+  .stx-mbpl-sheet {
+    position: fixed; inset: 0; z-index: 2147482000; background: rgba(27,7,61,.55);
+    display: grid; place-items: center; padding: clamp(14px, 3vw, 40px);
+    font-family: 'Rethink Sans', system-ui, sans-serif; color: #1b073d;
+    animation: mbplFade .2s ease;
+  }
+  @keyframes mbplFade { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes mbplUp { from { opacity: 0; transform: translateY(18px) scale(.985); } to { opacity: 1; transform: none; } }
+  .stx-mbpl-sheet .in { background: #fff; border-radius: 22px; width: min(880px, 100%); max-height: 92vh; overflow: auto; box-shadow: 0 20px 50px rgba(27,7,61,.35); animation: mbplUp .28s cubic-bezier(.2,.7,.3,1); }
+  .stx-mbpl-sheet .top { display: flex; gap: clamp(16px, 2.4vw, 28px); align-items: center; padding: clamp(22px, 3vw, 34px); background: #f1d9ff; border-radius: 22px 22px 0 0; position: relative; }
+  .stx-mbpl-sheet .big { width: clamp(92px, 11vw, 124px); height: clamp(92px, 11vw, 124px); border-radius: 50%; flex: none; overflow: hidden; background: #fff; display: grid; place-items: center; font-weight: 800; font-size: 32px; color: #6b3fb9; box-shadow: 0 6px 20px rgba(27,7,61,.14); }
+  .stx-mbpl-sheet .big img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .stx-mbpl-sheet h3 { font-size: clamp(22px, 2.6vw, 30px); font-weight: 800; margin: 0; letter-spacing: -.02em; }
+  .stx-mbpl-sheet .eyebrow { font-size: 13px; font-weight: 800; letter-spacing: .13em; text-transform: uppercase; color: #6b3fb9; margin: 0 0 6px; }
+  .stx-mbpl-sheet .x { position: absolute; right: 14px; top: 14px; width: 38px; height: 38px; border-radius: 50%; border: none; background: #fff; color: #1b073d; font-size: 20px; line-height: 1; display: grid; place-items: center; cursor: pointer; transition: background .15s ease, transform .15s ease; }
+  .stx-mbpl-sheet .x:hover { background: #ffdb5a; transform: rotate(90deg); }
+  .stx-mbpl-sheet .body { padding: clamp(20px, 2.6vw, 30px); }
+  .stx-mbpl-sheet .soc { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+  .stx-mbpl-sheet .soc a { display: inline-flex; align-items: center; gap: 8px; padding: 9px 16px; border-radius: 999px; text-decoration: none; background: #fff; border: 1.5px solid #e8dcf5; color: #1b073d; font-size: 14.5px; font-weight: 700; transition: border-color .15s ease, transform .15s ease, background .15s ease; }
+  .stx-mbpl-sheet .soc a:hover { border-color: #6b3fb9; background: #faf4ff; transform: translateY(-2px); }
+  .stx-mbpl-sheet .car { position: relative; }
+  .stx-mbpl-sheet .track { display: flex; gap: 14px; overflow-x: auto; scroll-behavior: smooth; scroll-snap-type: x mandatory; padding-bottom: 6px; }
+  .stx-mbpl-sheet .track figure { margin: 0; flex: 0 0 clamp(200px, 42%, 280px); scroll-snap-align: start; border-radius: 16px; overflow: hidden; background: #f4f4f5; aspect-ratio: 4 / 5; transition: transform .2s ease; }
+  .stx-mbpl-sheet .track figure:hover { transform: translateY(-3px); }
+  .stx-mbpl-sheet .track img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .stx-mbpl-sheet .nav { position: absolute; top: 50%; transform: translateY(-50%); z-index: 2; }
+  .stx-mbpl-sheet .nav.prev { left: -14px; }
+  .stx-mbpl-sheet .nav.next { right: -14px; }
+  .stx-mbpl-sheet .nav button { width: 40px; height: 40px; border-radius: 50%; border: 1.5px solid #e8dcf5; background: #fff; color: #1b073d; font-size: 17px; line-height: 1; cursor: pointer; box-shadow: 0 1px 3px rgba(27,7,61,.1); transition: background .15s ease, transform .15s ease; }
+  .stx-mbpl-sheet .nav button:hover { background: #ffdb5a; border-color: #ffdb5a; transform: scale(1.08); }
+  .stx-mbpl-sheet .none { background: #faf4ff; border-radius: 16px; padding: 24px; }
+  .stx-mbpl-sheet .fine { font-size: 14px; color: #4a4a54; margin-top: 20px; }
+
+  @media (max-width: 900px) {
+    .stx-mbpl .join { grid-template-columns: minmax(0, 1fr); }
+  }
+</style>
+
+<script>
+(function stxReady(fn) {
+  if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', fn); }
+  else { fn(); }
+})(function () {
+  'use strict';
+
+  var root = document.getElementById('stx-mbpl-root');
+  if (!root) { return; }
+
+  /* ---- GUARD: alleen op /mbp-listing, met of zonder taalprefix ---- */
+  var p = window.location.pathname;
+  while (p.length > 1 && p.charAt(p.length - 1) === '/') { p = p.slice(0, -1); }
+  var isFile = (window.location.protocol === 'file:');
+  if (!isFile && p.slice(-12).toLowerCase() !== '/mbp-listing') {
+    if (root.parentNode) { root.parentNode.removeChild(root); }
+    return;
+  }
+
+  /* ---- TAAL ----
+     Het segment blijft staan zoals Odoo het schrijft (en_GB met
+     hoofdletters), alleen het herkennen gebeurt in kleine letters. */
+  var seg = p.split('/')[1] || '';
+  function langFrom(s) {
+    s = s.toLowerCase();
+    if (s === 'en' || s.indexOf('en_') === 0 || s.indexOf('en-') === 0) { return 'en'; }
+    if (s === 'de' || s.indexOf('de_') === 0 || s.indexOf('de-') === 0) { return 'de'; }
+    if (s === 'fr' || s.indexOf('fr_') === 0 || s.indexOf('fr-') === 0) { return 'fr'; }
+    return 'nl';
+  }
+  var lang = langFrom(seg);
+  var prefix = (lang !== 'nl') ? '/' + seg : '';
+
+  var ART = 'https://sempertex.com/cdn/shop/articles/';
+  var FIL = 'https://sempertex.com/cdn/shop/files/';
+
+  var I18N = {
+    en: {
+      l_eyebrow: 'Certification', l_h: 'The <span class="hl">MBP directory</span>',
+      l_lede: 'Every professional who passed the Master Balloon Professional exam. Looking for someone to work with, or to hand a job to in another country? Start here.',
+      l_about: 'What is MBP?', l_eu_tag: 'Europe', l_eu_h: 'Professionals in Europe',
+      l_ph: 'Search by name or country',
+      l_rest_h: 'Elsewhere in the world', l_rest_p: 'Certified through the other Sempertex offices.',
+      l_join_eyebrow: 'Want to be on this page?', l_join_h: 'Take the <span class="hl">MBP exam</span>',
+      l_join_p: 'One practical exam, scored out of 100 by a jury of professionals. Pass it and your name, your photo and your work appear here, where clients look for a decorator in their region.',
+      l_join_cta: 'Book your exam', l_join_more: 'Read what the exam asks',
+      eu_lede: 'Sempertex Europe has {n} certified professionals across {c} countries. Click anyone to see their channels and their work.',
+      count: '{n} of {t} European professionals.',
+      show_all: 'Show all {n}', show_less: 'Show fewer', all: 'All',
+      none: 'No professional matches that search yet.',
+      work: 'Their work', nowork: 'No portfolio photos in the register yet.',
+      nochan: 'No public channels in the register yet.',
+      source: 'Photos and channels come from the Sempertex certification register.',
+      links: { i: 'Instagram', f: 'Facebook', k: 'TikTok', w: 'Website' }
+    },
+    nl: {
+      l_eyebrow: 'Certificering', l_h: 'De <span class="hl">MBP-lijst</span>',
+      l_lede: 'Elke professional die het Master Balloon Professional examen behaalde. Zoek je iemand om mee samen te werken, of om een opdracht aan door te geven in een ander land? Begin hier.',
+      l_about: 'Wat is MBP?', l_eu_tag: 'Europa', l_eu_h: 'Professionals in Europa',
+      l_ph: 'Zoek op naam of land',
+      l_rest_h: 'Elders in de wereld', l_rest_p: 'Gecertificeerd via de andere Sempertex kantoren.',
+      l_join_eyebrow: 'Wil je hier ook staan?', l_join_h: 'Doe het <span class="hl">MBP-examen</span>',
+      l_join_p: 'Eén praktijkexamen op 100 punten, beoordeeld door een vakjury. Slaag je, dan staan je naam, je foto en je werk hier, waar klanten zoeken naar een decorateur in hun regio.',
+      l_join_cta: 'Schrijf je in voor het examen', l_join_more: 'Lees wat het examen vraagt',
+      eu_lede: 'Sempertex Europe telt {n} gecertificeerde professionals in {c} landen. Klik iemand aan voor zijn kanalen en zijn werk.',
+      count: '{n} van {t} Europese professionals.',
+      show_all: 'Toon alle {n}', show_less: 'Toon minder', all: 'Alle',
+      none: 'Nog geen professional die aan die zoekopdracht voldoet.',
+      work: 'Hun werk', nowork: 'Nog geen portfoliofoto’s in het register.',
+      nochan: 'Nog geen publieke kanalen in het register.',
+      source: 'Foto’s en kanalen komen uit het Sempertex certificeringsregister.',
+      links: { i: 'Instagram', f: 'Facebook', k: 'TikTok', w: 'Website' }
+    },
+    de: {
+      l_eyebrow: 'Zertifizierung', l_h: 'Das <span class="hl">MBP-Verzeichnis</span>',
+      l_lede: 'Jeder Profi, der die Master Balloon Professional Prüfung bestanden hat. Du suchst jemanden zur Zusammenarbeit oder für einen Auftrag in einem anderen Land? Fang hier an.',
+      l_about: 'Was ist MBP?', l_eu_tag: 'Europa', l_eu_h: 'Profis in Europa',
+      l_ph: 'Nach Name oder Land suchen',
+      l_rest_h: 'Anderswo auf der Welt', l_rest_p: 'Zertifiziert über die anderen Sempertex Büros.',
+      l_join_eyebrow: 'Willst du hier stehen?', l_join_h: 'Mach die <span class="hl">MBP-Prüfung</span>',
+      l_join_p: 'Eine Prüfung in der Praxis, bewertet mit 100 Punkten von einer Fachjury. Bestehst du sie, stehen dein Name, dein Foto und deine Arbeit hier, wo Kunden nach einem Dekorateur in ihrer Region suchen.',
+      l_join_cta: 'Prüfung buchen', l_join_more: 'Lies, was die Prüfung verlangt',
+      eu_lede: 'Sempertex Europe hat {n} zertifizierte Profis in {c} Ländern. Klick jemanden an und sieh seine Kanäle und seine Arbeit.',
+      count: '{n} von {t} europäischen Profis.',
+      show_all: 'Alle {n} anzeigen', show_less: 'Weniger anzeigen', all: 'Alle',
+      none: 'Noch kein Profi passt zu dieser Suche.',
+      work: 'Ihre Arbeit', nowork: 'Noch keine Portfoliofotos im Register.',
+      nochan: 'Noch keine öffentlichen Kanäle im Register.',
+      source: 'Fotos und Kanäle stammen aus dem Sempertex Zertifizierungsregister.',
+      links: { i: 'Instagram', f: 'Facebook', k: 'TikTok', w: 'Website' }
+    },
+    fr: {
+      l_eyebrow: 'Certification', l_h: 'L’<span class="hl">annuaire MBP</span>',
+      l_lede: 'Tous les professionnels qui ont réussi l’examen Master Balloon Professional. Vous cherchez quelqu’un avec qui travailler, ou à qui confier un chantier dans un autre pays ? Commencez ici.',
+      l_about: 'Qu’est-ce que le MBP ?', l_eu_tag: 'Europe', l_eu_h: 'Professionnels en Europe',
+      l_ph: 'Chercher par nom ou pays',
+      l_rest_h: 'Ailleurs dans le monde', l_rest_p: 'Certifiés via les autres bureaux Sempertex.',
+      l_join_eyebrow: 'Envie de figurer ici ?', l_join_h: 'Passez l’<span class="hl">examen MBP</span>',
+      l_join_p: 'Un examen pratique sur 100 points, jugé par un jury de professionnels. Réussissez-le et votre nom, votre photo et votre travail apparaîtront ici, là où les clients cherchent un décorateur dans leur région.',
+      l_join_cta: 'Réservez votre examen', l_join_more: 'Lire ce que demande l’examen',
+      eu_lede: 'Sempertex Europe compte {n} professionnels certifiés dans {c} pays. Cliquez sur quelqu’un pour voir ses réseaux et son travail.',
+      count: '{n} sur {t} professionnels européens.',
+      show_all: 'Afficher les {n}', show_less: 'Afficher moins', all: 'Tous',
+      none: 'Aucun professionnel ne correspond encore à cette recherche.',
+      work: 'Leur travail', nowork: 'Pas encore de photos de portfolio dans le registre.',
+      nochan: 'Pas encore de réseaux publics dans le registre.',
+      source: 'Les photos et les réseaux proviennent du registre de certification Sempertex.',
+      links: { i: 'Instagram', f: 'Facebook', k: 'TikTok', w: 'Website' }
+    }
+  };
+  var S = I18N[lang] || I18N.en;
+
+  function esc(s) {
+    var d = document.createElement('div');
+    d.textContent = s == null ? '' : s;
+    return d.innerHTML;
+  }
+  function fill(t, o) {
+    return String(t).replace(/\{(\w+)\}/g, function (m, k) { return o[k] == null ? m : o[k]; });
+  }
+
+  root.querySelectorAll('[data-i18n]').forEach(function (n) {
+    var v = S[n.getAttribute('data-i18n')];
+    if (v) { n.innerHTML = v; }
+  });
+  root.querySelectorAll('[data-i18n-ph]').forEach(function (n) {
+    var v = S[n.getAttribute('data-i18n-ph')];
+    if (v) { n.setAttribute('placeholder', v); }
+  });
+  document.getElementById('mbpl-about').setAttribute('href', prefix + '/mbp');
+  document.getElementById('mbpl-about2').setAttribute('href', prefix + '/mbp');
+  document.getElementById('mbpl-book').setAttribute('href', prefix + '/events');
+
+  /* ============================================================
+     DE LIJST. Zie de uitleg bovenaan dit bestand voor het formaat.
+     ============================================================ */
+  var MBPS = [
+  {"n":"Zsuzsanna Ernst","c":"Austria","e":1,"p":"Zsuzsanna_Ernst.png?v=1739913775","s":{"i":"luftballonia1","f":"Luftballonia-Events","w":"www.luftballonia.at"}},
+  {"n":"Bjorn de Weirdt","c":"Belgium","e":1,"p":"Bjorn_De_Weirdt.png?v=1739915265","s":{"i":"doctorballoon.be","f":"Doctor","w":"www.doctorballoon.be"}},
+  {"n":"Celine Gaspercic","c":"Belgium","e":1,"p":"Celine_Gaspercic_6ae03cb3-ddd6-4ab3-9037-d03cf6260ef1.png?v=1747854576","s":{"i":"celique.be","f":"Celique.be","k":"celique.be"}},
+  {"n":"Laetitia Giernacki","c":"Belgium","e":1,"p":"Giernacki.png?v=1725914725","s":{"i":"Tresorsde.zoe","f":"Tresorsde.zoe"}},
+  {"n":"Melissa Bellefontaine","c":"Belgium","e":1,"p":"Melissa_Bellefontaine.png?v=1729289038","s":{"i":"splashballoons.be","f":"Splasballoons","w":"www.spalshentertainment.be"}},
+  {"n":"Garyfallia Panagiotary","c":"Greece","e":1,"p":"GARYFALLIA.png?v=1747860846","s":{"i":"balloons.chalkida","f":"Balloons","k":"balloons.chalkida"}},
+  {"n":"Gergely Horvath","c":"Hungary","e":1,"p":"Gergely_Horvath.png?v=1739912396","s":{"i":"lufiverzum.hu","f":"Lufiverzum","w":"www.lufiverzum.hu"}},
+  {"n":"Kincso Gombos","c":"Hungary","e":1,"p":"Kincso_Gombos.png?v=1739898774","s":{"i":"lufiparkallee","f":"Lufipark","w":"www.lufipark.hu"}},
+  {"n":"Klaudia Nagyne Szita","c":"Hungary","e":1,"p":"Klaudia_Nagyne_Szita.png?v=1739913164","s":{"f":"Party"}},
+  {"n":"Monika Lukacs Szabo","c":"Hungary","e":1,"p":"Monika_Lukacs-Szabo.png?v=1739912575","s":{"f":"Party","w":"www.partyshopkecskemet.hu"}},
+  {"n":"Szepesi Antal","c":"Hungary","e":1,"p":"Szepesi_Antal.png?v=1739913442","s":{"i":"party.arc","f":"Party"}},
+  {"n":"Szilvia Czibula","c":"Hungary","e":1,"p":"Szilvia_Czibula.png?v=1739896717","s":{"i":"erlebnis.dekoration","f":"Erlebnis.dekoration","w":"www.erlebnis-deko.at"}},
+  {"n":"Alaia Michela Nadia","c":"Italy","e":1,"p":"Perfil_MBP_6d7b3c18-61e7-46ea-9452-3ef2ee8458ab.png?v=1785426620","s":{"i":"nadiaeisuoiparticolariFacebook"}},
+  {"n":"Alberto Falcone","c":"Italy","t":"Verbania Intra","e":1,"p":"Alberto_Falcone.png?v=1725915244","s":{"i":"alberto_falcone_cba","f":"Alberto"}},
+  {"n":"Anai Contreras Soto","c":"Italy","e":1,"p":"Anai.png?v=1747857732","s":{"i":"a.contreras26"}},
+  {"n":"Barbara Malori","c":"Italy","e":1,"p":"Perfil_MBP_191a1d14-c970-4b17-a659-6d53a402bcb4.png?v=1786466501","s":{"i":"magic_hands_gift__party"}},
+  {"n":"Barbara Rosatelli","c":"Italy","e":1,"p":"Barbara_Rosatelli.png?v=1739914933","s":{"i":"barbararosatelli"}},
+  {"n":"Bonucelli Barbara","c":"Italy","e":1,"p":"Perfil_MBP_de26755c-19b3-4157-85e8-91b834426a67.png?v=1786485724","g":["BONUCELLI_DECORATION_1.jpg","BONUCELLI_DECORATION_2.jpg","BONUCELLI_DECORATION_3.jpg"],"s":{"i":"barbara.bonucelli"}},
+  {"n":"Campailla Carmelo","c":"Italy","e":1,"p":"Perfil_MBP_98e89e53-eeb5-47fa-ad21-344c849d0095.png?v=1779308244","s":{"i":"xpartyplayexperience","f":"XParty"}},
+  {"n":"Carola Nesta","c":"Italy","e":1,"p":"Carola_Nesta.png?v=1739887404","s":{"i":"carola_nesta"}},
+  {"n":"Daniele Giacalone","c":"Italy","e":1,"p":"Daniele_2.png?v=1747857844","s":{"i":"Daniele_"}},
+  {"n":"Di Prima Manuela","c":"Italy","e":1,"p":"Perfil_MBP_0c916a25-dc6e-4339-a0bf-e88f2844310c.png?v=1786487009","g":["DI_PRIMA_DECORATION_1.png","DI_PRIMA_DECORATION_2.png"],"s":{"i":"emmevipartyWEB"}},
+  {"n":"Entela Sukthi","c":"Italy","e":1,"p":"Perfil_MBP_c230170a-5acb-4c41-bf4a-1e0701508b45.png?v=1779292141","s":{"i":"entela_balloonsE-MAIL"}},
+  {"n":"Ilenia Villa","c":"Italy","t":"Isola del Liri","e":1,"p":"Ilenia-Villa.png?v=1720816207","s":{"i":"salty_e_party_official"}},
+  {"n":"Jessica di Claudio","c":"Italy","e":1,"p":"Jessica_Di_Claudio.png?v=1779308655","s":{"i":"BABALLOONS___","f":"Baballoon"}},
+  {"n":"Macri Ernerto","c":"Italy","e":1,"p":"Perfil_MBP_f1437d55-1fa6-497b-b0e6-52909b17c748.png?v=1786549217","g":["MACRI_DECORATION_3.jpg","MACRI_DECORATION_4.jpg","MACRI_DECORATION_1.jpg","MACRI_DECORATION_2.jpg"],"s":{"i":"ernesto_macri89"}},
+  {"n":"Manuela Boi","c":"Italy","e":1,"p":"Perfil_MBP_9c1ef83d-064c-4453-a581-3e759f38a91b.png?v=1779307475","s":{"i":"manuelaboiballoonartE-MAIL"}},
+  {"n":"Marian Nagy","c":"Italy","e":1,"p":"Marian_Nagy.png?v=1732637222","s":{"i":"allestimentopalloncini"}},
+  {"n":"Mary Palloncini","c":"Italy","t":"Roma","e":1,"p":"Mary-Palloncini.png?v=1720815149","s":{"i":"mary_palloncini.cba","f":"Mary.Palloncini"}},
+  {"n":"Mazzocca Vanessa","c":"Italy","e":1,"p":"Perfil_MBP_8beb6dad-2940-41f1-868d-fe9f5200d4da.png?v=1786485612","g":["MAZZOCCA_DECORATION_1_MAZZOCCA_MBP_ITALY.jpg","MAZZOCCA_DECORATION_2_MAZZOCCA_MBP_ITALY.jpg"],"s":{"i":"balloonmagico"}},
+  {"n":"Melania Rocco","c":"Italy","t":"Napoli","e":1,"p":"Melania-Rocco.png?v=1720817723","s":{"i":"melliballoon","f":"Melania"}},
+  {"n":"Milu Elena Alina","c":"Italy","e":1,"p":"Perfil_MBP_3fdf46c2-97f1-4705-9148-62c386d35784.png?v=1786485282","g":["MILU_DECORATION_2.jpg","MILU_DECORATION_1.png"],"s":{"i":"coca_intrattenimiento_a"}},
+  {"n":"Pulino Maria Giovanna","c":"Italy","e":1,"p":"Perfil_MBP_5012ab18-dc2f-4998-b8b8-825b0cd50c67.png?v=1786485027","g":["PULINO_DECORATION_2.png","PULINO_DECORATION_1.png"],"s":{"i":"arcobaleno.balloons"}},
+  {"n":"Ramona Zingaretti","c":"Italy","e":1,"p":"Perfil_MBP_8e34e052-53df-45e4-908f-dda1b5f52333.png?v=1779308067","s":{"i":"creativepartylab","f":"Creative"}},
+  {"n":"Roberta Carocci","c":"Italy","e":1,"p":"Perfil_MBP_df5388ac-88fb-4db6-844a-fbc5f4a89395.png?v=1779307094","s":{"i":"Robi.loonE-mail"}},
+  {"n":"Santi Marino","c":"Italy","e":1,"p":"Perfil_MBP_e274dd27-bd04-467d-bbac-676f4b1a0b40.png?v=1786485142","g":["MARINO_DECORATION_2.jpg","MARINO_DECORATION_1.jpg"],"s":{"i":"santi.trampoliere"}},
+  {"n":"Seby Cosentino","c":"Italy","e":1,"p":"Seby_Cosentino.png?v=1732637685","s":{"i":"seby_cosentino","f":"Seby"}},
+  {"n":"Tiziana Mignanelli","c":"Italy","e":1,"p":"Perfil_MBP_165696c1-a414-4c9b-9b2b-89706a16d0b0.png?v=1779307921","s":{"i":"balloons_luganoWEB"}},
+  {"n":"Valerio Corallo","c":"Italy","e":1,"p":"Perfil_MBP_586b2ccb-adc0-40f6-8239-e1a14b00531a.png?v=1779306318","s":{"i":"valeriocorallo_balloonartistE-mail"}},
+  {"n":"Raymond Grima","c":"Malta","e":1,"p":"RAYMOND.png?v=1748269899","s":{"i":"des.malta","f":"DES"}},
+  {"n":"Robert Ellul","c":"Malta","e":1,"p":"ELLUL.png?v=1748270074","s":{"i":"balloonmanmalta","f":"Balloon"}},
+  {"n":"Guido Verhoef","c":"Netherlands","e":1,"p":"foto_pefil_Guido_Verhoef.png?v=1747855263","s":{"i":"guidoverhoef777","f":"Guido"}},
+  {"n":"Jeanette de Jongh","c":"Netherlands","e":1,"p":"Jeanette_De_Jongh.png?v=1729289979","s":{"i":"feestje.creatief","f":"Feestjecreatiefbeesd","w":"www.feestjecreatif.nl"}},
+  {"n":"Marcel Groothuizen","c":"Netherlands","e":1,"p":"Perfil_MBP_fca57d82-e6f2-4818-911b-d7e7774632b3.png?v=1782425983","s":{"i":"marcels_ballondecoraties","f":"Marcel"}},
+  {"n":"Piet Kalisvaart","c":"Netherlands","e":1,"p":"Piet_Kalisvaart.png?v=1729289661","s":{"i":"ballon.en.verteltheater.bas","w":"www.kalisvaartballondecoratie.nl"}},
+  {"n":"Miguel Rego","c":"Portugal","e":1,"p":"Perfil_MBP_71b93af4-5b53-4301-a3be-38421cd2d893.png?v=1779289954","s":{"i":"miguelrego.artInstagram"}},
+  {"n":"Attila Tamas","c":"Romania","e":1,"p":"ATTILA_2510d216-b6f6-4af1-bcb1-188e917d217b.png?v=1782423381","s":{"i":"attilatamas68","f":"Attila"}},
+  {"n":"Cristina Dasca","c":"Romania","e":1,"p":"Perfil_MBP_5515b1fe-3c15-4889-bcdf-45cc0da99ee9.png?v=1782424286","s":{"i":"baloaneheliubacau"}},
+  {"n":"Gabriela Tamas","c":"Romania","e":1,"p":"TAMAS_45922635-b237-4df6-829a-0ffdecc63088.png?v=1782423429","s":{"i":"gabriella71ro","f":"Gabriella"}},
+  {"n":"Jing Wang","c":"Romania","e":1,"p":"JINGWANG_be158459-fa10-46e9-acf9-a3864c4a0345.png?v=1748271855"},
+  {"n":"Yana Laska","c":"Romania","e":1,"p":"YANA_4d5ff676-f001-480e-bfff-54236c0b839b.png?v=1782423353","s":{"i":"laskaballoons","k":"laskaballoons"}},
+  {"n":"Klaudia Kanickova","c":"Slovakia","e":1,"p":"Klaudia_Kanickova.png?v=1739911644","s":{"i":"partypalace.eu","f":"Partypalace.eu","w":"www.partypalace.eu"}},
+  {"n":"Alaia Michela Nadia","c":"Spain","e":1,"p":"Perfil_MBP_0327db66-b5a1-4d50-ab6f-42bd4c806e0d.png?v=1785446496","s":{"i":"latiendaazuleventosFacebook"}},
+  {"n":"Diana Ivanova Ivanova","c":"Spain","e":1,"p":"Perfil_MBP_1ae8f378-0a85-406d-aef4-57a5bf235d9b.png?v=1785443633"},
+  {"n":"Jenifer Arencibia Suarez","c":"Spain","e":1,"p":"Perfil_MBP_842baf88-2fa5-4205-b7b1-e178208cc53f.png?v=1785443879","s":{"i":"globo_fun_canarias"}},
+  {"n":"Marivi Garcia Cerezo","c":"Spain","e":1,"p":"Perfil_MBP_82b1b928-ab57-40dc-a4b6-b1c7156b9ae9.png?v=1785443266","s":{"f":"DucavalTiktok","w":"www.ducaval.com"}},
+  {"n":"Yidan Xu","c":"Spain","e":1,"p":"Yidan_Perfil.png?v=1766419425","s":{"i":"globosymas.yidan","f":"Globosymas"}},
+  {"n":"Cecilia Bianchi","c":"Switzerland","e":1,"p":"Cecilia_Bianchi.png?v=1739895388","s":{"i":"ororganizzazioneeventi"}},
+  {"n":"Stefano Calandra","c":"Switzerland","e":1,"p":"Stefano_Calandra.png?v=1739895644","s":{"i":"stefano_calandra_cba","f":"Stefano"}},
+  {"n":"Audrey Parsons","c":"United Kingdom","e":1,"p":"Perfil_MBP_da3cd38d-1edd-459a-9c4c-ca79809d4a52.png?v=1782419314","s":{"i":"viva.balloons","f":"VivaballoonsUK","w":"vivaballoons.co.ukInstagram"}},
+  {"n":"Fong Chun Wai","c":"United Kingdom","e":1,"p":"FONG_CHUN_PERFIL.png?v=1762360881","s":{"i":"balloonterence","f":"Balloons"}},
+  {"n":"Laural Schultze","c":"United Kingdom","e":1,"p":"Perfil_MBP_6f67c658-048e-4d48-a64f-03338e61b32d.png?v=1778872016","s":{"i":"partydecorwithwiktoria","f":"partydecorwithwiktoriaukInstagram","k":"partydecorwithwiktoria"}},
+  {"n":"Loretta Saunders","c":"United Kingdom","e":1,"p":"Loretta_Saunders_2c66919f-a47e-4de5-98b3-3f46cec59890.png?v=1782419334","s":{"i":"perfectlypoppedballoons","f":"Perfectly","w":"www.perfectlypoppedballoons.co.uk"}},
+  {"n":"Alberto Goitia","c":"Aruba","p":"Alberto_Goitia.png?v=1732636837","s":{"i":"agmdecoraciones","f":"agmdecoraciones","k":"agmdecoraciones5"}},
+  {"n":"Chris Adamo","c":"Australia","p":"Chris_Adamo_perfil.png?v=1747855068","s":{"i":"chris_adamo_cba","f":"Chris"}},
+  {"n":"Danna","c":"Australia","p":"Danna_-_Love_Balloon_Studio.png?v=1755007619","s":{"i":"loveballoonstudios"}},
+  {"n":"Lauren Miller","c":"Australia","p":"Lauren_Miller_-_Bondi_Road_Balloons_4b3d9bf3-5456-4533-a5db-b93c6e8a793d.png?v=1755010900","s":{"i":"Bondi_road_balloons"}},
+  {"n":"Dina Shimamura Simizu","c":"Brazil","t":"Sao Bernardo do Campo","p":"Dina-Shimamura-Simizu.png?v=1720819317","s":{"i":"Simizufestas","f":"Dina"}},
+  {"n":"Etsu Flores","c":"Brazil","p":"ETSU_FLORES_PERFIL.png?v=1747856065","s":{"i":"fantasiabaloes"}},
+  {"n":"Irene Marques","c":"Brazil","p":"Irene-Marques.png?v=1729616574","s":{"i":"baloesemagia_21"}},
+  {"n":"Valdivan Brasil de Souza","c":"Brazil","p":"Valdivan-Brasil-de-Souza.png?v=1729613715","s":{"i":"valdivan_brasil"}},
+  {"n":"Teresa Demarco","c":"Canada","t":"Guelph","p":"Teresa_DeMarco.png?v=1725914984","s":{"i":"looneyballooneydesigns","f":"looneyballooneydesigns"}},
+  {"n":"Camilo Alvarez","c":"Chile","t":"Santiago de Chile","p":"Camilo-Alvarez.png?v=1720822561","s":{"i":"oh.myglobe"}},
+  {"n":"Eli Marcano","c":"Chile","t":"Santiago de Chile","p":"Eli-Marcano.png?v=1720801676","s":{"i":"elis.balloons.cl","f":"Elis"}},
+  {"n":"Gisela Chavez","c":"Chile","t":"Iquique","p":"Gisela-Chavez.png?v=1720802815","s":{"i":"encantoo.demujer","f":"Gisela"}},
+  {"n":"Julia Angelica Moya","c":"Chile","t":"Lampa","p":"Julia-Angelica-Moya.png?v=1720803336","s":{"i":"mahaloeventoscandybar","f":"Julia"}},
+  {"n":"Kelly Saenz","c":"Chile","t":"Santiago de Chile","p":"Kelly-Saenz.png?v=1720817428","s":{"i":"productorakellyeventos","f":"Productora","k":"Productorakellyeventos"}},
+  {"n":"Mauris Valdiviezo","c":"Chile","t":"Santiago de Chile","p":"Mauris-Valdiviezo.png?v=1720802520","s":{"i":"decoracionesmau.cl"}},
+  {"n":"Angel Wan Yee Chan","c":"China","p":"Perfil_MBP_042bc83e-4afa-48ee-8339-64ce23c83f7d.png?v=1778099107"},
+  {"n":"Bi Liu","c":"China","p":"BI_LIU.png?v=1748270347"},
+  {"n":"Chan Fong","c":"China","t":"Hong Kong","p":"Chan_Fong.png?v=1725978342","s":{"i":"Chan.f.florence","f":"Chan"}},
+  {"n":"Chan Fong","c":"China","p":"CHAN_FONG_PERFIL_8c22d5a4-c64e-4420-9fbf-105cbfd3dc79.png?v=1762360503"},
+  {"n":"Cheng Sze Ki","c":"China","p":"CHENG_SZE_KI_PERFIL.png?v=1762870453","s":{"i":"jamballcheng","f":"Jam"}},
+  {"n":"Cheung Kwai Chun","c":"China","p":"CHEUNG_PERFIL_d9457cad-a503-4d21-bd39-ab096d2721dc.png?v=1762360200","s":{"f":"Dobe"}},
+  {"n":"Cheung Mo Har","c":"China","p":"Perfil_MBP_c8481ad6-6b11-4b9d-957f-3648faa6a3d1.png?v=1785447053","s":{"i":"moharcheungIG"}},
+  {"n":"Chien Hsia Wei","c":"China","p":"Perfil_MBP_252dd08e-4902-411b-affc-7d625e54eac7.png?v=1785447157","s":{"i":"kiki__0716"}},
+  {"n":"Chocolate Chan","c":"China","p":"Perfil_MBP_fce76b83-1a96-488e-9b3d-9189c9a9eb2d.png?v=1778104776","s":{"i":"chocolate_chan1123Facebook"}},
+  {"n":"Cindy Lai Sin Yee","c":"China","t":"Hong Kong","p":"Cindy_Lai_Sin_Yee.png?v=1725918044","s":{"i":"cindy_lai_920","f":"Cindy"}},
+  {"n":"Derek Cheung","c":"China","p":"Perfil_MBP_356cdfe8-3d84-417f-b6a9-1f1c200096cf.png?v=1778104720","s":{"i":"summerlproductionFacebook"}},
+  {"n":"Erica Yuen","c":"China","p":"ERICA_YUEN.png?v=1762869234","s":{"i":"caca_erica_caca","f":"Erica"}},
+  {"n":"Ingel Ng Ha","c":"China","p":"Perfil_MBP_5b51e45f-1217-438e-aa1c-d9cb0a020879.png?v=1778104658"},
+  {"n":"Jieru Yu","c":"China","p":"Perfil_MBP_5c4af343-e8a3-4ae1-955b-ba9b1af481b8.png?v=1778098477"},
+  {"n":"Jimmy Lam Wing Yeung","c":"China","p":"Perfil_MBP_01ba40a5-a2b2-44ce-82b4-b84f71abd77a.png?v=1778104668","s":{"i":"lam.wyjimmyFacebook"}},
+  {"n":"Jing Song Wu","c":"China","p":"JINSONG.png?v=1748272007","s":{"i":"songziwu2004"}},
+  {"n":"Ken Tong","c":"China","p":"Perfil_MBP_2316435f-91e4-45df-abd3-bb6bea233720.png?v=1778104611","s":{"f":"Ken"}},
+  {"n":"Kitman Yip","c":"China","p":"Perfil_MBP_58044caa-ec2b-4f34-9027-1a4d98e9d237.png?v=1785447369","s":{"i":"kitman.yip"}},
+  {"n":"Kitty Lui","c":"China","p":"KITTY_LUI_PERFIL.png?v=1762869957","s":{"i":"the_ballon_artist_kitty","f":"Cola"}},
+  {"n":"Lam Koon Chu","c":"China","p":"LAM_KOON_CHU_PERFIL.png?v=1762871887","s":{"f":"Kitty"}},
+  {"n":"Li Chan Mei","c":"China","p":"Perfil_MBP_2acd683f-ec1c-4384-8bcc-4768e4f0f00f.png?v=1778104845","s":{"i":"chan.angiechanFacebook"}},
+  {"n":"Lin Pikkei","c":"China","p":"Perfil_MBP_36d59018-a1c5-4dfb-b8c4-f9995adf4cf3.png?v=1778104748","s":{"i":"kikiart5540Facebook"}},
+  {"n":"Lloon Peng","c":"China","p":"Lloon_Peng_Perfil_ca508c53-d6f1-4c41-9b9d-9d8c352f2a6c.png?v=1747854603","s":{"i":"lloonpsh"}},
+  {"n":"Maggie Chan Wai Chi","c":"China","p":"Perfil_MBP_c589d1ff-c0fd-4e8b-98e1-3e7273f08075.png?v=1778104701"},
+  {"n":"Milly Lo Suk Man","c":"China","p":"Perfil_MBP_13defc80-d749-4720-b937-ce791d750a7c.png?v=1786636085","s":{"i":"millyloskFacebook"}},
+  {"n":"Piera Lam","c":"China","t":"Hong Kong","p":"LAM_PERFIL.png?v=1722871983","s":{"i":"jollyandcolourful","f":"Jolly"}},
+  {"n":"Rex Pak Chun San","c":"China","p":"Perfil_MBP_15bc3cf2-681c-4882-bad9-0acf0271b097.png?v=1778104766"},
+  {"n":"Rui Yu","c":"China","p":"RUI_YU_version_2.png?v=1748270709","s":{"f":"rae"}},
+  {"n":"San Wong Kwok","c":"China"},
+  {"n":"Sandy Hui Shan Shan","c":"China"},
+  {"n":"Shan Wong Lai","c":"China"},
+  {"n":"Shuran Xiao","c":"China"},
+  {"n":"Steffi Leung","c":"China"},
+  {"n":"Tian Wang","c":"China"},
+  {"n":"Trevina Fong","c":"China"},
+  {"n":"Tse Ka Yan Crystal","c":"China"},
+  {"n":"Wei Ru Xiao","c":"China"},
+  {"n":"Wei Wang","c":"China"},
+  {"n":"Winson Choi","c":"China"},
+  {"n":"Xueyu Huang","c":"China"},
+  {"n":"Yau Kiu Ling","c":"China"},
+  {"n":"Zhang Qinhua","c":"China"},
+  {"n":"Zhao Nzhihong","c":"China"},
+  {"n":"Angela Escobar","c":"Colombia"},
+  {"n":"Angela Jaramillo","c":"Colombia"},
+  {"n":"Cindy Botero","c":"Colombia"},
+  {"n":"Diego Garcia","c":"Colombia"},
+  {"n":"Geles Genes","c":"Colombia"},
+  {"n":"Jenyfer Henao","c":"Colombia"},
+  {"n":"Juliana Velez","c":"Colombia"},
+  {"n":"Luis Fernando Garzon Salinas","c":"Colombia"},
+  {"n":"Maira Alejandra Mayorga Hernandez","c":"Colombia"},
+  {"n":"Marby Yicela Hernandez Casallas","c":"Colombia"},
+  {"n":"Martha Stella Diaz","c":"Colombia"},
+  {"n":"Natali Perez","c":"Colombia"},
+  {"n":"Sandra Garcia","c":"Colombia","t":"Bucaramanga"},
+  {"n":"Yilma Milena Vargas","c":"Colombia","t":"Tunja"},
+  {"n":"Zoraida Cortes","c":"Colombia"},
+  {"n":"Claudia Maria Morales","c":"El Salvador"},
+  {"n":"Claudia Maria Morales","c":"El Salvador"},
+  {"n":"Gabriela Miranda","c":"El Salvador"},
+  {"n":"Gabriela Miranda","c":"El Salvador"},
+  {"n":"Marjorie Hurtadi","c":"El Salvador"},
+  {"n":"Susana Guadron","c":"El Salvador"},
+  {"n":"Susana Guadron","c":"El Salvador"},
+  {"n":"Claudia Cordero","c":"Guatemala"},
+  {"n":"Eva Noemi Solis Palacios","c":"Guatemala"},
+  {"n":"Maria Jose Hernandez","c":"Guatemala"},
+  {"n":"Maryery Hernandez Bagett","c":"Guatemala"},
+  {"n":"Fumika Kawauchi","c":"Japan"},
+  {"n":"Fumiko Nakano","c":"Japan"},
+  {"n":"Hiromi Tsujimoto","c":"Japan"},
+  {"n":"Hiroyo Morozumi","c":"Japan"},
+  {"n":"Junko Kuroyanagi","c":"Japan"},
+  {"n":"Mariko Inaoka","c":"Japan"},
+  {"n":"Mie Shimooka","c":"Japan"},
+  {"n":"Miki Nozawa","c":"Japan"},
+  {"n":"Misato Yamamoto","c":"Japan"},
+  {"n":"Seiya Matsumoto","c":"Japan"},
+  {"n":"Shizuka Nagaoka","c":"Japan"},
+  {"n":"Shotaro Tsushima","c":"Japan"},
+  {"n":"Tomoko Nakamura","c":"Japan"},
+  {"n":"Jenny Loh Yee Ling","c":"Malaysia"},
+  {"n":"Kantapat Rochanasmith","c":"Malaysia"},
+  {"n":"Lim Su Min","c":"Malaysia"},
+  {"n":"Adoraid Vazquez","c":"Mexico"},
+  {"n":"Ale Lopez","c":"Mexico"},
+  {"n":"Alma Delia Jazmin Juarez","c":"Mexico"},
+  {"n":"Andres Hernandez","c":"Mexico"},
+  {"n":"Azucena Chavez","c":"Mexico"},
+  {"n":"Carlos Delgado","c":"Mexico"},
+  {"n":"Carolina Moreno","c":"Mexico"},
+  {"n":"Cristina Murillo Garcia","c":"Mexico"},
+  {"n":"David Tlalolin Toy Magic","c":"Mexico"},
+  {"n":"Elsa Carmona Montoya","c":"Mexico"},
+  {"n":"Gabriel Cornejo","c":"Mexico"},
+  {"n":"Javier Nava","c":"Mexico"},
+  {"n":"Jorge Uc Poot","c":"Mexico"},
+  {"n":"Juan de la Cruz Sonda Yeh","c":"Mexico"},
+  {"n":"Liliana Rivas","c":"Mexico"},
+  {"n":"Ludivina Hinojosa","c":"Mexico"},
+  {"n":"Michelle Arroyo Tinoco","c":"Mexico"},
+  {"n":"Monserrat Salazar","c":"Mexico"},
+  {"n":"Nadyeli Requena Valdes","c":"Mexico"},
+  {"n":"Nalle Rojas","c":"Mexico"},
+  {"n":"Nohelia Perez","c":"Mexico"},
+  {"n":"Saul Rodriguez","c":"Mexico"},
+  {"n":"Velma Harumi Roblero","c":"Mexico"},
+  {"n":"Yadira Martinez","c":"Mexico"},
+  {"n":"Zulia Licey Marquez Carrillo","c":"Mexico"},
+  {"n":"Denisse Rocha","c":"Nicaragua"},
+  {"n":"Franklin Jimenez","c":"Nicaragua"},
+  {"n":"Irma de los Angeles Castillo","c":"Nicaragua"},
+  {"n":"Jennyffer Lopez Valverde","c":"Nicaragua"},
+  {"n":"Lucia Gomez","c":"Nicaragua"},
+  {"n":"Moises Medina","c":"Nicaragua"},
+  {"n":"Sallie Norman","c":"Nicaragua"},
+  {"n":"Sarah Noble","c":"Nicaragua"},
+  {"n":"Vanessa Miranda","c":"Nicaragua"},
+  {"n":"Alfredo Cordova","c":"Peru"},
+  {"n":"Ana Elizabeth de la Torre","c":"Peru"},
+  {"n":"Angela Neira Castaneda","c":"Peru"},
+  {"n":"Carol Arevalo","c":"Peru"},
+  {"n":"Diana Marithza Pizarro Vera","c":"Peru"},
+  {"n":"Grecia Antuane Acha","c":"Peru","t":"Lima"},
+  {"n":"Jane Vasquez","c":"Peru"},
+  {"n":"Jazmin Alcazar","c":"Peru"},
+  {"n":"Jessica Ingaroca Castanedaz","c":"Peru"},
+  {"n":"Kevin Flores Chunga","c":"Peru"},
+  {"n":"Lenin Alonso","c":"Peru"},
+  {"n":"Lessy Coraima Jimenez Mosquera","c":"Peru"},
+  {"n":"Maria Huaman Garcia","c":"Peru"},
+  {"n":"Monica Saco","c":"Peru"},
+  {"n":"Nataly Soledad Castaneda Li","c":"Peru"},
+  {"n":"Omayra Barreto Espinoza","c":"Peru"},
+  {"n":"Ritha Ledesma","c":"Peru"},
+  {"n":"Sandra Milena Enciso Rodas","c":"Peru"},
+  {"n":"Sayda Valdez","c":"Peru"},
+  {"n":"Yenifer Ursula Vargas Siguenas","c":"Peru"},
+  {"n":"Yndira Clark Nahui","c":"Peru"},
+  {"n":"Yovana Campos","c":"Peru"},
+  {"n":"Louh Sue","c":"Senegal"},
+  {"n":"Diane Noel","c":"Trinidad and Tobago"},
+  {"n":"Eleanor Caton Khan","c":"Trinidad and Tobago"},
+  {"n":"Faatimah Khan","c":"Trinidad and Tobago"},
+  {"n":"Jude Bovell","c":"Trinidad and Tobago"},
+  {"n":"Adriane Callahan","c":"United States"},
+  {"n":"Adriane Callahan","c":"United States"},
+  {"n":"Agnes So","c":"United States"},
+  {"n":"Alejandra Santiago","c":"United States"},
+  {"n":"Ali Kahan","c":"United States"},
+  {"n":"Anaitte Camacho","c":"United States"},
+  {"n":"Andrea Castro","c":"United States"},
+  {"n":"Annie Hughes","c":"United States"},
+  {"n":"Ayriel Rush","c":"United States"},
+  {"n":"Belinda Hernandez","c":"United States"},
+  {"n":"Bergen Skinner","c":"United States"},
+  {"n":"Bergen Skinner","c":"United States"},
+  {"n":"Brandon Nowell","c":"United States"},
+  {"n":"Briana Silvio","c":"United States"},
+  {"n":"Carolina Velasquez","c":"United States"},
+  {"n":"Domenica Perez","c":"United States"},
+  {"n":"Dori Saypol","c":"United States"},
+  {"n":"Eliseo Veras","c":"United States"},
+  {"n":"Gaby Oros","c":"United States"},
+  {"n":"Hannah Barrett","c":"United States"},
+  {"n":"Heidy Hernandez","c":"United States"},
+  {"n":"Jamely Newton","c":"United States"},
+  {"n":"Jan Iiams","c":"United States"},
+  {"n":"Jasmine Becnel","c":"United States"},
+  {"n":"John Perry","c":"United States"},
+  {"n":"Johnna Wright Perry","c":"United States"},
+  {"n":"Karla Romero","c":"United States"},
+  {"n":"Kary Lizano","c":"United States"},
+  {"n":"Kelly Santos","c":"United States"},
+  {"n":"Laural Schultze","c":"United States"},
+  {"n":"Leidis Rosales","c":"United States"},
+  {"n":"Lizbeth Montelongo","c":"United States"},
+  {"n":"Lorenis Jordan","c":"United States"},
+  {"n":"Maggie Jenkins","c":"United States"},
+  {"n":"Ofelia Flores","c":"United States"},
+  {"n":"Sarah Cabrera","c":"United States"},
+  {"n":"Sonny Meza","c":"United States"},
+  {"n":"Verni Perez","c":"United States"},
+  {"n":"Getsy Sanchez","c":"Venezuela"},
+  {"n":"Gloria Roxibel Blanco Huerta","c":"Venezuela"},
+  {"n":"Johanna Ponce","c":"Venezuela"},
+  {"n":"Victor Rios","c":"Venezuela"}
+];
+
+  var EU = MBPS.filter(function (x) { return x.e; });
+  var REST = MBPS.filter(function (x) { return !x.e; });
+  var EU_COUNTRIES = {};
+  EU.forEach(function (x) { EU_COUNTRIES[x.c] = 1; });
+
+  document.getElementById('mbpl-eu-lede').textContent = fill(S.eu_lede, {
+    n: EU.length, c: Object.keys(EU_COUNTRIES).length
+  });
+
+  function initials(n) {
+    return String(n).split(/\s+/).map(function (x) { return x.charAt(0); }).join('').slice(0, 2).toUpperCase();
+  }
+  function photo(x, w) {
+    if (!x.p) { return ''; }
+    return ART + x.p + (x.p.indexOf('?') > -1 ? '&' : '?') + 'width=' + w;
+  }
+  function gallery(x) {
+    return (x.g || []).map(function (f) { return FIL + f + '?width=800'; });
+  }
+  function socials(x) {
+    var s = x.s || {}, out = [];
+    if (s.i) { out.push({ k: 'i', u: 'https://www.instagram.com/' + s.i, t: '@' + s.i }); }
+    if (s.f) { out.push({ k: 'f', u: s.f.indexOf('http') === 0 ? s.f : 'https://www.facebook.com/' + s.f, t: S.links.f }); }
+    if (s.k) { out.push({ k: 'k', u: 'https://www.tiktok.com/@' + s.k, t: '@' + s.k }); }
+    if (s.w) { out.push({ k: 'w', u: 'https://' + s.w, t: s.w }); }
+    return out;
+  }
+
+  var ICON = {
+    i: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"></circle></svg>',
+    f: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 8h3V4h-3a4 4 0 0 0-4 4v3H7v4h3v6h4v-6h3l1-4h-4V8.5A.5.5 0 0 1 14.5 8z"></path></svg>',
+    k: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3v10.5a3.5 3.5 0 1 1-3-3.46"></path><path d="M15 6.5A4.5 4.5 0 0 0 19.5 11"></path></svg>',
+    w: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3c2.5 2.8 2.5 15.2 0 18M12 3c-2.5 2.8-2.5 15.2 0 18"></path></svg>'
+  };
+
+  function card(x, i, compact) {
+    var sub = [x.c, x.t].filter(Boolean).join(' · ');
+    var soc = socials(x);
+    if (soc.length) { sub += ' · ' + soc.length + (soc.length === 1 ? ' link' : ' links'); }
+    var u = photo(x, compact ? 120 : 160);
+    var pic = u
+      ? '<span class="pic"><img src="' + esc(u) + '" alt="" loading="lazy" data-fb="' + esc(initials(x.n)) + '"></span>'
+      : '<span class="pic">' + esc(initials(x.n)) + '</span>';
+    return '<button type="button" class="p" data-i="' + i + '">' + pic
+      + '<span style="min-width:0"><span class="n">' + esc(x.n) + '</span>'
+      + '<span class="c">' + esc(sub) + '</span></span></button>';
+  }
+
+  /* Een foto die niet laadt valt terug op de initialen. */
+  root.addEventListener('error', function (e) {
+    var img = e.target;
+    if (!img || img.tagName !== 'IMG' || !img.hasAttribute('data-fb')) { return; }
+    var box = img.parentNode;
+    box.textContent = img.getAttribute('data-fb');
+  }, true);
+
+  function chips(host, list, active, attr) {
+    var counts = {};
+    list.forEach(function (x) { counts[x.c] = (counts[x.c] || 0) + 1; });
+    host.innerHTML = [['__all__', S.all, list.length]].concat(
+      Object.keys(counts).sort().map(function (c) { return [c, c, counts[c]]; })
+    ).map(function (r) {
+      return '<button type="button" ' + attr + '="' + esc(r[0]) + '"'
+        + (r[0] === active ? ' class="on"' : '') + '>' + esc(r[1]) + '<i>' + r[2] + '</i></button>';
+    }).join('');
+  }
+
+  var euFilter = '__all__', euQuery = '', restFilter = '__all__', restAll = false;
+
+  function renderEu() {
+    var out = [];
+    EU.forEach(function (x, i) {
+      if (euFilter !== '__all__' && x.c !== euFilter) { return; }
+      if (euQuery && (x.n + ' ' + x.c).toLowerCase().indexOf(euQuery) === -1) { return; }
+      out.push(card(x, MBPS.indexOf(x)));
+    });
+    document.getElementById('mbpl-eu-count').textContent = fill(S.count, { n: out.length, t: EU.length });
+    document.getElementById('mbpl-eu-grid').innerHTML = out.length
+      ? out.join('')
+      : '<p class="count">' + esc(S.none) + '</p>';
+  }
+
+  function renderRest() {
+    var list = REST.filter(function (x) { return restFilter === '__all__' || x.c === restFilter; });
+    var shown = restAll ? list : list.slice(0, 16);
+    document.getElementById('mbpl-rest-grid').innerHTML = shown.map(function (x) {
+      return card(x, MBPS.indexOf(x), true);
+    }).join('');
+    document.getElementById('mbpl-rest-toggle').textContent = restAll
+      ? S.show_less : fill(S.show_all, { n: list.length });
+  }
+
+  /* ---- PROFIELPANEEL ---- */
+  function openProfile(x) {
+    var soc = socials(x), gal = gallery(x), u = photo(x, 400);
+
+    var html = '<div class="in" role="dialog" aria-modal="true">'
+      + '<div class="top">'
+      + '<span class="big">' + (u ? '<img src="' + esc(u) + '" alt="">' : esc(initials(x.n))) + '</span>'
+      + '<div style="min-width:0">'
+      + '<p class="eyebrow">' + esc([x.c, x.t].filter(Boolean).join(' · ')) + '</p>'
+      + '<h3>' + esc(x.n) + '</h3>'
+      + (soc.length
+          ? '<div class="soc">' + soc.map(function (l) {
+              return '<a href="' + esc(l.u) + '" target="_blank" rel="noopener">' + ICON[l.k] + esc(l.t) + '</a>';
+            }).join('') + '</div>'
+          : '<p class="fine" style="margin-top:10px">' + esc(S.nochan) + '</p>')
+      + '</div><button type="button" class="x" aria-label="Close">&times;</button></div>'
+      + '<div class="body">';
+
+    if (gal.length) {
+      html += '<h3 style="font-size:20px;margin-bottom:14px">' + esc(S.work) + '</h3><div class="car">'
+        + '<div class="nav prev"><button type="button" aria-label="Previous">&#8249;</button></div>'
+        + '<div class="track">'
+        + gal.map(function (g) { return '<figure><img src="' + esc(g) + '" alt="" loading="lazy"></figure>'; }).join('')
+        + '</div><div class="nav next"><button type="button" aria-label="Next">&#8250;</button></div></div>';
+    } else {
+      html += '<div class="none"><p>' + esc(S.nowork) + '</p></div>';
+    }
+    html += '<p class="fine">' + esc(S.source) + '</p></div></div>';
+
+    var sheet = document.createElement('div');
+    sheet.className = 'stx-mbpl-sheet';
+    sheet.innerHTML = html;
+    document.body.appendChild(sheet);
+    var prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    function close() {
+      sheet.remove();
+      document.body.style.overflow = prevOverflow;
+      document.removeEventListener('keydown', onKey);
+    }
+    function onKey(e) { if (e.key === 'Escape') { close(); } }
+    document.addEventListener('keydown', onKey);
+    sheet.addEventListener('click', function (e) {
+      if (e.target === sheet || (e.target.closest && e.target.closest('.x'))) { close(); }
+    });
+
+    var track = sheet.querySelector('.track');
+    if (track) {
+      sheet.querySelector('.nav.prev button').addEventListener('click', function () {
+        track.scrollBy({ left: -track.clientWidth * 0.8, behavior: 'smooth' });
+      });
+      sheet.querySelector('.nav.next button').addEventListener('click', function () {
+        track.scrollBy({ left: track.clientWidth * 0.8, behavior: 'smooth' });
+      });
+    }
+    sheet.querySelector('.x').focus();
+  }
+
+  chips(document.getElementById('mbpl-eu-filters'), EU, euFilter, 'data-c');
+  chips(document.getElementById('mbpl-rest-filters'), REST, restFilter, 'data-r');
+  renderEu();
+  renderRest();
+
+  document.getElementById('mbpl-eu-filters').addEventListener('click', function (e) {
+    var b = e.target.closest('button');
+    if (!b) { return; }
+    euFilter = b.getAttribute('data-c');
+    this.querySelectorAll('button').forEach(function (x) { x.classList.toggle('on', x === b); });
+    renderEu();
+  });
+  document.getElementById('mbpl-rest-filters').addEventListener('click', function (e) {
+    var b = e.target.closest('button');
+    if (!b) { return; }
+    restFilter = b.getAttribute('data-r');
+    restAll = false;
+    this.querySelectorAll('button').forEach(function (x) { x.classList.toggle('on', x === b); });
+    renderRest();
+  });
+  document.getElementById('mbpl-search').addEventListener('input', function () {
+    euQuery = this.value.trim().toLowerCase();
+    renderEu();
+  });
+  document.getElementById('mbpl-rest-toggle').addEventListener('click', function () {
+    restAll = !restAll;
+    renderRest();
+  });
+  root.addEventListener('click', function (e) {
+    var b = e.target.closest ? e.target.closest('.p[data-i]') : null;
+    if (!b) { return; }
+    var x = MBPS[parseInt(b.getAttribute('data-i'), 10)];
+    if (x) { openProfile(x); }
+  });
+
+  /* ---- TONEN + VERPLAATSEN ---- */
+  root.style.display = 'block';
+  var target = document.getElementById('wrap') || document.querySelector('main');
+  if (target) { target.appendChild(root); }
+  else if (!isFile) {
+    var foot = document.querySelector('footer');
+    if (foot && foot.parentNode) { foot.parentNode.insertBefore(root, foot); }
+  }
+});
+</script>
+<!-- ================ EINDE MBP LIJST ================ -->
