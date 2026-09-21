@@ -19,8 +19,11 @@
      1. Exact: product-URL = /shop/<code>-<naam>-<id>  (groen)
      2. Alleen prefix <code>- maar meerdere hits (bv. R12826 en
         R12826-punten): klant kiest uit een lijstje (oranje)
-     3. Geen prefix-hit maar precies 1 zoekresultaat (bv. barcode
-        20021027 -> N260013): geaccepteerd, gemarkeerd "check" (oranje)
+     3. Geen prefix-hit maar precies 1 zoekresultaat (bv. SAP- of
+        barcode 20021027 -> N260013): gewoon geaccepteerd (groen).
+        Odoo zoekt ook op interne referentie en barcode, dus een
+        enkele treffer op zo'n code klopt; sinds 21/09/2026 staat
+        daar geen "controleer" meer bij.
      4. Niets gevonden: rood, regel wordt overgeslagen.
 
      Winkelmand: /website_sale/get_combination_info (variant-id) en
@@ -227,12 +230,12 @@
       template: 'Download the example file', paste: 'Or paste your lines', paste_go: 'Check pasted lines', reset: 'Start over',
       th_code: 'Code', th_product: 'Product in the shop', th_qty: 'Packs', th_status: 'Status',
       reading: 'Reading file...', xlsx_load: 'Loading the Excel reader...', xlsx_fail: 'The Excel reader could not load. Save the sheet as CSV and try again.', empty: 'No lines with a code and a quantity found. Column 1 = code, column 2 = quantity.',
-      matching: 'Checking code {i} of {n} in the shop...', found: '{n} products found', check: '{n} to check', missing: '{n} not found', dup: '{n} duplicate codes merged', tot_packs: '{n} packs in total, straight from your file',
-      st_ok: 'found', st_chk: 'check', st_multi: 'choose', st_no: 'not found', st_done: 'added', st_fail: 'failed', st_skip: 'skipped', st_qty: 'in cart: {n}',
+      matching: 'Checking code {i} of {n} in the shop...', found: '{n} products found', check: '{n} to choose', missing: '{n} not found', dup: '{n} duplicate codes merged', tot_packs: '{n} packs in total, straight from your file',
+      st_ok: 'found', st_multi: 'choose', st_no: 'not found', st_done: 'added', st_fail: 'failed', st_skip: 'skipped', st_qty: 'in cart: {n}',
       add: 'Add {n} lines to cart', adding: 'Adding line {i} of {n}...', none: 'Nothing to add: no line matched a shop product.',
       done: '{l} lines ({p} packs) added to your cart.', fail: 'Not added: {names}.', skipped: '{n} lines skipped (not found).', qty_warn: '{n} products ended up with a different quantity: check them in the cart.', srv_err: 'The shop said: “{m}”', reload: 'Refresh cart',
       note: 'Quantities are packs (sales units of the shop), not single balloons. A product that is already in your cart gets the quantity from your file.'
-        + '  Lines marked "check" matched through search: check the product name before adding. Lines that are not found are skipped.'
+        + '  A code can be the shop reference or the SAP or barcode of the product, both are matched. Lines that are not found are skipped.'
     },
     nl: {
       kicker: 'Bestellen in een keer', title: 'Upload je bestelling als CSV of Excel', lede: 'De eerste kolom is de productcode, de tweede kolom is het aantal zakken dat je wil bestellen.',
@@ -240,12 +243,12 @@
       template: 'Download het voorbeeldbestand', paste: 'Of plak je regels', paste_go: 'Geplakte regels controleren', reset: 'Opnieuw beginnen',
       th_code: 'Code', th_product: 'Product in de shop', th_qty: 'Zakken', th_status: 'Status',
       reading: 'Bestand lezen...', xlsx_load: 'Excel-lezer laden...', xlsx_fail: 'De Excel-lezer kon niet laden. Sla het blad op als CSV en probeer opnieuw.', empty: 'Geen regels met een code en een aantal gevonden. Kolom 1 = code, kolom 2 = aantal.',
-      matching: 'Code {i} van {n} opzoeken in de shop...', found: '{n} producten gevonden', check: '{n} te controleren', missing: '{n} niet gevonden', dup: '{n} dubbele codes samengevoegd', tot_packs: '{n} zakken in totaal, precies zoals in je bestand',
-      st_ok: 'gevonden', st_chk: 'controleer', st_multi: 'kies', st_no: 'niet gevonden', st_done: 'toegevoegd', st_fail: 'mislukt', st_skip: 'overgeslagen', st_qty: 'in mandje: {n}',
+      matching: 'Code {i} van {n} opzoeken in de shop...', found: '{n} producten gevonden', check: '{n} te kiezen', missing: '{n} niet gevonden', dup: '{n} dubbele codes samengevoegd', tot_packs: '{n} zakken in totaal, precies zoals in je bestand',
+      st_ok: 'gevonden', st_multi: 'kies', st_no: 'niet gevonden', st_done: 'toegevoegd', st_fail: 'mislukt', st_skip: 'overgeslagen', st_qty: 'in mandje: {n}',
       add: '{n} regels in winkelmandje', adding: 'Regel {i} van {n} toevoegen...', none: 'Niets toe te voegen: geen enkele regel matcht een shopproduct.',
       done: '{l} regels ({p} zakken) toegevoegd aan je winkelmandje.', fail: 'Niet toegevoegd: {names}.', skipped: '{n} regels overgeslagen (niet gevonden).', qty_warn: '{n} producten staan met een ander aantal in je mandje: controleer ze.', srv_err: 'De shop meldt: “{m}”', reload: 'Winkelmandje verversen',
       note: 'Aantallen zijn zakken (verkoopeenheden van de shop), geen losse ballonnen. Een product dat al in je winkelmandje zit, krijgt het aantal uit je bestand.'
-        + '  Regels met "controleer" zijn via zoeken gematcht: check de productnaam voor je toevoegt. Regels die niet gevonden zijn worden overgeslagen.'
+        + '  Een code mag de shopreferentie of de SAP- of barcode van het product zijn, allebei worden herkend. Regels die niet gevonden zijn worden overgeslagen.'
     },
     fr: {
       kicker: 'Commander en une fois', title: 'Importez votre commande en CSV ou Excel', lede: 'La première colonne est le code produit, la deuxième colonne le nombre de sachets que vous souhaitez commander.',
@@ -253,12 +256,12 @@
       template: 'Télécharger le fichier exemple', paste: 'Ou collez vos lignes', paste_go: 'Vérifier les lignes collées', reset: 'Recommencer',
       th_code: 'Code', th_product: 'Produit dans la boutique', th_qty: 'Sachets', th_status: 'Statut',
       reading: 'Lecture du fichier...', xlsx_load: 'Chargement du lecteur Excel...', xlsx_fail: 'Le lecteur Excel n’a pas pu se charger. Enregistrez la feuille en CSV et réessayez.', empty: 'Aucune ligne avec un code et une quantité. Colonne 1 = code, colonne 2 = quantité.',
-      matching: 'Recherche du code {i} sur {n} dans la boutique...', found: '{n} produits trouvés', check: '{n} à vérifier', missing: '{n} introuvables', dup: '{n} codes en double fusionnés', tot_packs: '{n} sachets au total, exactement comme dans votre fichier',
-      st_ok: 'trouvé', st_chk: 'vérifier', st_multi: 'choisir', st_no: 'introuvable', st_done: 'ajouté', st_fail: 'échec', st_skip: 'ignoré', st_qty: 'dans le panier : {n}',
+      matching: 'Recherche du code {i} sur {n} dans la boutique...', found: '{n} produits trouvés', check: '{n} à choisir', missing: '{n} introuvables', dup: '{n} codes en double fusionnés', tot_packs: '{n} sachets au total, exactement comme dans votre fichier',
+      st_ok: 'trouvé', st_multi: 'choisir', st_no: 'introuvable', st_done: 'ajouté', st_fail: 'échec', st_skip: 'ignoré', st_qty: 'dans le panier : {n}',
       add: 'Ajouter {n} lignes au panier', adding: 'Ajout de la ligne {i} sur {n}...', none: 'Rien à ajouter : aucune ligne ne correspond à un produit de la boutique.',
       done: '{l} lignes ({p} sachets) ajoutées à votre panier.', fail: 'Non ajouté : {names}.', skipped: '{n} lignes ignorées (introuvables).', qty_warn: '{n} produits se retrouvent avec une autre quantité : vérifiez-les dans le panier.', srv_err: 'La boutique répond : « {m} »', reload: 'Actualiser le panier',
       note: 'Les quantités sont des sachets (unités de vente de la boutique), pas des ballons à l’unité. Un produit déjà présent dans votre panier reçoit la quantité de votre fichier.'
-        + '  Les lignes « vérifier » ont été trouvées via la recherche : vérifiez le nom du produit avant d’ajouter. Les lignes introuvables sont ignorées.'
+        + '  Un code peut être la référence boutique ou le code SAP ou code-barres du produit, les deux sont reconnus. Les lignes introuvables sont ignorées.'
     },
     de: {
       kicker: 'Auf einmal bestellen', title: 'Bestellung als CSV oder Excel hochladen', lede: 'Die erste Spalte ist der Produktcode, die zweite Spalte die Anzahl Beutel, die Sie bestellen möchten.',
@@ -266,12 +269,12 @@
       template: 'Beispieldatei herunterladen', paste: 'Oder Zeilen einfügen', paste_go: 'Eingefügte Zeilen prüfen', reset: 'Neu beginnen',
       th_code: 'Code', th_product: 'Produkt im Shop', th_qty: 'Beutel', th_status: 'Status',
       reading: 'Datei wird gelesen...', xlsx_load: 'Excel-Leser wird geladen...', xlsx_fail: 'Der Excel-Leser konnte nicht geladen werden. Speichern Sie das Blatt als CSV und versuchen Sie es erneut.', empty: 'Keine Zeilen mit Code und Menge gefunden. Spalte 1 = Code, Spalte 2 = Menge.',
-      matching: 'Code {i} von {n} im Shop suchen...', found: '{n} Produkte gefunden', check: '{n} zu prüfen', missing: '{n} nicht gefunden', dup: '{n} doppelte Codes zusammengefasst', tot_packs: '{n} Beutel insgesamt, genau wie in Ihrer Datei',
-      st_ok: 'gefunden', st_chk: 'prüfen', st_multi: 'wählen', st_no: 'nicht gefunden', st_done: 'hinzugefügt', st_fail: 'fehlgeschlagen', st_skip: 'übersprungen', st_qty: 'im Warenkorb: {n}',
+      matching: 'Code {i} von {n} im Shop suchen...', found: '{n} Produkte gefunden', check: '{n} zu wählen', missing: '{n} nicht gefunden', dup: '{n} doppelte Codes zusammengefasst', tot_packs: '{n} Beutel insgesamt, genau wie in Ihrer Datei',
+      st_ok: 'gefunden', st_multi: 'wählen', st_no: 'nicht gefunden', st_done: 'hinzugefügt', st_fail: 'fehlgeschlagen', st_skip: 'übersprungen', st_qty: 'im Warenkorb: {n}',
       add: '{n} Zeilen in den Warenkorb', adding: 'Zeile {i} von {n} wird hinzugefügt...', none: 'Nichts hinzuzufügen: keine Zeile passt zu einem Shop-Produkt.',
       done: '{l} Zeilen ({p} Beutel) in Ihren Warenkorb gelegt.', fail: 'Nicht hinzugefügt: {names}.', skipped: '{n} Zeilen übersprungen (nicht gefunden).', qty_warn: '{n} Produkte liegen mit einer anderen Menge im Warenkorb: bitte prüfen.', srv_err: 'Der Shop meldet: „{m}“', reload: 'Warenkorb aktualisieren',
       note: 'Mengen sind Beutel (Verkaufseinheiten des Shops), keine einzelnen Ballons. Ein Produkt, das bereits im Warenkorb liegt, erhält die Menge aus Ihrer Datei.'
-        + '  Zeilen mit „prüfen“ wurden über die Suche gefunden: prüfen Sie den Produktnamen vor dem Hinzufügen. Nicht gefundene Zeilen werden übersprungen.'
+        + '  Ein Code kann die Shop-Referenz oder der SAP- oder Barcode des Produkts sein, beide werden erkannt. Nicht gefundene Zeilen werden übersprungen.'
     }
   };
   var S = T[lang] || T.en;
@@ -449,7 +452,10 @@
       if (exact.length === 1) { line.pick(exact[0]); line.status = 'ok'; }
       else if (pre.length === 1) { line.pick(pre[0]); line.status = 'ok'; }
       else if (pre.length > 1) { line.options = pre; line.pick(pre[0]); line.status = 'multi'; }
-      else if (hits.length === 1) { line.pick(hits[0]); line.status = 'chk'; }
+      /* Precies 1 product in de zoekresultaten en de code staat niet in de slug: dat is de SAP- of
+         barcode van dat product (Odoo zoekt ook op interne referentie en barcode). In de praktijk
+         klopt dat altijd, dus dit telt als gevonden en niet meer als "controleer" (21/09/2026). */
+      else if (hits.length === 1) { line.pick(hits[0]); line.status = 'ok'; }
       else { line.status = 'no'; }
       cb();
     });
@@ -495,7 +501,7 @@
       } else if (l.tid) {
         prod = '<a href="' + esc(shopPrefix + l.url) + '" target="_blank" rel="noopener">' + esc(l.name) + '</a>';
       } else { prod = '<span>&ndash;</span>'; }
-      var st = { ok: 'st_ok', chk: 'st_chk', multi: 'st_multi', no: 'st_no' }[l.status] || 'st_no';
+      var st = { ok: 'st_ok', multi: 'st_multi', no: 'st_no' }[l.status] || 'st_no';
       tr.innerHTML = '<td class="su-code">' + esc(l.code) + '</td><td>' + prod + '</td><td class="su-qty" data-unit="' + esc(t('th_qty')) + '">' + l.qty + '</td><td><span class="su-st">' + esc(t(st)) + '</span></td>';
       tb.appendChild(tr);
     });
