@@ -135,6 +135,9 @@ function check(name, ok, extra) {
     const book = await pg.getAttribute('#mbp-book', 'href');
     check('examenknop gaat naar de eventpagina', book === '/events', book);
 
+    const hero = await pg.getAttribute('#mbp-cta-dir', 'href');
+    check('de knop in de hero gaat ook naar /mbp-listing', hero === '/mbp-listing', hero);
+
     await pg.screenshot({ path: path.resolve(__dirname, 'mbp-nl.png'), fullPage: true });
     await ctx.close();
   }
@@ -232,18 +235,51 @@ function check(name, ok, extra) {
     await ctx.close();
   }
 
-  console.log('\nTaalversies');
-  for (const [p, sel, needle] of [
-    ['/en_GB/mbp', '#stx-mbp-root h1', 'Become a'],
-    ['/fr/mbp', '#stx-mbp-root h1', 'Devenez'],
-    ['/de/mbp', '#stx-mbp-root h1', 'Werde'],
-    ['/en_GB/mbp-listing', '#stx-mbpl-root h1', 'The '],
-    ['/fr/mbp-listing', '#stx-mbpl-root h1', 'annuaire'],
-    ['/de/mbp-listing', '#stx-mbpl-root h1', 'Verzeichnis'],
+  console.log('\nTaalversies: elke zichtbare tekst in de juiste taal');
+  // Woorden die verraden dat er een andere taal doorheen loopt. Dit is al
+  // een keer misgegaan (Nederlands met Engelse stukken, Engels met Frans),
+  // dus we kijken naar de hele pagina en niet alleen naar de titel.
+  const TELLS = {
+    en: [/\bYour\b/, /\bthe\b/, /\bwith\b/, /\bEvery\b/, /\bOpen the\b/, /\bworldwide\b/, /\bin Europe\b/],
+    nl: [/\bje\b/, /\bhet\b/, /\bvan\b/, /\bwat\b/, /\bOpen de\b/, /\bwereldwijd\b/, /\bin Europa\b/],
+    de: [/\bdie\b/, /\bdein/, /\bund\b/, /\bWas\b/, /\bVerzeichnis\b/, /\bweltweit\b/],
+    fr: [/\bvotre\b/, /\bvous\b/, /\bpour\b/, /\bannuaire\b/, /\bdans le monde\b/, /\ben Europe\b/],
+  };
+
+  for (const [p, sel, lang, needle] of [
+    ['/mbp', '#stx-mbp-root', 'nl', 'Word'],
+    ['/en_GB/mbp', '#stx-mbp-root', 'en', 'Become a'],
+    ['/fr/mbp', '#stx-mbp-root', 'fr', 'Devenez'],
+    ['/de/mbp', '#stx-mbp-root', 'de', 'Werde'],
+    ['/mbp-listing', '#stx-mbpl-root', 'nl', 'MBP-lijst'],
+    ['/en_GB/mbp-listing', '#stx-mbpl-root', 'en', 'directory'],
+    ['/fr/mbp-listing', '#stx-mbpl-root', 'fr', 'annuaire'],
+    ['/de/mbp-listing', '#stx-mbpl-root', 'de', 'Verzeichnis'],
   ]) {
     const { ctx, pg } = await open(p);
-    const h1 = await pg.textContent(sel);
-    check(p + ' is vertaald', h1.indexOf(needle) > -1, h1);
+    const h1 = await pg.textContent(sel + ' h1');
+    check(p + ': titel klopt', h1.indexOf(needle) > -1, h1);
+
+    // De hele zichtbare tekst van de sectie, zonder de namen en landen uit
+    // het register: die zijn in elke taal hetzelfde.
+    const text = await pg.evaluate((q) => {
+      const clone = document.querySelector(q).cloneNode(true);
+      clone.querySelectorAll('.people, .filters, .count').forEach((n) => n.remove());
+      return clone.textContent.replace(/\s+/g, ' ');
+    }, sel);
+
+    const own = TELLS[lang].filter((r) => r.test(text)).length;
+    const strays = [];
+    for (const other of ['en', 'nl', 'de', 'fr']) {
+      if (other === lang) continue;
+      const hits = TELLS[other].filter((r) => r.test(text));
+      // Duits en Nederlands lijken op elkaar, dus pas alarm als de andere
+      // taal het duidelijk wint.
+      if (hits.length >= 3 && hits.length > own) {
+        strays.push(other + ' scoort ' + hits.length + ' tegen ' + own);
+      }
+    }
+    check(p + ': geen tekst uit een andere taal', strays.length === 0, strays.join(' | '));
     await ctx.close();
   }
 
@@ -252,7 +288,15 @@ function check(name, ok, extra) {
     const { ctx, pg } = await open('/en_GB/mbp-listing');
     const about = await pg.getAttribute('#mbpl-about', 'href');
     const book = await pg.getAttribute('#mbpl-book', 'href');
-    check('links houden /en_GB', about === '/en_GB/mbp' && book === '/en_GB/events', about + ' | ' + book);
+    check('links op de lijst houden /en_GB', about === '/en_GB/mbp' && book === '/en_GB/events', about + ' | ' + book);
+    await ctx.close();
+  }
+  {
+    const { ctx, pg } = await open('/en_GB/mbp');
+    const hero = await pg.getAttribute('#mbp-cta-dir', 'href');
+    const foot = await pg.getAttribute('#mbp-listing-link', 'href');
+    check('beide knoppen naar de lijst houden /en_GB',
+      hero === '/en_GB/mbp-listing' && foot === '/en_GB/mbp-listing', hero + ' | ' + foot);
     await ctx.close();
   }
 
