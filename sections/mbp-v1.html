@@ -14,12 +14,12 @@
           lijst van alle MBPs staat. Die lijst is een apart
           sectiebestand (mbp-listing-v1.html), zodat deze pagina
           licht blijft en de twee los van elkaar aangepast kunnen
-          worden.
+          worden. Let op: de twee aantallen in COUNT_EU en
+          COUNT_WORLD hieronder ook meetellen bij een nieuwe MBP.
        3. Een account aanmaken voor het MBP-leerplatform. Zolang dat
           platform er nog niet is, wijst de knop naar het
           contactformulier; zet PLATFORM_URL hieronder zodra de
           echte inschrijving live staat.
-
      PUBLICEREN: de pagina mag onuitgegeven blijven zolang Robin
      zelf test. Voor bezoekers moet hij gepubliceerd zijn.
 
@@ -43,7 +43,7 @@
         </p>
         <div class="hero-cta">
           <a class="btn" id="mbp-book" href="/en_GB/events" data-i18n="mbp_cta_book">Book your exam</a>
-          <a class="btn ghost" href="#mbp-directory" data-i18n="mbp_cta_dir">See the professionals</a>
+          <a class="btn ghost" id="mbp-cta-dir" href="/mbp-listing" data-i18n="mbp_cta_dir">See the professionals</a>
         </div>
       </div>
       <div class="hero-badge">
@@ -365,12 +365,9 @@
       mbp_ben3_h: 'Support for your own classes', mbp_ben3_p: 'Sponsorship and product discounts when you teach, goodie bags for your students included.',
       mbp_ben4_h: 'Better pricing on education', mbp_ben4_p: 'A welcome package to get started, and special pricing on every Sempertex educational event.',
       mbp_dir_tag: 'The professionals',
-      mbp_dir_tag: 'De professionals',
-      mbp_dir_tag: 'Die Profis',
-      mbp_dir_tag: 'Les professionnels',
-      mbp_dir_h: 'Découvrez les <span class="hl">Master Balloon Professionals</span>',
-      mbp_dir_lede: 'Tous ceux qui ont réussi l’examen figurent publiquement, avec leur photo, leurs réseaux et leur travail. L’Europe d’abord, car ce sont les collègues avec qui vous pouvez vraiment travailler.',
-      mbp_dir_cta: 'Ouvrir l’annuaire', mbp_dir_eu: 'en Europe', mbp_dir_world: 'dans le monde',
+      mbp_dir_h: 'Meet the <span class="hl">Master Balloon Professionals</span>',
+      mbp_dir_lede: 'Everyone who passed the exam is listed publicly, with their photo, their channels and their work. Europe first, because those are the colleagues you can actually work with.',
+      mbp_dir_cta: 'Open the directory', mbp_dir_eu: 'in Europe', mbp_dir_world: 'worldwide',
       mbp_acc_eyebrow: 'The learning platform',
       mbp_acc_h: 'Train for the exam, <span class="hl">at your own pace</span>',
       mbp_acc_p: 'Create an account and you get our full course library: technique, materials, pricing and the skills the jury scores. Once you pass the exam, your account opens the professional level with masterclasses, your score sheet and your listing on this page.',
@@ -380,12 +377,9 @@
       mbp_acc_l4: 'Free while the platform is in preparation',
       mbp_acc_cta: 'Create your account',
       mbp_acc_fine: 'The platform is being built. Leave your details and we will let you know the day it opens.',
-      eu_lede: 'Sempertex Europe has {n} certified professionals across {c} countries. These are the colleagues you can work with, refer to and learn from.',
-      count: '{n} of {t} European professionals.',
-      show_all: 'Show all {n}', show_less: 'Show fewer', all: 'All',
       crit: ['Centerpiece', 'Personal design', 'Marketing proposal', 'Cost calculation',
              'Round balloon techniques', 'Link-O-Loon design', 'Organic design', 'Use of basic tools'],
-      pts: 'pts', none: 'No professional matches that search yet.'
+      pts: 'pts'
     },
     nl: {
       mbp_eyebrow: 'Certificering',
@@ -407,11 +401,10 @@
       mbp_ben2_h: 'Erkenning', mbp_ben2_p: 'Een plek op de Sempertex sociale kanalen en een webgalerij voor je ontwerpen.',
       mbp_ben3_h: 'Steun voor je eigen lessen', mbp_ben3_p: 'Sponsoring en kortingen op producten wanneer je zelf lesgeeft, goodie bags voor je cursisten inbegrepen.',
       mbp_ben4_h: 'Betere prijzen op opleidingen', mbp_ben4_p: 'Een welkomstpakket om te starten, en speciale prijzen op elk Sempertex opleidingsevent.',
-      mbp_dir_h: 'De <span class="hl">MBP-lijst</span>',
-      mbp_dir_lede: 'Elke professional die het examen behaalde. Zoek je iemand om mee samen te werken, of om een opdracht aan door te geven in een ander land? Begin hier.',
-      mbp_dir_eu_tag: 'Europa', mbp_dir_eu_h: 'Professionals in Europa',
-      mbp_dir_ph: 'Zoek op naam of land',
-      mbp_rest_h: 'Elders in de wereld', mbp_rest_p: 'Gecertificeerd via de andere Sempertex kantoren.',
+      mbp_dir_tag: 'De professionals',
+      mbp_dir_h: 'Ontmoet de <span class="hl">Master Balloon Professionals</span>',
+      mbp_dir_lede: 'Iedereen die het examen behaalde staat publiek vermeld, met foto, kanalen en werk. Europa eerst, want dat zijn de collega’s met wie je echt kunt samenwerken.',
+      mbp_dir_cta: 'Open de lijst', mbp_dir_eu: 'in Europa', mbp_dir_world: 'wereldwijd',
       mbp_acc_eyebrow: 'Het leerplatform',
       mbp_acc_h: 'Train voor het examen, <span class="hl">op je eigen tempo</span>',
       mbp_acc_p: 'Maak een account aan en je krijgt onze volledige cursusbibliotheek: techniek, materiaal, prijszetting en de vaardigheden waarop de jury punten geeft. Slaag je voor het examen, dan opent je account het professionele niveau met masterclasses, je scoreblad en je vermelding op deze pagina.',
@@ -421,12 +414,9 @@
       mbp_acc_l4: 'Gratis zolang het platform in voorbereiding is',
       mbp_acc_cta: 'Maak je account aan',
       mbp_acc_fine: 'Het platform wordt gebouwd. Laat je gegevens achter en we laten het weten zodra het opent.',
-      eu_lede: 'Sempertex Europe telt {n} gecertificeerde professionals in {c} landen. Dit zijn de collega’s met wie je kunt samenwerken, naar wie je kunt doorverwijzen en van wie je kunt leren.',
-      count: '{n} van {t} Europese professionals.',
-      show_all: 'Toon alle {n}', show_less: 'Toon minder', all: 'Alle',
       crit: ['Tafelstuk', 'Persoonlijk ontwerp', 'Marketingvoorstel', 'Kostprijsberekening',
              'Technieken met ronde ballonnen', 'Link-O-Loon ontwerp', 'Organisch ontwerp', 'Gebruik van basisgereedschap'],
-      pts: 'ptn', none: 'Nog geen professional die aan die zoekopdracht voldoet.'
+      pts: 'ptn'
     },
     de: {
       mbp_eyebrow: 'Zertifizierung',
@@ -448,11 +438,10 @@
       mbp_ben2_h: 'Anerkennung', mbp_ben2_p: 'Ein Platz auf den Sempertex Kanälen und eine Webgalerie für deine Entwürfe.',
       mbp_ben3_h: 'Unterstützung für eigene Kurse', mbp_ben3_p: 'Sponsoring und Produktrabatte, wenn du selbst unterrichtest, Goodie Bags für deine Teilnehmer inklusive.',
       mbp_ben4_h: 'Bessere Preise für Schulungen', mbp_ben4_p: 'Ein Willkommenspaket für den Start und Sonderpreise bei jedem Sempertex Schulungsevent.',
-      mbp_dir_h: 'Das <span class="hl">MBP-Verzeichnis</span>',
-      mbp_dir_lede: 'Jeder Profi, der die Prüfung bestanden hat. Du suchst jemanden zur Zusammenarbeit oder für einen Auftrag in einem anderen Land? Fang hier an.',
-      mbp_dir_eu_tag: 'Europa', mbp_dir_eu_h: 'Profis in Europa',
-      mbp_dir_ph: 'Nach Name oder Land suchen',
-      mbp_rest_h: 'Anderswo auf der Welt', mbp_rest_p: 'Zertifiziert über die anderen Sempertex Büros.',
+      mbp_dir_tag: 'Die Profis',
+      mbp_dir_h: 'Lerne die <span class="hl">Master Balloon Professionals</span> kennen',
+      mbp_dir_lede: 'Alle, die die Prüfung bestanden haben, stehen öffentlich im Verzeichnis, mit Foto, Kanälen und Arbeit. Europa zuerst, denn das sind die Kolleginnen und Kollegen, mit denen du wirklich arbeiten kannst.',
+      mbp_dir_cta: 'Verzeichnis öffnen', mbp_dir_eu: 'in Europa', mbp_dir_world: 'weltweit',
       mbp_acc_eyebrow: 'Die Lernplattform',
       mbp_acc_h: 'Trainiere für die Prüfung, <span class="hl">in deinem Tempo</span>',
       mbp_acc_p: 'Erstelle ein Konto und du bekommst unsere komplette Kursbibliothek: Technik, Material, Preisgestaltung und die Fähigkeiten, die die Jury bewertet. Bestehst du die Prüfung, öffnet dein Konto die Profi-Ebene mit Masterclasses, deinem Bewertungsbogen und deinem Eintrag auf dieser Seite.',
@@ -462,12 +451,9 @@
       mbp_acc_l4: 'Kostenlos, solange die Plattform vorbereitet wird',
       mbp_acc_cta: 'Konto erstellen',
       mbp_acc_fine: 'Die Plattform wird gebaut. Hinterlasse deine Daten und wir melden uns, sobald sie öffnet.',
-      eu_lede: 'Sempertex Europe hat {n} zertifizierte Profis in {c} Ländern. Das sind die Kolleginnen und Kollegen, mit denen du arbeiten, an die du weitergeben und von denen du lernen kannst.',
-      count: '{n} von {t} europäischen Profis.',
-      show_all: 'Alle {n} anzeigen', show_less: 'Weniger anzeigen', all: 'Alle',
       crit: ['Tischgesteck', 'Eigener Entwurf', 'Marketingvorschlag', 'Kostenkalkulation',
              'Techniken mit Rundballons', 'Link-O-Loon Entwurf', 'Organischer Entwurf', 'Einsatz der Grundwerkzeuge'],
-      pts: 'Pkt', none: 'Noch kein Profi passt zu dieser Suche.'
+      pts: 'Pkt'
     },
     fr: {
       mbp_eyebrow: 'Certification',
@@ -489,11 +475,10 @@
       mbp_ben2_h: 'De la reconnaissance', mbp_ben2_p: 'Une place sur les réseaux Sempertex et une galerie web pour vos créations.',
       mbp_ben3_h: 'Du soutien pour vos propres cours', mbp_ben3_p: 'Sponsoring et remises produits quand vous enseignez, goodie bags pour vos élèves inclus.',
       mbp_ben4_h: 'De meilleurs prix sur la formation', mbp_ben4_p: 'Un pack de bienvenue pour démarrer, et des prix spéciaux sur chaque événement de formation Sempertex.',
-      mbp_dir_h: 'L’<span class="hl">annuaire MBP</span>',
-      mbp_dir_lede: 'Tous les professionnels qui ont réussi l’examen. Vous cherchez quelqu’un avec qui travailler, ou à qui confier un chantier dans un autre pays ? Commencez ici.',
-      mbp_dir_eu_tag: 'Europe', mbp_dir_eu_h: 'Professionnels en Europe',
-      mbp_dir_ph: 'Chercher par nom ou pays',
-      mbp_rest_h: 'Ailleurs dans le monde', mbp_rest_p: 'Certifiés via les autres bureaux Sempertex.',
+      mbp_dir_tag: 'Les professionnels',
+      mbp_dir_h: 'Découvrez les <span class="hl">Master Balloon Professionals</span>',
+      mbp_dir_lede: 'Tous ceux qui ont réussi l’examen figurent publiquement, avec leur photo, leurs réseaux et leur travail. L’Europe d’abord, car ce sont les collègues avec qui vous pouvez vraiment travailler.',
+      mbp_dir_cta: 'Ouvrir l’annuaire', mbp_dir_eu: 'en Europe', mbp_dir_world: 'dans le monde',
       mbp_acc_eyebrow: 'La plateforme d’apprentissage',
       mbp_acc_h: 'Entraînez-vous à l’examen, <span class="hl">à votre rythme</span>',
       mbp_acc_p: 'Créez un compte et vous recevez toute notre bibliothèque de cours : technique, matériel, tarification et les compétences que le jury évalue. Une fois l’examen réussi, votre compte ouvre le niveau professionnel avec les masterclasses, votre feuille de notes et votre fiche sur cette page.',
@@ -503,12 +488,9 @@
       mbp_acc_l4: 'Gratuit pendant la préparation de la plateforme',
       mbp_acc_cta: 'Créez votre compte',
       mbp_acc_fine: 'La plateforme est en construction. Laissez vos coordonnées et nous vous prévenons dès l’ouverture.',
-      eu_lede: 'Sempertex Europe compte {n} professionnels certifiés dans {c} pays. Ce sont les collègues avec qui travailler, à qui confier un chantier et de qui apprendre.',
-      count: '{n} sur {t} professionnels européens.',
-      show_all: 'Afficher les {n}', show_less: 'Afficher moins', all: 'Tous',
       crit: ['Centre de table', 'Création personnelle', 'Proposition marketing', 'Calcul du prix de revient',
              'Techniques ballons ronds', 'Création Link-O-Loon', 'Création organique', 'Usage des outils de base'],
-      pts: 'pts', none: 'Aucun professionnel ne correspond encore à cette recherche.'
+      pts: 'pts'
     }
   };
   var S = I18N[lang] || I18N.en;
@@ -534,7 +516,12 @@
 
   document.getElementById('mbp-book').setAttribute('href', EVENTS_URL);
   document.getElementById('mbp-account').setAttribute('href', PLATFORM_URL || CONTACT_URL);
-  document.getElementById('mbp-listing-link').setAttribute('href', prefix + '/mbp-listing');
+  /* Allebei de knoppen die naar de lijst wijzen: de hero-knop en die
+     onderaan. Met taalprefix, zoals Odoo hem schrijft. */
+  ['mbp-cta-dir', 'mbp-listing-link'].forEach(function (id) {
+    var n = document.getElementById(id);
+    if (n) { n.setAttribute('href', prefix + '/mbp-listing'); }
+  });
 
   /* De aantallen staan hier als vaste getallen: de volledige lijst leeft
      in mbp-listing-v1.html, die willen we op deze pagina niet meeladen.

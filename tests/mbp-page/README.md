@@ -7,7 +7,8 @@ live site:
 - `sections/mbp-listing-v1.html` op `/mbp-listing`, de lijst
 
 ```
-node test.js
+node test.js        # de twee pagina's in de browser
+node check-i18n.js  # de vertaalblokken
 ```
 
 Playwright komt uit `stx-tools/node_modules` (of zet `STX_PLAYWRIGHT` naar een ander pad).
@@ -27,6 +28,19 @@ carrousel. Escape sluit het paneel.
 **Beide:** vertaald in nl, en_GB, fr en de; links houden de taalprefix zoals Odoo hem schrijft
 (`/en_GB/events`, niet `/en_gb/events`); buiten het eigen pad haalt elke sectie zichzelf weg; op
 390px is er geen horizontale scroll; en elk zichtbaar stuk tekst staat in Rethink Sans.
+
+## check-i18n.js
+
+Apart scriptje voor de vertalingen, want daar is het al twee keer misgegaan: een sleutel die in
+een taal ontbrak (de pagina viel dan stilletjes terug op de Engelse tekst uit de HTML), en een
+blok dat vier keer met dezelfde taal overschreven werd. Het controleert per bestand dat het
+script geldige JavaScript is, dat de vier talen precies dezelfde sleutels hebben, dat er geen
+dubbele sleutels zijn, dat er geen tekst uit een andere taal in een blok staat, dat elke
+`data-i18n` in de markup een vertaling heeft, en dat er geen vertalingen overblijven die nergens
+meer gebruikt worden.
+
+`test.js` doet het daarnaast nog eens vanuit de browser: het leest de hele zichtbare tekst van
+elke taalversie en slaat alarm als een andere taal er doorheen loopt.
 
 ## Screenshots
 
