@@ -26,11 +26,14 @@ Playwright komt uit `stx-tools/node_modules` (of zet `STX_PLAYWRIGHT` naar een a
 
 De kaart tonen voor elk ingelogd account (live sinds 21/09/2026, `BETA = false`) en niets tonen voor uitgelogde bezoekers,
 plaatsing boven de winkelmand, de vier talen, het inlezen van CSV, geplakte tekst en xlsx, samenvoegen van
-dubbele codes, koprij en rommelregels overslaan, de vier matchstatussen, aantallen die als verpakkingen
+dubbele codes, koprij en rommelregels overslaan, de matchstatussen, aantallen die als verpakkingen
 doorgaan, de keuzelijst bij meerdere treffers, en de resultaatmelding die een herlaadbeurt overleeft.
 
 En sinds 21/09/2026: het aantal uit het bestand is ook het aantal dat in het mandje staat. Een tweede
 upload van een product dat er al in zit telt niet op maar corrigeert de regel via `/shop/cart/update`.
+
+En: een code die via de SAP- of barcode op precies 1 product uitkomt telt als gevonden (groen), niet meer
+als "controleer". Alleen een code met meerdere prefix-treffers geeft nog een keuzelijst.
 
 ## example-order.csv
 

@@ -111,13 +111,13 @@ function assert(c, msg) { if (!c) { console.error('FAIL', msg); process.exitCode
     console.log('   --- preview rows ---'); dump.forEach((d, i) => console.log('   ' + String(i + 1).padStart(3) + '  ' + d));
   }
   assert(rows.length === 108, '108 lines parsed (got ' + rows.length + ')');
-  assert(rows.filter(c => c === 'ok').length === 107, '107 exact matches (R12826 resolved to the plain 50 pcs product by the exact rule)');
+  assert(rows.filter(c => c === 'ok').length === 108, '108 matches, SAP/barcode lines count as found too (R12826 resolved to the plain 50 pcs product by the exact rule)');
   assert(rows.filter(c => c === 'multi').length === 0, '0 ambiguous');
-  assert(rows.filter(c => c === 'chk').length === 1, '1 via search (20021027)');
+  assert(rows.filter(c => c === 'chk').length === 0, 'no "check" status left for a SAP code match');
   const r826 = await page.$$eval('#su-rows tr', trs => { const tr = trs.find(x => x.querySelector('.su-code').textContent === 'R12826'); return tr.querySelector('td:nth-child(2)').textContent; });
   assert(r826 === 'R12 - Silk Cool Mint - 826 - 50 Pcs', 'R12826 -> plain 50 pcs product, not the punten variant (' + r826 + ')');
-  const chkName = await page.$eval('#su-rows tr.chk td:nth-child(2)', td => td.textContent);
-  assert(chkName.includes('Nozzle Up - Cosmo Pink - 013'), '20021027 -> N260013 (' + chkName + ')');
+  const barName = await page.$$eval('#su-rows tr', trs => { const tr = trs.find(x => x.querySelector('.su-code').textContent === '20021027'); return tr.querySelector('td:nth-child(2)').textContent + '|' + tr.className + '|' + tr.querySelector('.su-st').textContent; });
+  assert(barName.includes('Nozzle Up - Cosmo Pink - 013') && barName.includes('|ok|'), 'SAP code 20021027 -> N260013, marked found (' + barName + ')');
   const btn = await page.textContent('#su-add'); assert(btn.trim() === '108 regels in winkelmandje', 'add button label: ' + btn.trim());
   await page.screenshot({ path: path.join(OUT, 'preview-nl.png'), fullPage: true });
   // 5. add all
