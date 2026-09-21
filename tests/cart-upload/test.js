@@ -105,6 +105,10 @@ function assert(c, msg) { if (!c) { console.error('FAIL', msg); process.exitCode
   const pills = await page.$$eval('#su-sum .su-pill', els => els.map(e => e.textContent));
   console.log('   pills:', pills.join(' | '));
   const rows = await page.$$eval('#su-rows tr', trs => trs.map(tr => tr.className));
+  if (process.env.STX_DUMP) { // STX_DUMP=1 prints code, matched product and quantity per line, to compare with the source file
+    const dump = await page.$$eval('#su-rows tr', trs => trs.map(tr => [tr.querySelector('.su-code').textContent, tr.querySelector('.su-qty').textContent, tr.querySelector('td:nth-child(2)').textContent.trim(), tr.className].join(' | ')));
+    console.log('   --- preview rows ---'); dump.forEach((d, i) => console.log('   ' + String(i + 1).padStart(3) + '  ' + d));
+  }
   assert(rows.length === 108, '108 lines parsed (got ' + rows.length + ')');
   assert(rows.filter(c => c === 'ok').length === 107, '107 exact matches (R12826 resolved to the plain 50 pcs product by the exact rule)');
   assert(rows.filter(c => c === 'multi').length === 0, '0 ambiguous');
