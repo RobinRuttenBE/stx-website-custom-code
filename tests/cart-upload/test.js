@@ -59,7 +59,7 @@ const server = http.createServer(async (req, res) => {
     if (u.pathname === '/shop/cart/add') {
       cartCalls.push(body.params);
       const tid = body.params.product_template_id;
-      if (tid === 3773) return res.end(JSON.stringify({ jsonrpc: '2.0', id: 1, error: { message: 'boom' } }));
+      if (tid === 3773) return res.end(JSON.stringify({ jsonrpc: '2.0', id: 1, error: { message: 'Odoo Server Error', data: { message: 'The given product does not exist therefore it cannot be added to cart.' } } }));
       let lid = lineByTid[tid];
       if (!lid) { lid = ++nextLineId; lineByTid[tid] = lid; fakeCart[lid] = { tid, qty: 0 }; }
       fakeCart[lid].qty += body.params.quantity;
@@ -126,6 +126,7 @@ function assert(c, msg) { if (!c) { console.error('FAIL', msg); process.exitCode
   assert(cartQtyOf(c440.product_template_id) === 440, 'cart holds exactly 440 for that product (' + cartQtyOf(c440.product_template_id) + ')');
   assert(updateCalls.length === 0, 'empty cart: no correction needed (' + updateCalls.length + ' updates)');
   assert(resultTxt.includes('107 regels') && resultTxt.includes('N160080'), 'result: 107 added, N160080 failed (mocked cart error)');
+  assert(resultTxt.includes('De shop meldt') && resultTxt.includes('does not exist'), 'the shop error message is shown, not just "failed": ' + resultTxt.slice(-150));
   await page.screenshot({ path: path.join(OUT, 'done-nl.png'), fullPage: true });
   await page.waitForURL(/\/shop\/cart$/, { timeout: 8000 });
   await page.waitForSelector('#su-lastresult:not([hidden])');
