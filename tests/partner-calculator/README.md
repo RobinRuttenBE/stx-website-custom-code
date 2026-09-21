@@ -18,7 +18,9 @@ kostprijscalculator en de Colour Matching Tool ook. Het logo van Liragram staat 
 data-URI (geen hotlink naar hun server), hun kleur, hun font en hun tabtitel en favicon staan
 op de pagina, de teksten van de calculator staan in het Spaans, de Sempertex winkelmandknop is
 weg en het bestelblok toont de twee gekozen kleurcodes met een knop naar hun eigen shop. De
-pagina staat op `noindex`. Er staat geen zichtbare link terug naar onze site, en het woord
+pagina staat op `noindex`. Er is geen kopieerknop meer en elke link naar Liragram (logo,
+"Volver a la tienda", bestelknop, maatknoppen) opent een nieuw tabblad, zodat de calculator
+openblijft. Er staat geen zichtbare link terug naar onze site, en het woord
 Sempertex komt alleen voor op de twee plekken waar het hoort: hun bestelknop en de creditregel
 in de footer. Het laadscherm gaat precies een keer weg, pas nadat beide secties binnen zijn.
 
