@@ -10,11 +10,11 @@
        1. Uitleg: wat MBP is, wat het examen vraagt, wat je eraan
           hebt. De examenstructuur staat er volledig in (twee delen,
           acht criteria, 85 van de 100 om te slagen).
-       2. De publieke lijst van alle MBPs. Europa staat bovenaan met
-          zoekveld en landenfilters, want dat is onze markt; de rest
-          van de wereld staat eronder, compacter en ingeklapt.
-          Bron: sempertex.com/blogs/directorio-mbp, overgenomen in
-          MBPS hieronder. Nieuwe MBPs = dat blok bijwerken.
+       2. Een doorverwijzing naar /mbp-listing, waar de volledige
+          lijst van alle MBPs staat. Die lijst is een apart
+          sectiebestand (mbp-listing-v1.html), zodat deze pagina
+          licht blijft en de twee los van elkaar aangepast kunnen
+          worden.
        3. Een account aanmaken voor het MBP-leerplatform. Zolang dat
           platform er nog niet is, wijst de knop naar het
           contactformulier; zet PLATFORM_URL hieronder zodra de
@@ -25,6 +25,8 @@
 
      Sinds 21/09/2026.
      ============================================================ -->
+
+<link href="https://fonts.googleapis.com/css2?family=Rethink+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,700&display=swap" rel="stylesheet">
 
 <div class="stx-mbp" id="stx-mbp-root" style="display:none">
   <div class="wrap">
@@ -120,39 +122,23 @@
       </div>
     </section>
 
-    <!-- ============ DIRECTORY ============ -->
+
+    <!-- ============ NAAR DE LIJST ============ -->
     <section class="sec" id="mbp-directory">
-      <h2 data-i18n="mbp_dir_h">The <span class="hl">MBP directory</span></h2>
-      <p class="lede" data-i18n="mbp_dir_lede">
-        Every professional who passed the exam. Looking for someone to work with, or to hand a job
-        to in another country? Start here.
-      </p>
-
-      <div class="dir-head">
-        <div class="dir-title">
-          <span class="pill d" data-i18n="mbp_dir_eu_tag">Europe</span>
-          <h3 data-i18n="mbp_dir_eu_h">Professionals in Europe</h3>
-          <p id="mbp-eu-lede"></p>
+      <div class="dir-teaser">
+        <div>
+          <span class="pill d" data-i18n="mbp_dir_tag">The professionals</span>
+          <h2 class="mt2" data-i18n="mbp_dir_h">Meet the <span class="hl">Master Balloon Professionals</span></h2>
+          <p data-i18n="mbp_dir_lede">
+            Everyone who passed the exam is listed publicly, with their photo, their channels and
+            their work. Europe first, because those are the colleagues you can actually work with.
+          </p>
         </div>
-        <div class="search">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>
-          <input type="search" id="mbp-search" data-i18n-ph="mbp_dir_ph" placeholder="Search by name or country">
+        <div class="dir-teaser-cta">
+          <a class="btn big" id="mbp-listing-link" href="/mbp-listing" data-i18n="mbp_dir_cta">Open the directory</a>
+          <p class="fine"><strong id="mbp-count-eu2">63</strong> <span data-i18n="mbp_dir_eu">in Europe</span>,
+            <strong id="mbp-count-total2">266</strong> <span data-i18n="mbp_dir_world">worldwide</span></p>
         </div>
-      </div>
-      <div class="chips filters" id="mbp-eu-filters"></div>
-      <p class="count" id="mbp-eu-count"></p>
-      <div class="people" id="mbp-eu-grid"></div>
-
-      <div class="rest">
-        <div class="rest-head">
-          <div>
-            <h3 data-i18n="mbp_rest_h">Elsewhere in the world</h3>
-            <p data-i18n="mbp_rest_p">Certified through the other Sempertex offices.</p>
-          </div>
-          <button type="button" class="more" id="mbp-rest-toggle"></button>
-        </div>
-        <div class="chips filters" id="mbp-rest-filters"></div>
-        <div class="people compact" id="mbp-rest-grid"></div>
       </div>
     </section>
 
@@ -199,7 +185,7 @@
   .stx-mbp h1 { font-size: clamp(32px, 4.2vw, 52px); font-weight: 800; }
   .stx-mbp h2 { font-size: clamp(26px, 3vw, 36px); font-weight: 800; }
   .stx-mbp h3 { font-size: clamp(18px, 1.7vw, 22px); font-weight: 800; line-height: 1.25; }
-  .stx-mbp p { font-family: 'Lato', system-ui, sans-serif; }
+  .stx-mbp p { font-family: 'Rethink Sans', system-ui, sans-serif; }
   .stx-mbp .lede { font-size: clamp(16px, 1.3vw, 19px); color: var(--g600); max-width: 62ch; margin: 14px 0 0; }
   .stx-mbp .eyebrow { font-size: 13px; font-weight: 800; letter-spacing: .13em; text-transform: uppercase; color: var(--purple); margin-bottom: 10px; }
   .stx-mbp .hl { background: var(--yellow); padding: 0 .16em; box-decoration-break: clone; -webkit-box-decoration-break: clone; border-radius: 3px; }
@@ -226,7 +212,7 @@
   .stx-mbp .badge-nums { display: flex; gap: 14px; justify-content: center; }
   .stx-mbp .badge-nums div { background: #fff; border-radius: 12px; padding: 14px 16px; flex: 1; }
   .stx-mbp .badge-nums strong { display: block; font-size: 28px; font-weight: 800; letter-spacing: -.02em; }
-  .stx-mbp .badge-nums span { display: block; font-family: 'Lato', sans-serif; font-size: 13px; color: var(--g600); margin-top: 2px; }
+  .stx-mbp .badge-nums span { display: block; font-family: 'Rethink Sans', system-ui, sans-serif; font-size: 13px; color: var(--g600); margin-top: 2px; }
 
   /* Kaarten */
   .stx-mbp .two { display: grid; grid-template-columns: repeat(auto-fit, minmax(330px, 1fr)); gap: 22px; margin-top: 30px; }
@@ -244,13 +230,13 @@
   .stx-mbp .pill.d { background: var(--dark); color: var(--yellow); }
 
   .stx-mbp ul.crit { list-style: none; padding: 0; margin: 20px 0 0; }
-  .stx-mbp ul.crit li { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid #f4f4f5; font-family: 'Lato', sans-serif; font-size: 16px; }
+  .stx-mbp ul.crit li { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid #f4f4f5; font-family: 'Rethink Sans', system-ui, sans-serif; font-size: 16px; }
   .stx-mbp ul.crit li:last-child { border-bottom: none; }
   .stx-mbp ul.crit b { margin-left: auto; font-family: 'Rethink Sans', sans-serif; font-weight: 800; font-size: 17px; white-space: nowrap; }
   .stx-mbp ul.crit b small { color: var(--g400); font-size: 13.5px; }
 
   .stx-mbp ul.ticks { list-style: none; padding: 0; margin: 22px 0 0; display: flex; flex-direction: column; gap: 10px; }
-  .stx-mbp ul.ticks li { display: flex; gap: 11px; font-family: 'Lato', sans-serif; font-size: 16px; }
+  .stx-mbp ul.ticks li { display: flex; gap: 11px; font-family: 'Rethink Sans', system-ui, sans-serif; font-size: 16px; }
   .stx-mbp ul.ticks li::before { content: "\2713"; color: var(--purple); font-weight: 800; }
 
   /* Directory */
@@ -260,7 +246,7 @@
   .stx-mbp .dir-title p { font-size: 15.5px; color: var(--g600); margin: 10px 0 0; max-width: 54ch; }
   .stx-mbp .search { display: flex; align-items: center; gap: 11px; background: #fff; border: 1.5px solid transparent; border-radius: 999px; padding: 11px 20px; flex: 1 1 280px; max-width: 420px; color: var(--g400); }
   .stx-mbp .search:focus-within { border-color: var(--purple); }
-  .stx-mbp .search input { border: none; outline: none; font-family: 'Lato', sans-serif; font-size: 16px; flex: 1; min-width: 0; background: none; color: var(--dark); }
+  .stx-mbp .search input { border: none; outline: none; font-family: 'Rethink Sans', system-ui, sans-serif; font-size: 16px; flex: 1; min-width: 0; background: none; color: var(--dark); }
 
   .stx-mbp .filters { margin-top: 20px; }
   .stx-mbp .filters button {
@@ -273,7 +259,7 @@
   .stx-mbp .filters button.on { background: var(--dark); border-color: var(--dark); color: var(--yellow); }
   .stx-mbp .filters button i { font-style: normal; opacity: .55; margin-left: 5px; }
 
-  .stx-mbp .count { font-family: 'Lato', sans-serif; font-size: 14.5px; color: var(--g600); margin: 18px 0 0; }
+  .stx-mbp .count { font-family: 'Rethink Sans', system-ui, sans-serif; font-size: 14.5px; color: var(--g600); margin: 18px 0 0; }
   .stx-mbp .people { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; margin-top: 14px; }
   .stx-mbp .people.compact { grid-template-columns: repeat(auto-fill, minmax(215px, 1fr)); }
   .stx-mbp .p {
@@ -285,7 +271,7 @@
   .stx-mbp .p .pic { width: 44px; height: 44px; border-radius: 50%; flex: none; display: grid; place-items: center; background: var(--purple-light); color: var(--purple); font-weight: 800; font-size: 15px; transition: background .15s ease, color .15s ease; }
   .stx-mbp .p:hover .pic { background: var(--purple); color: #fff; }
   .stx-mbp .p .n { font-weight: 800; font-size: 16px; display: block; line-height: 1.3; }
-  .stx-mbp .p .c { font-family: 'Lato', sans-serif; font-size: 14px; color: var(--g600); display: block; }
+  .stx-mbp .p .c { font-family: 'Rethink Sans', system-ui, sans-serif; font-size: 14px; color: var(--g600); display: block; }
   .stx-mbp .people.compact .p { padding: 11px 13px; gap: 11px; }
   .stx-mbp .people.compact .pic { width: 36px; height: 36px; font-size: 13px; }
   .stx-mbp .people.compact .n { font-size: 14.5px; }
@@ -303,8 +289,17 @@
   .stx-mbp .account-cta { text-align: center; }
   .stx-mbp .account-cta .fine { font-size: 14px; margin-top: 16px; }
 
+  /* Doorverwijzing naar de lijst */
+  .stx-mbp .dir-teaser { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 300px); gap: clamp(24px, 3.5vw, 48px); align-items: center; background: var(--purple-light); border-radius: 20px; padding: clamp(26px, 3.5vw, 48px); }
+  .stx-mbp .dir-teaser p { font-size: 16.5px; color: var(--g600); margin: 16px 0 0; max-width: 58ch; }
+  .stx-mbp .dir-teaser-cta { text-align: center; }
+  .stx-mbp .dir-teaser-cta .fine { font-size: 14.5px; margin-top: 16px; }
+  .stx-mbp .dir-teaser-cta .fine strong { font-size: 19px; }
+  .stx-mbp .mt2 { margin-top: 12px; }
+
   @media (max-width: 900px) {
     .stx-mbp .hero { grid-template-columns: minmax(0, 1fr); }
+    .stx-mbp .dir-teaser { grid-template-columns: minmax(0, 1fr); }
     .stx-mbp .account { grid-template-columns: minmax(0, 1fr); }
   }
 </style>
@@ -369,11 +364,13 @@
       mbp_ben2_h: 'Recognition', mbp_ben2_p: 'A place across Sempertex social media and a web gallery for your designs.',
       mbp_ben3_h: 'Support for your own classes', mbp_ben3_p: 'Sponsorship and product discounts when you teach, goodie bags for your students included.',
       mbp_ben4_h: 'Better pricing on education', mbp_ben4_p: 'A welcome package to get started, and special pricing on every Sempertex educational event.',
-      mbp_dir_h: 'The <span class="hl">MBP directory</span>',
-      mbp_dir_lede: 'Every professional who passed the exam. Looking for someone to work with, or to hand a job to in another country? Start here.',
-      mbp_dir_eu_tag: 'Europe', mbp_dir_eu_h: 'Professionals in Europe',
-      mbp_dir_ph: 'Search by name or country',
-      mbp_rest_h: 'Elsewhere in the world', mbp_rest_p: 'Certified through the other Sempertex offices.',
+      mbp_dir_tag: 'The professionals',
+      mbp_dir_tag: 'De professionals',
+      mbp_dir_tag: 'Die Profis',
+      mbp_dir_tag: 'Les professionnels',
+      mbp_dir_h: 'Découvrez les <span class="hl">Master Balloon Professionals</span>',
+      mbp_dir_lede: 'Tous ceux qui ont réussi l’examen figurent publiquement, avec leur photo, leurs réseaux et leur travail. L’Europe d’abord, car ce sont les collègues avec qui vous pouvez vraiment travailler.',
+      mbp_dir_cta: 'Ouvrir l’annuaire', mbp_dir_eu: 'en Europe', mbp_dir_world: 'dans le monde',
       mbp_acc_eyebrow: 'The learning platform',
       mbp_acc_h: 'Train for the exam, <span class="hl">at your own pace</span>',
       mbp_acc_p: 'Create an account and you get our full course library: technique, materials, pricing and the skills the jury scores. Once you pass the exam, your account opens the professional level with masterclasses, your score sheet and your listing on this page.',
@@ -537,6 +534,20 @@
 
   document.getElementById('mbp-book').setAttribute('href', EVENTS_URL);
   document.getElementById('mbp-account').setAttribute('href', PLATFORM_URL || CONTACT_URL);
+  document.getElementById('mbp-listing-link').setAttribute('href', prefix + '/mbp-listing');
+
+  /* De aantallen staan hier als vaste getallen: de volledige lijst leeft
+     in mbp-listing-v1.html, die willen we op deze pagina niet meeladen.
+     Komt er een gecertificeerde bij, dan tellen deze twee ook mee. */
+  var COUNT_EU = 63, COUNT_WORLD = 266;
+  ['mbp-count-eu', 'mbp-count-eu2'].forEach(function (id) {
+    var n = document.getElementById(id);
+    if (n) { n.textContent = COUNT_EU; }
+  });
+  ['mbp-count-total', 'mbp-count-total2'].forEach(function (id) {
+    var n = document.getElementById(id);
+    if (n) { n.textContent = COUNT_WORLD; }
+  });
 
   /* ---- EXAMENCRITERIA ---- */
   var PTS = [10, 10, 5, 5, 20, 20, 20, 10];
@@ -551,364 +562,7 @@
   document.getElementById('mbp-p1').innerHTML = critHtml(0, 4);
   document.getElementById('mbp-p2').innerHTML = critHtml(4, 8);
 
-  /* ============================================================
-     MBP-LIJST
-     Overgenomen van sempertex.com/blogs/directorio-mbp.
-     Nieuwe gecertificeerden hier toevoegen: {n: naam, c: land,
-     e: 1 als Europa}. Europa staat bovenaan, de rest eronder.
-     ============================================================ */
-  var MBPS = [
-    {"n":"Zsuzsanna Ernst","c":"Austria","e":1},
-    {"n":"Bjorn de Weirdt","c":"Belgium","e":1},
-    {"n":"Celine Gaspercic","c":"Belgium","e":1},
-    {"n":"Laetitia Giernacki","c":"Belgium","e":1},
-    {"n":"Melissa Bellefontaine","c":"Belgium","e":1},
-    {"n":"Garyfallia Panagiotary","c":"Greece","e":1},
-    {"n":"Gergely Horvath","c":"Hungary","e":1},
-    {"n":"Kincso Gombos","c":"Hungary","e":1},
-    {"n":"Klaudia Nagyne Szita","c":"Hungary","e":1},
-    {"n":"Monika Lukacs Szabo","c":"Hungary","e":1},
-    {"n":"Szepesi Antal","c":"Hungary","e":1},
-    {"n":"Szilvia Czibula","c":"Hungary","e":1},
-    {"n":"Alaia Michela Nadia","c":"Italy","e":1},
-    {"n":"Alberto Falcone","c":"Italy","t":"Verbania Intra","e":1},
-    {"n":"Anai Contreras Soto","c":"Italy","e":1},
-    {"n":"Barbara Malori","c":"Italy","e":1},
-    {"n":"Barbara Rosatelli","c":"Italy","e":1},
-    {"n":"Bonucelli Barbara","c":"Italy","e":1},
-    {"n":"Campailla Carmelo","c":"Italy","e":1},
-    {"n":"Carola Nesta","c":"Italy","e":1},
-    {"n":"Daniele Giacalone","c":"Italy","e":1},
-    {"n":"Di Prima Manuela","c":"Italy","e":1},
-    {"n":"Entela Sukthi","c":"Italy","e":1},
-    {"n":"Ilenia Villa","c":"Italy","t":"Isola del Liri","e":1},
-    {"n":"Jessica di Claudio","c":"Italy","e":1},
-    {"n":"Macri Ernerto","c":"Italy","e":1},
-    {"n":"Manuela Boi","c":"Italy","e":1},
-    {"n":"Marian Nagy","c":"Italy","e":1},
-    {"n":"Mary Palloncini","c":"Italy","t":"Roma","e":1},
-    {"n":"Mazzocca Vanessa","c":"Italy","e":1},
-    {"n":"Melania Rocco","c":"Italy","t":"Napoli","e":1},
-    {"n":"Milu Elena Alina","c":"Italy","e":1},
-    {"n":"Pulino Maria Giovanna","c":"Italy","e":1},
-    {"n":"Ramona Zingaretti","c":"Italy","e":1},
-    {"n":"Roberta Carocci","c":"Italy","e":1},
-    {"n":"Santi Marino","c":"Italy","e":1},
-    {"n":"Seby Cosentino","c":"Italy","e":1},
-    {"n":"Tiziana Mignanelli","c":"Italy","e":1},
-    {"n":"Valerio Corallo","c":"Italy","e":1},
-    {"n":"Raymond Grima","c":"Malta","e":1},
-    {"n":"Robert Ellul","c":"Malta","e":1},
-    {"n":"Guido Verhoef","c":"Netherlands","e":1},
-    {"n":"Jeanette de Jongh","c":"Netherlands","e":1},
-    {"n":"Marcel Groothuizen","c":"Netherlands","e":1},
-    {"n":"Piet Kalisvaart","c":"Netherlands","e":1},
-    {"n":"Miguel Rego","c":"Portugal","e":1},
-    {"n":"Attila Tamas","c":"Romania","e":1},
-    {"n":"Cristina Dasca","c":"Romania","e":1},
-    {"n":"Gabriela Tamas","c":"Romania","e":1},
-    {"n":"Jing Wang","c":"Romania","e":1},
-    {"n":"Yana Laska","c":"Romania","e":1},
-    {"n":"Klaudia Kanickova","c":"Slovakia","e":1},
-    {"n":"Alaia Michela Nadia","c":"Spain","e":1},
-    {"n":"Diana Ivanova Ivanova","c":"Spain","e":1},
-    {"n":"Jenifer Arencibia Suarez","c":"Spain","e":1},
-    {"n":"Marivi Garcia Cerezo","c":"Spain","e":1},
-    {"n":"Yidan Xu","c":"Spain","e":1},
-    {"n":"Cecilia Bianchi","c":"Switzerland","e":1},
-    {"n":"Stefano Calandra","c":"Switzerland","e":1},
-    {"n":"Audrey Parsons","c":"United Kingdom","e":1},
-    {"n":"Fong Chun Wai","c":"United Kingdom","e":1},
-    {"n":"Laural Schultze","c":"United Kingdom","e":1},
-    {"n":"Loretta Saunders","c":"United Kingdom","e":1},
-    {"n":"Alberto Goitia","c":"Aruba"},
-    {"n":"Chris Adamo","c":"Australia"},
-    {"n":"Danna","c":"Australia"},
-    {"n":"Lauren Miller","c":"Australia"},
-    {"n":"Dina Shimamura Simizu","c":"Brazil","t":"Sao Bernardo do Campo"},
-    {"n":"Etsu Flores","c":"Brazil"},
-    {"n":"Irene Marques","c":"Brazil"},
-    {"n":"Valdivan Brasil de Souza","c":"Brazil"},
-    {"n":"Teresa Demarco","c":"Canada","t":"Guelph"},
-    {"n":"Camilo Alvarez","c":"Chile","t":"Santiago de Chile"},
-    {"n":"Eli Marcano","c":"Chile","t":"Santiago de Chile"},
-    {"n":"Gisela Chavez","c":"Chile","t":"Iquique"},
-    {"n":"Julia Angelica Moya","c":"Chile","t":"Lampa"},
-    {"n":"Kelly Saenz","c":"Chile","t":"Santiago de Chile"},
-    {"n":"Mauris Valdiviezo","c":"Chile","t":"Santiago de Chile"},
-    {"n":"Angel Wan Yee Chan","c":"China"},
-    {"n":"Bi Liu","c":"China"},
-    {"n":"Chan Fong","c":"China","t":"Hong Kong"},
-    {"n":"Chan Fong","c":"China"},
-    {"n":"Cheng Sze Ki","c":"China"},
-    {"n":"Cheung Kwai Chun","c":"China"},
-    {"n":"Cheung Mo Har","c":"China"},
-    {"n":"Chien Hsia Wei","c":"China"},
-    {"n":"Chocolate Chan","c":"China"},
-    {"n":"Cindy Lai Sin Yee","c":"China","t":"Hong Kong"},
-    {"n":"Derek Cheung","c":"China"},
-    {"n":"Erica Yuen","c":"China"},
-    {"n":"Ingel Ng Ha","c":"China"},
-    {"n":"Jieru Yu","c":"China"},
-    {"n":"Jimmy Lam Wing Yeung","c":"China"},
-    {"n":"Jing Song Wu","c":"China"},
-    {"n":"Ken Tong","c":"China"},
-    {"n":"Kitman Yip","c":"China"},
-    {"n":"Kitty Lui","c":"China"},
-    {"n":"Lam Koon Chu","c":"China"},
-    {"n":"Li Chan Mei","c":"China"},
-    {"n":"Lin Pikkei","c":"China"},
-    {"n":"Lloon Peng","c":"China"},
-    {"n":"Maggie Chan Wai Chi","c":"China"},
-    {"n":"Milly Lo Suk Man","c":"China"},
-    {"n":"Piera Lam","c":"China","t":"Hong Kong"},
-    {"n":"Rex Pak Chun San","c":"China"},
-    {"n":"Rui Yu","c":"China"},
-    {"n":"San Wong Kwok","c":"China"},
-    {"n":"Sandy Hui Shan Shan","c":"China"},
-    {"n":"Shan Wong Lai","c":"China"},
-    {"n":"Shuran Xiao","c":"China"},
-    {"n":"Steffi Leung","c":"China"},
-    {"n":"Tian Wang","c":"China"},
-    {"n":"Trevina Fong","c":"China"},
-    {"n":"Tse Ka Yan Crystal","c":"China"},
-    {"n":"Wei Ru Xiao","c":"China"},
-    {"n":"Wei Wang","c":"China"},
-    {"n":"Winson Choi","c":"China"},
-    {"n":"Xueyu Huang","c":"China"},
-    {"n":"Yau Kiu Ling","c":"China"},
-    {"n":"Zhang Qinhua","c":"China"},
-    {"n":"Zhao Nzhihong","c":"China"},
-    {"n":"Angela Escobar","c":"Colombia"},
-    {"n":"Angela Jaramillo","c":"Colombia"},
-    {"n":"Cindy Botero","c":"Colombia"},
-    {"n":"Diego Garcia","c":"Colombia"},
-    {"n":"Geles Genes","c":"Colombia"},
-    {"n":"Jenyfer Henao","c":"Colombia"},
-    {"n":"Juliana Velez","c":"Colombia"},
-    {"n":"Luis Fernando Garzon Salinas","c":"Colombia"},
-    {"n":"Maira Alejandra Mayorga Hernandez","c":"Colombia"},
-    {"n":"Marby Yicela Hernandez Casallas","c":"Colombia"},
-    {"n":"Martha Stella Diaz","c":"Colombia"},
-    {"n":"Natali Perez","c":"Colombia"},
-    {"n":"Sandra Garcia","c":"Colombia","t":"Bucaramanga"},
-    {"n":"Yilma Milena Vargas","c":"Colombia","t":"Tunja"},
-    {"n":"Zoraida Cortes","c":"Colombia"},
-    {"n":"Claudia Maria Morales","c":"El Salvador"},
-    {"n":"Claudia Maria Morales","c":"El Salvador"},
-    {"n":"Gabriela Miranda","c":"El Salvador"},
-    {"n":"Gabriela Miranda","c":"El Salvador"},
-    {"n":"Marjorie Hurtadi","c":"El Salvador"},
-    {"n":"Susana Guadron","c":"El Salvador"},
-    {"n":"Susana Guadron","c":"El Salvador"},
-    {"n":"Claudia Cordero","c":"Guatemala"},
-    {"n":"Eva Noemi Solis Palacios","c":"Guatemala"},
-    {"n":"Maria Jose Hernandez","c":"Guatemala"},
-    {"n":"Maryery Hernandez Bagett","c":"Guatemala"},
-    {"n":"Fumika Kawauchi","c":"Japan"},
-    {"n":"Fumiko Nakano","c":"Japan"},
-    {"n":"Hiromi Tsujimoto","c":"Japan"},
-    {"n":"Hiroyo Morozumi","c":"Japan"},
-    {"n":"Junko Kuroyanagi","c":"Japan"},
-    {"n":"Mariko Inaoka","c":"Japan"},
-    {"n":"Mie Shimooka","c":"Japan"},
-    {"n":"Miki Nozawa","c":"Japan"},
-    {"n":"Misato Yamamoto","c":"Japan"},
-    {"n":"Seiya Matsumoto","c":"Japan"},
-    {"n":"Shizuka Nagaoka","c":"Japan"},
-    {"n":"Shotaro Tsushima","c":"Japan"},
-    {"n":"Tomoko Nakamura","c":"Japan"},
-    {"n":"Jenny Loh Yee Ling","c":"Malaysia"},
-    {"n":"Kantapat Rochanasmith","c":"Malaysia"},
-    {"n":"Lim Su Min","c":"Malaysia"},
-    {"n":"Adoraid Vazquez","c":"Mexico"},
-    {"n":"Ale Lopez","c":"Mexico"},
-    {"n":"Alma Delia Jazmin Juarez","c":"Mexico"},
-    {"n":"Andres Hernandez","c":"Mexico"},
-    {"n":"Azucena Chavez","c":"Mexico"},
-    {"n":"Carlos Delgado","c":"Mexico"},
-    {"n":"Carolina Moreno","c":"Mexico"},
-    {"n":"Cristina Murillo Garcia","c":"Mexico"},
-    {"n":"David Tlalolin Toy Magic","c":"Mexico"},
-    {"n":"Elsa Carmona Montoya","c":"Mexico"},
-    {"n":"Gabriel Cornejo","c":"Mexico"},
-    {"n":"Javier Nava","c":"Mexico"},
-    {"n":"Jorge Uc Poot","c":"Mexico"},
-    {"n":"Juan de la Cruz Sonda Yeh","c":"Mexico"},
-    {"n":"Liliana Rivas","c":"Mexico"},
-    {"n":"Ludivina Hinojosa","c":"Mexico"},
-    {"n":"Michelle Arroyo Tinoco","c":"Mexico"},
-    {"n":"Monserrat Salazar","c":"Mexico"},
-    {"n":"Nadyeli Requena Valdes","c":"Mexico"},
-    {"n":"Nalle Rojas","c":"Mexico"},
-    {"n":"Nohelia Perez","c":"Mexico"},
-    {"n":"Saul Rodriguez","c":"Mexico"},
-    {"n":"Velma Harumi Roblero","c":"Mexico"},
-    {"n":"Yadira Martinez","c":"Mexico"},
-    {"n":"Zulia Licey Marquez Carrillo","c":"Mexico"},
-    {"n":"Denisse Rocha","c":"Nicaragua"},
-    {"n":"Franklin Jimenez","c":"Nicaragua"},
-    {"n":"Irma de los Angeles Castillo","c":"Nicaragua"},
-    {"n":"Jennyffer Lopez Valverde","c":"Nicaragua"},
-    {"n":"Lucia Gomez","c":"Nicaragua"},
-    {"n":"Moises Medina","c":"Nicaragua"},
-    {"n":"Sallie Norman","c":"Nicaragua"},
-    {"n":"Sarah Noble","c":"Nicaragua"},
-    {"n":"Vanessa Miranda","c":"Nicaragua"},
-    {"n":"Alfredo Cordova","c":"Peru"},
-    {"n":"Ana Elizabeth de la Torre","c":"Peru"},
-    {"n":"Angela Neira Castaneda","c":"Peru"},
-    {"n":"Carol Arevalo","c":"Peru"},
-    {"n":"Diana Marithza Pizarro Vera","c":"Peru"},
-    {"n":"Grecia Antuane Acha","c":"Peru","t":"Lima"},
-    {"n":"Jane Vasquez","c":"Peru"},
-    {"n":"Jazmin Alcazar","c":"Peru"},
-    {"n":"Jessica Ingaroca Castanedaz","c":"Peru"},
-    {"n":"Kevin Flores Chunga","c":"Peru"},
-    {"n":"Lenin Alonso","c":"Peru"},
-    {"n":"Lessy Coraima Jimenez Mosquera","c":"Peru"},
-    {"n":"Maria Huaman Garcia","c":"Peru"},
-    {"n":"Monica Saco","c":"Peru"},
-    {"n":"Nataly Soledad Castaneda Li","c":"Peru"},
-    {"n":"Omayra Barreto Espinoza","c":"Peru"},
-    {"n":"Ritha Ledesma","c":"Peru"},
-    {"n":"Sandra Milena Enciso Rodas","c":"Peru"},
-    {"n":"Sayda Valdez","c":"Peru"},
-    {"n":"Yenifer Ursula Vargas Siguenas","c":"Peru"},
-    {"n":"Yndira Clark Nahui","c":"Peru"},
-    {"n":"Yovana Campos","c":"Peru"},
-    {"n":"Louh Sue","c":"Senegal"},
-    {"n":"Diane Noel","c":"Trinidad and Tobago"},
-    {"n":"Eleanor Caton Khan","c":"Trinidad and Tobago"},
-    {"n":"Faatimah Khan","c":"Trinidad and Tobago"},
-    {"n":"Jude Bovell","c":"Trinidad and Tobago"},
-    {"n":"Adriane Callahan","c":"United States"},
-    {"n":"Adriane Callahan","c":"United States"},
-    {"n":"Agnes So","c":"United States"},
-    {"n":"Alejandra Santiago","c":"United States"},
-    {"n":"Ali Kahan","c":"United States"},
-    {"n":"Anaitte Camacho","c":"United States"},
-    {"n":"Andrea Castro","c":"United States"},
-    {"n":"Annie Hughes","c":"United States"},
-    {"n":"Ayriel Rush","c":"United States"},
-    {"n":"Belinda Hernandez","c":"United States"},
-    {"n":"Bergen Skinner","c":"United States"},
-    {"n":"Bergen Skinner","c":"United States"},
-    {"n":"Brandon Nowell","c":"United States"},
-    {"n":"Briana Silvio","c":"United States"},
-    {"n":"Carolina Velasquez","c":"United States"},
-    {"n":"Domenica Perez","c":"United States"},
-    {"n":"Dori Saypol","c":"United States"},
-    {"n":"Eliseo Veras","c":"United States"},
-    {"n":"Gaby Oros","c":"United States"},
-    {"n":"Hannah Barrett","c":"United States"},
-    {"n":"Heidy Hernandez","c":"United States"},
-    {"n":"Jamely Newton","c":"United States"},
-    {"n":"Jan Iiams","c":"United States"},
-    {"n":"Jasmine Becnel","c":"United States"},
-    {"n":"John Perry","c":"United States"},
-    {"n":"Johnna Wright Perry","c":"United States"},
-    {"n":"Karla Romero","c":"United States"},
-    {"n":"Kary Lizano","c":"United States"},
-    {"n":"Kelly Santos","c":"United States"},
-    {"n":"Laural Schultze","c":"United States"},
-    {"n":"Leidis Rosales","c":"United States"},
-    {"n":"Lizbeth Montelongo","c":"United States"},
-    {"n":"Lorenis Jordan","c":"United States"},
-    {"n":"Maggie Jenkins","c":"United States"},
-    {"n":"Ofelia Flores","c":"United States"},
-    {"n":"Sarah Cabrera","c":"United States"},
-    {"n":"Sonny Meza","c":"United States"},
-    {"n":"Verni Perez","c":"United States"},
-    {"n":"Getsy Sanchez","c":"Venezuela"},
-    {"n":"Gloria Roxibel Blanco Huerta","c":"Venezuela"},
-    {"n":"Johanna Ponce","c":"Venezuela"},
-    {"n":"Victor Rios","c":"Venezuela"}
-  ];
 
-  var EU = MBPS.filter(function (x) { return x.e; });
-  var REST = MBPS.filter(function (x) { return !x.e; });
-  var EU_COUNTRIES = {};
-  EU.forEach(function (x) { EU_COUNTRIES[x.c] = 1; });
-
-  document.getElementById('mbp-count-total').textContent = MBPS.length;
-  document.getElementById('mbp-count-eu').textContent = EU.length;
-  document.getElementById('mbp-eu-lede').textContent = fill(S.eu_lede, {
-    n: EU.length, c: Object.keys(EU_COUNTRIES).length
-  });
-
-  function initials(n) {
-    return n.split(/\s+/).map(function (x) { return x.charAt(0); }).join('').slice(0, 2).toUpperCase();
-  }
-  function card(x, compact) {
-    var sub = [x.c, x.t].filter(Boolean).join(' · ');
-    return '<div class="p"><span class="pic">' + esc(initials(x.n)) + '</span>'
-      + '<span style="min-width:0"><span class="n">' + esc(x.n) + '</span>'
-      + '<span class="c">' + esc(sub) + '</span></span></div>';
-  }
-  function chips(host, list, active, attr) {
-    var counts = {};
-    list.forEach(function (x) { counts[x.c] = (counts[x.c] || 0) + 1; });
-    host.innerHTML = [['__all__', S.all, list.length]].concat(
-      Object.keys(counts).sort().map(function (c) { return [c, c, counts[c]]; })
-    ).map(function (r) {
-      return '<button type="button" ' + attr + '="' + esc(r[0]) + '"'
-        + (r[0] === active ? ' class="on"' : '') + '>' + esc(r[1]) + '<i>' + r[2] + '</i></button>';
-    }).join('');
-  }
-
-  var euFilter = '__all__', euQuery = '', restFilter = '__all__', restAll = false;
-
-  function renderEu() {
-    var list = EU.filter(function (x) {
-      if (euFilter !== '__all__' && x.c !== euFilter) { return false; }
-      if (euQuery && (x.n + ' ' + x.c).toLowerCase().indexOf(euQuery) === -1) { return false; }
-      return true;
-    });
-    document.getElementById('mbp-eu-count').textContent = fill(S.count, { n: list.length, t: EU.length });
-    document.getElementById('mbp-eu-grid').innerHTML = list.length
-      ? list.map(function (x) { return card(x); }).join('')
-      : '<p class="count">' + esc(S.none) + '</p>';
-  }
-
-  function renderRest() {
-    var list = REST.filter(function (x) { return restFilter === '__all__' || x.c === restFilter; });
-    var shown = restAll ? list : list.slice(0, 16);
-    document.getElementById('mbp-rest-grid').innerHTML = shown.map(function (x) { return card(x, true); }).join('');
-    document.getElementById('mbp-rest-toggle').textContent = restAll
-      ? S.show_less : fill(S.show_all, { n: list.length });
-  }
-
-  chips(document.getElementById('mbp-eu-filters'), EU, euFilter, 'data-c');
-  chips(document.getElementById('mbp-rest-filters'), REST, restFilter, 'data-r');
-  renderEu();
-  renderRest();
-
-  document.getElementById('mbp-eu-filters').addEventListener('click', function (e) {
-    var b = e.target.closest('button');
-    if (!b) { return; }
-    euFilter = b.getAttribute('data-c');
-    this.querySelectorAll('button').forEach(function (x) { x.classList.toggle('on', x === b); });
-    renderEu();
-  });
-  document.getElementById('mbp-rest-filters').addEventListener('click', function (e) {
-    var b = e.target.closest('button');
-    if (!b) { return; }
-    restFilter = b.getAttribute('data-r');
-    restAll = false;
-    this.querySelectorAll('button').forEach(function (x) { x.classList.toggle('on', x === b); });
-    renderRest();
-  });
-  document.getElementById('mbp-search').addEventListener('input', function () {
-    euQuery = this.value.trim().toLowerCase();
-    renderEu();
-  });
-  document.getElementById('mbp-rest-toggle').addEventListener('click', function () {
-    restAll = !restAll;
-    renderRest();
-  });
-
-  /* ---- TONEN + VERPLAATSEN ---- */
   root.style.display = 'block';
   var target = document.getElementById('wrap') || document.querySelector('main');
   if (target) { target.appendChild(root); }
