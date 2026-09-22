@@ -13,7 +13,8 @@ Playwright komt uit `stx-tools/node_modules` (of zet `STX_PLAYWRIGHT` naar een a
 
 ## Wat het controleert
 
-**Op `/partner/liragram/tools`:** onze header, menu, footer en zijmenu zijn weg, de
+**Op `/partner/liragram/tools`:** onze header, menu, footer, zijmenu en de livechat
+rechtsonder zijn weg, de
 kostprijscalculator en de Colour Matching Tool ook. Het logo van Liragram staat er als
 data-URI (geen hotlink naar hun server), hun kleur, hun font en hun tabtitel en favicon staan
 op de pagina, de teksten van de calculator staan in het Spaans, de Sempertex winkelmandknop is
@@ -26,8 +27,15 @@ in de footer. Het laadscherm gaat precies een keer weg, pas nadat beide secties 
 
 **Mobiel (390px):** het bestelblok staat er en er is geen horizontale scroll.
 
-**Op `/tools`:** de gewone Sempertex pagina verandert niet. Header, footer, zijmenu en tabtitel
-blijven staan, er komt geen partnerheader of bestelblok bij en de teksten blijven Nederlands.
+**Met `?livechat=force`:** de harness mount de livechat dan toch, ook al staat
+`can_load_livechat` uit. Dat test het CSS-vangnet apart: de host is verborgen en de knop in de
+shadow root heeft geen plek meer op de pagina. Odoo bouwt de chat namelijk in een eigen
+host-element met een shadow root en een id dat per pageload verandert, dus de host verbergen is
+het enige wat van buitenaf werkt.
+
+**Op `/tools`:** de gewone Sempertex pagina verandert niet. Header, footer, zijmenu, livechat en
+tabtitel blijven staan, er komt geen partnerheader of bestelblok bij en de teksten blijven
+Nederlands.
 
 **Op `/partner/onbekend/tools`:** een slug die niet in PARTNERS staat krijgt geen halve
 partnerpagina; de calculator draait daar gewoon.
