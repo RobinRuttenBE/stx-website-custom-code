@@ -19,6 +19,36 @@ const read = (f) => fs.readFileSync(path.resolve(SECTIONS, f), 'utf8');
 
 const HEAD_ANTIFLASH = read('partner-head-antiflash.html');
 
+// Odoo's session info, the way it sits in the head above our own blocks. The livechat
+// widget reads can_load_livechat from here, so the anti-flash block can switch it off.
+const LIVECHAT_SESSION = `<script>
+window.odoo = window.odoo || {};
+odoo.__session_info__ = odoo.__session_info__ || {};
+odoo.__session_info__.livechatData = { can_load_livechat: true, options: { channel_id: 1 } };
+</script>`;
+
+// Stand-in for the livechat widget: a host element at the end of body with a shadow root
+// and a fixed button inside it, plus a random id, exactly like Odoo builds it. Only mounts
+// when can_load_livechat is still true, unless ?livechat=force is set, which is how the
+// test checks the CSS fallback on its own.
+const LIVECHAT_MOUNT = `<script>
+(function () {
+  var forced = /[?&]livechat=force/.test(window.location.search);
+  var si = window.odoo && window.odoo.__session_info__;
+  if (!forced && !(si && si.livechatData && si.livechatData.can_load_livechat)) { return; }
+  var host = document.createElement('div');
+  host.className = 'o-livechat-root';
+  host.id = 'o-livechat-root-' + Date.now() + '.' + Math.round(Math.random() * 9999);
+  document.body.appendChild(host);
+  var sr = host.attachShadow({ mode: 'open' });
+  var b = document.createElement('button');
+  b.className = 'o-livechat-LivechatButton';
+  b.textContent = 'Hulp nodig? Chat met ons.';
+  b.setAttribute('style', 'position:fixed;right:16px;bottom:16px;width:180px;height:44px');
+  sr.appendChild(b);
+})();
+</script>`;
+
 // Loading screen part 1 (head field) and part 2 (end of body), copied from the live Odoo fields.
 const LOADWALL_HEAD = `<script>
 (function () {
@@ -136,6 +166,7 @@ function odooPage() {
 <title>Tools | Sempertex Europe</title>
 <link rel="icon" href="/web/image/website/1/favicon">
 ${LOADWALL_HEAD}
+${LIVECHAT_SESSION}
 ${HEAD_ANTIFLASH}
 </head><body>
 <div id="wrapwrap">
@@ -150,6 +181,7 @@ ${HEAD_ANTIFLASH}
 </div>
 ${LOADWALL_BODY}
 ${LOADER}
+${LIVECHAT_MOUNT}
 </body></html>`;
 }
 
@@ -220,6 +252,11 @@ function check(name, ok, extra) {
     check('Sempertex header verborgen', (await shown('header#top')) === 'verborgen');
     check('Sempertex menu verborgen', (await shown('#top_menu_container')) === 'verborgen');
     check('Sempertex footer verborgen', (await shown('footer#bottom')) === 'verborgen');
+
+    // De livechat hoort hier helemaal niet te booten, want het anti-flitsblok zet
+    // can_load_livechat uit voordat de lazy bundle hem bouwt.
+    const chat = await shown('.o-livechat-root');
+    check('livechat rechtsonder is weg', chat !== 'zichtbaar', chat);
 
     check('calculator staat er', (await shown('#view-calculator')) === 'zichtbaar');
     check('kostprijscalculator verborgen', (await shown('#view-cost')) === 'verborgen');
@@ -339,6 +376,32 @@ function check(name, ok, extra) {
     await ctx.close();
   }
 
+  console.log('\n/partner/liragram/tools?livechat=force (het CSS-vangnet apart)');
+  {
+    // Zet Odoo de chat ooit op een andere manier neer, dan moet de CSS hem alsnog
+    // wegzetten. Hier mount de chat dus wel, ondanks can_load_livechat.
+    const { ctx, page } = await open('/partner/liragram/tools?livechat=force');
+
+    const host = await page.evaluate(() => {
+      const el = document.querySelector('.o-livechat-root');
+      if (!el) { return 'ontbreekt'; }
+      return getComputedStyle(el).display === 'none' ? 'verborgen' : 'zichtbaar';
+    });
+    check('gemounte livechat host is verborgen', host === 'verborgen', host);
+
+    const btn = await page.evaluate(() => {
+      const el = document.querySelector('.o-livechat-root');
+      if (!el || !el.shadowRoot) { return 'geen shadow root'; }
+      const b = el.shadowRoot.querySelector('.o-livechat-LivechatButton');
+      if (!b) { return 'geen knop'; }
+      const r = b.getBoundingClientRect();
+      return (r.width === 0 && r.height === 0) ? 'verborgen' : 'zichtbaar';
+    });
+    check('knop in de shadow root heeft geen plek op de pagina', btn === 'verborgen', btn);
+
+    await ctx.close();
+  }
+
   console.log('\n/tools (de gewone Sempertex pagina mag niet veranderen)');
   {
     const ctx = await browser.newContext({ viewport: { width: 1400, height: 1000 } });
@@ -357,6 +420,7 @@ function check(name, ok, extra) {
 
     check('Sempertex header staat er gewoon', (await vis('header#top')) === 'zichtbaar');
     check('Sempertex footer staat er gewoon', (await vis('footer#bottom')) === 'zichtbaar');
+    check('livechat staat er gewoon', (await vis('.o-livechat-root')) === 'zichtbaar');
     check('zijmenu met de drie tools staat er', (await vis('.stx-insp .side')) === 'zichtbaar');
     check('geen partnerheader', (await page.$('.stx-pt-bar')) === null);
     check('geen bestelblok', (await page.$('.stx-pt-order')) === null);

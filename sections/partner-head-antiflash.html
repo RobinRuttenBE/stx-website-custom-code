@@ -21,6 +21,11 @@
      grijs; zodra de skin binnen is kleurt die hem in de kleur van de
      partner (zie #stx-loadwall .stx-spin in het sectiebestand).
 
+     22/09/2026: de livechat rechtsonder gaat nu ook weg. De oude regel
+     voor .o_livechat_button deed niets meer, want Odoo mount de widget
+     inmiddels in .o-livechat-root met een shadow root. Zie de opmerking
+     bij de CSS hieronder.
+
      Verwijderen = dit blok weghalen. Sinds 21/09/2026.
      ============================================================ -->
 <script>
@@ -38,12 +43,28 @@
     + 'html.stx-partner .o_header_standard,html.stx-partner .o_navbar_mobile,'
     + 'html.stx-partner #top_menu_container,html.stx-partner #wrapwrap > footer,'
     + 'html.stx-partner footer#bottom,html.stx-partner .o_footer,'
-    + 'html.stx-partner .o_livechat_button{display:none!important}'
+    /* Livechat. Odoo hangt de widget in een eigen host-element onderaan
+       body, met een shadow root erin en een id dat per pageload verandert.
+       De knop zelf zit in die shadow root en is van buitenaf niet te
+       stylen, de host staat wel in het gewone document. Dus verbergen we
+       de host, dan gaat alles wat erin zit mee.
+       .o-livechat-root = huidige Odoo, .o_livechat_button = oude versies. */
+    + 'html.stx-partner .o-livechat-root,html.stx-partner .o_livechat_button,'
+    + 'html.stx-partner .o-livechat-LivechatButton{display:none!important}'
     + 'html.stx-partner #wrap{padding:0!important;margin:0!important}'
     /* Spinner van laadscherm deel 1 neutraal houden op een partnerpagina. */
     + 'html.stx-partner.stx-loading::after{border-color:#e6e6e6!important;'
     + 'border-top-color:#9a9a9a!important}';
   document.head.appendChild(s);
+  /* Tweede slot op de livechat: dit blok staat na het session-info
+     script van Odoo, dus we kunnen de chat uitzetten voordat de lazy
+     bundle hem bouwt. Scheelt op een partnerpagina ook een websocket
+     en een paar requests. Lukt het niet, dan vangt de CSS hierboven
+     het alsnog op. */
+  try {
+    var si = window.odoo && window.odoo.__session_info__;
+    if (si && si.livechatData) { si.livechatData.can_load_livechat = false; }
+  } catch (e) {}
 })();
 </script>
 <!-- ============ EINDE PARTNERPAGINA ANTI-FLITS ============ -->

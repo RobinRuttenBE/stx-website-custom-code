@@ -230,6 +230,12 @@
     'html.stx-partner #wrapwrap > footer,',
     'html.stx-partner footer#bottom,',
     'html.stx-partner .o_footer,',
+    /* Livechat: host-element met shadow root, id verandert per pageload.
+       o-livechat-root = huidige Odoo, o_livechat_button = oude versies.
+       Staat ook in sections/partner-head-antiflash.html, want daar is het
+       al weg voor de eerste paint. */
+    'html.stx-partner .o-livechat-root,',
+    'html.stx-partner .o-livechat-LivechatButton,',
     'html.stx-partner .o_livechat_button,',
     'html.stx-partner .o_newsletter_popup,',
     'html.stx-partner .o_scroll_button { display: none !important; }',
