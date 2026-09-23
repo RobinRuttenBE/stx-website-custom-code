@@ -297,7 +297,8 @@
   /* ---- HERO ---- */
   .stx-cc .cc-wrap { padding: 0 0 clamp(40px, 6vw, 80px); }
   .stx-cc .cc-hero { position: relative; margin: -10px 0 clamp(20px, 3vw, 36px); display: flex; justify-content: flex-end; align-items: center; gap: 16px; flex-wrap: wrap; }
-  .stx-cc .cc-hero-actions { display: flex; gap: 8px; }
+  .stx-cc .cc-hero-actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+  .stx-cc .cc-pill.cc-reset.cc-armed { background: #cd0b5c; color: #fff; border-color: #cd0b5c; }
   .stx-cc .cc-hl { background: var(--yellow); padding: 0 0.12em; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
   .stx-cc .cc-lede { font-size: clamp(16px, 1.4vw, 19px); font-weight: 500; color: var(--ink-soft); max-width: 58ch; }
 
@@ -846,6 +847,7 @@
     <div class="cc-hero-actions">
       <button class="cc-pill" type="button" id="cc-open-saved" data-i18n="cc_btn_saved">Saved quotes</button>
       <button class="cc-pill" type="button" id="cc-open-settings" data-i18n="cc_btn_settings">Settings</button>
+      <button class="cc-pill cc-reset" type="button" id="cc-reset" data-i18n="cc_btn_reset">Clear the calculation</button>
     </div>
   </section>
 
@@ -909,7 +911,7 @@
             <div class="cc-lbl"><span data-i18n="cc_time_overhead">Share of your fixed monthly costs</span><small id="cc-overhead-note"></small></div>
             <div class="cc-num cc-soft" id="cc-overhead-h">0 h</div>
             <div class="cc-num cc-soft cc-col-rate" id="cc-overhead-rate"></div>
-            <div class="cc-in-wrap"><input class="cc-in" type="number" id="cc-overhead" min="0" step="1"></div>
+            <div class="cc-num" id="cc-overhead-total">0</div>
           </div>
           <div class="cc-row cc-total cc-tim">
             <div class="cc-lbl" data-i18n="cc_time_sub">Time and overhead subtotal</div>
@@ -1072,6 +1074,10 @@
     <div class="cc-field"><label data-i18n="cc_set_hourly">Hourly rate</label><input class="cc-in" type="number" id="cc-s-hourly" min="0" step="1"></div>
     <div class="cc-field"><label data-i18n="cc_set_km">Rate per km</label><input class="cc-in" type="number" id="cc-s-km" min="0" step="0.01"></div>
   </div>
+  <div class="cc-field-row" id="cc-dist-row">
+    <div class="cc-field"><label data-i18n="cc_set_dist">Distance in</label>
+      <select class="cc-in cc-text" id="cc-s-dist"><option value="km" data-i18n="cc_dist_km">Kilometres (km)</option><option value="mi" data-i18n="cc_dist_mi">Miles (mi)</option></select></div>
+  </div>
   <div class="cc-field-row">
     <div class="cc-field"><label data-i18n="cc_set_overhead">Fixed costs per month (overhead)</label><input class="cc-in" type="number" id="cc-s-overhead" min="0" step="10" placeholder="400"></div>
     <div class="cc-field"><label data-i18n="cc_set_hours">Hours on jobs per month</label><input class="cc-in" type="number" id="cc-s-hours" min="1" step="1" placeholder="40"></div>
@@ -1080,7 +1086,7 @@
   <p class="cc-hint" data-i18n="cc_set_overhead_ex">Example: van 150 + insurance 60 + storage 120 + software 30 + phone 40 = 400 per month. With 40 hours on jobs a month that is 10 per hour. A job of 4 hours carries 40, a job of 1 hour carries 10.</p>
   <div class="cc-field-row">
     <div class="cc-field"><label data-i18n="cc_set_currency">Currency</label>
-      <select class="cc-in cc-text" id="cc-s-currency"><option value="EUR">EUR</option><option value="GBP">GBP</option></select></div>
+      <select class="cc-in cc-text" id="cc-s-currency"><option value="EUR">EUR</option><option value="GBP">GBP</option><option value="USD">USD</option></select></div>
     <div class="cc-field"><label data-i18n="cc_set_vat">VAT rate %</label><input class="cc-in" type="number" id="cc-s-vat" min="0" max="30" step="1"></div>
   </div>
 
@@ -1534,8 +1540,21 @@
       cost_eyebrow: 'Tools / Cost calculator',
       cost_h: 'Cost <span class="hl">calculator</span>',
       cost_lede: 'Materials, hours and overhead. Start in Settings: fill in your own hourly rate, cost per km and overhead. After that the price updates while you type, and the quote for your client is one click away.',
+      cost_lede_mi: 'Materials, hours and overhead. Start in Settings: fill in your own hourly rate, cost per mile and overhead. After that the price updates while you type, and the quote for your client is one click away.',
       cc_btn_saved: 'Saved quotes',
       cc_btn_settings: 'Settings',
+      cc_btn_reset: 'Clear the calculation',
+      cc_reset_confirm: 'Tap again to clear 01, 02 and 03',
+      cc_toast_reset: 'Cleared. Your settings stay as they are.',
+      cc_set_dist: 'Distance in',
+      cc_dist_km: 'Kilometres (km)',
+      cc_dist_mi: 'Miles (mi)',
+      cc_set_km_mi: 'Rate per mile',
+      cc_travel_note_mi: '{r} per mile, time on the road is not billed',
+      cc_leg_over_mi: 'Overhead and miles',
+      cc_time_hint_mi: 'Your hourly rate, your rate per mile and your fixed monthly costs come from your settings. Set them once, they are used here on every job.',
+      cc_keep_hint_mi: 'Only real expenses come off: materials, overhead and miles. Your hours are money you earn.',
+      cc_default_footer_mi: 'Prices exclude delivery outside 20 miles. The deposit confirms the date. Balloons are a natural product; colours can vary slightly from the preview.',
       cc_mat_h: 'Materials',
       cc_mat_hint: 'Type a size, colour or code and pick the item from the Sempertex catalogue. Own items work too: type the name and your own price per piece. <strong>To see prices, you need to be logged in to your account.</strong><br><br>When you are logged in, prices are filled in automatically. Then enter the number of balloons you will need for your job and the price is calculated for you.',
       cc_col_item: 'Item',
@@ -1775,8 +1794,21 @@
       cost_eyebrow: 'Tools / Kostenrechner',
       cost_h: 'Kosten<span class="hl">rechner</span>',
       cost_lede: 'Material, Stunden und Gemeinkosten. Beginne bei den Einstellungen: trage deinen Stundensatz, deine Kosten pro km und deine Gemeinkosten ein. Danach rechnet der Preis mit, w\u00e4hrend du tippst, und das Angebot f\u00fcr deinen Kunden ist einen Klick entfernt.',
+      cost_lede_mi: 'Material, Stunden und Gemeinkosten. Beginne bei den Einstellungen: trage deinen Stundensatz, deine Kosten pro Meile und deine Gemeinkosten ein. Danach rechnet der Preis mit, w\u00e4hrend du tippst, und das Angebot f\u00fcr deinen Kunden ist einen Klick entfernt.',
       cc_btn_saved: 'Gespeicherte Angebote',
       cc_btn_settings: 'Einstellungen',
+      cc_btn_reset: 'Berechnung leeren',
+      cc_reset_confirm: 'Nochmal tippen, um 01, 02 und 03 zu leeren',
+      cc_toast_reset: 'Geleert. Deine Einstellungen bleiben, wie sie sind.',
+      cc_set_dist: 'Entfernung in',
+      cc_dist_km: 'Kilometer (km)',
+      cc_dist_mi: 'Meilen (mi)',
+      cc_set_km_mi: 'Satz pro Meile',
+      cc_travel_note_mi: '{r} pro Meile, die Fahrzeit wird nicht berechnet',
+      cc_leg_over_mi: 'Gemeinkosten und Meilen',
+      cc_time_hint_mi: 'Dein Stundensatz, dein Meilensatz und deine festen Monatskosten kommen aus deinen Einstellungen. Einmal festlegen, sie gelten hier bei jedem Auftrag.',
+      cc_keep_hint_mi: 'Nur echte Ausgaben gehen ab: Material, Gemeinkosten und Meilen. Deine Stunden sind Geld, das du verdienst.',
+      cc_default_footer_mi: 'Preise ohne Lieferung außerhalb von 20 Meilen. Die Anzahlung bestätigt den Termin. Ballons sind ein Naturprodukt; Farben können leicht von der Vorschau abweichen.',
       cc_mat_h: 'Material',
       cc_mat_hint: 'Tippe Gr\u00f6\u00dfe, Farbe oder Code und w\u00e4hle den Artikel aus dem Sempertex-Katalog. Eigene Artikel gehen auch: Name und eigenen Preis pro St\u00fcck eingeben. <strong>Um Preise zu sehen, musst du in deinem Konto angemeldet sein.</strong><br><br>Bist du angemeldet, werden die Preise automatisch eingetragen. Gib dann die Anzahl Ballons ein, die du f\u00fcr deinen Auftrag brauchst, und der Preis wird automatisch berechnet.',
       cc_col_item: 'Artikel',
@@ -2016,8 +2048,21 @@
       cost_eyebrow: 'Outils / Calculateur de co\u00fbts',
       cost_h: 'Calculateur de <span class="hl">co\u00fbts</span>',
       cost_lede: 'Mat\u00e9riel, heures et frais g\u00e9n\u00e9raux. Commencez par les param\u00e8tres : indiquez votre taux horaire, votre co\u00fbt par km et vos frais g\u00e9n\u00e9raux. Ensuite, le prix se met \u00e0 jour pendant que vous tapez, et le devis pour votre client est \u00e0 un clic.',
+      cost_lede_mi: 'Mat\u00e9riel, heures et frais g\u00e9n\u00e9raux. Commencez par les param\u00e8tres : indiquez votre taux horaire, votre co\u00fbt par mile et vos frais g\u00e9n\u00e9raux. Ensuite, le prix se met \u00e0 jour pendant que vous tapez, et le devis pour votre client est \u00e0 un clic.',
       cc_btn_saved: 'Devis enregistr\u00e9s',
       cc_btn_settings: 'Param\u00e8tres',
+      cc_btn_reset: 'Effacer le calcul',
+      cc_reset_confirm: 'Touchez encore pour effacer 01, 02 et 03',
+      cc_toast_reset: 'Effacé. Vos paramètres restent tels quels.',
+      cc_set_dist: 'Distance en',
+      cc_dist_km: 'Kilomètres (km)',
+      cc_dist_mi: 'Miles (mi)',
+      cc_set_km_mi: 'Tarif par mile',
+      cc_travel_note_mi: '{r} par mile, le temps de route n’est pas facturé',
+      cc_leg_over_mi: 'Frais généraux et miles',
+      cc_time_hint_mi: 'Votre taux horaire, votre tarif par mile et vos frais fixes mensuels viennent de vos paramètres. Réglez-les une fois, ils s’appliquent ici à chaque mission.',
+      cc_keep_hint_mi: 'Seules les vraies dépenses sont déduites : matériel, frais généraux et miles. Vos heures sont de l’argent que vous gagnez.',
+      cc_default_footer_mi: 'Prix hors livraison au-delà de 20 miles. L’acompte confirme la date. Les ballons sont un produit naturel ; les couleurs peuvent légèrement différer de l’aperçu.',
       cc_mat_h: 'Mat\u00e9riel',
       cc_mat_hint: 'Tapez une taille, une couleur ou un code et choisissez l\'article dans le catalogue Sempertex. Vos propres articles fonctionnent aussi : tapez le nom et votre prix par pi\u00e8ce. <strong>Pour voir les prix, vous devez \u00eatre connect\u00e9 \u00e0 votre compte.</strong><br><br>Une fois connect\u00e9, les prix sont ajout\u00e9s automatiquement. Indiquez ensuite le nombre de ballons n\u00e9cessaires pour votre projet et le prix est calcul\u00e9 automatiquement.',
       cc_col_item: 'Article',
@@ -2257,8 +2302,21 @@
       cost_eyebrow: 'Tools / Kostprijscalculator',
       cost_h: 'Kostprijs<span class="hl">calculator</span>',
       cost_lede: 'Materiaal, uren en overhead. Begin bij Instellingen: vul je eigen uurtarief, kilometerprijs en overhead in. Daarna rekent de prijs mee terwijl je typt, en staat de offerte voor je klant \u00e9\u00e9n klik verder.',
+      cost_lede_mi: 'Materiaal, uren en overhead. Begin bij Instellingen: vul je eigen uurtarief, prijs per mijl en overhead in. Daarna rekent de prijs mee terwijl je typt, en staat de offerte voor je klant \u00e9\u00e9n klik verder.',
       cc_btn_saved: 'Opgeslagen offertes',
       cc_btn_settings: 'Instellingen',
+      cc_btn_reset: 'Berekening wissen',
+      cc_reset_confirm: 'Tik nog eens om 01, 02 en 03 te wissen',
+      cc_toast_reset: 'Gewist. Je instellingen blijven zoals ze zijn.',
+      cc_set_dist: 'Afstand in',
+      cc_dist_km: 'Kilometer (km)',
+      cc_dist_mi: 'Mijl (mi)',
+      cc_set_km_mi: 'Tarief per mijl',
+      cc_travel_note_mi: '{r} per mijl, rijtijd wordt niet aangerekend',
+      cc_leg_over_mi: 'Overhead en mijlen',
+      cc_time_hint_mi: 'Je uurtarief, je tarief per mijl en je vaste maandkosten komen uit je instellingen. Eén keer instellen, ze gelden hier bij elke job.',
+      cc_keep_hint_mi: 'Alleen echte kosten gaan eraf: materiaal, overhead en mijlen. Je uren zijn geld dat je verdient.',
+      cc_default_footer_mi: 'Prijzen exclusief levering buiten 20 mijl. Het voorschot bevestigt de datum. Ballonnen zijn een natuurproduct; kleuren kunnen licht afwijken van de preview.',
       cc_mat_h: 'Materiaal',
       cc_mat_hint: 'Typ een maat, kleur of code en kies het item uit de Sempertex-catalogus. Eigen items kunnen ook: typ de naam en je eigen prijs per stuk. <strong>Om prijzen te zien, moet je ingelogd zijn op je account.</strong><br><br>Als je bent ingelogd worden prijzen automatisch toegevoegd. Dan vul je het aantal ballonnen in dat nodig zal zijn voor je werk en wordt de prijs automatisch berekend.',
       cc_col_item: 'Item',
@@ -3143,7 +3201,7 @@
 
   /* ---------------- defaults ---------------- */
   var DEFAULT_SETTINGS = {
-    hourly: 0, km: 0, overhead: 0, hoursMonth: 40, currency: 'EUR', vat: 21, // rates start at 0: the user sets their own in Settings first
+    hourly: 0, km: 0, dist: 'km', overhead: 0, hoursMonth: 40, currency: 'EUR', vat: 21, // rates start at 0: the user sets their own in Settings first
     logo: '', name: '', details: '', valid: 14, deposit: 30, footer: '', accent: '#6b3fb9', lang: 'en'
   };
   var TIME_KEYS = [
@@ -3177,7 +3235,6 @@
       waste: 15,
       time: TIME_KEYS.map(function (t) { return { key: t.key, hours: t.hours }; }),
       travelKm: 30,
-      overheadOverride: null,
       mult: 1.4, round5: true,
       quote: { lines: null, appendix: false, stx: true, job: '', date: '', status: 'quoted', client: '', event: '' }
     };
@@ -3218,7 +3275,8 @@
     // overhead follows the hours on this job: monthly fixed costs / hours on jobs per month = rate per hour
     var ohRate = num(se.hoursMonth) > 0 ? num(se.overhead) / num(se.hoursMonth) : 0;
     var overheadDefault = ohRate * hours;
-    var overhead = st.overheadOverride == null ? overheadDefault : num(st.overheadOverride);
+    // no manual override any more: the share always follows the hours (old drafts may still carry overheadOverride)
+    var overhead = overheadDefault;
     var timeSub = timeCost + overhead;
     var cost = matSub + timeSub;
     var raw = cost * num(st.mult);
@@ -3626,14 +3684,14 @@
     var c = calc(state, settings);
     $('cc-mat-waste-val').textContent = money(c.waste);
     $('cc-mat-sub').textContent = money(c.matSub);
-    $('cc-travel-rate').textContent = money(settings.km) + '/km';
+    $('cc-travel-rate').textContent = money(settings.km) + '/' + distUnit();
     $('cc-travel-total').textContent = money(c.travelCost);
-    $('cc-travel-note').textContent = t('travel_note', { r: money(settings.km) });
+    $('cc-travel-note').textContent = t(isMiles() ? 'travel_note_mi' : 'travel_note', { r: money(settings.km) });
     var hoursTxt = (Math.round(c.hours * 10) / 10) + ' h';
     $('cc-overhead-note').textContent = t('overhead_note', { m: money(settings.overhead), hm: settings.hoursMonth, r: money(c.ohRate) });
     $('cc-overhead-h').textContent = hoursTxt;
     $('cc-overhead-rate').textContent = money(c.ohRate) + '/h';
-    if (document.activeElement !== $('cc-overhead')) $('cc-overhead').value = Math.round(c.overhead);
+    $('cc-overhead-total').textContent = money(c.overhead);
     $('cc-hours-total').textContent = hoursTxt;
     $('cc-time-sub').textContent = money(c.timeSub);
     $('cc-f-mat').textContent = money(c.matSub);
@@ -3748,7 +3806,7 @@
       });
       var tr = document.createElement('tr'); tr.innerHTML = '<td colspan="2" style="color:#777;font-size:11.5px">' + esc(t('doc_appendix_waste', { w: state.waste })) + '</td>'; at.appendChild(tr);
     }
-    $('cc-doc-foot').textContent = settings.footer || t('default_footer');
+    $('cc-doc-foot').textContent = settings.footer || t(isMiles() ? 'default_footer_mi' : 'default_footer');
     $('cc-doc-stx').style.display = q.stx === false ? 'none' : '';
     persist();
   }
@@ -3802,12 +3860,14 @@
   /* ---------------- settings ---------------- */
   function fillSettings() {
     $('cc-s-hourly').value = settings.hourly; $('cc-s-km').value = settings.km; $('cc-s-overhead').value = settings.overhead; $('cc-s-hours').value = settings.hoursMonth;
+    $('cc-s-dist').value = isMiles() ? 'mi' : 'km';
     $('cc-s-currency').value = settings.currency; $('cc-s-vat').value = settings.vat; $('cc-s-name').value = settings.name || ''; $('cc-s-details').value = settings.details || '';
     $('cc-s-valid').value = settings.valid; $('cc-s-deposit').value = settings.deposit; $('cc-s-footer').value = settings.footer || ''; $('cc-s-accent').value = settings.accent || '#6b3fb9';
     $('cc-logo-preview').innerHTML = settings.logo ? '<img src="' + settings.logo + '" alt="">' : '';
   }
   function readSettings() {
     settings.hourly = num($('cc-s-hourly').value); settings.km = num($('cc-s-km').value); settings.overhead = num($('cc-s-overhead').value); settings.hoursMonth = Math.max(1, num($('cc-s-hours').value));
+    settings.dist = $('cc-s-dist').value === 'mi' ? 'mi' : 'km';
     settings.currency = $('cc-s-currency').value; settings.vat = num($('cc-s-vat').value); settings.name = $('cc-s-name').value; settings.details = $('cc-s-details').value;
     settings.valid = Math.max(1, num($('cc-s-valid').value)); settings.deposit = clamp(num($('cc-s-deposit').value), 0, 100); settings.footer = $('cc-s-footer').value; settings.accent = $('cc-s-accent').value;
     save('stx_quote_settings', settings);
@@ -3821,6 +3881,64 @@
     $('cc-q-job').placeholder = t('ph_job');
   }
 
+  /* ---------------- distance unit (km or miles) ---------------- */
+  // The maths is the same: distance x rate. Only the unit and the labels change.
+  function isMiles() { return settings.dist === 'mi'; }
+  function distUnit() { return isMiles() ? 'mi' : 'km'; }
+  var DIST_KEYS = ['cc_set_km', 'cc_leg_over', 'cc_time_hint', 'cc_keep_hint', 'cost_lede'];
+  function applyDist() {
+    DIST_KEYS.forEach(function (k) {
+      root.querySelectorAll('[data-i18n="' + k + '"]').forEach(function (el) {
+        // keep the km text as it is on the page (it may be the builder copy) to switch back to
+        if (el.dataset.kmText == null) el.dataset.kmText = el.innerHTML;
+        el.innerHTML = isMiles() ? esc(STR[k + '_mi'] || I18N.en[k + '_mi']) : el.dataset.kmText;
+      });
+    });
+    var u = $('cc-travel-km').parentNode.querySelector('.cc-unit'); if (u) u.textContent = distUnit();
+  }
+
+  /* ---------------- reset (01, 02, 03 only; settings stay) ---------------- */
+  function resetCalc() {
+    var b = $('cc-reset');
+    if (!b.classList.contains('cc-armed')) {
+      // two taps instead of a confirm dialog
+      b.dataset.label = b.textContent; b.textContent = t('reset_confirm'); b.classList.add('cc-armed');
+      clearTimeout(b._t); b._t = setTimeout(disarm, 4000);
+      return;
+    }
+    disarm();
+    state = freshState(); persist();
+    init(false); showCcView('cc-view-calc');
+    track('cost_calc_reset', {});
+    toast(t('toast_reset'));
+  }
+  function disarm() { var b = $('cc-reset'); clearTimeout(b._t); if (b.classList.contains('cc-armed')) { b.textContent = b.dataset.label; b.classList.remove('cc-armed'); } }
+
+  /* ---------------- markup patches for a builder-saved copy ---------------- */
+  // A copy saved in the Odoo builder keeps its old markup (same STX_V, so the NL copy stays).
+  // Add what is new here instead of bumping STX_V.
+  function ensureMarkup() {
+    if (!$('cc-reset')) {
+      var b = document.createElement('button'); b.className = 'cc-pill cc-reset'; b.type = 'button'; b.id = 'cc-reset';
+      b.setAttribute('data-i18n', 'cc_btn_reset'); b.textContent = t('btn_reset');
+      $('cc-open-settings').parentNode.appendChild(b);
+    }
+    var ov = $('cc-overhead');
+    if (ov) {
+      var d = document.createElement('div'); d.className = 'cc-num'; d.id = 'cc-overhead-total'; d.textContent = '0';
+      var wrap = ov.closest('.cc-in-wrap') || ov; wrap.parentNode.replaceChild(d, wrap);
+    }
+    var cur = $('cc-s-currency');
+    if (cur && !cur.querySelector('option[value="USD"]')) { var o = document.createElement('option'); o.value = 'USD'; o.textContent = 'USD'; cur.appendChild(o); }
+    if (!$('cc-s-dist')) {
+      var row = document.createElement('div'); row.className = 'cc-field-row'; row.id = 'cc-dist-row';
+      row.innerHTML = '<div class="cc-field"><label data-i18n="cc_set_dist">' + esc(t('set_dist')) + '</label>' +
+        '<select class="cc-in cc-text" id="cc-s-dist"><option value="km" data-i18n="cc_dist_km">' + esc(t('dist_km')) + '</option>' +
+        '<option value="mi" data-i18n="cc_dist_mi">' + esc(t('dist_mi')) + '</option></select></div>';
+      var kmRow = $('cc-s-km').closest('.cc-field-row'); kmRow.parentNode.insertBefore(row, kmRow.nextSibling);
+    }
+  }
+
   /* ---------------- views and drawers ---------------- */
   function showCcView(id) {
     document.querySelectorAll('.cc-view').forEach(function (v) { v.classList.toggle('cc-on', v.id === id); });
@@ -3832,13 +3950,13 @@
 
   /* ---------------- wiring ---------------- */
   function init(first) {
-    applyLang();
+    if (first) ensureMarkup();
+    applyLang(); applyDist();
     renderMat(); renderTime(); update();
     if (first) {
       $('cc-waste').addEventListener('input', function (e) { state.waste = clamp(num(e.target.value), 0, 50); update(); });
       $('cc-travel-km').addEventListener('input', function (e) { state.travelKm = Math.max(0, num(e.target.value)); update(); });
-      $('cc-overhead').addEventListener('input', function (e) { state.overheadOverride = e.target.value === '' ? null : num(e.target.value); update(); });
-      $('cc-overhead').addEventListener('blur', function () { update(); });
+      $('cc-reset').addEventListener('click', resetCalc);
       $('cc-mult').addEventListener('input', function (e) { state.mult = num(e.target.value); update(); });
       $('cc-round5').addEventListener('change', function (e) { state.round5 = e.target.checked; update(); });
       $('cc-cart-all').addEventListener('click', addAllToCart);
@@ -3863,7 +3981,7 @@
       $('cc-open-saved').addEventListener('click', function () { renderSaved(); openDrawer('cc-drawer-saved'); });
       $('cc-scrim').addEventListener('click', closeDrawers);
       document.querySelectorAll('[data-close]').forEach(function (b) { b.addEventListener('click', closeDrawers); });
-      $('cc-s-save').addEventListener('click', function () { readSettings(); closeDrawers(); renderTime(); update(); if ($('cc-view-quote').classList.contains('cc-on')) renderDoc(); toast(t('toast_settings')); });
+      $('cc-s-save').addEventListener('click', function () { readSettings(); closeDrawers(); applyDist(); renderTime(); update(); if ($('cc-view-quote').classList.contains('cc-on')) renderDoc(); toast(t('toast_settings')); });
       $('cc-logo-drop').addEventListener('click', function () { $('cc-s-logo').click(); });
       $('cc-s-logo').addEventListener('change', function (e) {
         var f = e.target.files && e.target.files[0]; if (!f) return;
