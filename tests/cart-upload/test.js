@@ -18,16 +18,21 @@ let comboCalls = 0;
 let fakeCart = {};   // line_id -> { tid, qty }
 let lineByTid = {};  // template id -> line_id
 let nextLineId = 1000;
+let inFlight = 0, maxInFlight = 0; // concurrent /shop/cart/update calls: the empty button must never go above 1
 function cartTotal() { return Object.keys(fakeCart).reduce((a, k) => a + fakeCart[k].qty, 0); }
 function cartQtyOf(tid) { const lid = lineByTid[tid]; return lid ? fakeCart[lid].qty : 0; }
 function readBody(req) { return new Promise(r => { let b = ''; req.on('data', c => b += c); req.on('end', () => r(b)); }); }
 
+// Same markup as Odoo saas-18.4 website_sale.cart_lines: one js_quantity input per line with data-line-id.
+function cartLinesHtml() {
+  return Object.keys(fakeCart).map(lid => `<div class="o_cart_product"><a href="#" class="js_delete_product small">Remove</a><input type="text" class="js_quantity quantity form-control" data-line-id="${lid}" data-product-id="${fakeCart[lid].tid * 10}" value="${fakeCart[lid].qty}"/></div>`).join('');
+}
 function cartPage(lang, loggedIn) {
   return `<!doctype html><html lang="${lang}"><head><meta charset="utf-8"><title>Cart</title></head><body>
 <div id="wrapwrap"><header>${loggedIn ? '<a href="/web/session/logout">Logout</a>' : '<a href="/web/login">Login</a>'}</header>
 <div id="wrap"><div class="oe_website_sale o_website_sale_checkout_container container">
 <div class="o_wizard">steps</div>
-<div class="oe_clear_stucture oe_cart col-12"><div id="shop_cart" class="col"><div class="js_cart_lines">CART LINES HERE</div></div><div class="o_wsale_shorter_cart_summary">summary</div></div>
+<div class="oe_clear_stucture oe_cart col-12"><div id="shop_cart" class="col"><div class="js_cart_lines">${cartLinesHtml()}</div></div><div class="o_wsale_shorter_cart_summary">summary</div></div>
 </div></div></div>
 <script>
 (function(){
@@ -68,8 +73,14 @@ const server = http.createServer(async (req, res) => {
     if (u.pathname === '/shop/cart/update') {
       updateCalls.push(body.params);
       const lid = body.params.line_id;
-      const before = fakeCart[lid] ? fakeCart[lid].qty : 0;
-      if (fakeCart[lid]) fakeCart[lid].qty = body.params.quantity;
+      inFlight++; maxInFlight = Math.max(maxInFlight, inFlight);
+      await new Promise(r => setTimeout(r, 25)); // the live shop re-renders the whole cart per call, so it is slow
+      inFlight--;
+      // A line that no longer exists (e.g. removed together with its parent line) errors, like Odoo does.
+      if (!fakeCart[lid]) return res.end(JSON.stringify({ jsonrpc: '2.0', id: 1, error: { message: 'Odoo Server Error', data: { message: 'Missing record' } } }));
+      const before = fakeCart[lid].qty;
+      if (body.params.quantity <= 0) { delete lineByTid[fakeCart[lid].tid]; delete fakeCart[lid]; }
+      else fakeCart[lid].qty = body.params.quantity;
       return res.end(JSON.stringify({ jsonrpc: '2.0', id: 1, result: { line_id: lid, quantity: body.params.quantity, added_qty: body.params.quantity - before, cart_quantity: cartTotal() } }));
     }
   }
@@ -174,6 +185,32 @@ function assert(c, msg) { if (!c) { console.error('FAIL', msg); process.exitCode
   // 8. live: #stxupload-uit no longer hides the card
   await page.goto('about:blank'); await page.goto(base + '/shop/cart#stxupload-uit'); await page.waitForSelector('#stx-upl:not([hidden])', { timeout: 8000 });
   assert(await page.$eval('#stx-upl', e => !e.hidden), 'live: #stxupload-uit does not hide it any more');
+  // 9. empty the cart in one go: one line at a time, cart locked meanwhile, result after the reload
+  const before9 = Object.keys(fakeCart).length;
+  await page.goto('about:blank'); await page.goto(base + '/shop/cart'); await page.waitForSelector('#stx-upl:not([hidden])');
+  const ghost = ++nextLineId; fakeCart[ghost] = { tid: 999999, qty: 1 }; // added after the page rendered: not on screen, so the button must leave it alone
+  assert(before9 > 100, 'cart has ' + before9 + ' lines before emptying');
+  assert(await page.$eval('#su-empty', e => !e.hidden && e.textContent === 'Winkelmandje leegmaken'), 'empty button visible with its label, card still closed');
+  updateCalls = []; maxInFlight = 0;
+  await page.click('#su-empty');
+  const confirmTxt = await page.textContent('#su-empty');
+  assert(confirmTxt === 'Klik nog eens om alle ' + before9 + ' regels te verwijderen', 'first click only asks to confirm: ' + confirmTxt);
+  await page.screenshot({ path: path.join(OUT, 'empty-confirm-nl.png'), clip: { x: 0, y: 0, width: 1280, height: 260 } });
+  await page.waitForTimeout(150);
+  assert(updateCalls.length === 0, 'nothing removed after the first click');
+  await page.click('#su-empty');
+  await page.waitForFunction(() => document.querySelector('.oe_cart.stx-cart-locked'), null, { timeout: 3000 });
+  assert(true, 'cart locked while emptying');
+  assert(/Regel \d+ van \d+ verwijderen/.test(await page.textContent('#su-emptystatus')), 'progress shown');
+  await page.waitForURL(/\/shop\/cart$/, { timeout: 30000 }); await page.waitForSelector('#su-lastresult:not([hidden])', { timeout: 30000 });
+  assert(updateCalls.length === before9 && updateCalls.every(c => c.quantity === 0), before9 + ' remove calls with quantity 0 (' + updateCalls.length + ')');
+  assert(maxInFlight === 1, 'never more than 1 update at a time (max ' + maxInFlight + ')');
+  assert(Object.keys(fakeCart).length === 1 && fakeCart[ghost], 'every line from the page is gone, nothing else touched');
+  const emptyTxt = await page.textContent('#su-lastresult');
+  assert(emptyTxt.includes('Je winkelmandje is leeg (' + before9 + ' regels verwijderd)'), 'result after reload: ' + emptyTxt.trim());
+  delete fakeCart[ghost];
+  await page.goto('about:blank'); await page.goto(base + '/shop/cart'); await page.waitForSelector('#stx-upl:not([hidden])');
+  assert(await page.$eval('#su-empty', e => e.hidden), 'empty cart: no empty button');
   // mobile screenshot
   const mp = await b.newPage({ viewport: { width: 390, height: 800 } });
   await mp.goto(base + '/en_GB/shop/cart'); await mp.waitForSelector('#stx-upl:not([hidden])'); await mp.click('#su-toggle');

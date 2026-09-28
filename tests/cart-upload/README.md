@@ -41,3 +41,11 @@ De productcodes komen uit een echte klantbestelling (die codes staan publiek op 
 zijn vervangen door een vast patroon**, want bestelhoeveelheden van een klant horen niet in een publieke repo.
 Wil je met een echt bestand testen, zet dan `STX_ORDER_CSV` naar dat pad. De assertions over aantallen
 regels kloppen dan mogelijk niet meer.
+
+## Winkelmandje leegmaken (28/09/2026)
+
+De nagebouwde winkelmandpagina toont de regels nu zoals Odoo (een `input.js_quantity` met `data-line-id`
+per regel), `/shop/cart/update` met quantity 0 verwijdert een regel en antwoordt met wat vertraging, en de
+harness houdt bij hoeveel updates tegelijk lopen. Test 9 controleert: de knop staat er alleen als het mandje
+regels heeft, de eerste klik vraagt alleen bevestiging, daarna gaat elke regel weg met **nooit meer dan 1
+update tegelijk**, het mandje staat intussen op slot, en na het herladen staat de melding "Je winkelmandje is leeg".

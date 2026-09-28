@@ -35,6 +35,13 @@
      Codes die op hetzelfde product uitkomen worden eerst samengeteld. Na afloop herlaadt de pagina en
      toont de kaart eenmalig het resultaat (sessionStorage).
 
+     Winkelmandje leegmaken (sinds 28/09/2026): knop rechtsboven in de kaart,
+     zichtbaar zodra er regels in het mandje staan, tweede klik bevestigt.
+     Verwijdert de regels een voor een met /shop/cart/update quantity 0 en
+     zet het mandje intussen op slot (ook tijdens een upload). Aanleiding:
+     de storingen van 23/09 en 25/09/2026, klanten die honderd keer snel
+     op Remove / Save for later klikten in een mandje van 130 regels.
+
      Alleen voor ingelogde accounts (Odoo weigert cart-calls van
      bezoekers). Niet in de Odoo editor.
 
@@ -64,6 +71,12 @@
   .stx-upl .su-lede { font-family: 'Lato', sans-serif; font-size: 14.5px; color: var(--ink-soft); max-width: 70ch; }
   .stx-upl .su-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap; }
   .stx-upl .su-toggle { background: none; border: 0; color: var(--purple); font-weight: 700; font-size: 14px; cursor: pointer; padding: 6px 0; white-space: nowrap; }
+  .stx-upl .su-headbtns { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
+  .stx-upl .su-empty { background: none; border: 0; color: var(--red); font-weight: 700; font-size: 14px; cursor: pointer; padding: 6px 0; white-space: nowrap; text-decoration: underline; }
+  .stx-upl .su-empty.su-confirm { background: var(--red); color: #fff; text-decoration: none; border-radius: 999px; padding: 6px 14px; }
+  .stx-upl .su-empty:disabled { opacity: .55; cursor: default; }
+  /* Tijdens leegmaken of uploaden: de Odoo-knoppen in het mandje even buiten gebruik, zodat er nooit twee wijzigingen tegelijk lopen */
+  .stx-cart-locked { pointer-events: none; opacity: .5; transition: opacity .2s; }
   .stx-upl .su-toggle::after { content: " \25BE"; }
   .stx-upl.su-open .su-toggle::after { content: " \25B4"; }
   .stx-upl .su-body { display: none; margin-top: 16px; }
@@ -145,8 +158,12 @@
       <h3><span class="hl" data-k="title"></span></h3>
       <p class="su-lede" data-k="lede"></p>
     </div>
-    <button type="button" class="su-toggle" data-k="open" id="su-toggle"></button>
+    <div class="su-headbtns">
+      <button type="button" class="su-empty" id="su-empty" data-k="empty" hidden></button>
+      <button type="button" class="su-toggle" data-k="open" id="su-toggle"></button>
+    </div>
   </div>
+  <div class="su-status" id="su-emptystatus" hidden></div>
   <div class="su-body">
     <div class="su-result" id="su-lastresult" hidden></div>
     <label class="su-drop" id="su-drop">
@@ -234,6 +251,7 @@
       st_ok: 'found', st_multi: 'choose', st_no: 'not found', st_done: 'added', st_fail: 'failed', st_skip: 'skipped', st_qty: 'in cart: {n}',
       add: 'Add {n} lines to cart', adding: 'Adding line {i} of {n}...', none: 'Nothing to add: no line matched a shop product.',
       done: '{l} lines ({p} packs) added to your cart.', fail: 'Not added: {names}.', skipped: '{n} lines skipped (not found).', qty_warn: '{n} products ended up with a different quantity: check them in the cart.', srv_err: 'The shop said: “{m}”', reload: 'Refresh cart',
+      empty: 'Empty cart', empty_confirm: 'Click again to remove all {n} lines', emptying: 'Removing line {i} of {n}... Please keep this page open.', emptied: 'Your cart is empty ({n} lines removed).', empty_left: '{n} lines could not be removed. If they are still in your cart, click the button again.',
       note: 'Quantities are packs (sales units of the shop), not single balloons. A product that is already in your cart gets the quantity from your file.'
         + '  A code can be the shop reference or the SAP or barcode of the product, both are matched. Lines that are not found are skipped.'
     },
@@ -247,6 +265,7 @@
       st_ok: 'gevonden', st_multi: 'kies', st_no: 'niet gevonden', st_done: 'toegevoegd', st_fail: 'mislukt', st_skip: 'overgeslagen', st_qty: 'in mandje: {n}',
       add: '{n} regels in winkelmandje', adding: 'Regel {i} van {n} toevoegen...', none: 'Niets toe te voegen: geen enkele regel matcht een shopproduct.',
       done: '{l} regels ({p} zakken) toegevoegd aan je winkelmandje.', fail: 'Niet toegevoegd: {names}.', skipped: '{n} regels overgeslagen (niet gevonden).', qty_warn: '{n} producten staan met een ander aantal in je mandje: controleer ze.', srv_err: 'De shop meldt: “{m}”', reload: 'Winkelmandje verversen',
+      empty: 'Winkelmandje leegmaken', empty_confirm: 'Klik nog eens om alle {n} regels te verwijderen', emptying: 'Regel {i} van {n} verwijderen... Laat deze pagina open.', emptied: 'Je winkelmandje is leeg ({n} regels verwijderd).', empty_left: '{n} regels konden niet verwijderd worden. Staan ze nog in je mandje, klik dan nog eens op de knop.',
       note: 'Aantallen zijn zakken (verkoopeenheden van de shop), geen losse ballonnen. Een product dat al in je winkelmandje zit, krijgt het aantal uit je bestand.'
         + '  Een code mag de shopreferentie of de SAP- of barcode van het product zijn, allebei worden herkend. Regels die niet gevonden zijn worden overgeslagen.'
     },
@@ -260,6 +279,7 @@
       st_ok: 'trouvé', st_multi: 'choisir', st_no: 'introuvable', st_done: 'ajouté', st_fail: 'échec', st_skip: 'ignoré', st_qty: 'dans le panier : {n}',
       add: 'Ajouter {n} lignes au panier', adding: 'Ajout de la ligne {i} sur {n}...', none: 'Rien à ajouter : aucune ligne ne correspond à un produit de la boutique.',
       done: '{l} lignes ({p} sachets) ajoutées à votre panier.', fail: 'Non ajouté : {names}.', skipped: '{n} lignes ignorées (introuvables).', qty_warn: '{n} produits se retrouvent avec une autre quantité : vérifiez-les dans le panier.', srv_err: 'La boutique répond : « {m} »', reload: 'Actualiser le panier',
+      empty: 'Vider le panier', empty_confirm: 'Cliquez encore pour supprimer les {n} lignes', emptying: 'Suppression de la ligne {i} sur {n}... Gardez cette page ouverte.', emptied: 'Votre panier est vide ({n} lignes supprimées).', empty_left: '{n} lignes n’ont pas pu être supprimées. Si elles sont encore dans votre panier, cliquez à nouveau sur le bouton.',
       note: 'Les quantités sont des sachets (unités de vente de la boutique), pas des ballons à l’unité. Un produit déjà présent dans votre panier reçoit la quantité de votre fichier.'
         + '  Un code peut être la référence boutique ou le code SAP ou code-barres du produit, les deux sont reconnus. Les lignes introuvables sont ignorées.'
     },
@@ -273,6 +293,7 @@
       st_ok: 'gefunden', st_multi: 'wählen', st_no: 'nicht gefunden', st_done: 'hinzugefügt', st_fail: 'fehlgeschlagen', st_skip: 'übersprungen', st_qty: 'im Warenkorb: {n}',
       add: '{n} Zeilen in den Warenkorb', adding: 'Zeile {i} von {n} wird hinzugefügt...', none: 'Nichts hinzuzufügen: keine Zeile passt zu einem Shop-Produkt.',
       done: '{l} Zeilen ({p} Beutel) in Ihren Warenkorb gelegt.', fail: 'Nicht hinzugefügt: {names}.', skipped: '{n} Zeilen übersprungen (nicht gefunden).', qty_warn: '{n} Produkte liegen mit einer anderen Menge im Warenkorb: bitte prüfen.', srv_err: 'Der Shop meldet: „{m}“', reload: 'Warenkorb aktualisieren',
+      empty: 'Warenkorb leeren', empty_confirm: 'Nochmals klicken, um alle {n} Zeilen zu entfernen', emptying: 'Zeile {i} von {n} wird entfernt... Bitte diese Seite geöffnet lassen.', emptied: 'Ihr Warenkorb ist leer ({n} Zeilen entfernt).', empty_left: '{n} Zeilen konnten nicht entfernt werden. Wenn sie noch im Warenkorb sind, klicken Sie bitte erneut auf die Schaltfläche.',
       note: 'Mengen sind Beutel (Verkaufseinheiten des Shops), keine einzelnen Ballons. Ein Produkt, das bereits im Warenkorb liegt, erhält die Menge aus Ihrer Datei.'
         + '  Ein Code kann die Shop-Referenz oder der SAP- oder Barcode des Produkts sein, beide werden erkannt. Nicht gefundene Zeilen werden übersprungen.'
     }
@@ -300,10 +321,16 @@
       sessionStorage.removeItem(RESULT_KEY);
       var lr = JSON.parse(last);
       var box = $('su-lastresult');
-      var msg = esc(t('done', { l: lr.done, p: lr.packs }));
-      if (lr.skipped) { msg += ' ' + esc(t('skipped', { n: lr.skipped })); }
-      if (lr.failed && lr.failed.length) { msg += ' ' + esc(t('fail', { names: lr.failed.join(', ') })); box.classList.add('warn'); }
-      if (lr.srvErr) { msg += ' ' + esc(t('srv_err', { m: lr.srvErr })); box.classList.add('warn'); }
+      var msg;
+      if (lr.kind === 'empty') {
+        msg = esc(t('emptied', { n: lr.removed }));
+        if (lr.failed) { msg += ' ' + esc(t('empty_left', { n: lr.failed })); box.classList.add('warn'); }
+      } else {
+        msg = esc(t('done', { l: lr.done, p: lr.packs }));
+        if (lr.skipped) { msg += ' ' + esc(t('skipped', { n: lr.skipped })); }
+        if (lr.failed && lr.failed.length) { msg += ' ' + esc(t('fail', { names: lr.failed.join(', ') })); box.classList.add('warn'); }
+        if (lr.srvErr) { msg += ' ' + esc(t('srv_err', { m: lr.srvErr })); box.classList.add('warn'); }
+      }
       box.innerHTML = msg; box.hidden = false; root.classList.add('su-open');
     }
   } catch (e) {}
@@ -328,10 +355,19 @@
   $('su-file').addEventListener('change', function () { if (this.files && this.files[0]) { handleFile(this.files[0]); this.value = ''; } });
   $('su-reset').addEventListener('click', function () { if (state.busy) { return; } state.lines = []; $('su-preview').hidden = true; $('su-rows').innerHTML = ''; $('su-sum').innerHTML = ''; setStatus(''); });
   $('su-add').addEventListener('click', addAll);
+  $('su-empty').addEventListener('click', emptyCart);
+  $('su-empty').hidden = cartLineIds().length === 0;
 
   function setStatus(msg) { $('su-status').textContent = msg || ''; }
   function setBar(frac) { $('su-barfill').style.width = Math.round(Math.max(0, Math.min(1, frac)) * 100) + '%'; }
-  function busy(on) { state.busy = on; root.classList.toggle('su-busy', on); $('su-add').disabled = on; $('su-reset').disabled = on; if (!on) { setBar(0); } }
+  /* Het mandje zelf (niet onze kaart, die staat ervoor) gaat op slot zolang wij regels wijzigen. */
+  var lockEl = (cart.classList.contains('oe_cart') || cart.id === 'shop_cart') ? cart : null;
+  function busy(on) {
+    state.busy = on; root.classList.toggle('su-busy', on);
+    $('su-add').disabled = on; $('su-reset').disabled = on; $('su-empty').disabled = on;
+    if (lockEl) { lockEl.classList.toggle('stx-cart-locked', on); }
+    if (!on) { setBar(0); }
+  }
 
   /* ---- bestand lezen ---- */
   function handleFile(file) {
@@ -610,6 +646,59 @@
           }
           step(k + 1);
         });
+      });
+    }
+    step(0);
+  }
+
+  /* ---- winkelmandje leegmaken ----
+     Waarom: Odoo heeft geen knop om het hele mandje te legen. Klanten met een groot mandje klikten
+     honderd keer snel op "Remove" of "Save for later"; elke klik is een eigen /shop/cart/update die
+     Odoo niet laat wachten op de vorige, en elke call rendert het hele mandje opnieuw. Op 23/09 en
+     25/09/2026 liepen die tientallen gelijktijdige wijzigingen op dezelfde order vast en lag de shop
+     plat. Hier gaat het een regel tegelijk: de volgende vertrekt pas als de vorige beantwoord is, en
+     het mandje zelf staat intussen op slot. /shop/cart/update met quantity 0 verwijdert de regel. */
+  function cartLineIds() {
+    var seen = {}, out = [];
+    Array.prototype.forEach.call(document.querySelectorAll('input.js_quantity[data-line-id]'), function (el) {
+      var lid = parseInt(el.getAttribute('data-line-id'), 10);
+      if (!lid || seen[lid] || root.contains(el)) { return; }
+      seen[lid] = true;
+      out.push({ lid: lid, pid: parseInt(el.getAttribute('data-product-id'), 10) || null });
+    });
+    return out;
+  }
+  var emptyArmed = null;
+  function disarmEmpty() {
+    clearTimeout(emptyArmed); emptyArmed = null;
+    var b = $('su-empty'); b.classList.remove('su-confirm'); b.textContent = t('empty');
+  }
+  function emptyCart() {
+    if (state.busy) { return; }
+    var lines = cartLineIds();
+    if (!lines.length) { $('su-empty').hidden = true; return; }
+    if (!emptyArmed) {
+      var b = $('su-empty'); b.classList.add('su-confirm'); b.textContent = t('empty_confirm', { n: lines.length });
+      emptyArmed = setTimeout(disarmEmpty, 6000);
+      return;
+    }
+    disarmEmpty();
+    busy(true);
+    var st = $('su-emptystatus'); st.hidden = false;
+    var removed = 0, failed = 0, n = lines.length;
+    track('cart_empty_started', { lines: n });
+    function step(k) {
+      if (k >= n) {
+        track('cart_empty_done', { lines: n, removed: removed, failed: failed });
+        try { sessionStorage.setItem(RESULT_KEY, JSON.stringify({ kind: 'empty', removed: removed, failed: failed })); } catch (e) {}
+        location.href = shopPrefix + '/shop/cart';
+        return;
+      }
+      st.textContent = t('emptying', { i: k + 1, n: n });
+      var l = lines[k];
+      rpc('/shop/cart/update', { line_id: l.lid, product_id: l.pid, quantity: 0 }, function (res) {
+        if (res) { removed++; } else { failed++; }
+        step(k + 1);
       });
     }
     step(0);
