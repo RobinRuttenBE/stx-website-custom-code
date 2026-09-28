@@ -32,7 +32,10 @@ function cartPage(lang, loggedIn) {
 <div id="wrapwrap"><header>${loggedIn ? '<a href="/web/session/logout">Logout</a>' : '<a href="/web/login">Login</a>'}</header>
 <div id="wrap"><div class="oe_website_sale o_website_sale_checkout_container container">
 <div class="o_wizard">steps</div>
-<div class="oe_clear_stucture oe_cart col-12"><div id="shop_cart" class="col"><div class="js_cart_lines">${cartLinesHtml()}</div></div><div class="o_wsale_shorter_cart_summary">summary</div></div>
+<div class="oe_clear_stucture oe_cart col-12 col-lg-7"><div id="shop_cart" class="col">`
+  + `<div class="d-flex align-items-center mb-3"><h4 class="mb-0">Besteloverzicht</h4><div class="ms-3 border-start ps-2"><span><button id="quick_reorder_button" type="button" class="btn btn-sm btn-link" disabled>Snel opnieuw bestellen</button></span></div></div>`
+  + `<div id="cart_products" class="js_cart_lines d-flex flex-column">${cartLinesHtml()}</div></div></div>`
+  + `<div class="o_wsale_shorter_cart_summary col-lg-5">summary</div>
 </div></div></div>
 <script>
 (function(){
@@ -190,27 +193,31 @@ function assert(c, msg) { if (!c) { console.error('FAIL', msg); process.exitCode
   await page.goto('about:blank'); await page.goto(base + '/shop/cart'); await page.waitForSelector('#stx-upl:not([hidden])');
   const ghost = ++nextLineId; fakeCart[ghost] = { tid: 999999, qty: 1 }; // added after the page rendered: not on screen, so the button must leave it alone
   assert(before9 > 100, 'cart has ' + before9 + ' lines before emptying');
-  assert(await page.$eval('#su-empty', e => !e.hidden && e.textContent === 'Winkelmandje leegmaken'), 'empty button visible with its label, card still closed');
+  assert(await page.$eval('.stx-empty-btn', e => !e.hidden && e.textContent === 'Winkelmandje leegmaken'), 'empty button visible with its label');
+  assert(await page.$eval('.stx-empty-wrap', e => e.previousElementSibling.querySelector('#quick_reorder_button') !== null && e.parentNode.querySelector('h4').textContent === 'Besteloverzicht'), 'empty button sits right after "Snel opnieuw bestellen" in the Besteloverzicht row');
+  assert(await page.$('#stx-upl .stx-empty-btn') === null, 'not inside the upload card');
   updateCalls = []; maxInFlight = 0;
-  await page.click('#su-empty');
-  const confirmTxt = await page.textContent('#su-empty');
+  await page.click('.stx-empty-btn');
+  const confirmTxt = await page.textContent('.stx-empty-btn');
   assert(confirmTxt === 'Klik nog eens om alle ' + before9 + ' regels te verwijderen', 'first click only asks to confirm: ' + confirmTxt);
-  await page.screenshot({ path: path.join(OUT, 'empty-confirm-nl.png'), clip: { x: 0, y: 0, width: 1280, height: 260 } });
+  await page.screenshot({ path: path.join(OUT, 'empty-confirm-nl.png'), clip: { x: 0, y: 0, width: 1280, height: 320 } });
   await page.waitForTimeout(150);
   assert(updateCalls.length === 0, 'nothing removed after the first click');
-  await page.click('#su-empty');
-  await page.waitForFunction(() => document.querySelector('.oe_cart.stx-cart-locked'), null, { timeout: 3000 });
-  assert(true, 'cart locked while emptying');
-  assert(/Regel \d+ van \d+ verwijderen/.test(await page.textContent('#su-emptystatus')), 'progress shown');
-  await page.waitForURL(/\/shop\/cart$/, { timeout: 30000 }); await page.waitForSelector('#su-lastresult:not([hidden])', { timeout: 30000 });
+  await page.click('.stx-empty-btn');
+  await page.waitForFunction(() => document.querySelector('#cart_products.stx-cart-locked'), null, { timeout: 3000 });
+  assert(await page.$eval('.o_wsale_shorter_cart_summary', e => e.classList.contains('stx-cart-locked')), 'cart lines and summary locked while emptying');
+  assert(await page.$eval('.stx-empty-wrap', e => !e.closest('.stx-cart-locked')), 'the row with the button is not faded');
+  assert(/Regel \d+ van \d+ verwijderen/.test(await page.textContent('.stx-empty-btn')), 'progress shown on the button');
+  await page.waitForURL(/\/shop\/cart$/, { timeout: 30000 }); await page.waitForSelector('.stx-empty-msg:not([hidden])', { timeout: 30000 });
   assert(updateCalls.length === before9 && updateCalls.every(c => c.quantity === 0), before9 + ' remove calls with quantity 0 (' + updateCalls.length + ')');
   assert(maxInFlight === 1, 'never more than 1 update at a time (max ' + maxInFlight + ')');
   assert(Object.keys(fakeCart).length === 1 && fakeCart[ghost], 'every line from the page is gone, nothing else touched');
-  const emptyTxt = await page.textContent('#su-lastresult');
+  const emptyTxt = await page.textContent('.stx-empty-msg');
   assert(emptyTxt.includes('Je winkelmandje is leeg (' + before9 + ' regels verwijderd)'), 'result after reload: ' + emptyTxt.trim());
+  assert(await page.$eval('#su-lastresult', e => e.hidden), 'result is next to the button, not in the upload card');
   delete fakeCart[ghost];
   await page.goto('about:blank'); await page.goto(base + '/shop/cart'); await page.waitForSelector('#stx-upl:not([hidden])');
-  assert(await page.$eval('#su-empty', e => e.hidden), 'empty cart: no empty button');
+  assert(await page.$eval('.stx-empty-btn', e => e.hidden), 'empty cart: no empty button');
   // mobile screenshot
   const mp = await b.newPage({ viewport: { width: 390, height: 800 } });
   await mp.goto(base + '/en_GB/shop/cart'); await mp.waitForSelector('#stx-upl:not([hidden])'); await mp.click('#su-toggle');

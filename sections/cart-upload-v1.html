@@ -35,7 +35,8 @@
      Codes die op hetzelfde product uitkomen worden eerst samengeteld. Na afloop herlaadt de pagina en
      toont de kaart eenmalig het resultaat (sessionStorage).
 
-     Winkelmandje leegmaken (sinds 28/09/2026): knop rechtsboven in de kaart,
+     Winkelmandje leegmaken (sinds 28/09/2026): knop naast "Snel opnieuw
+     bestellen" in de rij van "Besteloverzicht" (dus buiten de kaart),
      zichtbaar zodra er regels in het mandje staan, tweede klik bevestigt.
      Verwijdert de regels een voor een met /shop/cart/update quantity 0 en
      zet het mandje intussen op slot (ook tijdens een upload). Aanleiding:
@@ -71,10 +72,14 @@
   .stx-upl .su-lede { font-family: 'Lato', sans-serif; font-size: 14.5px; color: var(--ink-soft); max-width: 70ch; }
   .stx-upl .su-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap; }
   .stx-upl .su-toggle { background: none; border: 0; color: var(--purple); font-weight: 700; font-size: 14px; cursor: pointer; padding: 6px 0; white-space: nowrap; }
-  .stx-upl .su-headbtns { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
-  .stx-upl .su-empty { background: none; border: 0; color: var(--red); font-weight: 700; font-size: 14px; cursor: pointer; padding: 6px 0; white-space: nowrap; text-decoration: underline; }
-  .stx-upl .su-empty.su-confirm { background: var(--red); color: #fff; text-decoration: none; border-radius: 999px; padding: 6px 14px; }
-  .stx-upl .su-empty:disabled { opacity: .55; cursor: default; }
+  /* Knop "Winkelmandje leegmaken": naast "Snel opnieuw bestellen" in de rij van "Besteloverzicht" (buiten de kaart) */
+  .stx-empty-wrap { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .stx-empty-wrap .stx-empty-btn { color: #c0392b; text-decoration: none; }
+  .stx-empty-wrap .stx-empty-btn:hover { color: #962d22; text-decoration: underline; }
+  .stx-empty-wrap .stx-empty-btn.stx-confirm { background: #c0392b; color: #fff; border-radius: 999px; padding-left: 12px; padding-right: 12px; text-decoration: none; }
+  .stx-empty-wrap .stx-empty-btn:disabled { opacity: 1; color: #1b073d; }
+  .stx-empty-wrap .stx-empty-msg { font-family: 'Lato', sans-serif; font-size: 13.5px; color: #145c3d; }
+  .stx-empty-wrap .stx-empty-msg.warn { color: #6b4a0e; }
   /* Tijdens leegmaken of uploaden: de Odoo-knoppen in het mandje even buiten gebruik, zodat er nooit twee wijzigingen tegelijk lopen */
   .stx-cart-locked { pointer-events: none; opacity: .5; transition: opacity .2s; }
   .stx-upl .su-toggle::after { content: " \25BE"; }
@@ -158,12 +163,8 @@
       <h3><span class="hl" data-k="title"></span></h3>
       <p class="su-lede" data-k="lede"></p>
     </div>
-    <div class="su-headbtns">
-      <button type="button" class="su-empty" id="su-empty" data-k="empty" hidden></button>
-      <button type="button" class="su-toggle" data-k="open" id="su-toggle"></button>
-    </div>
+    <button type="button" class="su-toggle" data-k="open" id="su-toggle"></button>
   </div>
-  <div class="su-status" id="su-emptystatus" hidden></div>
   <div class="su-body">
     <div class="su-result" id="su-lastresult" hidden></div>
     <label class="su-drop" id="su-drop">
@@ -315,6 +316,7 @@
   wallDone();
 
   /* ---- resultaat van de vorige upload (na herladen) ---- */
+  var emptyResult = null;
   try {
     var last = sessionStorage.getItem(RESULT_KEY);
     if (last) {
@@ -323,15 +325,14 @@
       var box = $('su-lastresult');
       var msg;
       if (lr.kind === 'empty') {
-        msg = esc(t('emptied', { n: lr.removed }));
-        if (lr.failed) { msg += ' ' + esc(t('empty_left', { n: lr.failed })); box.classList.add('warn'); }
+        emptyResult = lr;
       } else {
         msg = esc(t('done', { l: lr.done, p: lr.packs }));
         if (lr.skipped) { msg += ' ' + esc(t('skipped', { n: lr.skipped })); }
         if (lr.failed && lr.failed.length) { msg += ' ' + esc(t('fail', { names: lr.failed.join(', ') })); box.classList.add('warn'); }
         if (lr.srvErr) { msg += ' ' + esc(t('srv_err', { m: lr.srvErr })); box.classList.add('warn'); }
+        box.innerHTML = msg; box.hidden = false; root.classList.add('su-open');
       }
-      box.innerHTML = msg; box.hidden = false; root.classList.add('su-open');
     }
   } catch (e) {}
 
@@ -355,17 +356,24 @@
   $('su-file').addEventListener('change', function () { if (this.files && this.files[0]) { handleFile(this.files[0]); this.value = ''; } });
   $('su-reset').addEventListener('click', function () { if (state.busy) { return; } state.lines = []; $('su-preview').hidden = true; $('su-rows').innerHTML = ''; $('su-sum').innerHTML = ''; setStatus(''); });
   $('su-add').addEventListener('click', addAll);
-  $('su-empty').addEventListener('click', emptyCart);
-  $('su-empty').hidden = cartLineIds().length === 0;
+  placeEmptyButton();
 
   function setStatus(msg) { $('su-status').textContent = msg || ''; }
   function setBar(frac) { $('su-barfill').style.width = Math.round(Math.max(0, Math.min(1, frac)) * 100) + '%'; }
-  /* Het mandje zelf (niet onze kaart, die staat ervoor) gaat op slot zolang wij regels wijzigen. */
-  var lockEl = (cart.classList.contains('oe_cart') || cart.id === 'shop_cart') ? cart : null;
+  /* Het mandje zelf gaat op slot zolang wij regels wijzigen: de regels, "toevoegen via referentie" en het
+     overzicht rechts. Niet de rij met "Besteloverzicht", daar staat de leegmaakknop met zijn teller. */
+  function lockTargets() {
+    var out = [];
+    var sc = document.getElementById('shop_cart');
+    if (sc) { Array.prototype.forEach.call(sc.children, function (c) { if (!c.querySelector('.stx-empty-wrap')) { out.push(c); } }); }
+    Array.prototype.forEach.call(document.querySelectorAll('.o_wsale_shorter_cart_summary'), function (c) { out.push(c); });
+    return out;
+  }
   function busy(on) {
     state.busy = on; root.classList.toggle('su-busy', on);
-    $('su-add').disabled = on; $('su-reset').disabled = on; $('su-empty').disabled = on;
-    if (lockEl) { lockEl.classList.toggle('stx-cart-locked', on); }
+    $('su-add').disabled = on; $('su-reset').disabled = on;
+    if (emptyBtn) { emptyBtn.disabled = on; }
+    lockTargets().forEach(function (el) { el.classList.toggle('stx-cart-locked', on); });
     if (!on) { setBar(0); }
   }
 
@@ -668,23 +676,58 @@
     });
     return out;
   }
-  var emptyArmed = null;
+  /* Zonder beginwaarde: placeEmptyButton() draait al bij het opstarten, voor deze regel bereikt wordt. */
+  var emptyBtn, emptyMsg, emptyWrap, emptyArmed;
+  function emptyLabel(txt) { emptyBtn.innerHTML = '<i class="fa fa-trash-o me-2"></i>' + esc(txt); }
+  /* Naast "Snel opnieuw bestellen" (#quick_reorder_button), in dezelfde Odoo-stijl (btn btn-sm btn-link) en
+     met hetzelfde streepje ervoor. Staat die knop er niet, dan achter de titel "Besteloverzicht". Odoo kan
+     het mandje opnieuw opbouwen, dus een observer zet de knop terug als hij verdwijnt. */
+  function placeEmptyButton() {
+    if (!emptyWrap) {
+      emptyWrap = document.createElement('div'); emptyWrap.className = 'ms-3 border-start ps-2 stx-empty-wrap';
+      emptyBtn = document.createElement('button'); emptyBtn.type = 'button'; emptyBtn.className = 'btn btn-sm btn-link stx-empty-btn';
+      emptyLabel(t('empty'));
+      emptyBtn.addEventListener('click', emptyCart);
+      emptyMsg = document.createElement('span'); emptyMsg.className = 'stx-empty-msg'; emptyMsg.hidden = true;
+      emptyWrap.appendChild(emptyBtn); emptyWrap.appendChild(emptyMsg);
+      if (emptyResult) {
+        var m = t('emptied', { n: emptyResult.removed });
+        if (emptyResult.failed) { m += ' ' + t('empty_left', { n: emptyResult.failed }); emptyMsg.classList.add('warn'); }
+        emptyMsg.textContent = m; emptyMsg.hidden = false;
+      }
+    }
+    if (!emptyWrap.isConnected) {
+      var qr = document.getElementById('quick_reorder_button');
+      var qrItem = qr && qr.closest('.border-start');
+      var row = qrItem ? qrItem.parentNode : null;
+      if (!row) { var sc = document.getElementById('shop_cart'); var h = sc && sc.querySelector('h4, h3'); row = h ? h.parentNode : null; }
+      if (!row) { return; }
+      row.insertBefore(emptyWrap, qrItem ? qrItem.nextSibling : null);
+      if (!row.classList.contains('flex-wrap')) { row.classList.add('flex-wrap'); }
+    }
+    emptyBtn.hidden = !state.busy && cartLineIds().length === 0;
+  }
+  var shopCartEl = document.getElementById('shop_cart');
+  if (shopCartEl && window.MutationObserver) {
+    new MutationObserver(function () { if (emptyWrap && (!emptyWrap.isConnected || !state.busy)) { placeEmptyButton(); } })
+      .observe(shopCartEl, { childList: true, subtree: true });
+  }
   function disarmEmpty() {
     clearTimeout(emptyArmed); emptyArmed = null;
-    var b = $('su-empty'); b.classList.remove('su-confirm'); b.textContent = t('empty');
+    emptyBtn.classList.remove('stx-confirm'); emptyLabel(t('empty'));
   }
   function emptyCart() {
     if (state.busy) { return; }
     var lines = cartLineIds();
-    if (!lines.length) { $('su-empty').hidden = true; return; }
+    if (!lines.length) { emptyBtn.hidden = true; return; }
     if (!emptyArmed) {
-      var b = $('su-empty'); b.classList.add('su-confirm'); b.textContent = t('empty_confirm', { n: lines.length });
+      emptyMsg.hidden = true;
+      emptyBtn.classList.add('stx-confirm'); emptyLabel(t('empty_confirm', { n: lines.length }));
       emptyArmed = setTimeout(disarmEmpty, 6000);
       return;
     }
     disarmEmpty();
     busy(true);
-    var st = $('su-emptystatus'); st.hidden = false;
     var removed = 0, failed = 0, n = lines.length;
     track('cart_empty_started', { lines: n });
     function step(k) {
@@ -694,7 +737,7 @@
         location.href = shopPrefix + '/shop/cart';
         return;
       }
-      st.textContent = t('emptying', { i: k + 1, n: n });
+      emptyLabel(t('emptying', { i: k + 1, n: n }));
       var l = lines[k];
       rpc('/shop/cart/update', { line_id: l.lid, product_id: l.pid, quantity: 0 }, function (res) {
         if (res) { removed++; } else { failed++; }
