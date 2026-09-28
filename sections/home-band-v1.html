@@ -18,6 +18,11 @@
      blijft staan, zonder knoppen, met de gemarkeerde tekst
      "Je bent succesvol ingelogd!".
 
+     Nozzle Up: NU_TICKETS_LIVE = false toont 'Tickets live op 1 oktober' +
+     wachtlijst. De tickets-live slide (donker, LIVE-pil, grote gele knop naar
+     nozzleup.eu/tickets) is te bekijken met #stxtickets achter de URL
+     (#stxtickets-uit zet hem uit). Op 1/10 NU_TICKETS_LIVE = true zetten.
+
      Beelden komen uit assets/home/ in de repo, gepind op een commit hash.
      ============================================================ -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -74,6 +79,26 @@
   .stx-home .sh-slide.ench > * { position: relative; z-index: 1; }
   .stx-home .sh-slide.ench p { color: rgba(27,7,61,0.85); font-weight: 600; }
 
+  /* Nozzle Up TICKETS LIVE: donkere kaart, bos voller, LIVE-pil en grote gele knop */
+  .stx-home .sh-slide.live { background: var(--dark); }
+  .stx-home .sh-slide.live::before { opacity: 0.5;
+    -webkit-mask-image: linear-gradient(90deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.45) 45%, rgba(0,0,0,1) 85%);
+    mask-image: linear-gradient(90deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.45) 45%, rgba(0,0,0,1) 85%); }
+  .stx-home .sh-slide.live .sh-kicker { color: var(--yellow); display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .stx-home .sh-livepill { display: inline-flex; align-items: center; gap: 7px; background: #ff3b5c; color: #fff; border-radius: 999px; padding: 4px 11px 4px 9px; font-size: 12px; letter-spacing: 0.1em; }
+  .stx-home .sh-livepill i { width: 8px; height: 8px; border-radius: 50%; background: #fff; animation: sh-pulse 1.2s ease-in-out infinite; }
+  @keyframes sh-pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.35; transform: scale(0.7); } }
+  .stx-home .sh-slide.live h2 { color: #fff; font-size: clamp(28px, 2.7vw, 42px); }
+  .stx-home .sh-slide.live p { color: rgba(255,255,255,0.88); font-weight: 600; margin-bottom: 18px; }
+  .stx-home .sh-cta.mega { display: inline-flex; align-items: center; gap: 12px; background: var(--yellow); color: var(--dark); padding: 18px 34px; font-size: 20px; border-radius: 10px; animation: sh-glowpulse 2s ease-out infinite; }
+  .stx-home .sh-cta.mega:hover { color: var(--dark); box-shadow: 0 12px 34px rgba(255,219,90,0.55); animation: none; }
+  .stx-home .sh-cta.mega span { font-size: 24px; line-height: 1; transition: transform 0.14s ease; }
+  .stx-home .sh-cta.mega:hover span { transform: translateX(4px); }
+  @keyframes sh-glowpulse { 0% { box-shadow: 0 0 0 0 rgba(255,219,90,0.6); } 70% { box-shadow: 0 0 0 16px rgba(255,219,90,0); } 100% { box-shadow: 0 0 0 0 rgba(255,219,90,0); } }
+  .stx-home .sh-slide.live .sh-art.logo img { filter: drop-shadow(0 0 2px rgba(241,217,255,0.9)) drop-shadow(0 0 22px rgba(241,217,255,0.55)); }
+  .stx-home .sh-caro.on-live .sh-dots button { background: rgba(255,255,255,0.35); }
+  .stx-home .sh-caro.on-live .sh-dots button.on { background: var(--yellow); }
+
   /* ---- registratiekaart ---- */
   .stx-home .sh-reg { background: var(--dark); color: #fff; border-radius: 14px; padding: 20px 24px; display: flex; flex-direction: column; justify-content: center; position: relative; overflow: hidden; }
   .stx-home .sh-reg .sh-kicker { color: var(--yellow); }
@@ -98,7 +123,7 @@
   }
 
   @media (max-width: 1100px) { .stx-home .sh-band { grid-template-columns: 1fr; } }
-  @media (prefers-reduced-motion: reduce) { .stx-home .sh-slide.ench::after { animation: none; } }
+  @media (prefers-reduced-motion: reduce) { .stx-home .sh-slide.ench::after, .stx-home .sh-livepill i, .stx-home .sh-cta.mega { animation: none; } }
 
   /* ---- mobiel: kaders kleiner, registratie eerst ---- */
   @media (max-width: 760px) {
@@ -117,6 +142,11 @@
     .stx-home .sh-chip[data-track="downloads"] { display: none; } /* mobiel: alleen Kleurencombinaties, zodat de knop eronder ruimte houdt */
     .stx-home .sh-chip { font-size: 12.5px; padding: 5px 10px; }
     .stx-home .sh-cta, .stx-home .sh-cta.big { padding: 10px 14px; font-size: 14px; white-space: nowrap; }
+    .stx-home .sh-cta.mega { padding: 12px 18px; font-size: 16px; gap: 8px; }
+    .stx-home .sh-cta.mega span { font-size: 18px; }
+    .stx-home .sh-slide.live h2 { font-size: 22px; }
+    .stx-home .sh-livepill { font-size: 10.5px; padding: 3px 9px 3px 7px; }
+    .stx-home .sh-caro.is-live { min-height: 262px; }
     .stx-home .sh-art { height: 146px; justify-content: center; }
     .stx-home .sh-art .b1 { height: 118px; } .stx-home .sh-art .b2 { height: 88px; margin-left: -30px; margin-bottom: 4px; } .stx-home .sh-art .b3 { display: none; }
     .stx-home .sh-art.photo img { width: 112px; height: 146px; border-radius: 12px; }
@@ -131,6 +161,10 @@
   'use strict';
   var BETA = false; // true = alleen zichtbaar na #stxhome (testmodus), false = live voor iedereen
   var BETA_KEY = 'stx_home_beta';
+  /* Nozzle Up: false = wachtlijst-slide ('Tickets live op 1 oktober'), true = tickets-live slide voor iedereen.
+     Voorproef van de tickets-slide: #stxtickets achter de URL (onthouden), #stxtickets-uit zet hem uit. */
+  var NU_TICKETS_LIVE = false;
+  var NU_BETA_KEY = 'stx_nu_tickets_beta';
   var ASSETS = 'https://cdn.jsdelivr.net/gh/RobinRuttenBE/stx-website-custom-code@89b8513403b834235b1460f59361c581ac80e8b5/assets/home/';
 
   function wallDone() { if (window.stxLoadwallHide) { window.stxLoadwallHide(); } }
@@ -149,6 +183,18 @@
       if (want === true) { localStorage.setItem(BETA_KEY, '1'); }
       else if (want === false) { localStorage.removeItem(BETA_KEY); }
       return localStorage.getItem(BETA_KEY) === '1';
+    } catch (e) { return want === true; }
+  }
+
+  function ticketsBetaOn() {
+    var h = (window.location.hash || '').toLowerCase();
+    var want = null;
+    if (h === '#stxtickets' || h === '#stxtickets=1') { want = true; }
+    else if (h === '#stxtickets=0' || h === '#stxtickets-uit' || h === '#stxtickets-off') { want = false; }
+    try {
+      if (want === true) { localStorage.setItem(NU_BETA_KEY, '1'); }
+      else if (want === false) { localStorage.removeItem(NU_BETA_KEY); }
+      return localStorage.getItem(NU_BETA_KEY) === '1';
     } catch (e) { return want === true; }
   }
 
@@ -175,7 +221,8 @@
 
   var T = {
     nl: {
-      nu_k: 'Nozzle Up 2027', nu_h: 'Schrijf je in voor |de wachtlijst|', nu_p: 'Het grootste ballonevenement van Europa komt eraan', nu_b: 'Naar de wachtlijst',
+      nu_k: 'Nozzle Up 2027', nu_h: 'Tickets live op |1 oktober|', nu_p: 'Het grootste ballonevenement van Europa. Op de wachtlijst krijg je de link als eerste.', nu_b: 'Naar de wachtlijst',
+      nt_live: 'Live', nt_h: 'Tickets zijn |nu live!|', nt_p: '1 tot 3 oktober 2027, Eindhoven. Alles inbegrepen, betalen kan in termijnen.', nt_b: 'Koop je tickets',
       tl_k: 'Gratis tools', tl_h: 'Combineer kleuren, bereken kosten |& meer!|', tl_b: 'Open de tools',
       in_k: 'Inspiratie', in_h: 'Tutorials, kleurencombinaties en |gratis downloads|', in_c1: 'Gratis downloads', in_c2: 'Kleurencombinaties', in_b: 'Naar inspiratie',
       ws_k: 'Workshops', ws_h: 'Leer het vak van |de besten|', ws_p: 'Start Your Balloon Business, technische workshops & community building', ws_b: 'Bekijk de workshops',
@@ -184,7 +231,8 @@
       prev: 'Vorige', next: 'Volgende'
     },
     en: {
-      nu_k: 'Nozzle Up 2027', nu_h: 'Join |the waiting list|', nu_p: "Europe's biggest balloon event is on its way", nu_b: 'Join the waiting list',
+      nu_k: 'Nozzle Up 2027', nu_h: 'Tickets go live on |1 October|', nu_p: "Europe's biggest balloon event. Waiting list members get the link first.", nu_b: 'Join the waiting list',
+      nt_live: 'Live', nt_h: 'Tickets are |live now!|', nt_p: '1 to 3 October 2027, Eindhoven. All inclusive, payment plans available.', nt_b: 'Get your tickets',
       tl_k: 'Free tools', tl_h: 'Match colours, calculate costs |& more!|', tl_b: 'Open the tools',
       in_k: 'Inspiration', in_h: 'Tutorials, colour combinations and |free downloads|', in_c1: 'Free downloads', in_c2: 'Colour combinations', in_b: 'Go to inspiration',
       ws_k: 'Workshops', ws_h: 'Learn the craft from |the best|', ws_p: 'Start Your Balloon Business, technical workshops & community building', ws_b: 'See the workshops',
@@ -193,7 +241,8 @@
       prev: 'Previous', next: 'Next'
     },
     fr: {
-      nu_k: 'Nozzle Up 2027', nu_h: 'Inscrivez-vous sur |la liste d’attente|', nu_p: 'Le plus grand événement ballon d’Europe arrive', nu_b: 'Vers la liste d’attente',
+      nu_k: 'Nozzle Up 2027', nu_h: 'Billets en vente le |1er octobre|', nu_p: 'Le plus grand événement ballon d’Europe. La liste d’attente reçoit le lien en premier.', nu_b: 'Vers la liste d’attente',
+      nt_live: 'Live', nt_h: 'Les billets sont |en vente !|', nt_p: 'Du 1er au 3 octobre 2027, Eindhoven. Tout compris, paiement en plusieurs fois possible.', nt_b: 'Acheter mes billets',
       tl_k: 'Outils gratuits', tl_h: 'Combinez les couleurs, calculez vos coûts |& plus !|', tl_b: 'Ouvrir les outils',
       in_k: 'Inspiration', in_h: 'Tutoriels, combinaisons de couleurs et |téléchargements gratuits|', in_c1: 'Téléchargements gratuits', in_c2: 'Combinaisons de couleurs', in_b: 'Vers l’inspiration',
       ws_k: 'Workshops', ws_h: 'Apprenez le métier avec |les meilleurs|', ws_p: 'Start Your Balloon Business, ateliers techniques & community building', ws_b: 'Voir les workshops',
@@ -202,7 +251,8 @@
       prev: 'Précédent', next: 'Suivant'
     },
     de: {
-      nu_k: 'Nozzle Up 2027', nu_h: 'Trag dich in |die Warteliste| ein', nu_p: 'Europas größtes Ballon-Event kommt', nu_b: 'Zur Warteliste',
+      nu_k: 'Nozzle Up 2027', nu_h: 'Tickets ab |1. Oktober|', nu_p: 'Europas größtes Ballon-Event. Auf der Warteliste bekommst du den Link zuerst.', nu_b: 'Zur Warteliste',
+      nt_live: 'Live', nt_h: 'Tickets sind |jetzt live!|', nt_p: '1. bis 3. Oktober 2027, Eindhoven. Alles inklusive, Ratenzahlung möglich.', nt_b: 'Tickets kaufen',
       tl_k: 'Kostenlose Tools', tl_h: 'Farben kombinieren, Kosten berechnen |& mehr!|', tl_b: 'Tools öffnen',
       in_k: 'Inspiration', in_h: 'Tutorials, Farbkombinationen und |kostenlose Downloads|', in_c1: 'Kostenlose Downloads', in_c2: 'Farbkombinationen', in_b: 'Zur Inspiration',
       ws_k: 'Workshops', ws_h: 'Lern das Handwerk von |den Besten|', ws_p: 'Start Your Balloon Business, technische Workshops & Community Building', ws_b: 'Workshops ansehen',
@@ -217,6 +267,7 @@
 
   var LINKS = {
     nozzle: 'https://www.nozzleup.eu/waitinglist',
+    tickets: 'https://www.nozzleup.eu/tickets',
     tools: prefix + '/tools',
     inspiration: prefix + '/inspiration',
     downloads: prefix + '/inspiration#downloads',
@@ -228,6 +279,7 @@
 
   /* Ingelogd (uitlog- of portaallink in de pagina): zelfde kaart, zonder knoppen, met
      'Je bent succesvol ingelogd!' (Robin, 2026-09-16). */
+  var ticketsLive = NU_TICKETS_LIVE || ticketsBetaOn();
   var loggedIn = !!document.querySelector('a[href*="/web/session/logout"], a[href*="/my/home"], a[href*="/my/account"]');
 
   function track(ev, params) {
@@ -247,12 +299,19 @@
   host.setAttribute('data-nosnippet', '');
   host.innerHTML =
     '<section class="sh-band">' +
-      '<div class="sh-caro" id="sh-caro" style="--sh-forest:url(' + ASSETS + 'enchanted-forest.jpg)">' +
+      '<div class="sh-caro' + (ticketsLive ? ' is-live' : '') + '" id="sh-caro" style="--sh-forest:url(' + ASSETS + 'enchanted-forest.jpg)">' +
+        (ticketsLive ?
+        '<div class="sh-slide ench live on" data-slide="nozzle-up-tickets">' +
+          '<div><div class="sh-kicker"><span class="sh-livepill"><i></i>' + esc(S.nt_live) + '</span>' + esc(S.nu_k) + '</div><h2>' + hl(S.nt_h) + '</h2><p>' + esc(S.nt_p) + '</p>' +
+          '<a class="sh-cta mega" href="' + LINKS.tickets + '" target="_blank" rel="noopener" data-track="nozzle-up-tickets">' + esc(S.nt_b) + ' <span aria-hidden="true">&rarr;</span></a></div>' +
+          '<div class="sh-art logo"><img src="' + ASSETS + 'nozzle-up-2027.png" alt="Nozzle Up 2027" loading="eager"></div>' +
+        '</div>'
+        :
         '<div class="sh-slide ench on" data-slide="nozzle-up">' +
           '<div><div class="sh-kicker">' + esc(S.nu_k) + '</div><h2>' + hl(S.nu_h) + '</h2><p>' + esc(S.nu_p) + '</p>' +
           '<a class="sh-cta" href="' + LINKS.nozzle + '" target="_blank" rel="noopener" data-track="nozzle-up">' + esc(S.nu_b) + '</a></div>' +
           '<div class="sh-art logo"><img src="' + ASSETS + 'nozzle-up-2027.png" alt="Nozzle Up 2027" loading="eager"></div>' +
-        '</div>' +
+        '</div>') +
         '<div class="sh-slide" data-slide="tools">' +
           '<div><div class="sh-kicker">' + esc(S.tl_k) + '</div><h2>' + hl(S.tl_h) + '</h2>' +
           '<a class="sh-cta big" href="' + LINKS.tools + '" data-track="tools">' + esc(S.tl_b) + '</a></div>' +
@@ -308,6 +367,7 @@
     i = (n + slides.length) % slides.length;
     Array.prototype.forEach.call(slides, function (s, k) { s.classList.toggle('on', k === i); });
     Array.prototype.forEach.call(dots.querySelectorAll('button'), function (b, k) { b.classList.toggle('on', k === i); });
+    caro.classList.toggle('on-live', slides[i].classList.contains('live'));
     restart();
   }
   function restart() { clearInterval(timer); if (autoplay) { timer = setInterval(function () { go(i + 1); }, 6000); } }
@@ -323,8 +383,9 @@
     var a = e.target.closest ? e.target.closest('a[data-track]') : null;
     if (a) { track('home_band_click', { target: a.getAttribute('data-track'), slide: slides[i].getAttribute('data-slide') }); }
   });
+  caro.classList.toggle('on-live', slides[0].classList.contains('live'));
   restart();
-  track('home_band_view', { logged_in: loggedIn });
+  track('home_band_view', { logged_in: loggedIn, nozzle_tickets: ticketsLive });
   wallDone();
 })();
 </script>
