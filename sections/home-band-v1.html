@@ -20,7 +20,7 @@
 
      Nozzle Up: NU_TICKETS_LIVE = false toont 'Tickets live op 1 oktober' +
      wachtlijst. De tickets-live slide (donker, LIVE-pil, grote gele knop naar
-     nozzleup.eu/tickets) is te bekijken met #stxtickets achter de URL
+     de eventpagina op onze eigen site: /event/nozzle-up-2027-all-inclusive-3-day-ticket-35/register) is te bekijken met #stxtickets achter de URL
      (#stxtickets-uit zet hem uit). Op 1/10 NU_TICKETS_LIVE = true zetten.
 
      Beelden komen uit assets/home/ in de repo, gepind op een commit hash.
@@ -273,7 +273,7 @@
 
   var LINKS = {
     nozzle: 'https://www.nozzleup.eu/waitinglist',
-    tickets: 'https://www.nozzleup.eu/tickets',
+    tickets: prefix + '/event/nozzle-up-2027-all-inclusive-3-day-ticket-35/register',
     tools: prefix + '/tools',
     inspiration: prefix + '/inspiration',
     downloads: prefix + '/inspiration#downloads',
@@ -310,7 +310,7 @@
         (ticketsLive ?
         '<div class="sh-slide ench live on" data-slide="nozzle-up-tickets">' +
           '<div><div class="sh-kicker"><span class="sh-livepill"><i></i>' + esc(S.nt_live) + '</span>' + esc(S.nu_k) + '</div><h2>' + hl(S.nt_h) + '</h2><p>' + esc(S.nt_p) + '</p>' +
-          '<a class="sh-cta mega" href="' + LINKS.tickets + '" target="_blank" rel="noopener" data-track="nozzle-up-tickets">' + esc(S.nt_b) + ' <span aria-hidden="true">&rarr;</span></a></div>' +
+          '<a class="sh-cta mega" href="' + LINKS.tickets + '" data-track="nozzle-up-tickets">' + esc(S.nt_b) + ' <span aria-hidden="true">&rarr;</span></a></div>' +
           '<div class="sh-art logo"><img src="' + ASSETS + 'nozzle-up-2027.png" alt="Nozzle Up 2027" loading="eager"></div>' +
         '</div>'
         :
