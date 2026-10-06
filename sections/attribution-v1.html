@@ -23,7 +23,7 @@
         de bevestigingspagina zet (voor Google Analytics), met het
         ordernummer uit de pagina als vangnet.
 
-     BETA (nu AAN): met BETA = true doet stap 3 (order_completed) alleen
+     BETA (nu UIT, live sinds 06/10/2026): met BETA = true doet stap 3 (order_completed) alleen
      iets in een browser die ooit #stxattr achter de URL had.
      #stxattr-uit zet het weer uit. Stap 1 en 2 lopen altijd (ze tonen
      niets en kosten niets).
@@ -31,7 +31,7 @@
 <script>
 (function () {
   'use strict';
-  var BETA = true; // true = order_completed alleen na #stxattr (testmodus), false = voor iedereen
+  var BETA = false; // true = order_completed alleen na #stxattr (testmodus), false = voor iedereen (live sinds 06/10/2026)
   var BETA_KEY = 'stx_attr_beta';
   var KEY = 'stx_touch_v1';
   var DONE_KEY = 'stx_orders_sent_v1';
