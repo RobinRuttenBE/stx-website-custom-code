@@ -23,6 +23,14 @@
      Zolang de twee eigenschappen leeg zijn, doet dit bestand niets
      (stil, enkel een regel in de console).
 
+     Kaartje 'Je verjaardag' op Mijn account (/my/home): klanten zonder
+     verjaardag vullen hem zelf in (wijzigen kan niet, dat loopt via
+     mail). Opslaan maakt een lead 'Verjaardag: <e-mail>' via het
+     websiteformulier; de dagelijkse geplande actie zet de datum op het
+     contact en archiveert de lead. Die actie haalt ook verjaardagen
+     uit registratieleads en haalt een code van de site zodra hij
+     gebruikt of verlopen is (dan verdwijnt het cadeau-knopje).
+
      BETA (nu AAN): met BETA = true werkt het alleen in een browser
      waar je ooit een pagina opende met #stxbday achter de URL.
      #stxbday-uit zet het weer uit. #stxbday-demo toont de popup
@@ -57,6 +65,17 @@
     padding: 10px 16px; box-shadow: 0 10px 26px rgba(107,63,185,0.4); cursor: pointer; animation: stxbdwiggle 4s ease-in-out infinite; }
   @keyframes stxbdwiggle { 0%, 88%, 100% { transform: rotate(0); } 91% { transform: rotate(-6deg); } 94% { transform: rotate(6deg); } 97% { transform: rotate(-3deg); } }
   @media (prefers-reduced-motion: reduce) { .stx-bd-gift { animation: none; } }
+  .stx-bd-card { font-family: 'Rethink Sans', sans-serif; color: #1b073d; background: #faf4ff; border: 1px solid #f1d9ff; border-radius: 14px; padding: 16px 18px; margin: 0 0 18px; display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
+  .stx-bd-card .bdc-ico { font-size: 30px; line-height: 1; }
+  .stx-bd-card .bdc-txt { flex: 1 1 260px; min-width: 0; }
+  .stx-bd-card h3 { font-family: 'Rethink Sans', sans-serif; font-size: 18px; font-weight: 800; margin: 0 0 3px; color: #1b073d; }
+  .stx-bd-card p { margin: 0; font-size: 14.5px; color: rgba(27,7,61,0.72); }
+  .stx-bd-card form { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin: 0; }
+  .stx-bd-card input[type=date] { border: 1px solid #d9c2f5; border-radius: 8px; padding: 8px 10px; font: 600 15px 'Rethink Sans', sans-serif; color: #1b073d; background: #fff; }
+  .stx-bd-card button { border: 0; border-radius: 8px; background: #6b3fb9; color: #fff; font: 800 15px 'Rethink Sans', sans-serif; padding: 9px 16px; cursor: pointer; }
+  .stx-bd-card button[disabled] { opacity: 0.6; cursor: default; }
+  .stx-bd-card .bdc-msg { flex-basis: 100%; font-size: 13.5px; font-weight: 600; color: #6b3fb9; }
+  .stx-bd-card .bdc-msg.err { color: #b3261e; }
 </style>
 
 <script>
@@ -68,6 +87,7 @@
   var P_CODE = { name: '1e1256d45f5933c8', label: 'verjaardagscode' };      // tekst: de code
   var P_UNTIL = { name: '20079094e521a875', label: 'verjaardagscode tot' }; // datum: laatste geldige dag
   var DAYS = 30;                                // looptijd van de code
+  var F_BDAY = 'x_studio_geboortedatum';        // Studio-veld op Contact: geboortedatum
 
   if (window.__stxBirthday) { return; }
   window.__stxBirthday = true;
@@ -96,14 +116,26 @@
   var prefix = m ? '/' + rawPath.split('/')[1] : '';
 
   var T = {
-    nl: { hi: 'Gelukkige verjaardag', p: 'Van iedereen bij Sempertex Europe: een zakje Silk ballonnen cadeau. Vul deze code in bij je winkelmand en het zakje komt er gratis bij.',
-      copy: 'Kopieer', copied: 'Gekopieerd', valid: 'Eenmalig te gebruiken, geldig tot en met {d}.', go: 'Naar mijn winkelmand', gift: 'Je verjaardagscadeau', close: 'Sluiten' },
-    en: { hi: 'Happy Birthday', p: 'From all of us at Sempertex Europe: a bag of Silk balloons on us. Enter this code in your cart and the bag is added for free.',
-      copy: 'Copy', copied: 'Copied', valid: 'Use it once, valid until {d}.', go: 'Go to my cart', gift: 'Your birthday gift', close: 'Close' },
-    fr: { hi: 'Joyeux anniversaire', p: 'De la part de toute l\'équipe Sempertex Europe : un sachet de ballons Silk offert. Entrez ce code dans votre panier et le sachet est ajouté gratuitement.',
-      copy: 'Copier', copied: 'Copié', valid: 'Utilisable une fois, valable jusqu\'au {d}.', go: 'Vers mon panier', gift: 'Votre cadeau d\'anniversaire', close: 'Fermer' },
-    de: { hi: 'Alles Gute zum Geburtstag', p: 'Von uns allen bei Sempertex Europe: ein Beutel Silk Ballons als Geschenk. Gib diesen Code im Warenkorb ein und der Beutel kommt gratis dazu.',
-      copy: 'Kopieren', copied: 'Kopiert', valid: 'Einmal einlösbar, gültig bis {d}.', go: 'Zum Warenkorb', gift: 'Dein Geburtstagsgeschenk', close: 'Schließen' }
+    nl: { hi: 'Gelukkige verjaardag', p: 'Van iedereen bij Sempertex Europe: een zakje ballonnen cadeau. Vul deze code in bij je winkelmand en het zakje komt er gratis bij.',
+      copy: 'Kopieer', copied: 'Gekopieerd', valid: 'Eenmalig te gebruiken, geldig tot en met {d}.', go: 'Naar mijn winkelmand', gift: 'Je verjaardagscadeau', close: 'Sluiten',
+      c_t: 'Je verjaardag', c_p: 'Vul je verjaardag in en krijg elk jaar een cadeautje van ons.', c_save: 'Opslaan',
+      c_saved: 'Bedankt! We slaan je verjaardag op, dat kan tot een dag duren.', c_have: 'Je verjaardag: {d}',
+      c_fix: 'Klopt dit niet? Laat het ons weten via info@sempertexeurope.com.', c_err: 'Opslaan lukte niet. Probeer het later opnieuw.', c_bad: 'Vul een geldige datum in.' },
+    en: { hi: 'Happy Birthday', p: 'From all of us at Sempertex Europe: a bag of balloons on us. Enter this code in your cart and the bag is added for free.',
+      copy: 'Copy', copied: 'Copied', valid: 'Use it once, valid until {d}.', go: 'Go to my cart', gift: 'Your birthday gift', close: 'Close',
+      c_t: 'Your birthday', c_p: 'Add your birthday and get a little gift from us every year.', c_save: 'Save',
+      c_saved: 'Thank you! We are saving your birthday, this can take up to a day.', c_have: 'Your birthday: {d}',
+      c_fix: 'Not right? Let us know at info@sempertexeurope.com.', c_err: 'Saving did not work. Please try again later.', c_bad: 'Please enter a valid date.' },
+    fr: { hi: 'Joyeux anniversaire', p: 'De la part de toute l\'équipe Sempertex Europe : un sachet de ballons offert. Entrez ce code dans votre panier et le sachet est ajouté gratuitement.',
+      copy: 'Copier', copied: 'Copié', valid: 'Utilisable une fois, valable jusqu\'au {d}.', go: 'Vers mon panier', gift: 'Votre cadeau d\'anniversaire', close: 'Fermer',
+      c_t: 'Votre anniversaire', c_p: 'Indiquez votre date d\'anniversaire et recevez chaque année un petit cadeau de notre part.', c_save: 'Enregistrer',
+      c_saved: 'Merci ! Nous enregistrons votre anniversaire, cela peut prendre jusqu\'à un jour.', c_have: 'Votre anniversaire : {d}',
+      c_fix: 'Ce n\'est pas correct ? Écrivez-nous à info@sempertexeurope.com.', c_err: 'L\'enregistrement a échoué. Réessayez plus tard.', c_bad: 'Veuillez entrer une date valide.' },
+    de: { hi: 'Alles Gute zum Geburtstag', p: 'Von uns allen bei Sempertex Europe: ein Beutel Ballons als Geschenk. Gib diesen Code im Warenkorb ein und der Beutel kommt gratis dazu.',
+      copy: 'Kopieren', copied: 'Kopiert', valid: 'Einmal einlösbar, gültig bis {d}.', go: 'Zum Warenkorb', gift: 'Dein Geburtstagsgeschenk', close: 'Schließen',
+      c_t: 'Dein Geburtstag', c_p: 'Trag deinen Geburtstag ein und erhalte jedes Jahr ein kleines Geschenk von uns.', c_save: 'Speichern',
+      c_saved: 'Danke! Wir speichern deinen Geburtstag, das kann bis zu einem Tag dauern.', c_have: 'Dein Geburtstag: {d}',
+      c_fix: 'Stimmt das nicht? Schreib uns an info@sempertexeurope.com.', c_err: 'Speichern hat nicht geklappt. Bitte versuch es später noch einmal.', c_bad: 'Bitte gib ein gültiges Datum ein.' }
   };
   var t = T[lang] || T.en;
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
@@ -244,22 +276,90 @@
     return;
   }
 
-  /* ---- ECHTE DATA: 1 keer per sessie ophalen, daarna uit sessionStorage ---- */
-  var CACHE = 'stx_bday_v1';
-  try {
-    var cached = JSON.parse(sessionStorage.getItem(CACHE) || 'null');
-    if (cached && cached.day === today()) { if (valid(cached.d)) { show(cached.d, false); } return; }
-  } catch (e) {}
+  /* ---- KAARTJE 'JE VERJAARDAG' OP MIJN ACCOUNT (/my/home) ----
+     Klanten kunnen hun verjaardag zelf invullen als die nog leeg is. Wijzigen kan niet
+     (anders zet iemand hem elke maand op vandaag); een fout melden ze via mail.
+     Opslaan stuurt een lead 'Verjaardag: <e-mail>' via het gewone websiteformulier;
+     de dagelijkse geplande actie zet de datum op het contact en archiveert de lead. */
+  var onMyHome = /^(\/(en_gb|fr|de))?\/my(\/home)?\/?$/i.test(rawPath);
+  function niceBday(iso) {
+    try { return new Intl.DateTimeFormat(lang === 'en' ? 'en-GB' : lang + '-BE', { day: 'numeric', month: 'long', timeZone: 'UTC' }).format(new Date(iso + 'T12:00:00Z')); }
+    catch (e) { return iso; }
+  }
+  function card(r, pid) {
+    var anchor = document.querySelector('.o_portal_my_home');
+    if (!anchor || document.querySelector('.stx-bd-card')) { return; }
+    var pendKey = 'stx_bday_pending_' + pid;
+    var pending = null;
+    try { pending = localStorage.getItem(pendKey); } catch (e) {}
+    var bday = r.x_studio_geboortedatum || '';
+    if (bday && pending) { try { localStorage.removeItem(pendKey); } catch (e) {} pending = null; }
+    var el = document.createElement('div');
+    el.className = 'stx-bd-card';
+    var head = '<div class="bdc-ico" aria-hidden="true">&#127874;</div><div class="bdc-txt"><h3>' + esc(t.c_t) + '</h3>';
+    if (bday) {
+      el.innerHTML = head + '<p>' + esc(t.c_have.replace('{d}', niceBday(bday))) + '</p><p>' + esc(t.c_fix) + '</p></div>';
+    } else if (pending) {
+      el.innerHTML = head + '<p>' + esc(t.c_saved) + '</p></div>';
+    } else {
+      el.innerHTML = head + '<p>' + esc(t.c_p) + '</p></div>' +
+        '<form novalidate><input type="date" required min="1920-01-01" max="' + today() + '" aria-label="' + esc(t.c_t) + '"><button type="submit">' + esc(t.c_save) + '</button><div class="bdc-msg" aria-live="polite"></div></form>';
+      var form = el.querySelector('form');
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var inp = form.querySelector('input'), btn = form.querySelector('button'), msg = form.querySelector('.bdc-msg');
+        var v = inp.value;
+        msg.className = 'bdc-msg';
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(v) || v > today() || v < '1920-01-01') { msg.className = 'bdc-msg err'; msg.textContent = t.c_bad; return; }
+        btn.disabled = true;
+        var fd = new FormData();
+        var csrf = (window.odoo && window.odoo.csrf_token) || ((document.querySelector('input[name=csrf_token]') || {}).value) || '';
+        fd.append('csrf_token', csrf);
+        fd.append('name', 'Verjaardag: ' + (r.email || ''));
+        fd.append('email_from', r.email || '');
+        fd.append('contact_name', r.name || '');
+        fd.append('description', 'Geboortedatum: ' + v);
+        fetch('/website/form/crm.lead', { method: 'POST', credentials: 'same-origin', body: fd })
+          .then(function (res) { return res.json(); })
+          .then(function (j) {
+            if (!j || j.error || !j.id) { throw new Error((j && j.error) || 'no id'); }
+            try { localStorage.setItem(pendKey, v); } catch (x) {}
+            form.outerHTML = '';
+            el.querySelector('.bdc-txt').innerHTML = '<h3>' + esc(t.c_t) + '</h3><p>' + esc(t.c_saved) + '</p>';
+            track('birthday_card_saved', {});
+          })
+          .catch(function (err) {
+            btn.disabled = false;
+            msg.className = 'bdc-msg err';
+            msg.textContent = t.c_err;
+            if (window.console && console.warn) { console.warn('[STX verjaardag] opslaan mislukt:', err && err.message); }
+          });
+      });
+    }
+    anchor.parentNode.insertBefore(el, anchor);
+  }
 
+  /* ---- ECHTE DATA: 1 keer per sessie ophalen, daarna uit sessionStorage (op Mijn account altijd vers) ---- */
+  var CACHE = 'stx_bday_v2';
+  if (!onMyHome) {
+    try {
+      var cached = JSON.parse(sessionStorage.getItem(CACHE) || 'null');
+      if (cached && cached.day === today()) { if (valid(cached.d)) { show(cached.d, false); } return; }
+    } catch (e) {}
+  }
+
+  var pid = null;
   rpc('/web/session/get_session_info').then(function (info) {
     if (!info || !info.uid || !info.partner_id) { return null; }
+    pid = info.partner_id;
     return rpc('/web/dataset/call_kw/res.partner/read', { model: 'res.partner', method: 'read',
-      args: [[info.partner_id], ['properties', 'name', 'is_company']], kwargs: {} });
+      args: [[info.partner_id], ['properties', 'name', 'is_company', 'email', F_BDAY]], kwargs: {} });
   }).then(function (rows) {
     if (!rows || !rows[0]) { return; }
     var r = rows[0];
     var d = { code: prop(r.properties, P_CODE), until: prop(r.properties, P_UNTIL), name: (!r.is_company && r.name) ? String(r.name).trim().split(/\s+/)[0] : '' };
     try { sessionStorage.setItem(CACHE, JSON.stringify({ day: today(), d: d })); } catch (e) {}
+    if (onMyHome) { card(r, pid); }
     if (valid(d)) { show(d, false); }
   }).catch(function (e) {
     try { sessionStorage.setItem(CACHE, JSON.stringify({ day: today(), d: null })); } catch (x) {}
