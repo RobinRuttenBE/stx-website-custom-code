@@ -1,0 +1,252 @@
+<!-- ============================================================
+     STX EU / VERJAARDAG v1 (sectiebestand voor de section loader)
+     Laadt op ELKE pagina (loader-regel all: true), doet alleen iets
+     voor ingelogde accounts.
+
+     Wat het doet:
+     Heeft het ingelogde account een geldige verjaardagscode (Odoo
+     maakt die op de verjaardag aan, zie SETUP hieronder), dan krijgt
+     het de eerste keer confetti en een popup 'Happy Birthday' met de
+     persoonlijke code, een kopieerknop en een knop naar de winkelmand.
+     Daarna blijft er tot de code verloopt een klein cadeau-knopje
+     linksonder staan dat de popup terug opent.
+
+     De code en de vervaldatum komen uit twee velden op het contact
+     (res.partner), via de gewone Odoo-route die elk ingelogd account
+     voor zijn eigen gegevens mag gebruiken. Veldnamen staan in F_CODE
+     en F_UNTIL hieronder; die moeten exact gelijk zijn aan de Studio-
+     velden. Zolang die velden niet bestaan, doet dit bestand niets
+     (stil, enkel een regel in de console).
+
+     BETA (nu AAN): met BETA = true werkt het alleen in een browser
+     waar je ooit een pagina opende met #stxbday achter de URL.
+     #stxbday-uit zet het weer uit. #stxbday-demo toont de popup
+     eenmalig met voorbeelddata (code DEMO-1234), ook zonder velden,
+     zodat je de look kan beoordelen.
+     ============================================================ -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rethink+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+  #stx-bd-confetti { position: fixed; inset: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 2147483001; }
+  .stx-bd-back { position: fixed; inset: 0; z-index: 2147483000; background: rgba(27,7,61,0.45); display: flex; align-items: center; justify-content: center; padding: 16px;
+    opacity: 0; transition: opacity 0.25s ease; font-family: 'Rethink Sans', sans-serif; }
+  .stx-bd-back.on { opacity: 1; }
+  .stx-bd-pop { position: relative; width: 100%; max-width: 440px; background: #fff; border-radius: 18px; padding: 30px 26px 24px; text-align: center; color: #1b073d;
+    box-shadow: 0 30px 80px rgba(27,7,61,0.35); transform: translateY(14px) scale(0.97); transition: transform 0.3s cubic-bezier(.2,.9,.3,1.2); }
+  .stx-bd-back.on .stx-bd-pop { transform: none; }
+  .stx-bd-pop .bd-emoji { font-size: 46px; line-height: 1; margin-bottom: 8px; }
+  .stx-bd-pop h2 { font-family: 'Rethink Sans', sans-serif; font-size: 30px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.05; margin: 0 0 10px; color: #1b073d; }
+  .stx-bd-pop h2 b { background: #ffdb5a; padding: 0 0.12em; border-radius: 4px; }
+  .stx-bd-pop p { font-size: 16px; line-height: 1.45; margin: 0 0 16px; color: rgba(27,7,61,0.75); }
+  .stx-bd-pop .bd-code { display: flex; align-items: stretch; border: 2px dashed #6b3fb9; border-radius: 12px; overflow: hidden; margin: 0 0 8px; background: #faf4ff; }
+  .stx-bd-pop .bd-code span { flex: 1; font-size: 22px; font-weight: 800; letter-spacing: 0.08em; padding: 12px 10px; color: #6b3fb9; user-select: all; word-break: break-all; }
+  .stx-bd-pop .bd-code button { border: 0; background: #6b3fb9; color: #fff; font: 800 14px 'Rethink Sans', sans-serif; padding: 0 16px; cursor: pointer; }
+  .stx-bd-pop .bd-small { font-size: 13px; color: rgba(27,7,61,0.6); margin: 0 0 18px; }
+  .stx-bd-pop .bd-go { display: inline-block; background: #1b073d; color: #ffdb5a !important; font-weight: 800; font-size: 16px; padding: 13px 24px; border-radius: 8px; text-decoration: none !important; }
+  .stx-bd-pop .bd-go:hover { transform: scale(1.03); }
+  .stx-bd-pop .bd-x { position: absolute; top: 10px; right: 10px; width: 34px; height: 34px; border: 0; border-radius: 50%; background: #f1d9ff; color: #6b3fb9; font-size: 20px; line-height: 34px; padding: 0; cursor: pointer; }
+  .stx-bd-pop .bd-demo { position: absolute; top: 12px; left: 12px; font-size: 11px; font-weight: 800; letter-spacing: 0.1em; background: #ffdb5a; border-radius: 999px; padding: 3px 8px; }
+  .stx-bd-gift { position: fixed; left: 16px; bottom: 16px; z-index: 1040; border: 0; border-radius: 999px; background: #6b3fb9; color: #fff; font: 800 14px 'Rethink Sans', sans-serif;
+    padding: 10px 16px; box-shadow: 0 10px 26px rgba(107,63,185,0.4); cursor: pointer; animation: stxbdwiggle 4s ease-in-out infinite; }
+  @keyframes stxbdwiggle { 0%, 88%, 100% { transform: rotate(0); } 91% { transform: rotate(-6deg); } 94% { transform: rotate(6deg); } 97% { transform: rotate(-3deg); } }
+  @media (prefers-reduced-motion: reduce) { .stx-bd-gift { animation: none; } }
+</style>
+
+<script>
+(function () {
+  'use strict';
+  var BETA = true; // true = alleen na #stxbday (testmodus), false = live voor iedereen
+  var BETA_KEY = 'stx_bday_beta';
+  var F_CODE = 'x_studio_verjaardagscode';      // Studio-veld op Contact: de code (tekst)
+  var F_UNTIL = 'x_studio_verjaardagscode_tot'; // Studio-veld op Contact: laatste geldige dag (datum)
+  var DAYS = 30;                                // looptijd van de code
+
+  if (window.__stxBirthday) { return; }
+  window.__stxBirthday = true;
+  if (document.body.classList.contains('editor_enable') || document.querySelector('.odoo-editor-editable') || document.querySelector('#wrap.o_editable')) { return; }
+
+  var h = (window.location.hash || '').toLowerCase();
+  var demo = h === '#stxbday-demo';
+  function betaOn() {
+    var want = null;
+    if (h === '#stxbday' || h === '#stxbday=1' || demo) { want = true; }
+    else if (h === '#stxbday=0' || h === '#stxbday-uit' || h === '#stxbday-off') { want = false; }
+    try {
+      if (want === true) { localStorage.setItem(BETA_KEY, '1'); }
+      else if (want === false) { localStorage.removeItem(BETA_KEY); }
+      return localStorage.getItem(BETA_KEY) === '1';
+    } catch (e) { return want === true; }
+  }
+  if (BETA && !betaOn()) { return; }
+
+  var loggedIn = !!document.querySelector('a[href*="/web/session/logout"], a[href*="/my/home"], a[href*="/my/account"]');
+  if (!loggedIn && !demo) { return; }
+
+  var rawPath = window.location.pathname || '/';
+  var m = /^\/(en_gb|fr|de)(\/|$)/i.exec(rawPath);
+  var lang = m ? (m[1].toLowerCase() === 'en_gb' ? 'en' : m[1].toLowerCase()) : 'nl';
+  var prefix = m ? '/' + rawPath.split('/')[1] : '';
+
+  var T = {
+    nl: { hi: 'Gelukkige verjaardag', p: 'Van iedereen bij Sempertex Europe: een zakje Silk ballonnen cadeau. Vul deze code in bij je winkelmand en het zakje komt er gratis bij.',
+      copy: 'Kopieer', copied: 'Gekopieerd', valid: 'Eenmalig te gebruiken, geldig tot en met {d}.', go: 'Naar mijn winkelmand', gift: 'Je verjaardagscadeau', close: 'Sluiten' },
+    en: { hi: 'Happy Birthday', p: 'From all of us at Sempertex Europe: a bag of Silk balloons on us. Enter this code in your cart and the bag is added for free.',
+      copy: 'Copy', copied: 'Copied', valid: 'Use it once, valid until {d}.', go: 'Go to my cart', gift: 'Your birthday gift', close: 'Close' },
+    fr: { hi: 'Joyeux anniversaire', p: 'De la part de toute l\'équipe Sempertex Europe : un sachet de ballons Silk offert. Entrez ce code dans votre panier et le sachet est ajouté gratuitement.',
+      copy: 'Copier', copied: 'Copié', valid: 'Utilisable une fois, valable jusqu\'au {d}.', go: 'Vers mon panier', gift: 'Votre cadeau d\'anniversaire', close: 'Fermer' },
+    de: { hi: 'Alles Gute zum Geburtstag', p: 'Von uns allen bei Sempertex Europe: ein Beutel Silk Ballons als Geschenk. Gib diesen Code im Warenkorb ein und der Beutel kommt gratis dazu.',
+      copy: 'Kopieren', copied: 'Kopiert', valid: 'Einmal einlösbar, gültig bis {d}.', go: 'Zum Warenkorb', gift: 'Dein Geburtstagsgeschenk', close: 'Schließen' }
+  };
+  var t = T[lang] || T.en;
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function track(ev, params) {
+    try {
+      params = params || {}; params.page_lang = lang;
+      if (typeof window.gtag === 'function') { window.gtag('event', ev, params); }
+      else if (window.dataLayer && window.dataLayer.push) { window.dataLayer.push(Object.assign({ event: ev }, params)); }
+      if (window.posthog && window.posthog.capture) { window.posthog.capture(ev, params); }
+    } catch (e) {}
+  }
+  function today() {
+    try { return new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Brussels', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date()); }
+    catch (e) { return new Date().toISOString().slice(0, 10); }
+  }
+  function addDays(iso, n) { var d = new Date(iso + 'T12:00:00Z'); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0, 10); }
+  function niceDate(iso) {
+    try { return new Intl.DateTimeFormat(lang === 'en' ? 'en-GB' : lang + '-BE', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }).format(new Date(iso + 'T12:00:00Z')); }
+    catch (e) { return iso; }
+  }
+
+  function rpc(url, params) {
+    return fetch(url, { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ jsonrpc: '2.0', method: 'call', params: params || {}, id: Date.now() }) })
+      .then(function (r) { return r.json(); })
+      .then(function (j) { if (j.error) { throw new Error((j.error.data && j.error.data.message) || j.error.message); } return j.result; });
+  }
+
+  /* ---- CONFETTI (eigen, geen externe bibliotheek) ---- */
+  function confetti() {
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) { return; }
+    var c = document.createElement('canvas');
+    c.id = 'stx-bd-confetti';
+    document.body.appendChild(c);
+    var ctx = c.getContext('2d'), dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var w = window.innerWidth, hgt = window.innerHeight;
+    c.width = w * dpr; c.height = hgt * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    var COLS = ['#6b3fb9', '#ffdb5a', '#f1d9ff', '#ff7eb6', '#7fd1c7', '#ffffff', '#1b073d'];
+    var parts = [];
+    function burst(x, dir) {
+      for (var i = 0; i < 90; i++) {
+        var ang = (dir * (35 + Math.random() * 40)) * Math.PI / 180 - Math.PI / 2;
+        var sp = 9 + Math.random() * 11;
+        parts.push({ x: x, y: hgt + 10, vx: Math.cos(ang) * sp, vy: Math.sin(ang) * sp, rot: Math.random() * 6, vr: (Math.random() - 0.5) * 0.4,
+          w: 6 + Math.random() * 6, h: 4 + Math.random() * 6, col: COLS[i % COLS.length], life: 0 });
+      }
+    }
+    burst(w * 0.08, 1); burst(w * 0.92, -1);
+    setTimeout(function () { burst(w * 0.25, 1); burst(w * 0.75, -1); }, 350);
+    var start = performance.now();
+    (function frame(now) {
+      ctx.clearRect(0, 0, w, hgt);
+      for (var i = 0; i < parts.length; i++) {
+        var q = parts[i];
+        q.vy += 0.28; q.vx *= 0.99; q.vy *= 0.99; q.x += q.vx; q.y += q.vy; q.rot += q.vr;
+        ctx.save(); ctx.translate(q.x, q.y); ctx.rotate(q.rot);
+        ctx.fillStyle = q.col; ctx.fillRect(-q.w / 2, -q.h / 2, q.w, q.h * Math.abs(Math.cos(q.rot * 2)));
+        ctx.restore();
+      }
+      if (now - start < 4200) { requestAnimationFrame(frame); }
+      else if (c.parentNode) { c.parentNode.removeChild(c); }
+    })(start);
+  }
+
+  /* ---- POPUP ---- */
+  function popup(d, isDemo) {
+    if (document.querySelector('.stx-bd-back')) { return; }
+    var back = document.createElement('div');
+    back.className = 'stx-bd-back';
+    back.setAttribute('role', 'dialog');
+    back.setAttribute('aria-modal', 'true');
+    back.innerHTML = '<div class="stx-bd-pop">' + (isDemo ? '<span class="bd-demo">DEMO</span>' : '') +
+      '<button type="button" class="bd-x" aria-label="' + esc(t.close) + '">&times;</button>' +
+      '<div class="bd-emoji" aria-hidden="true">&#127880;&#127874;&#127880;</div>' +
+      '<h2>' + esc(t.hi) + (d.name ? ', <b>' + esc(d.name) + '</b>' : '') + '!</h2>' +
+      '<p>' + esc(t.p) + '</p>' +
+      '<div class="bd-code"><span>' + esc(d.code) + '</span><button type="button">' + esc(t.copy) + '</button></div>' +
+      '<p class="bd-small">' + esc(t.valid.replace('{d}', niceDate(d.until))) + '</p>' +
+      '<a class="bd-go" href="' + prefix + '/shop/cart">' + esc(t.go) + ' &rarr;</a></div>';
+    document.body.appendChild(back);
+    requestAnimationFrame(function () { back.classList.add('on'); });
+    function close() { back.classList.remove('on'); setTimeout(function () { if (back.parentNode) { back.parentNode.removeChild(back); } }, 260); document.removeEventListener('keydown', onKey); }
+    function onKey(e) { if (e.key === 'Escape') { close(); } }
+    document.addEventListener('keydown', onKey);
+    back.addEventListener('click', function (e) { if (e.target === back) { close(); } });
+    back.querySelector('.bd-x').addEventListener('click', close);
+    var cb = back.querySelector('.bd-code button');
+    cb.addEventListener('click', function () {
+      var done = function () { cb.textContent = t.copied; track('birthday_code_copy', {}); };
+      if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(d.code).then(done, done); }
+      else { done(); }
+    });
+    back.querySelector('.bd-go').addEventListener('click', function () { track('birthday_go_cart', {}); });
+  }
+
+  function giftButton(d) {
+    if (document.querySelector('.stx-bd-gift')) { return; }
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'stx-bd-gift';
+    b.innerHTML = '&#127873; ' + esc(t.gift);
+    b.addEventListener('click', function () { popup(d, false); track('birthday_gift_reopen', {}); });
+    document.body.appendChild(b);
+  }
+
+  function show(d, isDemo) {
+    var seenKey = 'stx_bday_seen_' + d.code;
+    var seen = false;
+    try { seen = localStorage.getItem(seenKey) === '1'; } catch (e) {}
+    if (!seen || isDemo) {
+      confetti();
+      setTimeout(function () { popup(d, isDemo); }, 250);
+      if (!isDemo) { try { localStorage.setItem(seenKey, '1'); } catch (e) {} }
+      track('birthday_popup_view', { demo: !!isDemo });
+    }
+    if (!isDemo) { giftButton(d); }
+  }
+
+  function valid(d) {
+    var now = today();
+    return !!(d && d.code && d.until && now <= d.until && now >= addDays(d.until, -DAYS));
+  }
+
+  if (demo) {
+    var nameEl = document.querySelector('#top .o_header_user_name, #top .dropdown-toggle b, #top .o_user_menu span');
+    show({ code: 'DEMO-1234', until: addDays(today(), DAYS), name: nameEl ? nameEl.textContent.trim().split(/\s+/)[0] : '' }, true);
+    return;
+  }
+
+  /* ---- ECHTE DATA: 1 keer per sessie ophalen, daarna uit sessionStorage ---- */
+  var CACHE = 'stx_bday_v1';
+  try {
+    var cached = JSON.parse(sessionStorage.getItem(CACHE) || 'null');
+    if (cached && cached.day === today()) { if (valid(cached.d)) { show(cached.d, false); } return; }
+  } catch (e) {}
+
+  rpc('/web/session/get_session_info').then(function (info) {
+    if (!info || !info.uid || !info.partner_id) { return null; }
+    return rpc('/web/dataset/call_kw/res.partner/read', { model: 'res.partner', method: 'read',
+      args: [[info.partner_id], [F_CODE, F_UNTIL, 'name', 'is_company']], kwargs: {} });
+  }).then(function (rows) {
+    if (!rows || !rows[0]) { return; }
+    var r = rows[0];
+    var d = { code: r[F_CODE] || '', until: r[F_UNTIL] || '', name: (!r.is_company && r.name) ? String(r.name).trim().split(/\s+/)[0] : '' };
+    try { sessionStorage.setItem(CACHE, JSON.stringify({ day: today(), d: d })); } catch (e) {}
+    if (valid(d)) { show(d, false); }
+  }).catch(function (e) {
+    try { sessionStorage.setItem(CACHE, JSON.stringify({ day: today(), d: null })); } catch (x) {}
+    if (window.console && console.info) { console.info('[STX verjaardag] geen verjaardagsdata:', e && e.message); }
+  });
+})();
+</script>

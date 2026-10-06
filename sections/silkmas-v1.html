@@ -1,0 +1,480 @@
+<!-- ============================================================
+     STX EU / SILKMAS v1 (sectiebestand voor de section loader)
+     Wintercampagne: 10% korting op alle Silk, 1 november tot en met
+     31 december. Laadt op ELKE pagina (loader-regel all: true) en doet
+     alleen iets als de campagne loopt of de beta aan staat.
+
+     Wat het doet:
+     1. Topbanner boven de header, op elke pagina: wazig winterbos,
+        sneeuw, de 8 Silk kleuren en een knop naar de Silk categorie.
+        Kruisje = weg voor de rest van de sessie.
+     2. Linkermenu van de shop: een vakje 'Silkmas' bovenaan de
+        categorielijst (onder 'Alle producten'), lichtblauw, pulserend,
+        met sneeuw erin. Link naar de Silk categorie.
+     3. Silk pagina's (categorie Silk, de 8 kleur-subcategorieen en de
+        Silk productpagina's): het sneeuwt over de hele pagina, en op de
+        categoriepagina's staat bovenaan een Silkmas-kaart met de
+        campagne en de looptijd.
+     4. Overal (shop, zoeken, categorieen): elke Silk tegel en elke Silk
+        productkaart krijgt een subtiel winterkader met sneeuw erin.
+     5. Winkelmand: balk 'nog EUR x tot je volgende gratis Silk zakje'.
+        Staat UIT (FREE_BAGS = false) tot het Odoo-programma bestaat.
+
+     BETA (nu AAN): met BETA = true toont alles alleen in een browser
+     waar je ooit een pagina opende met #stxsilkmas achter de URL
+     (onthouden in localStorage), ongeacht de datum. #stxsilkmas-uit
+     zet het weer uit. Met BETA = false toont het voor iedereen, maar
+     enkel tussen START en END (Brusselse datum). Na END doet het
+     bestand niets meer, je hoeft het dus niet weg te halen.
+
+     Beelden: assets/silkmas/ (achtergronden) en assets/balloons/
+     (Silk ballonnen), gepind op een commit hash.
+     ============================================================ -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rethink+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+  :root { --sm-navy: #0f2747; --sm-ice: #e8f4ff; --sm-frost: #bfdcf4; --sm-blue: #2f6db0; --sm-dark: #1b073d; --sm-yellow: #ffdb5a; }
+
+  /* ---- 1. topbanner ---- */
+  .stx-sm-bar { position: relative; overflow: hidden; height: 64px; font-family: 'Rethink Sans', sans-serif; color: #fff;
+    background: var(--sm-navy) center 40% / cover no-repeat; z-index: 2; }
+  .stx-sm-bar::before { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(15,39,71,0.82) 0%, rgba(15,39,71,0.45) 45%, rgba(15,39,71,0.78) 100%); }
+  .stx-sm-bar canvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+  .stx-sm-bar .sm-in { position: relative; height: 100%; max-width: 1320px; margin: 0 auto; padding: 0 48px 0 16px;
+    display: flex; align-items: center; justify-content: center; gap: 18px; }
+  .stx-sm-bar .sm-balloons { display: flex; align-items: flex-end; height: 100%; padding-top: 6px; flex: 0 0 auto; }
+  .stx-sm-bar .sm-balloons img { height: 46px; width: auto; margin-left: -12px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.35)); animation: stxsmbob 4.5s ease-in-out infinite; }
+  .stx-sm-bar .sm-balloons img:first-child { margin-left: 0; }
+  .stx-sm-bar .sm-balloons img:nth-child(2n) { height: 40px; animation-delay: -1.6s; }
+  .stx-sm-bar .sm-balloons img:nth-child(3n) { animation-delay: -3s; }
+  .stx-sm-bar .sm-text { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; line-height: 1.15; min-width: 0; }
+  .stx-sm-bar .sm-name { font-size: 22px; font-weight: 800; letter-spacing: -0.01em; text-shadow: 0 0 18px rgba(173,216,255,0.75); white-space: nowrap; }
+  .stx-sm-bar .sm-name span { color: #cfe8ff; }
+  .stx-sm-bar .sm-deal { font-size: 15.5px; font-weight: 600; }
+  .stx-sm-bar .sm-deal b { background: var(--sm-yellow); color: var(--sm-dark); padding: 1px 7px; border-radius: 5px; font-weight: 800; }
+  .stx-sm-bar .sm-dates { font-size: 13.5px; opacity: 0.85; white-space: nowrap; }
+  .stx-sm-bar .sm-cta { flex: 0 0 auto; background: #fff; color: var(--sm-navy) !important; font-weight: 800; font-size: 14.5px; padding: 9px 16px;
+    border-radius: 999px; text-decoration: none !important; white-space: nowrap; box-shadow: 0 0 0 0 rgba(207,232,255,0.7); animation: stxsmglow 2.6s ease-in-out infinite;
+    transition: transform 0.14s ease; }
+  .stx-sm-bar .sm-cta:hover { transform: scale(1.05); }
+  .stx-sm-bar .sm-x { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); width: 30px; height: 30px; border: 0; border-radius: 50%;
+    background: rgba(255,255,255,0.14); color: #fff; font-size: 18px; line-height: 30px; padding: 0; cursor: pointer; }
+  .stx-sm-bar .sm-x:hover { background: rgba(255,255,255,0.28); }
+  @media (max-width: 991px) {
+    .stx-sm-bar { height: 56px; }
+    .stx-sm-bar .sm-in { gap: 10px; padding: 0 40px 0 10px; justify-content: flex-start; }
+    .stx-sm-bar .sm-balloons img { height: 36px; margin-left: -10px; }
+    .stx-sm-bar .sm-balloons img:nth-child(2n) { height: 32px; }
+    .stx-sm-bar .sm-balloons img:nth-child(n+4) { display: none; }
+    .stx-sm-bar .sm-name { font-size: 17px; }
+    .stx-sm-bar .sm-deal { font-size: 13px; }
+    .stx-sm-bar .sm-dates { display: none; }
+    .stx-sm-bar .sm-cta { font-size: 13px; padding: 7px 12px; margin-left: auto; }
+  }
+  @media (max-width: 420px) {
+    .stx-sm-bar .sm-balloons { display: none; }
+    .stx-sm-bar .sm-text { gap: 0 8px; }
+  }
+
+  /* ---- 2. menuvakje ---- */
+  li.stx-sm-menu { margin: 2px 0 8px !important; }
+  li.stx-sm-menu > a { position: relative; display: flex !important; align-items: center; gap: 7px; overflow: hidden;
+    padding: 7px 12px !important; border-radius: 10px; border: 1px solid var(--sm-frost);
+    background: linear-gradient(135deg, #dceeff 0%, #f6fbff 55%, #e3f1ff 100%);
+    color: #1d4f86 !important; font-weight: 800; letter-spacing: 0.01em; text-decoration: none !important;
+    animation: stxsmpulse 2.8s ease-in-out infinite; }
+  li.stx-sm-menu > a:hover { color: var(--sm-navy) !important; }
+  li.stx-sm-menu .sm-flake { font-size: 15px; line-height: 1; color: #5aa0e0; animation: stxsmspin 9s linear infinite; }
+  li.stx-sm-menu .sm-pct { margin-left: auto; font-size: 11.5px; font-weight: 800; background: var(--sm-blue); color: #fff; border-radius: 999px; padding: 2px 7px; }
+
+  /* sneeuw in een kader, puur CSS (geen canvas per kaart) */
+  .stx-sm-snow::after { content: ""; position: absolute; inset: 0; pointer-events: none; border-radius: inherit; z-index: 3;
+    background-image:
+      radial-gradient(circle at 12px 18px, var(--sm-flake, #fff) 1.6px, transparent 2.2px),
+      radial-gradient(circle at 58px 44px, var(--sm-flake, #fff) 1.2px, transparent 1.8px),
+      radial-gradient(circle at 34px 76px, var(--sm-flake, #fff) 2px, transparent 2.6px),
+      radial-gradient(circle at 80px 10px, var(--sm-flake, #fff) 1.1px, transparent 1.7px),
+      radial-gradient(circle at 20px 50px, var(--sm-flake, #fff) 1px, transparent 1.6px);
+    background-size: 90px 90px, 110px 110px, 130px 130px, 70px 70px, 60px 60px;
+    animation: stxsmfall 11s linear infinite; opacity: var(--sm-snow-op, 0.95); }
+
+  /* ---- 3. Silk pagina: kaart + paginasneeuw ---- */
+  .stx-sm-hero { position: relative; overflow: hidden; border-radius: 16px; margin: 6px 0 22px; color: #fff; font-family: 'Rethink Sans', sans-serif;
+    background: var(--sm-navy) center / cover no-repeat; min-height: 230px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 0.95fr); align-items: center;
+    box-shadow: 0 14px 40px rgba(15,39,71,0.25); }
+  .stx-sm-hero::before { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(15,39,71,0.86) 0%, rgba(15,39,71,0.55) 55%, rgba(15,39,71,0.25) 100%); }
+  .stx-sm-hero canvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+  .stx-sm-hero .sm-copy { position: relative; padding: 28px 10px 28px 34px; }
+  .stx-sm-hero .sm-kick { font-size: 13px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: #cfe8ff; margin: 0 0 8px; }
+  .stx-sm-hero h2 { font-family: 'Rethink Sans', sans-serif; font-size: clamp(26px, 2.6vw, 38px); font-weight: 800; line-height: 1.05; letter-spacing: -0.02em; margin: 0 0 12px; color: #fff; }
+  .stx-sm-hero h2 b { background: var(--sm-yellow); color: var(--sm-dark); padding: 0 0.14em; border-radius: 4px; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+  .stx-sm-hero p { font-size: 16px; line-height: 1.45; margin: 0 0 14px; max-width: 46ch; color: rgba(255,255,255,0.9); }
+  .stx-sm-hero .sm-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+  .stx-sm-hero .sm-chip { background: rgba(255,255,255,0.16); border: 1px solid rgba(255,255,255,0.35); border-radius: 999px; padding: 6px 12px; font-size: 13.5px; font-weight: 700; backdrop-filter: blur(4px); }
+  .stx-sm-hero .sm-chip.code { background: #fff; color: var(--sm-navy); letter-spacing: 0.06em; }
+  .stx-sm-hero .sm-row { position: relative; display: flex; justify-content: center; align-items: flex-end; padding: 18px 20px 14px 0; flex-wrap: wrap; gap: 0; }
+  .stx-sm-hero .sm-row img { height: 92px; width: auto; margin: 0 -9px; filter: drop-shadow(0 10px 12px rgba(0,0,0,0.35)); animation: stxsmbob 5s ease-in-out infinite; }
+  .stx-sm-hero .sm-row img:nth-child(2n) { height: 80px; animation-delay: -1.7s; }
+  .stx-sm-hero .sm-row img:nth-child(3n) { animation-delay: -3.3s; }
+  .stx-sm-hero.sm-compact { min-height: 0; }
+  .stx-sm-hero.sm-compact .sm-copy { padding: 18px 10px 18px 26px; }
+  .stx-sm-hero.sm-compact h2 { font-size: clamp(22px, 2vw, 28px); }
+  .stx-sm-hero.sm-compact .sm-row img { height: 64px; }
+  .stx-sm-hero.sm-compact .sm-row img:nth-child(2n) { height: 56px; }
+  @media (max-width: 767px) {
+    .stx-sm-hero { grid-template-columns: 1fr; }
+    .stx-sm-hero .sm-copy { padding: 22px 20px 6px; }
+    .stx-sm-hero .sm-row { padding: 6px 12px 16px; }
+    .stx-sm-hero .sm-row img { height: 58px; margin: 0 -7px; }
+    .stx-sm-hero .sm-row img:nth-child(2n) { height: 50px; }
+  }
+  #stx-sm-pagesnow { position: fixed; inset: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 1030; }
+
+  /* ---- 4. winterkader rond Silk tegels en productkaarten ---- */
+  .stx-sm-frost { position: relative; border-radius: 12px; box-shadow: 0 0 0 1.5px var(--sm-frost), 0 8px 24px rgba(90,150,215,0.18) !important; }
+  .stx-sm-frost::before { content: ""; position: absolute; left: 6px; right: 6px; top: -5px; height: 11px; z-index: 4; pointer-events: none;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 11' preserveAspectRatio='none'%3E%3Cpath d='M0 7 Q5 1 10 5 T20 4 T30 6 T40 3 T50 5 T60 6 V11 H0Z' fill='%23ffffff' stroke='%23bfdcf4' stroke-width='0.8'/%3E%3C/svg%3E") repeat-x 0 0 / 60px 11px;
+    filter: drop-shadow(0 1px 1px rgba(90,150,215,0.25)); }
+  .oe_product_image.stx-sm-snow { --sm-flake: #a9cdee; --sm-snow-op: 0.55; }
+  .sempertex_wsale_category_tile.stx-sm-frost { --sm-flake: #ffffff; --sm-snow-op: 0.85; }
+  .stx-sm-frost .stx-sm-tag { position: absolute; top: 10px; left: 10px; z-index: 5; background: var(--sm-ice); color: #1d4f86; border: 1px solid var(--sm-frost);
+    font: 800 11.5px/1 'Rethink Sans', sans-serif; padding: 5px 8px; border-radius: 999px; pointer-events: none; }
+
+  /* ---- 5. winkelmand: gratis-zakjes-balk ---- */
+  .stx-sm-cart { position: relative; overflow: hidden; border-radius: 12px; border: 1px solid var(--sm-frost); background: linear-gradient(135deg, #e3f1ff, #f7fbff);
+    padding: 14px 16px; margin: 0 0 16px; font-family: 'Rethink Sans', sans-serif; color: var(--sm-navy); --sm-flake: #a9cdee; --sm-snow-op: 0.6; }
+  .stx-sm-cart .sm-l1 { font-weight: 800; font-size: 15.5px; margin-bottom: 8px; position: relative; z-index: 4; }
+  .stx-sm-cart .sm-l1 b { color: var(--sm-blue); }
+  .stx-sm-cart .sm-track { height: 9px; border-radius: 999px; background: #fff; border: 1px solid var(--sm-frost); overflow: hidden; position: relative; z-index: 4; }
+  .stx-sm-cart .sm-fill { height: 100%; width: 0; border-radius: inherit; background: linear-gradient(90deg, #7fb8ea, var(--sm-blue)); transition: width 0.5s ease; }
+  .stx-sm-cart .sm-l2 { font-size: 13px; opacity: 0.75; margin-top: 7px; position: relative; z-index: 4; }
+
+  @keyframes stxsmbob { 0%, 100% { transform: translateY(0) rotate(-2deg); } 50% { transform: translateY(-4px) rotate(2deg); } }
+  @keyframes stxsmglow { 0%, 100% { box-shadow: 0 0 0 0 rgba(207,232,255,0.65); } 50% { box-shadow: 0 0 0 7px rgba(207,232,255,0); } }
+  @keyframes stxsmpulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(120,180,240,0.45), 0 2px 8px rgba(90,150,215,0.15); } 50% { box-shadow: 0 0 0 6px rgba(120,180,240,0), 0 2px 14px rgba(90,150,215,0.35); } }
+  @keyframes stxsmspin { to { transform: rotate(360deg); } }
+  @keyframes stxsmfall { from { background-position: 0 0, 0 0, 0 0, 0 0, 0 0; } to { background-position: 18px 90px, -14px 110px, 10px 130px, -8px 70px, 6px 60px; } }
+  @media (prefers-reduced-motion: reduce) {
+    .stx-sm-bar *, li.stx-sm-menu *, li.stx-sm-menu > a, .stx-sm-snow::after, .stx-sm-hero * { animation: none !important; }
+  }
+</style>
+
+<script>
+(function () {
+  'use strict';
+  var BETA = true; // true = alleen zichtbaar na #stxsilkmas (testmodus, elke datum), false = live voor iedereen tussen START en END
+  var BETA_KEY = 'stx_silkmas_beta';
+  var START = '2026-11-01'; // eerste campagnedag (Brusselse datum)
+  var END = '2026-12-31';   // laatste campagnedag
+  var CODE = '';            // kortingscode, bv. 'SILKMAS'. Leeg = geen code tonen (korting automatisch)
+  var FREE_BAGS = false;    // true = winkelmandbalk 'gratis Silk zakje per EUR 50' (pas aanzetten als het Odoo-programma bestaat)
+  var BAG_STEP = 50;        // per hoeveel euro 1 gratis zakje
+  var SILK_CAT_ID = '3032';
+  var SILK_SLUG = '/shop/category/latex-balloons-silk-3032';
+  var BG = 'https://cdn.jsdelivr.net/gh/RobinRuttenBE/stx-website-custom-code@c7ca4d1d8a389d796e77deef1530fae97ff065c9/assets/silkmas/';
+  var BALLOONS = 'https://cdn.jsdelivr.net/gh/RobinRuttenBE/stx-website-custom-code@695ce774e6d980e760016ddf2715870b6d449da7/assets/balloons/';
+  var SILKS = ['806_Oyster-White', '870_Gold-Dust', '809_Pink-Blossom', '839_Arctic-Blue', '873_Cream-Pearl', '850_Light-Amethyst', '826_Cool-Mint', '880_Midnight-Grey'];
+
+  if (window.__stxSilkmas) { return; }
+  window.__stxSilkmas = true;
+
+  /* ---- AAN OF UIT ---- */
+  function betaOn() {
+    var h = (window.location.hash || '').toLowerCase();
+    var want = null;
+    if (h === '#stxsilkmas' || h === '#stxsilkmas=1' || h === '#stxsilkmas-aan') { want = true; }
+    else if (h === '#stxsilkmas=0' || h === '#stxsilkmas-uit' || h === '#stxsilkmas-off') { want = false; }
+    try {
+      if (want === true) { localStorage.setItem(BETA_KEY, '1'); }
+      else if (want === false) { localStorage.removeItem(BETA_KEY); }
+      return localStorage.getItem(BETA_KEY) === '1';
+    } catch (e) { return want === true; }
+  }
+  function brusselsToday() {
+    try {
+      return new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Brussels', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date());
+    } catch (e) { return new Date().toISOString().slice(0, 10); }
+  }
+  var beta = betaOn();
+  var today = brusselsToday();
+  var live = today >= START && today <= END;
+  if (BETA ? !beta : !live) { return; }
+  if (document.body.classList.contains('editor_enable') || document.querySelector('.odoo-editor-editable') || document.querySelector('#wrap.o_editable')) { return; }
+
+  /* ---- TAAL + LINKPREFIX ---- */
+  var rawPath = window.location.pathname || '/';
+  var p = rawPath.toLowerCase();
+  while (p.length > 1 && p.charAt(p.length - 1) === '/') { p = p.slice(0, -1); }
+  var m = /^\/(en_gb|fr|de)(\/|$)/.exec(p);
+  var lang = m ? (m[1] === 'en_gb' ? 'en' : m[1]) : 'nl';
+  var prefix = m ? '/' + (rawPath.split('/')[1] || '') : '';
+  var rest = m ? p.slice(m[1].length + 1) : p;
+  var silkUrl = prefix + SILK_SLUG;
+
+  var T = {
+    nl: { deal: '|10% korting| op alle Silk', dates: '1 nov t/m 31 dec', cta: 'Shop Silk', close: 'Sluiten',
+      menu: 'Silkmas', kick: 'Silkmas 2026', h: 'Het is Silkmas: |10% korting| op alle Silk',
+      p: 'Van 1 november tot en met 31 december krijg je 10% korting op elke Silk kleur. Zachte, luxueuze glans, gemaakt voor winterse installaties.',
+      c1: '8 Silk kleuren', c2: '1 nov t/m 31 dec', code: 'Code: ',
+      cartNext: 'Nog |{x}| tot je volgende gratis zakje Silk', cartGot: 'Je krijgt |{n} gratis {bags}| Silk bij deze bestelling', bag: 'zakje', bags: 'zakjes',
+      cartSub: 'Per €{step} in je winkelmand krijg je een zakje Silk cadeau. Kies het bij de beloningen hieronder.' },
+    en: { deal: '|10% off| all Silk', dates: '1 Nov to 31 Dec', cta: 'Shop Silk', close: 'Close',
+      menu: 'Silkmas', kick: 'Silkmas 2026', h: "It's Silkmas: |10% off| all Silk",
+      p: 'From 1 November to 31 December, every Silk colour is 10% off. A soft, luxurious sheen, made for winter installations.',
+      c1: '8 Silk colours', c2: '1 Nov to 31 Dec', code: 'Code: ',
+      cartNext: '|{x}| more for your next free bag of Silk', cartGot: 'You get |{n} free {bags}| of Silk with this order', bag: 'bag', bags: 'bags',
+      cartSub: 'For every €{step} in your cart you get a bag of Silk on us. Pick it under rewards below.' },
+    fr: { deal: '|-10 %| sur tout le Silk', dates: 'du 1er nov. au 31 déc.', cta: 'Voir Silk', close: 'Fermer',
+      menu: 'Silkmas', kick: 'Silkmas 2026', h: "C'est Silkmas : |-10 %| sur tout le Silk",
+      p: 'Du 1er novembre au 31 décembre, chaque couleur Silk est à -10 %. Un éclat doux et luxueux, idéal pour les décors d\'hiver.',
+      c1: '8 couleurs Silk', c2: 'du 1er nov. au 31 déc.', code: 'Code : ',
+      cartNext: 'Plus que |{x}| pour votre prochain sachet Silk offert', cartGot: 'Vous recevez |{n} {bags} Silk offert(s)| avec cette commande', bag: 'sachet', bags: 'sachets',
+      cartSub: 'Pour chaque tranche de {step} € dans votre panier, un sachet Silk vous est offert. Choisissez-le dans les récompenses ci-dessous.' },
+    de: { deal: '|10 % Rabatt| auf alle Silk', dates: '1. Nov. bis 31. Dez.', cta: 'Silk entdecken', close: 'Schließen',
+      menu: 'Silkmas', kick: 'Silkmas 2026', h: 'Es ist Silkmas: |10 % Rabatt| auf alle Silk',
+      p: 'Vom 1. November bis 31. Dezember gibt es 10 % Rabatt auf jede Silk Farbe. Ein weicher, luxuriöser Glanz, wie gemacht für Winterdekorationen.',
+      c1: '8 Silk Farben', c2: '1. Nov. bis 31. Dez.', code: 'Code: ',
+      cartNext: 'Noch |{x}| bis zu deinem nächsten Gratis-Beutel Silk', cartGot: 'Du bekommst |{n} {bags} Silk gratis| zu dieser Bestellung', bag: 'Beutel', bags: 'Beutel',
+      cartSub: 'Pro {step} € im Warenkorb gibt es einen Beutel Silk geschenkt. Wähle ihn unten bei den Prämien.' }
+  };
+  var t = T[lang] || T.en;
+  function hl(s, tag) { tag = tag || 'b'; return s.replace(/\|([^|]+)\|/g, '<' + tag + '>$1</' + tag + '>'); }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+
+  function track(ev, params) {
+    try {
+      params = params || {};
+      params.page_lang = lang;
+      if (typeof window.gtag === 'function') { window.gtag('event', ev, params); }
+      else if (window.dataLayer && window.dataLayer.push) { window.dataLayer.push(Object.assign({ event: ev }, params)); }
+      if (window.posthog && window.posthog.capture) { window.posthog.capture(ev, params); }
+    } catch (e) {}
+  }
+
+  var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---- SNEEUW (canvas) ---- */
+  function snow(canvas, opts) {
+    opts = opts || {};
+    var ctx = canvas.getContext('2d');
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var flakes = [], w = 0, h = 0, running = true, raf = 0;
+    function size() {
+      var r = canvas.getBoundingClientRect();
+      w = r.width; h = r.height;
+      canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      var want = Math.round((w * h) / (opts.density || 2600));
+      want = Math.max(8, Math.min(want, opts.max || 140));
+      while (flakes.length < want) { flakes.push(make(true)); }
+      flakes.length = want;
+    }
+    function make(anywhere) {
+      return { x: Math.random() * w, y: anywhere ? Math.random() * h : -6, r: 0.8 + Math.random() * (opts.big || 2.2),
+        vy: 0.25 + Math.random() * (opts.speed || 0.7), sway: Math.random() * Math.PI * 2, a: 0.5 + Math.random() * 0.5 };
+    }
+    function frame() {
+      ctx.clearRect(0, 0, w, h);
+      for (var i = 0; i < flakes.length; i++) {
+        var f = flakes[i];
+        f.sway += 0.012; f.y += f.vy; f.x += Math.sin(f.sway) * 0.35;
+        if (f.y > h + 6) { flakes[i] = make(false); continue; }
+        ctx.beginPath(); ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2);
+        ctx.fillStyle = (opts.color || 'rgba(255,255,255,') + f.a + ')';
+        if (opts.outline) { ctx.shadowColor = 'rgba(70,120,180,0.55)'; ctx.shadowBlur = 3; }
+        ctx.fill();
+      }
+      if (running) { raf = requestAnimationFrame(frame); }
+    }
+    size();
+    window.addEventListener('resize', size);
+    if (reduced) { frame(); running = false; return; }
+    if ('IntersectionObserver' in window && !opts.fixed) {
+      new IntersectionObserver(function (es) {
+        var vis = es[0].isIntersecting;
+        if (vis && !running) { running = true; raf = requestAnimationFrame(frame); }
+        else if (!vis) { running = false; cancelAnimationFrame(raf); }
+      }).observe(canvas);
+    }
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) { running = false; cancelAnimationFrame(raf); }
+      else if (!running) { running = true; raf = requestAnimationFrame(frame); }
+    });
+    raf = requestAnimationFrame(frame);
+  }
+
+  function balloonImgs(list) {
+    return list.map(function (s) { return '<img src="' + BALLOONS + s + '.png" alt="Silk ' + s.split('_')[1].replace('-', ' ') + '" loading="lazy">'; }).join('');
+  }
+
+  /* ---- 1. TOPBANNER ---- */
+  function bar() {
+    try { if (sessionStorage.getItem('stx_silkmas_bar_closed') === '1') { return; } } catch (e) {}
+    if (document.getElementById('stx-sm-bar')) { return; }
+    var header = document.querySelector('header#top') || document.querySelector('#wrapwrap > header');
+    var wrap = document.getElementById('wrapwrap');
+    if (!wrap) { return; }
+    var el = document.createElement('div');
+    el.id = 'stx-sm-bar';
+    el.className = 'stx-sm-bar';
+    el.setAttribute('role', 'region');
+    el.setAttribute('aria-label', 'Silkmas');
+    el.style.backgroundImage = 'url(' + BG + 'bar-bg.jpg)';
+    el.innerHTML = '<canvas aria-hidden="true"></canvas><div class="sm-in">' +
+      '<div class="sm-balloons" aria-hidden="true">' + balloonImgs(SILKS.slice(0, 6)) + '</div>' +
+      '<div class="sm-text"><span class="sm-name">&#10052; <span>Silk</span>mas</span><span class="sm-deal">' + hl(esc(t.deal)) + '</span><span class="sm-dates">' + esc(t.dates) + '</span></div>' +
+      '<a class="sm-cta" href="' + silkUrl + '">' + esc(t.cta) + ' &rarr;</a></div>' +
+      '<button type="button" class="sm-x" aria-label="' + esc(t.close) + '">&times;</button>';
+    if (header && header.parentNode) { header.parentNode.insertBefore(el, header); } else { wrap.insertBefore(el, wrap.firstChild); }
+    snow(el.querySelector('canvas'), { density: 900, max: 90, big: 1.8, speed: 0.6 });
+    el.querySelector('.sm-cta').addEventListener('click', function () { track('silkmas_bar_click', {}); });
+    el.querySelector('.sm-x').addEventListener('click', function () {
+      try { sessionStorage.setItem('stx_silkmas_bar_closed', '1'); } catch (e) {}
+      el.parentNode.removeChild(el);
+      track('silkmas_bar_close', {});
+    });
+  }
+
+  /* ---- 2. MENUVAKJE ---- */
+  function menu() {
+    var lists = document.querySelectorAll('.wsale_products_categories_list > ul.nav');
+    for (var i = 0; i < lists.length; i++) {
+      var ul = lists[i];
+      if (ul.querySelector('.stx-sm-menu')) { continue; }
+      var li = document.createElement('li');
+      li.className = 'nav-item stx-sm-menu';
+      li.innerHTML = '<a href="' + silkUrl + '" class="stx-sm-snow"><span class="sm-flake" aria-hidden="true">&#10052;</span>' + esc(t.menu) + '<span class="sm-pct">-10%</span></a>';
+      var first = ul.querySelector(':scope > li');
+      ul.insertBefore(li, first ? first.nextSibling : null);
+      li.querySelector('a').addEventListener('click', function () { track('silkmas_menu_click', {}); });
+    }
+  }
+
+  /* ---- 3. SILK PAGINA'S ---- */
+  var header = document.getElementById('o_wsale_products_header');
+  var catId = header ? header.getAttribute('data-category-id') : '';
+  var onSilkMain = catId === SILK_CAT_ID || rest === SILK_SLUG;
+  var onSilkSub = !onSilkMain && rest.indexOf('/shop/category/latex-balloons-silk-') === 0;
+  var onSilkProduct = rest.indexOf('/shop/latex-balloons-silk-') === 0;
+
+  function hero() {
+    if (!header || document.getElementById('stx-sm-hero')) { return; }
+    var el = document.createElement('section');
+    el.id = 'stx-sm-hero';
+    el.className = 'stx-sm-hero' + (onSilkSub ? ' sm-compact' : '');
+    el.style.backgroundImage = 'url(' + BG + 'hero-bg.jpg)';
+    el.innerHTML = '<canvas aria-hidden="true"></canvas>' +
+      '<div class="sm-copy"><p class="sm-kick">&#10052; ' + esc(t.kick) + '</p><h2>' + hl(esc(t.h)) + '</h2>' +
+      (onSilkSub ? '' : '<p>' + esc(t.p) + '</p>') +
+      '<div class="sm-chips"><span class="sm-chip">' + esc(t.c2) + '</span>' + (onSilkSub ? '' : '<span class="sm-chip">' + esc(t.c1) + '</span>') +
+      (CODE ? '<span class="sm-chip code">' + esc(t.code + CODE) + '</span>' : '') + '</div></div>' +
+      '<div class="sm-row" aria-hidden="true">' + balloonImgs(SILKS) + '</div>';
+    header.parentNode.insertBefore(el, header.nextSibling);
+    snow(el.querySelector('canvas'), { density: 1400, max: 120 });
+    track('silkmas_hero_view', { sub: onSilkSub });
+  }
+
+  function pageSnow() {
+    if (document.getElementById('stx-sm-pagesnow') || reduced) { return; }
+    var c = document.createElement('canvas');
+    c.id = 'stx-sm-pagesnow';
+    c.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(c);
+    var small = window.innerWidth < 768;
+    snow(c, { density: small ? 9000 : 6000, max: small ? 40 : 90, big: 2.6, speed: 0.6, color: 'rgba(214,234,252,', outline: true, fixed: true });
+  }
+
+  /* ---- 4. WINTERKADERS ---- */
+  var SILK_RE = /(^|[\s\-–(\[])silk\b/i;
+  function frost() {
+    var cards = document.querySelectorAll('form.oe_product_cart:not(.stx-sm-frost)');
+    for (var i = 0; i < cards.length; i++) {
+      var f = cards[i];
+      var name = f.getAttribute('aria-label') || (f.querySelector('.o_wsale_products_item_title') || {}).textContent || '';
+      if (!SILK_RE.test(name)) { continue; }
+      f.classList.add('stx-sm-frost');
+      var img = f.querySelector('.oe_product_image');
+      if (img) {
+        img.classList.add('stx-sm-snow');
+        if (getComputedStyle(img).position === 'static') { img.style.position = 'relative'; }
+      }
+    }
+    var tiles = document.querySelectorAll('.sempertex_wsale_category_tile:not(.stx-sm-frost)');
+    for (var j = 0; j < tiles.length; j++) {
+      var tl = tiles[j];
+      var title = (tl.querySelector('.sempertex_wsale_category_tile_title') || {}).textContent || '';
+      var href = tl.getAttribute('href') || '';
+      if (!SILK_RE.test(title) && href.indexOf('latex-balloons-silk') === -1) { continue; }
+      tl.classList.add('stx-sm-frost', 'stx-sm-snow');
+      if (getComputedStyle(tl).position === 'static') { tl.style.position = 'relative'; }
+      if (!tl.querySelector('.stx-sm-tag')) {
+        var tag = document.createElement('span');
+        tag.className = 'stx-sm-tag';
+        tag.innerHTML = '&#10052; -10%';
+        tl.appendChild(tag);
+      }
+    }
+  }
+
+  /* ---- 5. WINKELMAND: GRATIS ZAKJES ---- */
+  function parseMoney(s) {
+    s = String(s || '').replace(/[^\d.,]/g, '');
+    if (!s) { return NaN; }
+    var lastSep = Math.max(s.lastIndexOf(','), s.lastIndexOf('.'));
+    if (lastSep > -1 && s.length - lastSep - 1 <= 2) {
+      return parseFloat(s.slice(0, lastSep).replace(/[.,]/g, '') + '.' + s.slice(lastSep + 1));
+    }
+    return parseFloat(s.replace(/[.,]/g, ''));
+  }
+  function fmt(n) {
+    try { return new Intl.NumberFormat(lang === 'en' ? 'en-IE' : lang + '-BE', { style: 'currency', currency: 'EUR' }).format(n); }
+    catch (e) { return '€' + n.toFixed(2); }
+  }
+  function cartBar() {
+    var totalEl = document.querySelector('#order_total .monetary_field, tr#order_total .oe_currency_value, #order_total strong, #order_total td:last-child');
+    var anchor = document.getElementById('cart_total') || (totalEl && totalEl.closest('table'));
+    var cartCol = document.querySelector('.oe_cart') || (anchor && anchor.parentNode);
+    if (!totalEl || !cartCol) { return; }
+    var total = parseMoney(totalEl.textContent);
+    if (isNaN(total)) { return; }
+    var el = document.getElementById('stx-sm-cart');
+    if (el && el.getAttribute('data-total') === String(total)) { return; }
+    if (!el) {
+      el = document.createElement('div');
+      el.id = 'stx-sm-cart';
+      el.className = 'stx-sm-cart stx-sm-snow';
+      cartCol.insertBefore(el, cartCol.firstChild);
+    }
+    el.setAttribute('data-total', String(total));
+    var n = Math.floor(total / BAG_STEP + 1e-9);
+    var left = BAG_STEP - (total - n * BAG_STEP);
+    var pct = Math.round(((total - n * BAG_STEP) / BAG_STEP) * 100);
+    var l1 = n > 0 ? t.cartGot.replace('{n}', n).replace('{bags}', n === 1 ? t.bag : t.bags) + '. ' + t.cartNext.replace('{x}', fmt(left)) : t.cartNext.replace('{x}', fmt(left));
+    el.innerHTML = '<div class="sm-l1">&#10052; ' + hl(esc(l1)) + '</div><div class="sm-track"><div class="sm-fill"></div></div><div class="sm-l2">' + esc(t.cartSub.replace('{step}', BAG_STEP)) + '</div>';
+    requestAnimationFrame(function () { el.querySelector('.sm-fill').style.width = pct + '%'; });
+  }
+
+  /* ---- START ---- */
+  bar();
+  menu();
+  if (onSilkMain || onSilkSub) { hero(); }
+  if (onSilkMain || onSilkSub || onSilkProduct) { pageSnow(); }
+  frost();
+  var isCart = rest === '/shop/cart';
+  if (FREE_BAGS && isCart) { cartBar(); }
+
+  /* Odoo bouwt stukken opnieuw op (filters, winkelmand-updates): licht opnieuw nalopen */
+  var pending = false;
+  new MutationObserver(function () {
+    if (pending) { return; }
+    pending = true;
+    setTimeout(function () {
+      pending = false;
+      menu(); frost();
+      if (FREE_BAGS && isCart) { cartBar(); }
+    }, 250);
+  }).observe(document.getElementById('wrapwrap') || document.body, { childList: true, subtree: true });
+})();
+</script>
