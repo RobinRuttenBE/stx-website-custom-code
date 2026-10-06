@@ -31,7 +31,7 @@
      uit registratieleads en haalt een code van de site zodra hij
      gebruikt of verlopen is (dan verdwijnt het cadeau-knopje).
 
-     BETA (nu AAN): met BETA = true werkt het alleen in een browser
+     BETA (nu UIT, live sinds 06/10/2026): met BETA = true werkt het alleen in een browser
      waar je ooit een pagina opende met #stxbday achter de URL.
      #stxbday-uit zet het weer uit. #stxbday-demo toont de popup
      eenmalig met voorbeelddata (code DEMO-1234), ook zonder velden,
@@ -81,7 +81,7 @@
 <script>
 (function () {
   'use strict';
-  var BETA = true; // true = alleen na #stxbday (testmodus), false = live voor iedereen
+  var BETA = false; // true = alleen na #stxbday (testmodus), false = live voor iedereen (live sinds 06/10/2026)
   var BETA_KEY = 'stx_bday_beta';
   /* Eigenschappen op Contact: interne naam + label (label = vangnet als de eigenschap ooit opnieuw gemaakt wordt) */
   var P_CODE = { name: '1e1256d45f5933c8', label: 'verjaardagscode' };      // tekst: de code
