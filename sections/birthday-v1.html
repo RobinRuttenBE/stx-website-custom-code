@@ -15,7 +15,10 @@
      (res.partner), via de gewone Odoo-route die elk ingelogd account
      voor zijn eigen gegevens mag gebruiken. Veldnamen staan in F_CODE
      en F_UNTIL hieronder; die moeten exact gelijk zijn aan de Studio-
-     velden. Zolang die velden niet bestaan, doet dit bestand niets
+     velden. Het geboortedatumveld zelf bestaat al
+     (x_studio_geboortedatum, 118 contacten op 06/10/2026), maar dat
+     heeft dit bestand niet nodig: Odoo beslist wie een code krijgt.
+     Zolang de twee codevelden niet bestaan, doet dit bestand niets
      (stil, enkel een regel in de console).
 
      BETA (nu AAN): met BETA = true werkt het alleen in een browser
