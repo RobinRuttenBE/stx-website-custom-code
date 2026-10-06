@@ -348,11 +348,12 @@
   var header = document.getElementById('o_wsale_products_header');
   var catId = header ? header.getAttribute('data-category-id') : '';
   var onSilkMain = catId === SILK_CAT_ID || rest === SILK_SLUG;
-  /* Slugs verschillen per taal (NL: latex-onbedrukt-silk-..., EN: latex-balloons-silk-...):
+  /* Slugs verschillen per taal (NL latex-onbedrukt-silk, EN latex-balloons-silk,
+     FR latex-non-imprime-soie, DE latex-ballons-seide):
      subcategorie = kruimelpad linkt naar categorie 3032, of 'silk' in de categorieslug. */
   var crumbSilk = !!document.querySelector('#o_wsale_products_header .breadcrumb a[href$="-' + SILK_CAT_ID + '"]');
-  var onSilkSub = !onSilkMain && (crumbSilk || /^\/shop\/category\/[^\/]*-silk-[^\/]*-\d+$/.test(rest));
-  var onSilkProduct = /^\/shop\/(?!category\/)[^\/]*-silk-[^\/]*\/[^\/]+$/.test(rest);
+  var onSilkSub = !onSilkMain && (crumbSilk || /^\/shop\/category\/[^\/]*-(silk|soie|seide)-[^\/]*-\d+$/.test(rest));
+  var onSilkProduct = /^\/shop\/(?!category\/)[^\/]*-(silk|soie|seide)-[^\/]*\/[^\/]+$/.test(rest);
 
   function hero() {
     if (!header || document.getElementById('stx-sm-hero')) { return; }
@@ -382,7 +383,7 @@
   }
 
   /* ---- 4. WINTERKADERS ---- */
-  var SILK_RE = /(^|[\s\-–(\[])silk\b/i;
+  var SILK_RE = /(^|[\s\-–(\[])(silk|soie|seide)\b/i; // FR: Soie, DE: Seide
   function frost() {
     var cards = document.querySelectorAll('form.oe_product_cart:not(.stx-sm-frost)');
     for (var i = 0; i < cards.length; i++) {
@@ -401,7 +402,7 @@
       var tl = tiles[j];
       var title = (tl.querySelector('.sempertex_wsale_category_tile_title') || {}).textContent || '';
       var href = tl.getAttribute('href') || '';
-      if (!SILK_RE.test(title) && !/-silk-/.test(href)) { continue; }
+      if (!SILK_RE.test(title) && !/-(silk|soie|seide)-/.test(href)) { continue; }
       tl.classList.add('stx-sm-frost', 'stx-sm-snow');
       if (getComputedStyle(tl).position === 'static') { tl.style.position = 'relative'; }
       if (!tl.querySelector('.stx-sm-tag')) {
