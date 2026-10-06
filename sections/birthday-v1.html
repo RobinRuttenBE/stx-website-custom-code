@@ -11,14 +11,16 @@
      Daarna blijft er tot de code verloopt een klein cadeau-knopje
      linksonder staan dat de popup terug opent.
 
-     De code en de vervaldatum komen uit twee velden op het contact
-     (res.partner), via de gewone Odoo-route die elk ingelogd account
-     voor zijn eigen gegevens mag gebruiken. Veldnamen staan in F_CODE
-     en F_UNTIL hieronder; die moeten exact gelijk zijn aan de Studio-
-     velden. Het geboortedatumveld zelf bestaat al
+     De code en de vervaldatum komen uit twee EIGENSCHAPPEN (properties)
+     op het contact (res.partner, veld 'properties'): 'Verjaardagscode'
+     (tekst, intern 1e1256d45f5933c8) en 'Verjaardagscode tot' (datum,
+     intern 20079094e521a875), aangemaakt 06/10/2026. Gelezen via de
+     gewone Odoo-route die elk ingelogd account voor zijn eigen gegevens
+     mag gebruiken. Gezocht op interne naam, met het label als vangnet
+     (P_CODE / P_UNTIL hieronder). Het geboortedatumveld zelf bestaat al
      (x_studio_geboortedatum, 118 contacten op 06/10/2026), maar dat
      heeft dit bestand niet nodig: Odoo beslist wie een code krijgt.
-     Zolang de twee codevelden niet bestaan, doet dit bestand niets
+     Zolang de twee eigenschappen leeg zijn, doet dit bestand niets
      (stil, enkel een regel in de console).
 
      BETA (nu AAN): met BETA = true werkt het alleen in een browser
@@ -62,8 +64,9 @@
   'use strict';
   var BETA = true; // true = alleen na #stxbday (testmodus), false = live voor iedereen
   var BETA_KEY = 'stx_bday_beta';
-  var F_CODE = 'x_studio_verjaardagscode';      // Studio-veld op Contact: de code (tekst)
-  var F_UNTIL = 'x_studio_verjaardagscode_tot'; // Studio-veld op Contact: laatste geldige dag (datum)
+  /* Eigenschappen op Contact: interne naam + label (label = vangnet als de eigenschap ooit opnieuw gemaakt wordt) */
+  var P_CODE = { name: '1e1256d45f5933c8', label: 'verjaardagscode' };      // tekst: de code
+  var P_UNTIL = { name: '20079094e521a875', label: 'verjaardagscode tot' }; // datum: laatste geldige dag
   var DAYS = 30;                                // looptijd van de code
 
   if (window.__stxBirthday) { return; }
@@ -120,6 +123,17 @@
   function niceDate(iso) {
     try { return new Intl.DateTimeFormat(lang === 'en' ? 'en-GB' : lang + '-BE', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }).format(new Date(iso + 'T12:00:00Z')); }
     catch (e) { return iso; }
+  }
+
+  function prop(list, want) {
+    if (!list || !list.length) { return ''; }
+    var hit = null;
+    for (var i = 0; i < list.length; i++) { if (list[i].name === want.name) { hit = list[i]; } }
+    if (!hit) {
+      for (var j = 0; j < list.length; j++) { if (String(list[j].string || '').trim().toLowerCase() === want.label) { hit = list[j]; } }
+    }
+    var v = hit ? hit.value : '';
+    return v ? String(v).trim() : '';
   }
 
   function rpc(url, params) {
@@ -240,11 +254,11 @@
   rpc('/web/session/get_session_info').then(function (info) {
     if (!info || !info.uid || !info.partner_id) { return null; }
     return rpc('/web/dataset/call_kw/res.partner/read', { model: 'res.partner', method: 'read',
-      args: [[info.partner_id], [F_CODE, F_UNTIL, 'name', 'is_company']], kwargs: {} });
+      args: [[info.partner_id], ['properties', 'name', 'is_company']], kwargs: {} });
   }).then(function (rows) {
     if (!rows || !rows[0]) { return; }
     var r = rows[0];
-    var d = { code: r[F_CODE] || '', until: r[F_UNTIL] || '', name: (!r.is_company && r.name) ? String(r.name).trim().split(/\s+/)[0] : '' };
+    var d = { code: prop(r.properties, P_CODE), until: prop(r.properties, P_UNTIL), name: (!r.is_company && r.name) ? String(r.name).trim().split(/\s+/)[0] : '' };
     try { sessionStorage.setItem(CACHE, JSON.stringify({ day: today(), d: d })); } catch (e) {}
     if (valid(d)) { show(d, false); }
   }).catch(function (e) {
