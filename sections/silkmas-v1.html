@@ -5,7 +5,8 @@
      alleen iets als de campagne loopt of de beta aan staat.
 
      Wat het doet:
-     1. Topbanner boven de header, op elke pagina: wazig winterbos,
+     1. Topbanner boven de header, op elke pagina behalve de Silk
+        categoriepagina's (daar staat de Silkmas-kaart al): wazig winterbos,
         sneeuw, de 8 Silk kleuren en een knop naar de Silk categorie.
         Niet wegklikbaar (geen kruisje).
      2. Linkermenu van de shop: een vakje 'Silkmas' bovenaan de
@@ -212,25 +213,25 @@
   var silkUrl = prefix + SILK_SLUG;
 
   var T = {
-    nl: { deal: '|10% korting| op alle Silk', dates: '1 nov t/m 31 dec', cta: 'Shop Silk', close: 'Sluiten',
+    nl: { deal: '|Speciale aanbieding| op alle Silk', tag: 'Special', dates: '1 nov t/m 31 dec', cta: 'Shop Silk', close: 'Sluiten',
       menu: 'Silkmas', kick: 'Silkmas 2026', h: 'Het is Silkmas: |10% korting| op alle Silk',
       p: 'Van 1 november tot en met 31 december krijg je 10% korting op elke Silk kleur. Zachte, luxueuze glans, gemaakt voor winterse installaties.',
       c1: '8 Silk kleuren', c2: '1 nov t/m 31 dec', code: 'Code: ',
       cartNext: 'Nog |{x}| tot je volgende gratis zakje Silk', cartGot: 'Je krijgt |{n} gratis {bags}| Silk bij deze bestelling', bag: 'zakje', bags: 'zakjes',
       cartSub: 'Per €{step} in je winkelmand krijg je een zakje Silk cadeau. Kies het bij de beloningen hieronder.' },
-    en: { deal: '|10% off| all Silk', dates: '1 Nov to 31 Dec', cta: 'Shop Silk', close: 'Close',
+    en: { deal: '|Special offer| on all Silk', tag: 'Special', dates: '1 Nov to 31 Dec', cta: 'Shop Silk', close: 'Close',
       menu: 'Silkmas', kick: 'Silkmas 2026', h: "It's Silkmas: |10% off| all Silk",
       p: 'From 1 November to 31 December, every Silk colour is 10% off. A soft, luxurious sheen, made for winter installations.',
       c1: '8 Silk colours', c2: '1 Nov to 31 Dec', code: 'Code: ',
       cartNext: '|{x}| more for your next free bag of Silk', cartGot: 'You get |{n} free {bags}| of Silk with this order', bag: 'bag', bags: 'bags',
       cartSub: 'For every €{step} in your cart you get a bag of Silk on us. Pick it under rewards below.' },
-    fr: { deal: '|-10 %| sur tout le Silk', dates: 'du 1er nov. au 31 déc.', cta: 'Voir Silk', close: 'Fermer',
+    fr: { deal: '|Offre spéciale| sur tout le Silk', tag: 'Spécial', dates: 'du 1er nov. au 31 déc.', cta: 'Voir Silk', close: 'Fermer',
       menu: 'Silkmas', kick: 'Silkmas 2026', h: "C'est Silkmas : |-10 %| sur tout le Silk",
       p: 'Du 1er novembre au 31 décembre, chaque couleur Silk est à -10 %. Un éclat doux et luxueux, idéal pour les décors d\'hiver.',
       c1: '8 couleurs Silk', c2: 'du 1er nov. au 31 déc.', code: 'Code : ',
       cartNext: 'Plus que |{x}| pour votre prochain sachet Silk offert', cartGot: 'Vous recevez |{n} {bags} Silk offert(s)| avec cette commande', bag: 'sachet', bags: 'sachets',
       cartSub: 'Pour chaque tranche de {step} € dans votre panier, un sachet Silk vous est offert. Choisissez-le dans les récompenses ci-dessous.' },
-    de: { deal: '|10 % Rabatt| auf alle Silk', dates: '1. Nov. bis 31. Dez.', cta: 'Silk entdecken', close: 'Schließen',
+    de: { deal: '|Sonderangebot| für alle Silk', tag: 'Spezial', dates: '1. Nov. bis 31. Dez.', cta: 'Silk entdecken', close: 'Schließen',
       menu: 'Silkmas', kick: 'Silkmas 2026', h: 'Es ist Silkmas: |10 % Rabatt| auf alle Silk',
       p: 'Vom 1. November bis 31. Dezember gibt es 10 % Rabatt auf jede Silk Farbe. Ein weicher, luxuriöser Glanz, wie gemacht für Winterdekorationen.',
       c1: '8 Silk Farben', c2: '1. Nov. bis 31. Dez.', code: 'Code: ',
@@ -336,7 +337,7 @@
       if (ul.querySelector('.stx-sm-menu')) { continue; }
       var li = document.createElement('li');
       li.className = 'nav-item stx-sm-menu';
-      li.innerHTML = '<a href="' + silkUrl + '" class="stx-sm-snow"><span class="sm-flake" aria-hidden="true">&#10052;</span>' + esc(t.menu) + '<span class="sm-pct">-10%</span></a>';
+      li.innerHTML = '<a href="' + silkUrl + '" class="stx-sm-snow"><span class="sm-flake" aria-hidden="true">&#10052;</span>' + esc(t.menu) + '<span class="sm-pct">' + esc(t.tag) + '</span></a>';
       var first = ul.querySelector(':scope > li');
       ul.insertBefore(li, first ? first.nextSibling : null);
       li.querySelector('a').addEventListener('click', function () { track('silkmas_menu_click', {}); });
@@ -347,8 +348,11 @@
   var header = document.getElementById('o_wsale_products_header');
   var catId = header ? header.getAttribute('data-category-id') : '';
   var onSilkMain = catId === SILK_CAT_ID || rest === SILK_SLUG;
-  var onSilkSub = !onSilkMain && rest.indexOf('/shop/category/latex-balloons-silk-') === 0;
-  var onSilkProduct = rest.indexOf('/shop/latex-balloons-silk-') === 0;
+  /* Slugs verschillen per taal (NL: latex-onbedrukt-silk-..., EN: latex-balloons-silk-...):
+     subcategorie = kruimelpad linkt naar categorie 3032, of 'silk' in de categorieslug. */
+  var crumbSilk = !!document.querySelector('#o_wsale_products_header .breadcrumb a[href$="-' + SILK_CAT_ID + '"]');
+  var onSilkSub = !onSilkMain && (crumbSilk || /^\/shop\/category\/[^\/]*-silk-[^\/]*-\d+$/.test(rest));
+  var onSilkProduct = /^\/shop\/(?!category\/)[^\/]*-silk-[^\/]*\/[^\/]+$/.test(rest);
 
   function hero() {
     if (!header || document.getElementById('stx-sm-hero')) { return; }
@@ -397,13 +401,13 @@
       var tl = tiles[j];
       var title = (tl.querySelector('.sempertex_wsale_category_tile_title') || {}).textContent || '';
       var href = tl.getAttribute('href') || '';
-      if (!SILK_RE.test(title) && href.indexOf('latex-balloons-silk') === -1) { continue; }
+      if (!SILK_RE.test(title) && !/-silk-/.test(href)) { continue; }
       tl.classList.add('stx-sm-frost', 'stx-sm-snow');
       if (getComputedStyle(tl).position === 'static') { tl.style.position = 'relative'; }
       if (!tl.querySelector('.stx-sm-tag')) {
         var tag = document.createElement('span');
         tag.className = 'stx-sm-tag';
-        tag.innerHTML = '&#10052; -10%';
+        tag.innerHTML = '&#10052; ' + esc(t.tag);
         tl.appendChild(tag);
       }
     }
@@ -448,7 +452,8 @@
   }
 
   /* ---- START ---- */
-  bar();
+  /* Geen topbanner op de Silk categoriepagina's: daar staat de Silkmas-kaart al */
+  if (!(onSilkMain || onSilkSub)) { bar(); }
   menu();
   if (onSilkMain || onSilkSub) { hero(); }
   if (onSilkMain || onSilkSub || onSilkProduct) { pageSnow(); }
