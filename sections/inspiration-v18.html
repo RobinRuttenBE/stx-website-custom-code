@@ -2765,9 +2765,16 @@
     tip.style.left = x + 'px';
     tip.style.top = y + 'px';
   }
+  // Touch screens send a mouseover after a tap but never a mouseout, so the tip stayed
+  // on screen. No tip on touch: devices without hover, and the moment after any touch.
+  var noHover = window.matchMedia && window.matchMedia('(hover: none)').matches;
+  var touchUntil = 0;
+  function hideTip() { tip.style.display = 'none'; }
+  root.addEventListener('touchstart', function () { touchUntil = Date.now() + 1000; hideTip(); }, { passive: true });
+  window.addEventListener('scroll', hideTip, { passive: true });
   root.addEventListener('mouseover', function (e) {
     var sw = e.target.closest ? e.target.closest('.swatch') : null;
-    if (!sw) return;
+    if (!sw || noHover || Date.now() < touchUntil) return;
     tip.innerHTML = '<span class="tip-dot" style="background:' + sw.getAttribute('data-hex') + '"></span>'
       + esc(sw.getAttribute('data-name') || '')
       + '<span class="tip-code">' + esc(sw.getAttribute('data-code') || '') + '</span>';

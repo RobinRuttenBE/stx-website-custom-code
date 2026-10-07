@@ -1,0 +1,29 @@
+<!-- ============================================================
+     STX EU / LIVE CHAT OP MOBIEL ZONDER "NEED HELP?" MELDING
+     Op mobiel (schermen tot 767 px breed) verdwijnt het tekstwolkje
+     "Need help? Chat with us." naast de chatknop. Het ronde chatbolletje
+     blijft staan. Op pc verandert er niets. De chat van Odoo zit in een
+     shadow root (.o-livechat-root), daar kan gewone CSS niet in, dus dit
+     script zet de regel in die shadow root zodra hij verschijnt.
+     Verwijderen = dit blok weghalen. Sinds 07/10/2026.
+     ============================================================ -->
+<script>
+(function () {
+  var CSS = '@media (max-width: 767.98px) { .o-livechat-LivechatButton-notification { display: none !important; } }';
+  function patch() {
+    document.querySelectorAll('.o-livechat-root').forEach(function (host) {
+      var sr = host.shadowRoot;
+      if (!sr || sr.querySelector('style[data-stx-lc]')) { return; }
+      var st = document.createElement('style');
+      st.setAttribute('data-stx-lc', '1');
+      st.textContent = CSS;
+      sr.appendChild(st);
+    });
+  }
+  function start() {
+    patch();
+    new MutationObserver(patch).observe(document.body, { childList: true });
+  }
+  if (document.body) { start(); } else { document.addEventListener('DOMContentLoaded', start); }
+})();
+</script>
