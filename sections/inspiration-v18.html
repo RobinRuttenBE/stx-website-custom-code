@@ -3207,7 +3207,7 @@
     // BETA: only with ?stxmatch=1 (remembered in this browser), ?stxmatch=0 turns it off.
     // Live for everyone: set DSM_BETA = false.
     (function matchColour() {
-      var DSM_BETA = true;
+      var DSM_BETA = false;
       var on = isFile || !DSM_BETA;
       try {
         var q = /[?&]stxmatch=([01])\b/.exec(window.location.search);
