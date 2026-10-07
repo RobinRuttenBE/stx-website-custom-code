@@ -159,6 +159,38 @@
   .stx-insp .swap-btn:hover { transform: scale(1.05); box-shadow: var(--glow); }
   .stx-insp .calc-note { font-size: clamp(12px, 0.95vw, 13px); opacity: 0.7; margin-top: clamp(16px, 2vw, 26px); max-width: 72ch; }
   .stx-insp .calc-notice { background: #f1d9ff; border-left: 4px solid var(--purple); border-radius: 8px; padding: clamp(12px, 1.4vw, 16px) clamp(14px, 1.6vw, 20px); margin: clamp(14px, 1.8vw, 22px) 0 clamp(18px, 2.2vw, 28px); }
+  .stx-insp .dsm { border: 2px dashed var(--rule); border-radius: 10px; padding: clamp(14px, 1.8vw, 22px); margin-bottom: clamp(20px, 2.4vw, 32px); }
+  .stx-insp .dsm-head { display: flex; justify-content: space-between; align-items: center; gap: 14px 24px; flex-wrap: wrap; }
+  .stx-insp .dsm-head .picker-label { margin-bottom: 4px; }
+  .stx-insp .dsm-hint { font-size: clamp(13px, 1vw, 14.5px); opacity: 0.75; margin: 0; max-width: 60ch; }
+  .stx-insp .dsm-acts { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+  .stx-insp .dsm-native { font-size: 13px; font-weight: 700; color: var(--purple); display: inline-flex; align-items: center; gap: 8px; cursor: pointer; }
+  .stx-insp .dsm-native input { width: 38px; height: 30px; border: 1.5px solid var(--rule); border-radius: 6px; padding: 0; background: none; cursor: pointer; }
+  .stx-insp .dsm-body { display: none; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(16px, 2vw, 28px); margin-top: clamp(14px, 1.6vw, 20px); align-items: start; }
+  .stx-insp .dsm-body.on { display: grid; }
+  .stx-insp .dsm-cvbox { position: relative; display: inline-block; max-width: 100%; border-radius: 10px; overflow: hidden; border: 2px solid var(--dark); background: var(--purple-bg); line-height: 0; }
+  .stx-insp .dsm-cvbox canvas { display: block; max-width: 100%; max-height: 440px; width: auto; height: auto; cursor: crosshair; }
+  .stx-insp .dsm-lens { position: absolute; width: 22px; height: 22px; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 0 0 2px var(--dark), 0 4px 10px rgba(0,0,0,0.3); transform: translate(-50%, -50%); pointer-events: none; display: none; }
+  .stx-insp .dsm-tip { font-size: 12.5px; opacity: 0.7; margin: 8px 0 0; }
+  .stx-insp .dsm-target { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+  .stx-insp .dsm-sw { width: 48px; height: 48px; border-radius: 9px; border: 1px solid var(--rule); flex: 0 0 auto; }
+  .stx-insp .dsm-tl { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--purple); }
+  .stx-insp .dsm-hex { font-weight: 800; font-size: 15px; }
+  .stx-insp .dsm-best { font-size: 13px; opacity: 0.75; margin: 0 0 8px; }
+  .stx-insp .dsm-list { display: flex; flex-direction: column; gap: 8px; }
+  .stx-insp .dsm-opt { display: flex; align-items: center; gap: 12px; text-align: left; background: #fff; border: 1.5px solid var(--rule); border-radius: 10px; padding: 10px 12px; cursor: pointer; font-family: inherit; color: var(--dark); transition: transform 0.14s ease, box-shadow 0.14s ease; }
+  .stx-insp .dsm-opt:hover { transform: scale(1.02); box-shadow: var(--glow); }
+  .stx-insp .dsm-opt.on { border-color: var(--dark); outline: 3px solid var(--yellow); }
+  .stx-insp .dsm-chips { display: flex; align-items: center; gap: 4px; flex: 0 0 auto; }
+  .stx-insp .dsm-chips em { font-style: normal; font-weight: 800; font-size: 12px; opacity: 0.6; }
+  .stx-insp .dsm-chip { width: 26px; height: 26px; border-radius: 6px; border: 1px solid var(--rule); display: inline-block; }
+  .stx-insp .dsm-names { display: flex; flex-direction: column; font-size: 13px; line-height: 1.35; min-width: 0; flex: 1 1 auto; }
+  .stx-insp .dsm-q { font-size: 11px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: var(--purple); white-space: nowrap; }
+  .stx-insp .dsm-single { font-size: 13px; font-weight: 600; margin: 10px 0 0; }
+  @media (max-width: 900px) {
+    .stx-insp .dsm-body { grid-template-columns: 1fr; }
+    .stx-insp .dsm-opt { flex-wrap: wrap; }
+  }
   .stx-insp .calc-notice p { margin: 0; font-size: clamp(13.5px, 1.05vw, 15px); font-weight: 600; color: var(--dark); opacity: 1; max-width: none; }
 
   /* ---- DOWNLOADS ---- */
@@ -1483,6 +1515,19 @@
       pal_cart_tip: '1 bag of each colour in 5, 12 and 18 inch',
       calc_cart: 'Add both colours to cart',
       calc_cart_tip: '1 bag of each, 12 inch, 50 pieces per bag',
+      dsm_label: 'Match a colour',
+      dsm_hint: 'Upload a photo and tap the colour you want. The calculator finds the inner and outer balloon that come closest.',
+      dsm_up: 'Upload a photo',
+      dsm_other: 'Other photo',
+      dsm_pick: 'or pick a colour',
+      dsm_tip: 'Tap the colour you want to make. The photo stays on your device.',
+      dsm_target: 'Your colour',
+      dsm_best: 'Best matches. Tap one to load it in the calculator.',
+      dsm_q1: 'Very close',
+      dsm_q2: 'Close',
+      dsm_q3: 'Nearby',
+      dsm_q4: 'Closest option',
+      dsm_single: 'Tip: {name} on its own already comes very close, no double stuffing needed.',
       dl_items: 'items',
       nav_cost: 'Cost Calculator',
       nav_colour: 'Colour Matching Tool',
@@ -1737,6 +1782,19 @@
       pal_cart_tip: '1 Beutel pro Farbe in 5, 12 und 18 Zoll',
       calc_cart: 'Beide Farben in den Warenkorb',
       calc_cart_tip: 'Je 1 Beutel, 12 Zoll, 50 St\u00fcck pro Beutel',
+      dsm_label: 'Farbe treffen',
+      dsm_hint: 'Lade ein Foto hoch und tippe auf die Farbe, die du willst. Der Rechner findet den Innen- und Au\u00dfenballon, die am n\u00e4chsten herankommen.',
+      dsm_up: 'Foto hochladen',
+      dsm_other: 'Anderes Foto',
+      dsm_pick: 'oder w\u00e4hle eine Farbe',
+      dsm_tip: 'Tippe auf die Farbe, die du machen willst. Das Foto bleibt auf deinem Ger\u00e4t.',
+      dsm_target: 'Deine Farbe',
+      dsm_best: 'Beste Treffer. Tippe auf einen, um ihn in den Rechner zu laden.',
+      dsm_q1: 'Sehr nah',
+      dsm_q2: 'Nah',
+      dsm_q3: 'In der N\u00e4he',
+      dsm_q4: 'N\u00e4chste Option',
+      dsm_single: 'Tipp: {name} allein kommt schon sehr nah heran, daf\u00fcr brauchst du kein Double Stuffing.',
       dl_items: 'Dateien',
       nav_cost: 'Kostenrechner',
       nav_colour: 'Farbabgleich-Tool',
@@ -1991,6 +2049,19 @@
       pal_cart_tip: '1 sachet par couleur en 5, 12 et 18 pouces',
       calc_cart: 'Les deux couleurs au panier',
       calc_cart_tip: '1 sachet chacune, 12 pouces, 50 pi\u00e8ces par sachet',
+      dsm_label: 'Trouver une couleur',
+      dsm_hint: 'Importez une photo et touchez la couleur souhait\u00e9e. Le calculateur trouve le ballon int\u00e9rieur et le ballon ext\u00e9rieur les plus proches.',
+      dsm_up: 'Importer une photo',
+      dsm_other: 'Autre photo',
+      dsm_pick: 'ou choisissez une couleur',
+      dsm_tip: 'Touchez la couleur que vous voulez obtenir. La photo reste sur votre appareil.',
+      dsm_target: 'Votre couleur',
+      dsm_best: 'Meilleures correspondances. Touchez-en une pour la charger dans le calculateur.',
+      dsm_q1: 'Tr\u00e8s proche',
+      dsm_q2: 'Proche',
+      dsm_q3: 'Assez proche',
+      dsm_q4: 'Option la plus proche',
+      dsm_single: 'Astuce : {name} seul est d\u00e9j\u00e0 tr\u00e8s proche, pas besoin de double stuffing.',
       dl_items: '\u00e9l\u00e9ments',
       nav_cost: 'Calculateur de co\u00fbts',
       nav_colour: 'Outil de correspondance couleurs',
@@ -2245,6 +2316,19 @@
       pal_cart_tip: '1 zakje van elke kleur in 5, 12 en 18 inch',
       calc_cart: 'Beide kleuren in winkelmand',
       calc_cart_tip: '1 zakje van elk, 12 inch, 50 stuks per zakje',
+      dsm_label: 'Match een kleur',
+      dsm_hint: 'Upload een foto en tik op de kleur die je wilt. De calculator zoekt de binnen- en buitenballon die het dichtst in de buurt komen.',
+      dsm_up: 'Foto uploaden',
+      dsm_other: 'Andere foto',
+      dsm_pick: 'of kies een kleur',
+      dsm_tip: 'Tik op de kleur die je wilt maken. De foto blijft op je toestel.',
+      dsm_target: 'Jouw kleur',
+      dsm_best: 'Beste matches. Tik erop om ze in de calculator te laden.',
+      dsm_q1: 'Heel dichtbij',
+      dsm_q2: 'Dichtbij',
+      dsm_q3: 'In de buurt',
+      dsm_q4: 'Dichtste optie',
+      dsm_single: 'Tip: {name} alleen komt al heel dichtbij, dan heb je geen double stuffing nodig.',
       dl_items: 'items',
       nav_cost: 'Kostprijscalculator',
       nav_colour: 'Kleurmatch-tool',
@@ -2960,8 +3044,8 @@
     var RANGE_TINT = { fashion: 0.45, pearl: 0.22, metallic: 0.10, silk: 0.30, reflex: 0.05 };
     var ANCH_KEY = { 'Fashion': 'fashion', 'Pastel Dusk': 'fashion', 'Neon': 'fashion', 'Pastel Matte': 'fashion', 'Pearl': 'pearl', 'Metallic': 'metallic', 'Silk': 'silk', 'Reflex': 'reflex' };
     function clampN(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
-    function mix() {
-      var ic = colorOf('inner'), oc = colorOf('outer');
+    function mix() { return mixOf(colorOf('inner'), colorOf('outer'), rangeOf('outer').name); }
+    function mixOf(ic, oc, outerRange) {
       var inner = hexToRgb(ic.hex), outer = hexToRgb(oc.hex);
       var Lin = (inner.r + inner.g + inner.b) / 765;
       if (oc.clear) {
@@ -2972,7 +3056,7 @@
           b: inner.b + w * (255 - inner.b)
         });
       }
-      var key = ANCH_KEY[rangeOf('outer').name] || 'fashion';
+      var key = ANCH_KEY[outerRange] || 'fashion';
       var anch = RANGE_ANCH[key];
       var cal = OUTER_CAL[key];
       var Lout = (outer.r + outer.g + outer.b) / 765;
@@ -3114,6 +3198,184 @@
         var codes = [ic.code];
         if (oc.code !== ic.code) { codes.push(oc.code); }
         root.stxShop.addR12(codes, btn, 'calc_cart', { inner: ic.n + ' ' + ic.code, outer: oc.n + ' ' + oc.code });
+      });
+    })();
+
+    // "Match a colour": upload a photo (or pick a colour), tap the colour you want and the
+    // calculator tries every inner x outer pair with the same mixing model, then loads the
+    // closest one. Built here so it also exists on a builder-saved copy.
+    // BETA: only with ?stxmatch=1 (remembered in this browser), ?stxmatch=0 turns it off.
+    // Live for everyone: set DSM_BETA = false.
+    (function matchColour() {
+      var DSM_BETA = true;
+      var on = isFile || !DSM_BETA;
+      try {
+        var q = /[?&]stxmatch=([01])\b/.exec(window.location.search);
+        if (q && q[1] === '1') { localStorage.setItem('stx_dsmatch', '1'); }
+        if (q && q[1] === '0') { localStorage.removeItem('stx_dsmatch'); }
+        if (localStorage.getItem('stx_dsmatch') === '1') { on = true; }
+      } catch (e) {}
+      var calcBox = root.querySelector('#view-calculator .calc');
+      var grid = calcBox ? calcBox.querySelector('.calc-grid') : null;
+      if (!on || !grid || root.querySelector('#dsm')) { return; }
+
+      function lin(c) { c /= 255; return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); }
+      function lab(hex) {
+        var c = hexToRgb(hex), r = lin(c.r), g = lin(c.g), b = lin(c.b);
+        function f(v) { return v > 0.008856 ? Math.cbrt(v) : 7.787 * v + 16 / 116; }
+        var fx = f((r * 0.4124 + g * 0.3576 + b * 0.1805) / 0.95047), fy = f(r * 0.2126 + g * 0.7152 + b * 0.0722), fz = f((r * 0.0193 + g * 0.1192 + b * 0.9505) / 1.08883);
+        return { L: 116 * fy - 16, a: 500 * (fx - fy), b: 200 * (fy - fz) };
+      }
+      // CIEDE2000, same formula as the Colour Tool
+      function dE(l1, l2) {
+        var C1 = Math.sqrt(l1.a * l1.a + l1.b * l1.b), C2 = Math.sqrt(l2.a * l2.a + l2.b * l2.b), Cb = (C1 + C2) / 2;
+        var G = 0.5 * (1 - Math.sqrt(Math.pow(Cb, 7) / (Math.pow(Cb, 7) + Math.pow(25, 7))));
+        var a1 = (1 + G) * l1.a, a2 = (1 + G) * l2.a;
+        var C1p = Math.sqrt(a1 * a1 + l1.b * l1.b), C2p = Math.sqrt(a2 * a2 + l2.b * l2.b);
+        function hp(a, b) { if (a === 0 && b === 0) return 0; var h = Math.atan2(b, a) * 180 / Math.PI; return h < 0 ? h + 360 : h; }
+        var h1p = hp(a1, l1.b), h2p = hp(a2, l2.b);
+        var dLp = l2.L - l1.L, dCp = C2p - C1p, dhp;
+        if (C1p * C2p === 0) dhp = 0; else if (Math.abs(h2p - h1p) <= 180) dhp = h2p - h1p; else if (h2p - h1p > 180) dhp = h2p - h1p - 360; else dhp = h2p - h1p + 360;
+        var dHp = 2 * Math.sqrt(C1p * C2p) * Math.sin(dhp / 2 * Math.PI / 180);
+        var Lbp = (l1.L + l2.L) / 2, Cbp = (C1p + C2p) / 2, hbp;
+        if (C1p * C2p === 0) hbp = h1p + h2p; else if (Math.abs(h1p - h2p) <= 180) hbp = (h1p + h2p) / 2; else if (h1p + h2p < 360) hbp = (h1p + h2p + 360) / 2; else hbp = (h1p + h2p - 360) / 2;
+        var T = 1 - 0.17 * Math.cos((hbp - 30) * Math.PI / 180) + 0.24 * Math.cos(2 * hbp * Math.PI / 180) + 0.32 * Math.cos((3 * hbp + 6) * Math.PI / 180) - 0.20 * Math.cos((4 * hbp - 63) * Math.PI / 180);
+        var dTh = 30 * Math.exp(-Math.pow((hbp - 275) / 25, 2));
+        var RC = 2 * Math.sqrt(Math.pow(Cbp, 7) / (Math.pow(Cbp, 7) + Math.pow(25, 7)));
+        var SL = 1 + 0.015 * Math.pow(Lbp - 50, 2) / Math.sqrt(20 + Math.pow(Lbp - 50, 2)), SC = 1 + 0.045 * Cbp, SH = 1 + 0.015 * Cbp * T;
+        var RT = -Math.sin(2 * dTh * Math.PI / 180) * RC;
+        return Math.sqrt(Math.pow(dLp / SL, 2) + Math.pow(dCp / SC, 2) + Math.pow(dHp / SH, 2) + RT * (dCp / SC) * (dHp / SH));
+      }
+
+      // every possible pair, computed once
+      var PAIRS = null, SINGLES = [];
+      RANGES.forEach(function (rng, ri) {
+        rng.colors.forEach(function (c, ci) { if (!c.clear) { SINGLES.push({ ri: ri, ci: ci, c: c, lab: lab(c.hex) }); } });
+      });
+      function pairs() {
+        if (PAIRS) { return PAIRS; }
+        PAIRS = [];
+        RANGES.forEach(function (orng, ori) {
+          orng.colors.forEach(function (oc, oci) {
+            var olab = lab(oc.hex);
+            SINGLES.forEach(function (s) {
+              if (s.c.code === oc.code) { return; }
+              var hex = mixOf(s.c, oc, orng.name);
+              PAIRS.push({ inner: { rangeIdx: s.ri, colorIdx: s.ci }, outer: { rangeIdx: ori, colorIdx: oci }, ic: s.c, oc: oc, hex: hex, lab: lab(hex), ilab: s.lab, olab: olab });
+            });
+          });
+        });
+        return PAIRS;
+      }
+
+      var box = document.createElement('div');
+      box.className = 'dsm'; box.id = 'dsm';
+      box.innerHTML =
+        '<div class="dsm-head"><div><div class="picker-label">' + esc(STR.dsm_label) + '</div><p class="dsm-hint">' + esc(STR.dsm_hint) + '</p></div>'
+        + '<div class="dsm-acts"><button type="button" class="btn-cart dsm-up">' + esc(STR.dsm_up) + '</button>'
+        + '<label class="dsm-native">' + esc(STR.dsm_pick) + '<input type="color" value="#d5a6c8"></label>'
+        + '<input type="file" accept="image/*" hidden></div></div>'
+        + '<div class="dsm-body"><div class="dsm-photo"><div class="dsm-cvbox"><canvas></canvas><div class="dsm-lens"></div></div>'
+        + '<p class="dsm-tip">' + esc(STR.dsm_tip) + '</p></div>'
+        + '<div class="dsm-out"><div class="dsm-target"><span class="dsm-sw"></span><div><div class="dsm-tl">' + esc(STR.dsm_target) + '</div><div class="dsm-hex"></div></div></div>'
+        + '<p class="dsm-best">' + esc(STR.dsm_best) + '</p><div class="dsm-list"></div><p class="dsm-single"></p></div></div>';
+      grid.parentNode.insertBefore(box, grid);
+
+      var fileIn = box.querySelector('input[type=file]'), native = box.querySelector('input[type=color]');
+      var body = box.querySelector('.dsm-body'), photo = box.querySelector('.dsm-photo');
+      var cv = box.querySelector('canvas'), ctx = cv.getContext('2d', { willReadFrequently: true });
+      var lens = box.querySelector('.dsm-lens'), upBtn = box.querySelector('.dsm-up');
+      var hasPhoto = false, results = [];
+
+      function quality(d) { return d < 4 ? STR.dsm_q1 : d < 8 ? STR.dsm_q2 : d < 14 ? STR.dsm_q3 : STR.dsm_q4; }
+      function chip(hex) { return '<span class="dsm-chip" style="background:' + hex + '"></span>'; }
+      function apply(i) {
+        var r = results[i];
+        if (!r) { return; }
+        sel.inner = r.inner; sel.outer = r.outer;
+        tab.inner = r.inner.rangeIdx; tab.outer = r.outer.rangeIdx;
+        paint();
+        box.querySelectorAll('.dsm-opt').forEach(function (b, j) { b.classList.toggle('on', j === i); });
+      }
+      function search(hex, source) {
+        var t = lab(hex);
+        // score = how close the mix is, plus a small preference for pairs whose own colours sit
+        // near the target (the model is surest there, and artists recognise those combinations)
+        var all = pairs().map(function (p) { var d = dE(t, p.lab); return { p: p, d: d, s: d + 0.03 * (dE(t, p.ilab) + dE(t, p.olab)) }; });
+        all.sort(function (x, y) { return x.s - y.s; });
+        // max 2 options with the same outer balloon, so the three are really different
+        results = []; var perOuter = {};
+        for (var i = 0; i < all.length && results.length < 3; i++) {
+          var k = all[i].p.oc.code;
+          if ((perOuter[k] || 0) >= 2) { continue; }
+          perOuter[k] = (perOuter[k] || 0) + 1;
+          results.push({ inner: all[i].p.inner, outer: all[i].p.outer, ic: all[i].p.ic, oc: all[i].p.oc, hex: all[i].p.hex, d: all[i].d });
+        }
+        box.querySelector('.dsm-sw').style.background = hex;
+        box.querySelector('.dsm-hex').textContent = hex.toUpperCase();
+        box.querySelector('.dsm-list').innerHTML = results.map(function (r, i) {
+          return '<button type="button" class="dsm-opt" data-i="' + i + '">'
+            + '<span class="dsm-chips">' + chip(r.ic.hex) + '<em>+</em>' + chip(r.oc.hex) + '<em>=</em>' + chip(r.hex) + '</span>'
+            + '<span class="dsm-names"><span><b>' + esc(STR.calc_lbl_inner) + ':</b> ' + esc(RANGES[r.inner.rangeIdx].name + ' ' + r.ic.n + ' ' + r.ic.code) + '</span>'
+            + '<span><b>' + esc(STR.calc_lbl_outer) + ':</b> ' + esc(RANGES[r.outer.rangeIdx].name + ' ' + r.oc.n + ' ' + r.oc.code) + '</span></span>'
+            + '<span class="dsm-q">' + esc(quality(r.d)) + '</span></button>';
+        }).join('');
+        var bestSingle = null;
+        SINGLES.forEach(function (s) { var d = dE(t, s.lab); if (!bestSingle || d < bestSingle.d) { bestSingle = { s: s, d: d }; } });
+        var single = box.querySelector('.dsm-single');
+        if (bestSingle && results[0] && bestSingle.d < 4 && bestSingle.d <= results[0].d) {
+          single.textContent = STR.dsm_single.replace('{name}', RANGES[bestSingle.s.ri].name + ' ' + bestSingle.s.c.n + ' ' + bestSingle.s.c.code);
+          single.style.display = '';
+        } else { single.style.display = 'none'; }
+        body.classList.add('on');
+        photo.style.display = hasPhoto ? '' : 'none';
+        apply(0);
+        if (results[0]) {
+          track('calc_match', { source: source, target: hex, inner: results[0].ic.n + ' ' + results[0].ic.code, outer: results[0].oc.n + ' ' + results[0].oc.code, de: Math.round(results[0].d * 10) / 10 });
+        }
+      }
+
+      box.querySelector('.dsm-list').addEventListener('click', function (e) {
+        var b = e.target.closest('.dsm-opt');
+        if (!b) { return; }
+        var i = parseInt(b.getAttribute('data-i'), 10);
+        apply(i);
+        track('calc_match_pick', { rank: i + 1 });
+      });
+      upBtn.addEventListener('click', function () { fileIn.click(); });
+      fileIn.addEventListener('change', function () {
+        var f = fileIn.files && fileIn.files[0];
+        if (!f) { return; }
+        var img = new Image(), url = URL.createObjectURL(f);
+        img.onload = function () {
+          var sc = Math.min(1, 1000 / Math.max(img.width, img.height));
+          cv.width = Math.round(img.width * sc); cv.height = Math.round(img.height * sc);
+          ctx.drawImage(img, 0, 0, cv.width, cv.height); URL.revokeObjectURL(url);
+          hasPhoto = true; lens.style.display = 'none';
+          body.classList.add('on'); photo.style.display = '';
+          box.querySelector('.dsm-out').style.display = 'none';
+          upBtn.textContent = STR.dsm_other;
+          fileIn.value = '';
+          track('calc_match_photo', {});
+        };
+        img.src = url;
+      });
+      cv.addEventListener('click', function (e) {
+        var rect = cv.getBoundingClientRect();
+        var x = Math.round((e.clientX - rect.left) * cv.width / rect.width), y = Math.round((e.clientY - rect.top) * cv.height / rect.height);
+        var r = 3, n = 0, s = { r: 0, g: 0, b: 0 };
+        var d = ctx.getImageData(Math.max(0, x - r), Math.max(0, y - r), r * 2 + 1, r * 2 + 1).data;
+        for (var i = 0; i < d.length; i += 4) { s.r += d[i]; s.g += d[i + 1]; s.b += d[i + 2]; n++; }
+        var hex = rgbToHex({ r: s.r / n, g: s.g / n, b: s.b / n });
+        lens.style.display = 'block'; lens.style.background = hex;
+        lens.style.left = ((e.clientX - rect.left) / rect.width * 100) + '%';
+        lens.style.top = ((e.clientY - rect.top) / rect.height * 100) + '%';
+        box.querySelector('.dsm-out').style.display = '';
+        search(hex, 'photo');
+      });
+      native.addEventListener('change', function () {
+        box.querySelector('.dsm-out').style.display = '';
+        search(native.value, 'picker');
       });
     })();
     paint();
