@@ -31,6 +31,14 @@
      uit registratieleads en haalt een code van de site zodra hij
      gebruikt of verlopen is (dan verdwijnt het cadeau-knopje).
 
+     Gebruikt = weg, meteen (sinds 07/10/2026): de geplande actie draait
+     maar 1 keer per dag, dus de pagina kijkt zelf ook in de eigen
+     bestellingen van het account. Staat er sinds de start van de code
+     een bestelling die geen winkelmand meer is (bevestigd, verzonden
+     of geannuleerd) met de cadeauregel erin (beloningsregel, of het
+     cadeauproduct REWARD_SKU aan 0 euro), dan geen popup en geen
+     cadeau-knopje meer. Een winkelmand met de code telt nog niet.
+
      BETA (nu UIT, live sinds 06/10/2026): met BETA = true werkt het alleen in een browser
      waar je ooit een pagina opende met #stxbday achter de URL.
      #stxbday-uit zet het weer uit. #stxbday-demo toont de popup
@@ -88,6 +96,7 @@
   var P_UNTIL = { name: '20079094e521a875', label: 'verjaardagscode tot' }; // datum: laatste geldige dag
   var DAYS = 30;                                // looptijd van de code
   var F_BDAY = 'x_studio_geboortedatum';        // Studio-veld op Contact: geboortedatum
+  var REWARD_SKU = 'R24850';                    // cadeauproduct in sjabloonprogramma 310 (Silk Light Amethyst 3 st.); pas aan als het cadeau wijzigt
 
   if (window.__stxBirthday) { return; }
   window.__stxBirthday = true;
@@ -339,12 +348,28 @@
     anchor.parentNode.insertBefore(el, anchor);
   }
 
-  /* ---- ECHTE DATA: 1 keer per sessie ophalen, daarna uit sessionStorage (op Mijn account altijd vers) ---- */
-  var CACHE = 'stx_bday_v2';
-  if (!onMyHome) {
+  /* Is de code al gebruikt? Kijkt in de eigen bestellingen (geen winkelmand meer) sinds de start van de code. */
+  function usedCheck(d, partnerId) {
+    var start = addDays(d.until, -DAYS);
+    return rpc('/web/dataset/call_kw/sale.order.line/search_read', { model: 'sale.order.line', method: 'search_read',
+      args: [[['order_id.partner_id', '=', partnerId], ['order_id.state', '!=', 'draft'], ['order_id.date_order', '>=', start + ' 00:00:00'], ['price_total', '=', 0]]],
+      kwargs: { fields: ['name', 'is_reward_line'], limit: 50 } })
+      .then(function (lines) {
+        return (lines || []).some(function (l) { return l.is_reward_line || String(l.name || '').indexOf('[' + REWARD_SKU + ']') !== -1; });
+      })
+      .catch(function (e) {
+        if (window.console && console.info) { console.info('[STX verjaardag] bestellingen niet leesbaar:', e && e.message); }
+        return false;
+      });
+  }
+
+  /* ---- ECHTE DATA: 1 keer per sessie ophalen, daarna uit sessionStorage (op Mijn account en na een bestelling altijd vers) ---- */
+  var CACHE = 'stx_bday_v3';
+  var afterOrder = /\/shop\/(confirmation|payment\/validate)/i.test(rawPath);
+  if (!onMyHome && !afterOrder) {
     try {
       var cached = JSON.parse(sessionStorage.getItem(CACHE) || 'null');
-      if (cached && cached.day === today()) { if (valid(cached.d)) { show(cached.d, false); } return; }
+      if (cached && cached.day === today()) { if (valid(cached.d) && !cached.d.used) { show(cached.d, false); } return; }
     } catch (e) {}
   }
 
@@ -358,9 +383,21 @@
     if (!rows || !rows[0]) { return; }
     var r = rows[0];
     var d = { code: prop(r.properties, P_CODE), until: prop(r.properties, P_UNTIL), name: (!r.is_company && r.name) ? String(r.name).trim().split(/\s+/)[0] : '' };
-    try { sessionStorage.setItem(CACHE, JSON.stringify({ day: today(), d: d })); } catch (e) {}
     if (onMyHome) { card(r, pid); }
-    if (valid(d)) { show(d, false); }
+    if (!valid(d)) {
+      try { sessionStorage.setItem(CACHE, JSON.stringify({ day: today(), d: d })); } catch (e) {}
+      return;
+    }
+    return usedCheck(d, pid).then(function (used) {
+      d.used = used;
+      try { sessionStorage.setItem(CACHE, JSON.stringify({ day: today(), d: d })); } catch (e) {}
+      if (used) {
+        var g = document.querySelector('.stx-bd-gift');
+        if (g && g.parentNode) { g.parentNode.removeChild(g); }
+        return;
+      }
+      show(d, false);
+    });
   }).catch(function (e) {
     try { sessionStorage.setItem(CACHE, JSON.stringify({ day: today(), d: null })); } catch (x) {}
     if (window.console && console.info) { console.info('[STX verjaardag] geen verjaardagsdata:', e && e.message); }
