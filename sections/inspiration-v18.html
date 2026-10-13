@@ -643,6 +643,11 @@
   .stx-insp .stx-ct .ct-rgb { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; max-width: 320px; }
   .stx-insp .stx-ct .ct-rgb label { display: block; font-size: 12px; font-weight: 800; color: var(--purple); margin-bottom: 3px; letter-spacing: 0.06em; }
   .stx-insp .stx-ct .ct-rgb .ct-in { width: 100%; text-align: center; }
+  .stx-insp .stx-ct .ct-pms { max-width: 320px; }
+  .stx-insp .stx-ct .ct-pms label { display: block; font-size: 12px; font-weight: 800; color: var(--purple); margin-bottom: 3px; letter-spacing: 0.06em; }
+  .stx-insp .stx-ct .ct-pms .ct-in { width: 100%; }
+  .stx-insp .stx-ct .ct-pms-msg { font-size: 13px; color: var(--ct-ink-soft); font-weight: 600; margin-top: 4px; min-height: 1em; }
+  .stx-insp .stx-ct .ct-pms-msg.err { color: #c0392b; }
   .stx-insp .stx-ct .ct-native { font-size: 14px; color: var(--ct-ink-soft); font-weight: 600; }
   .stx-insp .stx-ct .ct-native input { vertical-align: middle; width: 36px; height: 28px; border: 1.5px solid var(--ct-rule); border-radius: 6px; padding: 0; margin-left: 6px; background: none; cursor: pointer; }
 
@@ -1168,10 +1173,10 @@
                 <!-- 01 PICK -->
                 <div class="ct-block">
                   <h3><span class="ct-nb">01</span><span data-i18n="ct_pick_h">Give me a colour</span></h3>
-                  <p class="ct-hint" data-i18n="ct_pick_hint">Pick any RGB colour, tap it in a photo, or start from a Sempertex colour you already know.</p>
+                  <p class="ct-hint" data-i18n="ct_pick_hint">Pick any RGB colour, type a PMS code, tap it in a photo, or start from a Sempertex colour you already know.</p>
                   <div class="ct-sheet">
                     <div class="ct-tabs" role="tablist">
-                      <button class="ct-tab on" type="button" data-pane="pick" data-i18n="ct_tab_pick">Pick an RGB colour</button>
+                      <button class="ct-tab on" type="button" data-pane="pick" data-i18n="ct_tab_pick">Pick an RGB or PMS colour</button>
                       <button class="ct-tab" type="button" data-pane="photo" data-i18n="ct_tab_photo">From a photo</button>
                       <button class="ct-tab" type="button" data-pane="chart" data-i18n="ct_tab_chart">From the colour chart</button>
                     </div>
@@ -1188,6 +1193,11 @@
                             <div><label for="ct-r">R</label><input class="ct-in" type="number" id="ct-r" min="0" max="255"></div>
                             <div><label for="ct-g">G</label><input class="ct-in" type="number" id="ct-g" min="0" max="255"></div>
                             <div><label for="ct-b">B</label><input class="ct-in" type="number" id="ct-b" min="0" max="255"></div>
+                          </div>
+                          <div class="ct-pms">
+                            <label for="ct-pms" data-i18n="ct_pms_lbl">Or type a PMS code</label>
+                            <input class="ct-in" type="text" id="ct-pms" placeholder="185 C" maxlength="24" spellcheck="false" autocomplete="off">
+                            <div class="ct-pms-msg" id="ct-pms-msg"></div>
                           </div>
                           <div class="ct-native"><span data-i18n="ct_pick_native">Or use your system picker</span><input type="color" id="ct-picker" value="#d5a6c8"></div>
                         </div>
@@ -1536,10 +1546,10 @@
       ct_lede: 'Pick any colour, tap it in a photo or start from a Sempertex colour you know. You get the closest balloons and palettes that work, every one a real product.',
       ct_btn_saved: 'Saved palettes',
       ct_pick_h: 'Give me a colour',
-      ct_pick_hint: 'Pick any RGB colour, tap it in a photo, or start from a Sempertex colour you already know.',
+      ct_pick_hint: 'Pick any RGB colour, type a PMS code, tap it in a photo, or start from a Sempertex colour you already know.',
       ct_pick_lbl: 'Your colour',
       ct_pick_native: 'Or use your system picker',
-      ct_tab_pick: 'Pick an RGB colour',
+      ct_tab_pick: 'Pick an RGB or PMS colour',
       ct_tab_photo: 'From a photo',
       ct_tab_chart: 'From the colour chart',
       ct_drop_h: 'Drop a photo here or tap to choose',
@@ -1563,6 +1573,11 @@
       ct_from_photo: 'from your photo',
       ct_from_chart: 'from the chart',
       ct_from_pick: 'picked',
+      ct_pms_lbl: 'Or type a PMS code',
+      ct_pms_found: 'PMS {c} C',
+      ct_pms_none: 'We don\'t know that PMS code. Try e.g. 185, 7408 or Cool Gray 1.',
+      ct_pms_official: 'Official Sempertex match: {n}',
+      ct_from_pms: 'from PMS {c} C',
       ct_p_tone: 'Tone on tone',
       ct_p_tone_w: 'Same family, lighter and deeper, with a soft neutral.',
       ct_p_soft: 'Soft contrast',
@@ -1803,10 +1818,10 @@
       ct_lede: 'Wähle irgendeine Farbe, tippe sie in einem Foto an oder starte mit einer Sempertex-Farbe, die du kennst. Du bekommst die nächsten Ballons und Paletten, die funktionieren, jeder ein echtes Produkt.',
       ct_btn_saved: 'Gespeicherte Paletten',
       ct_pick_h: 'Gib mir eine Farbe',
-      ct_pick_hint: 'Wähle eine RGB-Farbe, tippe sie in einem Foto an oder starte mit einer Sempertex-Farbe, die du schon kennst.',
+      ct_pick_hint: 'Wähle eine RGB-Farbe, gib einen PMS-Code ein, tippe sie in einem Foto an oder starte mit einer Sempertex-Farbe, die du schon kennst.',
       ct_pick_lbl: 'Deine Farbe',
       ct_pick_native: 'Oder nutze den Farbwähler deines Geräts',
-      ct_tab_pick: 'RGB-Farbe wählen',
+      ct_tab_pick: 'RGB- oder PMS-Farbe wählen',
       ct_tab_photo: 'Aus einem Foto',
       ct_tab_chart: 'Aus der Farbkarte',
       ct_drop_h: 'Foto hierher ziehen oder tippen zum Auswählen',
@@ -1830,6 +1845,11 @@
       ct_from_photo: 'aus deinem Foto',
       ct_from_chart: 'aus der Farbkarte',
       ct_from_pick: 'gewählt',
+      ct_pms_lbl: 'Oder gib einen PMS-Code ein',
+      ct_pms_found: 'PMS {c} C',
+      ct_pms_none: 'Diesen PMS-Code kennen wir nicht. Versuche z. B. 185, 7408 oder Cool Gray 1.',
+      ct_pms_official: 'Offizielle Sempertex-Farbe: {n}',
+      ct_from_pms: 'aus PMS {c} C',
       ct_p_tone: 'Ton in Ton',
       ct_p_tone_w: 'Gleiche Familie, heller und tiefer, mit einem sanften Neutralton.',
       ct_p_soft: 'Sanfter Kontrast',
@@ -2070,10 +2090,10 @@
       ct_lede: 'Choisissez n’importe quelle couleur, touchez-la dans une photo ou partez d’une couleur Sempertex que vous connaissez. Vous obtenez les ballons les plus proches et des palettes qui fonctionnent, chacun un vrai produit.',
       ct_btn_saved: 'Palettes enregistrées',
       ct_pick_h: 'Donnez-moi une couleur',
-      ct_pick_hint: 'Choisissez une couleur RVB, touchez-la dans une photo, ou partez d’une couleur Sempertex que vous connaissez déjà.',
+      ct_pick_hint: 'Choisissez une couleur RVB, tapez un code PMS, touchez-la dans une photo, ou partez d’une couleur Sempertex que vous connaissez déjà.',
       ct_pick_lbl: 'Votre couleur',
       ct_pick_native: 'Ou utilisez le sélecteur de votre appareil',
-      ct_tab_pick: 'Choisir une couleur RVB',
+      ct_tab_pick: 'Choisir une couleur RVB ou PMS',
       ct_tab_photo: 'Depuis une photo',
       ct_tab_chart: 'Depuis le nuancier',
       ct_drop_h: 'Déposez une photo ici ou touchez pour choisir',
@@ -2097,6 +2117,11 @@
       ct_from_photo: 'de votre photo',
       ct_from_chart: 'du nuancier',
       ct_from_pick: 'choisie',
+      ct_pms_lbl: 'Ou tapez un code PMS',
+      ct_pms_found: 'PMS {c} C',
+      ct_pms_none: 'Nous ne connaissons pas ce code PMS. Essayez par ex. 185, 7408 ou Cool Gray 1.',
+      ct_pms_official: 'Correspondance Sempertex officielle : {n}',
+      ct_from_pms: 'du PMS {c} C',
       ct_p_tone: 'Ton sur ton',
       ct_p_tone_w: 'Même famille, plus claire et plus profonde, avec un neutre doux.',
       ct_p_soft: 'Contraste doux',
@@ -2337,10 +2362,10 @@
       ct_lede: 'Kies eender welke kleur, tik hem aan in een foto of vertrek van een Sempertex-kleur die je kent. Je krijgt de dichtstbijzijnde ballonnen en palettes die werken, elk een echt product.',
       ct_btn_saved: 'Opgeslagen palettes',
       ct_pick_h: 'Geef me een kleur',
-      ct_pick_hint: 'Kies eender welke RGB-kleur, tik hem aan in een foto, of vertrek van een Sempertex-kleur die je al kent.',
+      ct_pick_hint: 'Kies eender welke RGB-kleur, typ een PMS-code, tik hem aan in een foto, of vertrek van een Sempertex-kleur die je al kent.',
       ct_pick_lbl: 'Jouw kleur',
       ct_pick_native: 'Of gebruik de kleurkiezer van je toestel',
-      ct_tab_pick: 'Kies een RGB-kleur',
+      ct_tab_pick: 'Kies een RGB- of PMS-kleur',
       ct_tab_photo: 'Uit een foto',
       ct_tab_chart: 'Uit de colour chart',
       ct_drop_h: 'Sleep een foto hierheen of tik om te kiezen',
@@ -2364,6 +2389,11 @@
       ct_from_photo: 'uit je foto',
       ct_from_chart: 'uit de chart',
       ct_from_pick: 'gekozen',
+      ct_pms_lbl: 'Of typ een PMS-code',
+      ct_pms_found: 'PMS {c} C',
+      ct_pms_none: 'Die PMS-code kennen we niet. Probeer bv. 185, 7408 of Cool Gray 1.',
+      ct_pms_official: 'Officiële Sempertex-kleur: {n}',
+      ct_from_pms: 'uit PMS {c} C',
       ct_p_tone: 'Ton sur ton',
       ct_p_tone_w: 'Dezelfde familie, lichter en dieper, met een zachte neutrale.',
       ct_p_soft: 'Zacht contrast',
@@ -4296,6 +4326,8 @@
   var RANGES = [{"name":"Fashion","colors":[{"n":"White","code":"005","hex":"#e2e6e9","file":"005_White.png"},{"n":"Almond White","code":"006","hex":"#ebeae5","file":"006_Almond-White.png"},{"n":"Candy Pink","code":"008","hex":"#e7b2cc","file":"008_Candy-Pink.png"},{"n":"Pink","code":"009","hex":"#f7b4cb","file":"009_Pink.png"},{"n":"Rosewood","code":"010","hex":"#c48188","file":"010_Rosewood.png"},{"n":"Rose","code":"011","hex":"#ea799d","file":"011_Rose.png"},{"n":"Fuchsia","code":"012","hex":"#e75385","file":"012_Fuchsia.png"},{"n":"Cosmo Pink","code":"013","hex":"#d4246b","file":"013_Cosmo-Pink.png"},{"n":"Red","code":"015","hex":"#e63b33","file":"015_Red.png"},{"n":"Imperial Red","code":"016","hex":"#89231e","file":"016_Imperial-Red.png"},{"n":"Merlot","code":"018","hex":"#5c2623","file":"018_Merlot.png"},{"n":"Yellow","code":"020","hex":"#f1df2d","file":"020_Yellow.png"},{"n":"Honey Yellow","code":"021","hex":"#f4ca11","file":"021_Honey-Yellow.png"},{"n":"Mustard","code":"023","hex":"#f4b83e","file":"023_Mustard.png"},{"n":"Eucalyptus","code":"027","hex":"#99a47d","file":"027_Eucalyptus.png"},{"n":"Shamrock Green","code":"029","hex":"#21a833","file":"029_Shamrock-Green.png"},{"n":"Green","code":"030","hex":"#55b182","file":"030_Green.png"},{"n":"Lime Green","code":"031","hex":"#93bf5d","file":"031_Lime-Green.png"},{"n":"Forest Green","code":"032","hex":"#007b45","file":"032_Forest-Green.png"},{"n":"Deep Teal","code":"035","hex":"#09556e","file":"035_Deep-Teal.png"},{"n":"Aquamarina","code":"037","hex":"#7dc4c5","file":"037_Aquamarina.png"},{"n":"Caribbean Blue","code":"038","hex":"#48bbcf","file":"038_Caribbean-Blue.png"},{"n":"Blue","code":"040","hex":"#0dabd6","file":"040_Blue.png"},{"n":"Royal Blue","code":"041","hex":"#2c4c97","file":"041_Royal-Blue.png"},{"n":"Periwinkle Blue","code":"042","hex":"#7b87bf","file":"042_Periwinkle-Blue.png"},{"n":"Navy Blue","code":"044","hex":"#202c56","file":"044_Navy-Blue.png"},{"n":"Lilac","code":"050","hex":"#af90ba","file":"050_Lilac.png"},{"n":"Violet","code":"051","hex":"#542d86","file":"051_Violet.png"},{"n":"Creamy Blush","code":"058","hex":"#dabebb","file":"058_Creamy-Blush.png"},{"n":"Peach Blush","code":"060","hex":"#ead4bc","file":"060_Peach-Blush.png"},{"n":"Orange","code":"061","hex":"#e65c1d","file":"061_Orange.png"},{"n":"Sunset Orange","code":"062","hex":"#d94c22","file":"062_Sunset-Orange.png"},{"n":"Mocha","code":"070","hex":"#7a5430","file":"070_Mocha.png"},{"n":"White Sand","code":"071","hex":"#dbc9bf","file":"071_White-Sand.png"},{"n":"Latte","code":"073","hex":"#c99f60","file":"073_Latte.png"},{"n":"Coffee","code":"074","hex":"#855736","file":"074_Coffee.png"},{"n":"Chocolate","code":"076","hex":"#412d26","file":"076_Chocolate.png"},{"n":"Black","code":"080","hex":"#12110f","file":"080_Black.png"},{"n":"Grey","code":"081","hex":"#b8b6b9","file":"081_Grey.png"},{"n":"Urban Grey","code":"082","hex":"#b8b6b9","file":"082_Urban-Grey.png"},{"n":"Crystal Clear","code":"390","hex":"#eae5e2","file":"390_Crystal-Clear.png","clear":true}]},{"name":"Pastel Dusk","colors":[{"n":"Cream","code":"107","hex":"#dcd7cc","file":"107_Cream.png"},{"n":"Rose","code":"110","hex":"#d7c4c8","file":"110_Rose.png"},{"n":"Green Tea","code":"126","hex":"#aad3b9","file":"126_Green-Tea.png"},{"n":"Blue","code":"140","hex":"#7999a6","file":"140_Blue.png"},{"n":"Lavender","code":"150","hex":"#b28fb0","file":"150_Lavender.png"}]},{"name":"Neon","colors":[{"n":"Fuchsia","code":"212","hex":"#ea5090","file":"212_Fuchsia.png"},{"n":"Yellow","code":"220","hex":"#dee94d","file":"220_Yellow.png"},{"n":"Green","code":"230","hex":"#9cc44d","file":"230_Green.png"},{"n":"Blue","code":"240","hex":"#6098c7","file":"240_Blue.png"},{"n":"Orange","code":"261","hex":"#ef9255","file":"261_Orange.png"}]},{"name":"Pearl","colors":[{"n":"White","code":"405","hex":"#dde6ef","file":"405_White.png"},{"n":"Pearl","code":"406","hex":"#e6e4e7","file":"406_Pearl.png"},{"n":"Pink","code":"409","hex":"#eda1bb","file":"409_Pink.png"},{"n":"Green","code":"430","hex":"#b9d0a4","file":"430_Green.png"},{"n":"Blue","code":"440","hex":"#aed2dc","file":"440_Blue.png"},{"n":"Lilac","code":"450","hex":"#bd99bd","file":"450_Lilac.png"},{"n":"Silver","code":"481","hex":"#b9b9b7","file":"481_Silver.png"}]},{"name":"Metallic","colors":[{"n":"Fuchsia","code":"512","hex":"#e13e7d","file":"512_Fuchsia.png"},{"n":"Red","code":"515","hex":"#a81b26","file":"515_Red.png"},{"n":"Green","code":"530","hex":"#187e34","file":"530_Green.png"},{"n":"Blue","code":"540","hex":"#005c9a","file":"540_Blue.png"},{"n":"Rose Gold","code":"568","hex":"#eda690","file":"568_Rose-Gold.png"},{"n":"Gold","code":"570","hex":"#dcb059","file":"570_Gold.png"},{"n":"Black","code":"580","hex":"#22231e","file":"580_Black.png"}]},{"name":"Pastel Matte","colors":[{"n":"Pink","code":"609","hex":"#f9dde4","file":"609_Pink.png"},{"n":"Yellow","code":"620","hex":"#fbf6d1","file":"620_Yellow.png"},{"n":"Green","code":"630","hex":"#cde5d5","file":"630_Green.png"},{"n":"Blue","code":"640","hex":"#b7daf2","file":"640_Blue.png"},{"n":"Lilac","code":"650","hex":"#e2d0e3","file":"650_Lilac.png"},{"n":"Malibu Peach","code":"660","hex":"#eec3a3","file":"660_Malibu-Peach.png"},{"n":"Nude","code":"661","hex":"#e9d3bb","file":"661_Nude.png"},{"n":"Melon","code":"663","hex":"#eec8c5","file":"663_Melon.png"}]},{"name":"Silk","colors":[{"n":"Oyster White","code":"806","hex":"#cdcdc5","file":"806_Oyster-White.png"},{"n":"Pink Blossom","code":"809","hex":"#ac9293","file":"809_Pink-Blossom.png"},{"n":"Cool Mint","code":"826","hex":"#90a79b","file":"826_Cool-Mint.png"},{"n":"Arctic Blue","code":"839","hex":"#7d9095","file":"839_Arctic-Blue.png"},{"n":"Light Amethyst","code":"850","hex":"#8d8297","file":"850_Light-Amethyst.png"},{"n":"Gold Dust","code":"870","hex":"#ac9875","file":"870_Gold-Dust.png"},{"n":"Cream Pearl","code":"873","hex":"#b5b4a5","file":"873_Cream-Pearl.png"},{"n":"Midnight Grey","code":"880","hex":"#45413c","file":"880_Midnight-Grey.png"}]},{"name":"Reflex","colors":[{"n":"Pink","code":"909","hex":"#9f656f","file":"909_Pink.png"},{"n":"Fuchsia","code":"912","hex":"#9c406b","file":"912_Fuchsia.png"},{"n":"Red","code":"915","hex":"#ab3b31","file":"915_Red.png"},{"n":"Lime Green","code":"931","hex":"#8b9561","file":"931_Lime-Green.png"},{"n":"Aurora Green","code":"932","hex":"#388577","file":"932_Aurora-Green.png"},{"n":"Blue","code":"940","hex":"#3d6b8b","file":"940_Blue.png"},{"n":"Galaxy Blue","code":"944","hex":"#49586f","file":"944_Galaxy-Blue.png"},{"n":"Violet","code":"951","hex":"#7a5c8a","file":"951_Violet.png"},{"n":"Rose Gold","code":"968","hex":"#b37265","file":"968_Rose-Gold.png"},{"n":"Gold","code":"970","hex":"#a68659","file":"970_Gold.png"},{"n":"Champagne","code":"971","hex":"#bcaa9a","file":"971_Champagne.png"},{"n":"Silver","code":"981","hex":"#9f9e98","file":"981_Silver.png"}]}];
   // Official hex and Pantone per code (Sempertex Europe Balloon Colour Codes, 07/2026). Overrides the older chart values above.
   var OFFICIAL = {"005":{"hex":"#e2e6e9","pms":"White"},"006":{"hex":"#ebeae5","pms":"Cool Gray 1"},"009":{"hex":"#f7b6cc","pms":"189"},"010":{"hex":"#c48188","pms":"500"},"011":{"hex":"#ea789d","pms":"204"},"012":{"hex":"#e75385","pms":"205"},"015":{"hex":"#e63b33","pms":"185"},"016":{"hex":"#87231d","pms":"200"},"018":{"hex":"#5c2623","pms":"202"},"020":{"hex":"#f1df2d","pms":"100"},"021":{"hex":"#f3ca0e","pms":"7408"},"023":{"hex":"#f4b83e","pms":"7555"},"027":{"hex":"#99a47c","pms":"5635"},"029":{"hex":"#1fab32","pms":"7481"},"030":{"hex":"#53b081","pms":"3395"},"031":{"hex":"#93bf5d","pms":"375"},"032":{"hex":"#007b45","pms":"341"},"035":{"hex":"#08556f","pms":"315"},"037":{"hex":"#80c4c5","pms":"325"},"038":{"hex":"#46bbcf","pms":"3135"},"040":{"hex":"#0baad6","pms":"2915"},"041":{"hex":"#2c4c97","pms":"Reflex Blue"},"042":{"hex":"#7a87be","pms":"2129"},"044":{"hex":"#202c56","pms":"7693"},"050":{"hex":"#af90ba","pms":"2655"},"051":{"hex":"#542d86","pms":"Violet"},"058":{"hex":"#dabebb","pms":"5035"},"060":{"hex":"#f7d1a7","pms":"1565"},"061":{"hex":"#e65c1d","pms":"Orange 021"},"062":{"hex":"#db4d21","pms":"167"},"070":{"hex":"#79532f","pms":"7504"},"071":{"hex":"#dbc9bf","pms":"4755"},"073":{"hex":"#c99e5f","pms":"4665"},"074":{"hex":"#855735","pms":"463"},"076":{"hex":"#412d26","pms":"469"},"080":{"hex":"#12110f","pms":"Black"},"081":{"hex":"#b8b6b9","pms":"430"},"082":{"hex":"#939798","pms":"444"},"390":{"hex":"#ebe6e3","pms":"Clear"},"107":{"hex":"#dbd6cc","pms":"663"},"110":{"hex":"#d7c4c8","pms":"5035"},"126":{"hex":"#aad3b8","pms":"623"},"140":{"hex":"#7898a5","pms":"5425"},"150":{"hex":"#b28fb0","pms":"5215"},"212":{"hex":"#ea5090","pms":"226"},"220":{"hex":"#dee94d","pms":"803"},"230":{"hex":"#9cc44d","pms":"802"},"240":{"hex":"#6098c7","pms":"801"},"261":{"hex":"#f09255","pms":"804"},"405":{"hex":"#e4edf4","pms":"White"},"406":{"hex":"#e7e5e7","pms":"Perlado (no PMS)"},"409":{"hex":"#eea3bc","pms":"699"},"440":{"hex":"#b0d4e0","pms":"292"},"450":{"hex":"#c09cc0","pms":"271"},"481":{"hex":"#babab8","pms":"877"},"512":{"hex":"#e23f7d","pms":"219"},"515":{"hex":"#ac1c27","pms":"199"},"530":{"hex":"#168335","pms":"349"},"540":{"hex":"#005e9e","pms":"287"},"568":{"hex":"#eda690","pms":"7606"},"570":{"hex":"#dcb15a","pms":"875"},"580":{"hex":"#23241f","pms":"Black"},"609":{"hex":"#f9dee4","pms":"677"},"620":{"hex":"#fbf5d1","pms":"Yellow C 25%"},"630":{"hex":"#cde5d5","pms":"621"},"640":{"hex":"#b7daf2","pms":"545"},"650":{"hex":"#e2d1e3","pms":"7444"},"660":{"hex":"#eec3a4","pms":"474 (approximation)"},"661":{"hex":"#ead4bc","pms":"7520"},"663":{"hex":"#eec8c4","pms":"196"},"806":{"hex":"#cfcfc7","pms":"427"},"809":{"hex":"#ab9395","pms":"10412"},"826":{"hex":"#90a89f","pms":"10292"},"839":{"hex":"#7d929a","pms":"10431"},"850":{"hex":"#8d849a","pms":"10220"},"870":{"hex":"#ad9976","pms":"10407"},"873":{"hex":"#b5b6a9","pms":"420"},"880":{"hex":"#4c4842","pms":"10451"},"909":{"hex":"#a06770","pms":"10420"},"912":{"hex":"#a44b76","pms":"10421"},"915":{"hex":"#ac3b31","pms":"10415"},"931":{"hex":"#8c9663","pms":"10317"},"932":{"hex":"#3b887a","pms":"10294"},"940":{"hex":"#416f8e","pms":"10270"},"944":{"hex":"#4c5a72","pms":"10265"},"951":{"hex":"#7c5e8d","pms":"10215"},"968":{"hex":"#b57366","pms":"10410"},"970":{"hex":"#a7885b","pms":"10344"},"971":{"hex":"#b8a595","pms":"10376"},"981":{"hex":"#a2a19b","pms":"877"}};
+  // PANTONE+ Solid Coated, code to sRGB hex (bitandblack-colorpalette, MIT). Screen approximation of the printed swatch.
+  var PMS_C = "yellow:ffdc00,yellow-012:ffd500,orange-021:ff5300,warm-red:ff4737,red-032:f8353d,rubine-red:d80056,rhodamine-red:e51693,purple:bb30b6,violet:2b0098,blue-072:001b9e,reflex-blue:001d88,process-blue:0082c7,green:00a988,black:2d2925,yellow-0131:fbf0a2,red-0331:ffb1bb,magenta-0521:f3b4da,violet-0631:bb9cdb,blue-0821:61cfe9,green-0921:98e6d6,black-0961:a1978d,801:0098cc,802:50d234,803:ffe700,804:ffad4e,805:ff7475,806:ff48b3,807:ec33be,871:88754f,872:8a704d,873:8a6d4b,874:8e6f4d,875:8b684f,876:8f634a,877:898c8c,medium-yellow:ffd800,bright-orange:ff6200,bright-red:ff3f1d,strong-red:d70053,pink:dc2d96,medium-purple:410c8b,dark-blue:002b99,medium-blue:0082c9,bright-green:00ae8d,neutral-black:222221,100:ffea62,101:ffe94b,102:ffe100,103:cda800,104:b99800,105:907b2a,7401:fcdfa4,7402:f2d798,7403:f7d384,7404:fdd740,7405:fccd00,7406:fdc400,7407:d39f53,106:ffe449,107:ffe027,108:ffdb00,109:ffd000,110:e4aa00,111:b18900,112:a28314,113:ffe054,114:ffdc41,115:ffd829,116:ffcc00,117:d19600,118:b38400,119:8f7423,127:fcda6c,128:fed34e,129:ffcf41,130:fda700,131:d78b00,132:a97401,133:70551c,1205:ffdf8e,1215:ffd773,1225:ffc744,1235:ffb81f,1245:cf9215,1255:b38320,1265:8d6a25,120:ffdb66,121:ffd758,122:ffcf41,123:ffc62c,124:f5aa00,125:bc8400,126:a37713,7548:ffc500,7549:ffb600,7550:d88f00,7551:bc8000,7552:77521c,7553:5d4521,7554:4d3d2a,7555:d99e12,7556:bd8b20,7557:a77d24,7558:9d7226,7559:956a2a,7560:83632e,7561:6e5c35,134:ffd26e,135:ffc558,136:ffbe3d,137:ffa300,138:e77d00,139:b66d05,140:77521a,1345:ffce84,1355:ffc56d,1365:ffb447,1375:ff9d18,1385:de7a00,1395:a16019,1405:734c1e,141:fdc65e,142:fabc48,143:fcb336,144:f78a00,145:db7f00,146:b06d12,147:755a28,7408:ffbe00,7409:fdb327,7410:ffad75,7411:f1a65e,7412:db8333,7413:e78534,7414:c76c15,7562:c29a5f,7563:df9b2d,7564:e28903,7565:d47b23,7566:b46533,7567:8f5530,7568:7a5034,7569:e18926,7570:dc832b,7571:cf7d31,7572:bd7132,7573:ad662a,7574:a46937,7575:875d32,712:ffc999,713:ffbd84,714:ffa961,715:ff8e2b,716:f47900,717:da5e00,718:c64f00,148:ffca8a,149:ffc37c,150:ffb35a,151:ff8400,152:ee7300,153:c76c15,154:a05817,155:f7d19f,156:f6bb7b,157:f69f54,158:f57724,159:d86015,160:a7531a,161:653d21,1485:ffaf60,1495:ff8f14,1505:ff6b00,1525:c14900,1535:9a460a,1545:693817,1555:ffba8e,1565:ffa067,1575:ff7f2e,1585:ff6b09,1595:df5f12,1605:ab5521,1615:90481f,162:ffbf9e,163:ff9f6d,164:ff7f3e,165:ff691c,166:eb5400,167:c6541b,168:783a1c,7576:e4864f,7577:ea7e3d,7578:e46a2d,7579:e45929,7580:c75230,7581:8c4a34,7582:6b4835,1625:ffa487,1635:ff8f6b,1645:ff6d36,1655:ff4e00,1665:e64500,1675:b1461e,1685:893a20,169:ffb4a9,170:ff8670,171:ff5d34,172:ff480f,173:d8481d,174:9c3920,175:6f3628,7583:ce622d,7584:c35626,7585:b75a36,7586:a75331,7587:984b2d,7588:814c36,7589:604637,7590:d9b49d,7591:c97e5a,7592:b95433,7593:a4412a,7594:823a2d,7595:713e30,7596:5f3c30,7597:db4322,7598:c64828,7599:b93d23,7600:93402c,7601:86412a,7602:7e4a31,7603:6a412f,7604:e8d6d3,7605:e6bab2,7606:de9289,7607:c96c5f,7608:ac493d,7609:883a34,7610:6c3431,7611:e2bcae,7612:ce9a8c,7613:c0887d,7614:a88074,7615:8a6760,7616:6d4c4b,7617:5a3d3d,7520:eebfae,7521:c69a81,7522:bd6b55,7523:af5d55,7524:aa5348,7525:a26950,7526:8f3b19,489:f1c2b1,488:f3b9a8,487:f2a692,486:f3917b,485:e62919,484:a13322,483:682f24,176:ffb3b8,177:ff8489,178:ff5b58,179:e93f2e,180:c53c31,181:85332c,1765:ffa6b4,1775:ff909e,1785:ff4d5c,1788:f82b34,1795:da2a2d,1805:b62b2d,1815:812728,1767:ffb1bf,1777:ff657c,1787:fc3747,1797:d33638,1807:a93538,1817:663333,7618:cf6e4f,7619:c84b36,7620:c1322c,7621:b52328,7622:99282b,7623:922b2a,7624:89302d,7625:ec503c,7626:ce3724,7627:ae2f29,7628:a52d2a,7629:713432,7630:673330,7631:5b2f2d,7415:ebb9a5,7416:ef6a52,7417:ea4c36,7418:d35557,7419:b54e59,7420:a0233f,7421:6a1c31,182:ffbdca,183:ff9cb0,184:ff5673,185:ef0028,186:d3162c,187:af1c2c,188:7c262f,196:efc8cd,197:ef9cac,198:ea4760,199:e00031,200:c60d2f,201:a62335,202:8c2531,189:fea5ba,190:fd7898,191:f6456b,192:f00f44,193:c8153b,194:a12a41,195:7b303d,1895:f9b7cc,1905:fb9dba,1915:f7507f,1925:ea004a,1935:cd003b,1945:ad0f3b,1955:8f1635,705:f9dbdf,706:f9d0d7,707:fcb7c3,708:ff94a3,709:f76578,710:ea4251,711:d32e2e,698:f6d5d6,699:f9c4cb,700:f8adb7,701:e98695,702:d95e71,703:be3b48,704:a52d2f,203:efb3c8,204:ec82a7,205:e8457a,206:d80035,207:ad0032,208:8d2140,209:74273d,210:fba0c6,211:fa81b4,212:f65495,213:ea2674,214:d61b66,215:b01c56,216:802444,7422:f5ced2,7423:e66685,7424:e94b83,7425:bb2652,7426:ab173d,7427:a01c2f,7428:6e2c3d,7632:d6c9c9,7633:c9a5a8,7634:c86983,7635:cf3662,7636:c7224a,7637:972f45,7638:832d40,217:edbfda,218:e96eae,219:e01f81,220:ac004f,221:970247,222:6f1e44,7639:956d72,7640:994154,7641:932d47,7642:752e49,7643:6a2f44,7644:5a2d3e,7645:522b38,223:f097cc,224:ee73ba,225:e52792,226:d8006d,227:af005f,228:8c1255,229:672143,230:f6aad6,231:f27ac2,232:ec45a7,233:cc007a,234:a60163,235:871352,670:ecd3e0,671:e8bdd7,672:e0a0c7,673:de88ba,674:cb5898,675:b42971,676:9a044e,677:e6ceda,678:e7cad8,679:debed0,680:cc96b3,681:b46d95,682:9c4976,683:7e2953,684:e5c7d3,685:ddb7c7,686:d1a0b6,687:bf85a2,688:a96487,689:8c3f67,690:652540,510:eec0c9,509:ecb5c3,508:e7acb9,507:d793a7,506:88374d,505:712f3d,504:592b32,7429:e4bcc9,7430:e0aabd,7431:cc7f9b,7432:bc5e80,7433:ae3c63,7434:a03458,7435:8b284f,691:eccdcd,692:e7c0c3,693:dda5ab,694:c9868f,695:ba6e7a,696:9c4955,697:8e3d45,496:f3c7cd,495:f5bec6,494:eea5b1,493:de8896,492:943435,491:843334,490:602b2b,503:ecc6c6,502:e6bcc0,501:dca5aa,500:c8878c,499:7d413a,498:6b3833,497:52302c,5035:e1c2c1,5025:ddb8ba,5015:cfa3a6,5005:b47d81,4995:9d6266,4985:8a4c52,4975:422020,236:f3abdc,237:ef89cd,238:e761bc,239:de45ad,240:c83297,241:b42283,242:83275e,2365:f2bcdf,2375:e279c8,2385:d640b1,2395:cc019c,2405:b2008b,2415:a0047c,2425:870963,243:ecbae2,244:e79fda,245:e083d1,246:c930ae,247:bd22a0,248:a7238c,249:832b6a,7646:a86d85,7647:ae4073,7648:9c2062,7649:8e1f5f,7650:762557,7651:6d2c5b,7652:5f274f,250:e8bbe4,251:dd9ede,252:cc68cd,253:ad26a9,254:992394,255:74276c,517:ecc7dd,516:e8c1dc,515:e2afd5,514:d28dc4,513:90398b,512:823474,511:612e4f,7436:efdae8,7437:ceafcf,7438:d49fd6,7439:b188b6,7440:a378a5,7441:9b61bf,7442:9244bb,2562:d6aae0,2572:c78eda,2582:ac55c4,2592:972fb3,2602:85239a,2612:762a81,2622:643163,7653:968793,7654:a5799a,7655:a25c94,7656:903c7e,7657:6f2e62,7658:6c365f,7659:5e3854,524:d6c4d7,523:c9b1cd,522:b99cc3,521:a37faf,520:62316b,519:57325c,518:4b3048,5245:dcced2,5235:d1bfc6,5225:c6b0ba,5215:b097a6,5205:876679,5195:684659,5185:4c3140,5175:dac7ce,5165:d4c1cc,5155:c1a6b8,5145:9e7992,5135:805675,5125:6b3c5c,5115:532c45,531:e0cae7,530:d7bae2,529:c8a3db,528:b483cf,527:7b36a4,526:6e3389,525:562e5f,256:d7bfdb,257:c5a2cd,258:8a4a97,259:6c2676,260:632864,261:5c2a5d,262:532b4f,2563:c9a4d6,2573:b886c9,2583:9e62b4,2593:803797,2603:6d2780,2613:642272,2623:5d2264,7660:9990a2,7661:8e6f96,7662:794280,7663:693374,7664:643677,7665:5d386d,7666:5b4e62,2567:c0a3d8,2577:a37ec9,2587:7d4cad,2597:54198b,2607:4a1475,2617:411265,2627:381450,263:d7c6e5,264:bfaae1,265:8867cb,266:6a42bc,267:552d9d,268:523081,269:4d306c,2635:c1b5e0,2645:a797d8,2655:8a7ad0,2665:7059c2,2685:21066d,2695:2a1c45,270:b1b6df,271:8f97d2,272:6775be,273:10185e,274:131950,275:171845,276:1f1d34,2705:9fa4dd,2715:7d85d3,2725:5461c6,2735:000387,2745:041070,2755:0f1661,2765:171845,7667:697da0,7668:5f6e9d,7669:595e9a,7670:4e5494,7671:494686,7672:424282,7673:4b5485,7443:dcdce8,7444:b3badd,7445:a4a3c1,7446:8186c7,7447:5d4a76,7448:4a384b,7449:42283a,7674:848cb3,7675:777fa9,7676:6f669e,7677:6b5290,7678:644a8d,7679:503e7f,7680:4d3578,663:e5e1e4,664:e0dbe1,665:c7bdd0,666:a093b2,667:78698e,668:5e4d77,669:3c2d56,5315:d8d6dd,5305:c6c5d2,5295:b2b2c4,5285:8a89a3,5275:555476,5265:3a3a5e,5255:1b1b34,538:c4d1da,537:b9c8d7,536:9fb3c8,535:89a0bc,534:0b365e,533:1b2a44,532:1b202a,7541:dae1e1,7542:a4bdc4,7543:97a5ae,7544:738692,7545:3f5564,7546:213746,7547:121f29,552:b8d3dc,551:a0c7d3,550:87b8c8,549:63a4b9,548:003b4c,547:002f3b,546:012a30,5455:becfd5,5445:b7c9d3,5435:a5bcc9,5425:7698aa,5415:567f95,5405:49758a,5395:04202d,642:d0dce3,643:c3d4e0,644:96b7d2,645:74a0c2,646:4f8ab2,647:006292,648:002f5d,649:d9e1e7,650:cbd9e4,651:a2bcd4,652:769dbf,653:1b6394,654:003c70,655:002754,656:dce3ea,657:c4d7e9,658:accae8,659:6da5db,660:097ec8,661:003995,662:001f70,7450:bac4d8,7451:7eace2,7452:7396db,7453:6da5db,7454:558fb4,7455:125fac,7456:516eb0,2706:c7d2e8,2716:95aee2,2726:1460c6,2736:002daa,2746:00248e,2756:00236c,2766:001d4d,2708:b2cce9,2718:3e89d8,2728:004cba,2738:00158a,2748:001d6f,2758:002060,2768:001e48,2707:c0d7ed,2717:9dc5eb,2727:0080e0,2747:001f71,2757:00215e,2767:02294b,277:a7cbe8,278:80b9e8,279:0090dd,280:002367,281:00225b,282:001f41,283:8ac2e9,284:57abe2,285:0073cc,286:00379f,287:003386,288:002f73,289:002340,7681:8da8ca,7682:5d87b6,7683:2e6ea8,7684:165e9c,7685:015796,7686:00518f,7687:00458a,545:c4dbe6,544:bbd5e6,543:9cc7e0,542:73b0d3,541:003d71,540:003157,539:002538,290:b6daeb,291:91ccea,292:50b2e5,293:0041a5,294:00316d,295:002a55,296:001c2c,2905:84c7e6,2915:48b4e2,2925:009dde,2935:0058b6,2945:004c96,2955:003964,2965:00263d,297:5dc5e8,298:00b7e5,299:00a3df,300:0060b8,301:004b87,302:003c5d,303:002a3a,7688:2198c9,7689:008fc0,7690:0075a7,7691:006196,7692:005585,7693:004a76,7694:00436a,2975:90d7e9,2985:3cc2e7,2995:00aae1,3005:0077c7,3015:00629c,3025:004f72,3035:003f52,7695:74a5b8,7696:589aae,7697:43879f,7698:36748d,7699:29657d,7700:005c7d,7701:005777,7457:b6dbe3,7458:69b3c9,7459:2c97b3,7460:0084c0,7461:007cb8,7462:00558a,7463:002c49,304:91dae8,305:3dc9e6,306:00b4e2,307:006aa4,308:00567b,309:003b49,635:9fdbe8,636:80d3e5,637:34c3e0,638:00aed7,639:0095c9,640:0082bb,641:0067a0,7702:2da9c5,7703:009bbe,7704:0084ac,7705:006e95,7706:006b8f,7707:00607e,7708:005670,628:b3dcdf,629:93d1da,630:6dc6d5,631:14b0c7,632:0093b3,633:007498,634:005e83,310:58d1e3,311:00c1dc,312:00a7cd,313:0090bd,314:007fa4,315:00657e,316:004750,3105:54d2df,3115:00c0d6,3125:00aec8,3135:008cac,3145:00768e,3155:006071,3165:004e59,7709:59b0ba,7710:00a5b4,7711:0096a8,7712:008299,7713:007a89,7714:00747f,7715:006067,317:aee4e3,318:80dbde,319:00cad2,320:0098a7,321:008995,322:007078,323:005e63,7464:9ed0ca,7465:35beac,7466:00afbc,7467:00a0ad,7468:007397,7469:005e84,7470:00596f,7471:78ddd4,7472:54b8b3,7473:089789,7474:007581,7475:40787a,7476:005257,7477:1e4c5a,5523:b5cecf,5513:a9c6c8,5503:90b8bb,5493:7aa8ad,5483:46868d,5473:005c66,5463:01262c,7716:009691,7717:00827c,7718:007573,7719:006b67,7720:00625d,7721:005c5d,7722:004e4f,324:97dbd9,325:5dccc9,326:00afa9,327:008274,328:007268,329:00665e,330:00514c,3242:66dbd5,3252:00cfc8,3262:00bbb3,3272:00a29c,3282:00837b,3292:00574f,3302:004c45,3245:73ddd3,3255:00d2c4,3265:00c3b2,3275:00b09b,3285:009382,3295:007666,3305:004c42,3248:6bccb9,3258:42c4b2,3268:00a88e,3278:009777,3288:008065,3298:006752,3308:004437,566:b7dcd2,565:9cd4c9,564:80c9bd,563:62baae,562:006d61,561:00594e,560:1a3d35,573:b1e1d7,572:9fded1,571:91dacd,570:65c9ba,569:00806e,568:006a5a,567:143e34,559:b0cab8,558:9cbeab,557:86af99,556:71a088,555:2d6f4f,554:225a40,553:2a4634,5595:becdc2,5585:a7beb1,5575:91aca0,5565:7e9d91,5555:5a7f70,5545:42685b,5535:17312a,5665:bac4b8,5655:b1bcae,5645:a4b1a3,5635:95a596,5625:718371,5615:5e7260,5605:22372c,5527:bcc9c5,5517:afbfba,5507:9cafab,5497:839894,5487:5d7774,5477:3c5a57,5467:19332f,621:d0e1d7,622:b6cbc1,623:9abaae,624:779e91,625:4d7e70,626:235c4e,627:10312b,331:a5e7d9,332:86e2d1,333:22d8c2,334:009579,335:007960,336:006350,337:8ed4bd,338:6bcdb1,339:00b28a,340:00945f,341:007853,342:006648,343:0d5641,7723:4ea586,7724:00946e,7725:008455,7726:00794c,7727:006d46,7728:006645,7729:005745,3375:74dfc0,3385:3dd5ae,3395:00bf8a,3405:00ab69,3415:00764b,3425:006141,3435:134633,344:a1d9b3,345:93d5ac,346:70cb99,347:009947,348:008340,349:0b6737,350:2c5135,351:a3e3b9,352:8ee0b0,353:7fdfa9,354:00ad43,355:00943c,356:007835,357:1f5532,7478:97e1be,7479:20cc7c,7480:00bc72,7481:00b453,7482:009c4f,7483:265d39,7484:005740,7730:4f9463,7731:278549,7732:007941,7733:006d42,7734:285f40,7735:39573d,7736:375442,7737:73a43c,7738:4fa042,7739:399943,7740:3e8f42,7741:488841,7742:4c753b,7743:43673c,358:b2db92,359:a9d785,360:76c04e,361:4cad2e,362:569c31,363:528a2d,364:4e752a,7485:d4debc,7486:c1df93,7487:94dc68,7488:7cd34d,7489:79a852,7490:78984c,7491:7d833c,365:c7de88,366:bfdd7b,367:abd45f,368:81bc27,369:6ca615,370:6b8c1f,371:586123,372:daeb8f,373:d4e982,374:cbe56c,375:a0d506,376:8bba00,377:80980b,378:5e621f,580:c8d4a4,579:c2cf9b,578:bccd96,577:b1c380,576:7e9a4a,575:6e813c,574:4f5930,5807:d3d1aa,5797:cbc99c,5787:bdbb89,5777:a6a367,5767:8f8b4a,5757:71702f,5747:3f431d,5875:d7cc9e,5865:d1c795,5855:c4b986,5845:b5a96f,5835:a69958,5825:90813d,5815:5a5025,5803:c6c6a6,5793:b7b895,5783:a6a982,5773:8c8e64,5763:787a4d,5753:636639,5743:424728,7492:c8cb81,7493:c1c593,7494:9eae88,7495:95983f,7496:7d8821,7497:7c7156,7498:5f6136,7744:c2ba1c,7745:b3ac28,7746:9f9932,7747:908c33,7748:827f36,7749:767236,7750:686535,379:e9e567,380:e5e346,381:d7d900,382:cdd500,383:b2ad00,384:9d9300,385:7d7021,386:f3e96d,387:ebe538,388:eae628,389:d8dd00,390:bebc00,391:9f9300,392:897a0b,587:eae38d,586:e9e07c,585:e6de71,584:dcd657,583:c2be1b,582:968b15,581:675c21,393:f8eb74,394:f8e93f,395:f5e61f,396:ebdf00,397:c9b800,398:b3a200,399:a79000,3935:fce75d,3945:fde400,3955:fbde00,3965:f7db00,3975:c6a700,3985:9e8400,3995:6e5d22,600:f7e99b,601:f7e68f,602:f9e77c,603:f9e04d,604:f7da2b,605:eacb00,606:d8b300,607:f2e39a,608:f1e187,609:eedb76,610:e9d256,611:e0c728,612:ceaf00,613:bc9b00,461:f2df99,460:eed680,459:e5cb63,458:e2c557,457:c19d1a,456:ab8e2c,455:6e5924,614:e2d59a,615:dbcc8c,616:d6c782,617:c6b360,618:b39d3d,619:a5902b,620:917a1b,7751:d1b44c,7752:d8ae24,7753:caa121,7754:a78429,7755:907732,7756:776737,7757:6c5d33,7758:dcc109,7759:ceb200,7760:97832d,7761:797136,7762:61643a,7763:5c5b3c,7764:565335,7765:c3b225,7766:bda923,7767:b09b2e,7768:917d35,7769:746134,7770:655837,7771:4f4933,4545:dacba0,4535:d4c392,4525:cbb784,4515:b8a168,4505:9d8342,4495:927632,4485:664e26,454:d0c6a7,453:c7bb99,452:b6a87e,451:a3925f,450:5f4a27,449:584628,448:4d4029,7499:f6e4b2,7500:e4d0a5,7501:ddc79d,7502:d5b787,7503:b09868,7504:99785e,7505:856140,468:e1c9a2,467:d9ba8b,466:cca876,465:c2965c,464:935b29,463:794d28,462:61462c,7506:f8dcb3,7507:ffd299,7508:e8b97f,7509:dca360,7510:cd8a3f,7511:bd7627,7512:ab6319,719:f1c7a1,720:ecb689,721:e3a36d,722:d18443,723:b96b22,724:994f11,725:814115,475:f7d0b2,474:f8c8a7,473:f9c09b,472:ec9f6d,471:c06225,470:aa5a29,469:6d4024,726:e4c09d,727:dfb38d,728:d3a176,729:bb8250,730:a4662d,731:7d4412,732:663511,4685:e5c7ad,4675:e1c0a6,4665:d2a888,4655:c49473,4645:b37d58,4635:995f35,4625:532d1e,7513:e4b7a4,7514:d9a284,7515:cc8d67,7516:9e552a,7517:8b431c,7518:704f47,7519:614c3d,4755:dac2b5,4745:d1b6a8,4735:c3a290,4725:b48a78,4715:9c6c58,4705:814c3a,4695:5f3428,482:e0c8b6,481:d9bba8,480:caa790,479:b28067,478:773e2a,477:683b2b,476:513528,7527:d7d1c3,7528:c7b9ab,7529:b8a998,7530:a59382,7531:7c6654,7532:66513c,7533:4a3829,7534:d2cbbc,7535:b9b09b,7536:aaa088,7537:a9ada1,7538:949a90,7539:8e8e88,7540:494e53,427:cfd2d2,428:c3c7c8,429:a2aaac,430:7a868b,431:5a6870,432:2f3d47,433:1b252b,420:c9c9c8,421:b1b4b2,422:9ea1a1,423:898c8c,424:707371,425:545859,426:25282a,441:bcc6c2,442:9eaba9,443:909e9d,444:6e7c7c,445:4c5757,446:3e4644,447:373a36,413:bbb9ae,414:aaa99e,415:919187,416:7f7f73,417:66665d,418:52534a,419:202221,400:c7c0b6,401:b2aa9f,402:9e948a,403:8e857b,404:786e63,405:6b6259,406:c7bcb5,407:b1a6a0,408:988c86,409:887974,410:766762,411:61514e,412:382e2c,434:cfc4c3,435:bfb3b5,436:ab9a9d,437:7a6568,438:574544,439:443634,440:382e2c,warm-gray-1:d7d1c8,warm-gray-2:cec5bc,warm-gray-3:c0b7ae,warm-gray-4:b5aca4,warm-gray-5:ada197,warm-gray-6:a79c94,warm-gray-7:988c83,warm-gray-8:8d8278,warm-gray-9:85776f,warm-gray-10:7a6d65,warm-gray-11:716359,cool-gray-1:dbdad6,cool-gray-2:d2d2ce,cool-gray-3:c9c9c8,cool-gray-4:bbbbba,cool-gray-5:b3b3b2,cool-gray-6:a8a9a9,cool-gray-7:989999,cool-gray-8:8a8c8e,cool-gray-9:757779,cool-gray-10:63666a,cool-gray-11:525559,black-2:332e1f,black-3:222721,black-4:31261c,black-5:3f2b2f,black-6:0e1920,black-7:3d3834";
   RANGES.forEach(function (r) { r.colors.forEach(function (c) { var o = OFFICIAL[c.code]; if (o) { c.hex = o.hex; c.pms = o.pms; } }); });
 
   /* ---------------- colour maths ---------------- */
@@ -4402,6 +4434,14 @@
     $('picker').value = state.target; $('sw-big').style.background = state.target; syncPicker(state.target);
     var lab = rgbToLab(hexToRgb(state.target));
     state.matches = nearest(lab, { n: 3, finish: state.finish });
+    if (state.source === 'pms' && state.pms) {
+      // Balloons whose official PMS is exactly this code go first.
+      var own = state.pms.official.filter(function (c) { return state.finish === 'all' || c.finish === state.finish; }).map(function (c) { return { c: c, d: dE(lab, c.lab) }; });
+      state.matches = own.concat(state.matches.filter(function (m) { return own.every(function (o) { return o.c !== m.c; }); })).slice(0, 3);
+    } else {
+      state.pms = null;
+      if (document.activeElement !== $('pms')) { $('pms').value = ''; pmsMsg('', false); }
+    }
     state.base = state.matches[0].c;
     renderCard(); renderPalettes();
     track('colour_tool_pick', { source: state.source, hex: state.target, match: state.base.code });
@@ -4409,7 +4449,7 @@
   function renderCard() {
     measureBrightness(state.base); $('target-b').innerHTML = tintBalloon(state.target, state.base);
     $('target-hex').textContent = state.target;
-    $('target-sub').textContent = ct('from_' + state.source);
+    $('target-sub').textContent = ct('from_' + state.source).replace('{c}', state.pms ? state.pms.label : '');
     var host = $('matches'); host.innerHTML = '';
     state.matches.forEach(function (m) {
       var el = document.createElement('div'); el.className = 'ct-match' + (m.c === state.base ? ' on' : '');
@@ -4519,6 +4559,36 @@
   ['r', 'g', 'b'].forEach(function (k) { $(k).addEventListener('input', function () { var c = { r: clampN(num($('r').value), 0, 255), g: clampN(num($('g').value), 0, 255), b: clampN(num($('b').value), 0, 255) }; setTarget(rgbToHex(c), 'pick'); }); });
   $('picker').addEventListener('input', function (e) { setTarget(e.target.value, 'pick'); });
   $('hex').addEventListener('input', function (e) { var v = e.target.value.trim(); if (/^#?[0-9a-f]{6}$/i.test(v)) setTarget(v.charAt(0) === '#' ? v : '#' + v, 'pick'); });
+
+  /* ---------------- PMS code ---------------- */
+  var PMS = {};
+  PMS_C.split(',').forEach(function (p) { var i = p.indexOf(':'); PMS[p.slice(0, i)] = '#' + p.slice(i + 1); });
+  // "PMS 185 C", "Pantone 7408C", "cool grey 1 u" -> "185", "7408", "cool-gray-1"
+  function pmsKey(v) {
+    return String(v).toLowerCase().replace(/\(.*?\)/g, ' ').replace(/\b(pantone|pms)\b/g, ' ').replace(/grey/g, 'gray').trim()
+      .replace(/[\s_-]*\b(c|u|cp|up|tcx|tpx)$/, '').replace(/^(\d+)(c|u|cp|up)$/, '$1').trim().replace(/[\s_]+/g, '-');
+  }
+  function pmsLabel(k) { return k.split('-').map(function (w) { return w.charAt(0).toUpperCase() + w.slice(1); }).join(' '); }
+  function pmsMsg(t, err) { var el = $('pms-msg'); el.textContent = t; el.classList.toggle('err', !!err); }
+  function pmsLookup(v) {
+    var k = pmsKey(v); if (!k) return null;
+    var official = COLOURS.filter(function (c) { return c.pms && !c.clear && pmsKey(c.pms) === k; });
+    var hex = PMS[k] || (official.length ? official[0].hex : '');
+    return hex ? { key: k, label: pmsLabel(k), hex: hex, official: official } : null;
+  }
+  function usePms(final) {
+    var v = $('pms').value.trim();
+    if (!v) { pmsMsg('', false); return; }
+    var r = pmsLookup(v);
+    if (!r) { if (final) { pmsMsg(ct('pms_none'), true); track('colour_tool_pms', { code: v, found: false }); } else pmsMsg('', false); return; }
+    state.pms = r;
+    pmsMsg(r.official.length ? ct('pms_official').replace('{n}', r.official.map(function (c) { return c.name + ' ' + c.code; }).join(' / ')) : ct('pms_found').replace('{c}', r.label), false);
+    setTarget(r.hex, 'pms');
+    if (final) track('colour_tool_pms', { code: r.key, found: true, official: r.official.length > 0 });
+  }
+  $('pms').addEventListener('input', function () { usePms(false); });
+  $('pms').addEventListener('change', function () { usePms(true); });
+  $('pms').addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); usePms(true); } });
 
   /* ---------------- tabs ---------------- */
   ctRoot.querySelectorAll('.ct-tab').forEach(function (b) {
