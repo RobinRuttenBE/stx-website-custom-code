@@ -3305,6 +3305,22 @@
         return PAIRS;
       }
 
+      // A target more saturated than any mix in its hue (#c800ff, #0000ff) is brought back to the
+      // most saturated mix there, same lightness and hue. Without this CIEDE2000 barely weighs hue at
+      // such chroma and a grey mix can rank above a purple one.
+      function hueGap(h1, h2) { var g = Math.abs(h1 - h2) % 360; return g > 180 ? 360 - g : g; }
+      function reachable(t) {
+        var C = Math.sqrt(t.a * t.a + t.b * t.b);
+        if (C < 20) { return t; }
+        var h = Math.atan2(t.b, t.a) * 180 / Math.PI, max = 0;
+        pairs().forEach(function (p) {
+          var pc = Math.sqrt(p.lab.a * p.lab.a + p.lab.b * p.lab.b);
+          if (pc > max && hueGap(h, Math.atan2(p.lab.b, p.lab.a) * 180 / Math.PI) < 20) { max = pc; }
+        });
+        if (!max || C <= max) { return t; }
+        return { L: t.L, a: t.a * max / C, b: t.b * max / C };
+      }
+
       var box = document.createElement('div');
       box.className = 'dsm'; box.id = 'dsm';
       box.innerHTML =
@@ -3335,10 +3351,11 @@
         box.querySelectorAll('.dsm-opt').forEach(function (b, j) { b.classList.toggle('on', j === i); });
       }
       function search(hex, source) {
-        var t = lab(hex);
-        // score = how close the mix is, plus a small preference for pairs whose own colours sit
-        // near the target (the model is surest there, and artists recognise those combinations)
-        var all = pairs().map(function (p) { var d = dE(t, p.lab); return { p: p, d: d, s: d + 0.03 * (dE(t, p.ilab) + dE(t, p.olab)) }; });
+        var t = lab(hex), tr = reachable(t);
+        // score = how close the mix is to the reachable target, plus a small preference for pairs whose
+        // own colours sit near it (the model is surest there, and artists recognise those combinations).
+        // d (the label) stays measured against the colour that was really asked for.
+        var all = pairs().map(function (p) { var d = dE(t, p.lab); return { p: p, d: d, s: dE(tr, p.lab) + 0.03 * (dE(tr, p.ilab) + dE(tr, p.olab)) }; });
         all.sort(function (x, y) { return x.s - y.s; });
         // max 2 options with the same outer balloon, so the three are really different
         results = []; var perOuter = {};
