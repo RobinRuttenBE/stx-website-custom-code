@@ -36,7 +36,7 @@
   var BETA_KEY = 'stx_design_beta';
   var APP_FILE = 'design-sheet/app-v10.html';
   var APP_FALLBACK = '';                 // volledige jsDelivr-URL, enkel nodig met een loader zonder STX_SECTIONS_BASE
-  var AI_ENDPOINT = '';                  // bv. 'https://stx-ai.vercel.app/api/impression'
+  var AI_ENDPOINT = 'https://stx-ai-proxy.vercel.app/api/impression';   // stx-ai-proxy in de hoofdrepo (Vercel)
 
   function wallDone() { if (window.stxLoadwallHide) { window.stxLoadwallHide(); } }
   function betaOn() {

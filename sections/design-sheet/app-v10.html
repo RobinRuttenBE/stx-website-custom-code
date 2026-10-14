@@ -3077,17 +3077,22 @@ function aiJob(cb) {
   var off = renderOption(state.balloons, hasLoc ? state.loc.pw : 1600, hasLoc ? 'location' : 'sheet');
   var job = { crop: null, box: null };
   if (hasLoc) {
-    var crop = aiCrop(), bb = designPhotoBox();
+    var crop = state.aiWhole ? null : aiCrop(), bb = designPhotoBox();
     if (crop) {
       // small crops go up in size so the AI sees the balloons
       var cv = document.createElement('canvas'), up = Math.max(1, Math.min(2.5, 1024 / Math.max(crop.w, crop.h)));
       cv.width = Math.round(crop.w * up); cv.height = Math.round(crop.h * up);
       cv.getContext('2d').drawImage(off, crop.x, crop.y, crop.w, crop.h, 0, 0, cv.width, cv.height);
+      var pv = document.createElement('canvas'), ps = Math.min(1, 900 / off.width); pv.width = Math.round(off.width * ps); pv.height = Math.round(off.height * ps);
+      var pc = pv.getContext('2d'); pc.drawImage(off, 0, 0, pv.width, pv.height);
+      pc.fillStyle = 'rgba(27,7,61,0.45)'; pc.beginPath(); pc.rect(0, 0, pv.width, pv.height); pc.rect(crop.x * ps, crop.y * ps, crop.w * ps, crop.h * ps); pc.fill('evenodd');
+      pc.strokeStyle = '#ffdb5a'; pc.lineWidth = 3; pc.setLineDash([10, 6]); pc.strokeRect(crop.x * ps, crop.y * ps, crop.w * ps, crop.h * ps);
+      job.preview = pv.toDataURL('image/jpeg', 0.85);
       off = cv; job.crop = crop;
       job.box = { l: (bb.x0 - crop.x) / crop.w, r: (bb.x1 - crop.x) / crop.w, t: (bb.y0 - crop.y) / crop.h, b: (bb.y1 - crop.y) / crop.h };
     } else if (bb) job.box = { l: bb.x0 / state.loc.pw, r: bb.x1 / state.loc.pw, t: bb.y0 / state.loc.ph, b: bb.y1 / state.loc.ph };
   }
-  job.ref = off.toDataURL('image/jpeg', 0.9); job.w = off.width; job.h = off.height;
+  job.ref = off.toDataURL('image/jpeg', 0.9); job.w = off.width; job.h = off.height; if (!job.preview) job.preview = job.ref;
   job.prompt = aiPrompt(job);
   cb(job);
 }
@@ -3098,7 +3103,8 @@ function compositeCrop(resultSrc, crop, cb) {
     var out = document.createElement('canvas'); out.width = L.pw; out.height = L.ph;
     var c = out.getContext('2d'); c.drawImage(L.img, 0, 0, L.pw, L.ph);
     var t = document.createElement('canvas'); t.width = crop.w; t.height = crop.h;
-    var tc = t.getContext('2d'); tc.drawImage(im, 0, 0, crop.w, crop.h);
+    var tc = t.getContext('2d'), k = Math.max(crop.w / im.width, crop.h / im.height), dw = im.width * k, dh = im.height * k;
+    tc.drawImage(im, (crop.w - dw) / 2, (crop.h - dh) / 2, dw, dh);
     var d = tc.getImageData(0, 0, crop.w, crop.h), px = d.data, f = Math.max(6, Math.round(Math.min(crop.w, crop.h) * 0.08));
     var fl = crop.x > 0, fr = crop.x + crop.w < L.pw, ft = crop.y > 0, fb = crop.y + crop.h < L.ph;   // no fade on the photo's own edges
     for (var y = 0; y < crop.h; y++) for (var x = 0; x < crop.w; x++) {
@@ -3119,7 +3125,9 @@ function placeResult(src, job, cb) {
   if (!job || !job.crop) { shrinkImage(src, 1600, cb); return; }
   var im = new Image();
   im.onload = function () {
-    if (Math.abs((im.width / im.height) / (job.crop.w / job.crop.h) - 1) < 0.06) compositeCrop(src, job.crop, cb); else shrinkImage(src, 1600, cb);
+    // the crop's shape (or close, any AI tool): back into the photo. A whole-photo result (shaped like the photo, not the crop) is used as it is.
+    var ra = im.width / im.height, rc = job.crop.w / job.crop.h, rp = state.loc.pw / state.loc.ph;
+    if (Math.abs(ra / rp - 1) < 0.03 && Math.abs(ra / rc - 1) > 0.03) shrinkImage(src, 1600, cb); else compositeCrop(src, job.crop, cb);
   };
   im.onerror = function () { cb(src); };
   im.src = src;
@@ -3130,18 +3138,20 @@ function openAiModal() {
   aiJob(function (job) {
     var ref = job.ref, rw = job.w, rh = job.h, prompt = job.prompt;
     box.innerHTML = '<h3>AI impression</h3>' +
-      '<p>The build drawing stays the truth. The impression is a photo-real version of it for your client, made from the reference below with image-to-image AI.' + (hasLoc ? (job.crop ? ' Only the part around the design goes to the AI; the result goes back into your photo at exactly this spot, the rest of the photo stays untouched.' : '') : ' Add a location photo first if you want it in the real room.') + '</p>' +
-      '<img class="photo-thumb" src="' + ref + '" alt="">' +
+      '<p>The build drawing stays the truth. The impression is a photo-real version of it for your client, made from the reference below with image-to-image AI.' + (hasLoc ? (job.crop ? ' Only the framed part goes to the AI, so the balloons get all its attention. The result is pasted back into your full photo at exactly that spot; the rest of the photo stays untouched.' : '') : ' Add a location photo first if you want it in the real room.') + '</p>' +
+      (hasLoc ? '<div class="seg" id="ai-send" style="margin-bottom:8px"><button data-v="crop"' + (state.aiWhole ? '' : ' class="on"') + '>Around the design (most accurate)</button><button data-v="whole"' + (state.aiWhole ? ' class="on"' : '') + '>Whole photo</button></div>' : '') +
+      '<img class="photo-thumb" src="' + job.preview + '" alt="">' +
       (cfg.endpoint && ON_SHOP ? '<div class="stack"><button class="btn primary" id="ai-gen">Generate impression</button></div><div class="note" id="ai-status" style="margin-bottom:12px">' + (cfg.used != null ? cfg.used + ' of ' + cfg.limit + ' impressions used this month on your account.' : 'Takes about half a minute. Beta: for a small group of accounts.') + '</div>' +
         '<details style="margin-bottom:12px"><summary class="note" style="cursor:pointer">Or make it yourself in another AI tool</summary>' : '') +
         '<span class="label">Step 1 · reference + prompt</span><div class="stack" style="margin:0 0 10px"><button class="btn" id="ai-ref">Download reference</button><button class="btn" id="ai-copy">Copy prompt</button></div>' +
         '<textarea id="ai-prompt" class="aiprompt">' + prompt.replace(/</g, '&lt;') + '</textarea>' +
         '<p class="note">Open the reference in the model\'s <b>Edit</b> mode, not as a loose image reference. Nano Banana Pro or GPT Image 2, generate 4 variants, keep the one where the count matches. Then:</p>' +
-        '<span class="label">Step 2 · add the result</span>' + (cfg.endpoint && ON_SHOP ? '</details>' : '') +
+        '<span class="label">Step 2 · add the result</span>' + (job.crop ? '<p class="note" style="margin-top:0">Upload the image the AI made from the reference. It only shows the framed part: the Design Sheet puts it back into your full photo.</p>' : '') + (cfg.endpoint && ON_SHOP ? '</details>' : '') +
       '<div class="stack"><button class="btn primary" id="ai-upload">' + (state.impression ? 'Replace impression' : 'Add impression') + '</button>' + (state.impression ? '<button class="btn" id="ai-remove">Remove</button>' : '') + '<button class="btn ghost" id="ai-close">Close</button></div>' +
       (state.impression ? '<span class="label" style="margin-top:14px">Current impression</span><img class="photo-thumb" src="' + state.impression.src + '" alt="">' : '') +
       '<input type="file" id="ai-file" accept="image/*" style="display:none">';
     $('modal').classList.add('show');
+    document.querySelectorAll('#ai-send button').forEach(function (b) { b.addEventListener('click', function () { state.aiWhole = b.dataset.v === 'whole'; openAiModal(); }); });
     var bRef = $('ai-ref'); if (bRef) bRef.addEventListener('click', function () { fetch(ref).then(function (r) { return r.blob(); }).then(function (bl) { download(safeName() + '-reference.jpg', bl); }); track('ai_reference', {}); });
     var bCopy = $('ai-copy'); if (bCopy) bCopy.addEventListener('click', function () { var t = $('ai-prompt').value; (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(function () { toast('Prompt copied'); }, function () { $('ai-prompt').select(); toast('Select and copy the prompt'); }); });
     /* Generate: the request is first logged in Odoo as this account (x_stx_ai_request), so the

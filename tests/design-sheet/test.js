@@ -49,7 +49,7 @@ const server = http.createServer(async (req, res) => {
   if (url === '/shop/cart' || url === '/shop') { res.writeHead(200, { 'Content-Type': 'text/html' }); res.end('<!doctype html><title>Cart</title><h1>Cart</h1>'); return; }
   if (url === '/sections/design-sheet-v1.html') {
     let s = fs.readFileSync(path.join(REPO, 'sections/design-sheet-v1.html'), 'utf8');
-    s = s.replace("var AI_ENDPOINT = '';", "var AI_ENDPOINT = '/fake-ai';");
+    s = s.replace(/var AI_ENDPOINT = '[^']*';/, "var AI_ENDPOINT = '/fake-ai';");
     res.writeHead(200, { 'Content-Type': 'text/html' }); res.end(s); return;
   }
   if (url.indexOf('/sections/') === 0) { const f = path.join(REPO, decodeURIComponent(url)); if (fs.existsSync(f)) { res.writeHead(200, { 'Content-Type': f.endsWith('.json') ? 'application/json' : 'text/html' }); fs.createReadStream(f).pipe(res); return; } }
@@ -206,6 +206,19 @@ const server = http.createServer(async (req, res) => {
   const imp = await f.evaluate(() => [window.STX.state.impression.img.width, window.STX.state.loc.pw, window.STX.state.impression.img.height, window.STX.state.loc.ph]);
   assert.ok(imp[0] === imp[1] && imp[2] === imp[3], 'impression is the full photo with the crop pasted in: ' + imp);
   ok('AI impression: request logged in Odoo, image back from the AI server, compare view on');
+  // manual route: a crop-only result from another AI tool, uploaded, goes back into the full photo
+  await f.evaluate(() => { document.getElementById('modal').classList.remove('show'); });
+  await f.click('#btn-ai');
+  await f.waitForSelector('#ai-file', { state: 'attached' });
+  await f.evaluate(() => { window.__impBefore = window.STX.state.impression; });
+  await f.setInputFiles('#ai-file', path.join(__dirname, 'ai-result-crop.jpg'));
+  await f.waitForFunction(() => window.STX.state.impression !== window.__impBefore && window.STX.state.impression.img, null, { timeout: 15000 });
+  const up = await f.evaluate(() => [window.STX.state.impression.img.width, window.STX.state.loc.pw, window.STX.state.impression.img.height, window.STX.state.loc.ph]);
+  assert.ok(up[0] === up[1] && up[2] === up[3], 'uploaded crop result is pasted into the full photo: ' + up);
+  await f.evaluate(() => window.STX.setView('impression'));
+  await page.waitForTimeout(600);
+  await page.screenshot({ path: path.join(OUT, 'ai-upload-composite.png') });
+  ok('manual upload of a crop result: pasted back into the full photo');
 
   // 9. not logged in: device storage only, clear message
   loggedIn = false;
