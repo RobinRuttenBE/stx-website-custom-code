@@ -4264,9 +4264,38 @@
   function openDrawer(id) { $('cc-scrim').classList.add('cc-on'); $(id).classList.add('cc-on'); }
   function closeDrawers() { $('cc-scrim').classList.remove('cc-on'); document.querySelectorAll('.cc-drawer').forEach(function (d) { d.classList.remove('cc-on'); }); }
 
+  /* ---------------- hand-off from the Design Sheet ----------------
+     The Design Sheet (BETA, /design-sheet) puts its order list in localStorage
+     'stx_quote_import' and opens /tools#cost. The lines replace the materials of
+     the open calculation; prices come from the shop for this account, as always. */
+  function importFromDesign() {
+    var imp = load('stx_quote_import', null);
+    if (!imp || !imp.lines || !imp.lines.length) return false;
+    try { localStorage.removeItem('stx_quote_import'); } catch (e) {}
+    if (imp.at && Date.now() - imp.at > 3600000) return false; // older than an hour: a leftover, ignore
+    state.mat = imp.lines.map(function (l) {
+      return { name: l.name, qty: l.qty, unit: 0, sku: l.sku || '', packSize: l.pack_size || 1, packPrice: null, template_id: l.template_id || null };
+    });
+    if (imp.name) state.quote.job = imp.name;
+    persist();
+    state.mat.forEach(function (m) {
+      if (!m.template_id) return;
+      lookupPrice(m.template_id, function (price) {
+        if (price == null || state.mat.indexOf(m) < 0) return;
+        m.packPrice = price; m.unit = Math.round((price / (m.packSize || 1)) * 10000) / 10000;
+        renderMat(); update();
+      });
+    });
+    var msg = { nl: 'Materialen uit je Design Sheet staan erin.', fr: 'Les matériaux de votre Design Sheet sont ajoutés.', de: 'Die Materialien aus deinem Design Sheet sind eingefügt.' }[lang] || 'Materials from your Design Sheet are in.';
+    setTimeout(function () { toast(msg, false, 3200); }, 400);
+    track('cost_calc_from_design', { lines: state.mat.length });
+    return true;
+  }
+
   /* ---------------- wiring ---------------- */
   function init(first) {
     if (first) ensureMarkup();
+    if (first) importFromDesign();
     applyLang(); applyDist();
     renderMat(); renderTime(); update();
     if (first) {
