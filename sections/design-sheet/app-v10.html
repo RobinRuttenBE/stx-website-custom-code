@@ -121,7 +121,7 @@ canvas#c { display: block; width: 100%; height: 100%; touch-action: none; }
 .legend .li span { opacity: 0.6; font-size: 12px; }
 .drawhint { position: absolute; left: 50%; top: 64px; transform: translateX(-50%); background: var(--purple); color: #fff; font-weight: 700; font-size: 13px; padding: 7px 14px; border-radius: 20px; display: none; pointer-events: none; white-space: nowrap; }
 .drawhint.show { display: block; }
-.hint-action { pointer-events: auto; display: none; align-items: center; gap: 10px; }
+.hint-action { pointer-events: auto; display: none; align-items: center; gap: 10px; white-space: normal; max-width: min(560px, 92vw); text-align: left; border-radius: 14px; }
 .hint-action.show { display: flex; }
 .hint-action button { background: var(--yellow); color: var(--dark); font-weight: 800; border-radius: 14px; padding: 4px 12px; font-size: 13px; }
 .viewtog { position: absolute; left: 50%; top: 14px; transform: translateX(-50%); display: flex; border: 2px solid var(--dark); border-radius: 6px; overflow: hidden; background: var(--paper); z-index: 4; }
@@ -397,7 +397,7 @@ table.bom select { padding: 4px 6px; font-size: 12px; border-width: 1px; border-
     <button class="iconbtn" id="btn-photo" title="Location photo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h3l2-2h4l2 2h3a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><circle cx="12" cy="12.5" r="3.5"/></svg></button>
   </div>
   <div class="drawhint" id="drawhint">Drag a line where the garland goes</div>
-  <div class="drawhint hint-action" id="cornerhint">Drag the four corners onto the wall <button id="corner-done">Done</button></div>
+  <div class="drawhint hint-action" id="cornerhint">Drag the four corners onto the wall. The figure is 1.70 m: it should look like a person standing there. <button id="corner-done">Done</button></div>
   <div class="viewtog" id="viewtog" style="display:none"><button data-view="sheet" class="on">Sheet</button><button data-view="location">Location</button><button data-view="impression" id="vt-imp" style="display:none">Compare</button></div>
   <div class="selbar" id="selbar">
     <span id="sel-count">1 selected</span>
@@ -1792,6 +1792,19 @@ function sortedBalloons(list) {
   if (!sortedCache) sortedCache = state.balloons.slice().sort(cmpBalloon);
   return sortedCache;
 }
+/* scale check while setting the corners: a 1.70 m person on the wall plane, left of the design.
+   If it does not look as tall as a person standing there, the corners or the wall size are off. */
+function drawScalePerson(c, view) {
+  var L = state.loc, bb = contentBounds(), px = bb ? bb.x - 35 : -L.W / 2 + 40;
+  var shape = [[-22, -145], [22, -145], [20, -88], [14, 0], [4, 0], [0, -78], [-4, 0], [-14, 0], [-20, -88]];
+  function sp(x, y) { var p = applyH(L.M, px + x, y); return { x: p.x * view.s + view.ox, y: p.y * view.s + view.oy }; }
+  c.save(); c.fillStyle = 'rgba(27,7,61,0.55)'; c.strokeStyle = '#ffdb5a'; c.lineWidth = 2;
+  c.beginPath(); shape.forEach(function (q, i) { var s2 = sp(q[0], q[1]); if (i) c.lineTo(s2.x, s2.y); else c.moveTo(s2.x, s2.y); }); c.closePath(); c.fill(); c.stroke();
+  c.beginPath(); for (var i = 0; i <= 16; i++) { var a = i / 16 * Math.PI * 2, s3 = sp(Math.cos(a) * 11, -158 + Math.sin(a) * 12); if (i) c.lineTo(s3.x, s3.y); else c.moveTo(s3.x, s3.y); } c.closePath(); c.fill(); c.stroke();
+  var top = sp(0, -175); c.fillStyle = '#1b073d'; c.font = '800 12px "Rethink Sans", sans-serif'; c.textAlign = 'center';
+  var tw = c.measureText('1.70 m').width + 12; c.fillStyle = '#ffdb5a'; c.fillRect(top.x - tw / 2, top.y - 18, tw, 18); c.fillStyle = '#1b073d'; c.fillText(state.units === 'imperial' ? "5'7\"" : '1.70 m', top.x, top.y - 5);
+  c.restore();
+}
 function render(c, w, h, view, interactive, mode) {
   mode = mode || state.viewMode;
   if (mode === 'impression' && interactive) { renderCompare(c, w, h, view); return; }
@@ -1822,6 +1835,7 @@ function render(c, w, h, view, interactive, mode) {
       c.strokeStyle = '#ffdb5a'; c.lineWidth = 3; c.setLineDash([]); c.beginPath();
       L.quad.forEach(function (q, i) { var sp = toScreen(q.x, q.y); if (i) c.lineTo(sp.x, sp.y); else c.moveTo(sp.x, sp.y); }); c.closePath(); c.stroke();
       c.strokeStyle = '#1b073d'; c.lineWidth = 1.5; c.stroke();
+      drawScalePerson(c, view);
       L.quad.forEach(function (q, i) { var sp = toScreen(q.x, q.y); c.fillStyle = '#ffdb5a'; c.beginPath(); c.arc(sp.x, sp.y, 13, 0, Math.PI * 2); c.fill(); c.strokeStyle = '#1b073d'; c.lineWidth = 2.5; c.stroke(); c.fillStyle = '#1b073d'; c.font = '800 13px "Rethink Sans", sans-serif'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(['TL', 'TR', 'BR', 'BL'][i], sp.x, sp.y + 1); c.textAlign = 'left'; c.textBaseline = 'alphabetic'; });
     }
   } else if (L && L.img && mode === 'sheet') {
@@ -2986,7 +3000,8 @@ function inferType(bs, bb) {
   if (bs.length > 60) return 'grid';
   return 'cluster';
 }
-function describeGroups(list) {
+function describeGroups(list, noSize) {
+  function D(t) { return noSize ? '' : t; }
   var groups = {}, singles = [];
   list.forEach(function (b) { if (b.g) { (groups[b.g] = groups[b.g] || []).push(b); } else singles.push(b); });
   var parts = [];
@@ -2995,37 +3010,127 @@ function describeGroups(list) {
     bs.forEach(function (b) { cols[b.code] = (cols[b.code] || 0) + 1; sizes[b.size] = 1; });
     var colTxt = Object.keys(cols).sort(function (a, b2) { return cols[b2] - cols[a]; }).slice(0, 5).map(colourPhrase).join(', ');
     var sizeTxt = Object.keys(sizes).sort(function (a, b2) { return +a - +b2; }).map(function (s) { return sizeLabel(s); }).join(' and ');
-    var what = t === 'column' ? 'a classic spiral balloon column, ' + cm(bb.h) + ' high and about ' + cm(bb.w) + ' wide, built from stacked clusters of four balloons around a pole (from the front you see 2 or 3 balloons per layer, never a single stack)' :
-      t === 'arch' ? 'a classic spiral balloon arch, ' + cm(bb.w) + ' wide and ' + cm(bb.h) + ' high, built from clusters of four balloons along a curved frame' :
-      t === 'organic' ? 'an organic balloon garland, ' + cm(bb.w) + ' wide, balloons of mixed sizes ' + sizeTxt + ' packed tightly together' :
-      t === 'grid' ? 'a flat balloon wall of ' + cm(bb.w) + ' × ' + cm(bb.h) + ' built from ' + sizeTxt + ' balloons in rows' :
-      t === 'number' ? 'a number centerpiece: foil number balloon(s) standing on a base of latex balloon clusters, ' + cm(bb.w) + ' wide' :
-      t === 'bouquet' ? 'a helium balloon bouquet, ' + cm(bb.h) + ' tall, balloons floating on thin ribbons tied to a weight on the floor' :
-      t === 'ceiling' ? 'helium balloons floating against the ceiling over an area of ' + cm(bb.w) + ' wide, ribbons hanging down' : 'a tight cluster of balloons';
+    var what = t === 'column' ? 'a classic spiral balloon column' + D(', ' + cm(bb.h) + ' high and about ' + cm(bb.w) + ' wide') + ', built from stacked clusters of four balloons around a pole (from the front you see 2 or 3 balloons per layer, never a single stack)' :
+      t === 'arch' ? 'a classic spiral balloon arch' + D(', ' + cm(bb.w) + ' wide and ' + cm(bb.h) + ' high') + ', built from clusters of four balloons along a curved frame' :
+      t === 'organic' ? 'an organic balloon garland' + D(', ' + cm(bb.w) + ' wide') + ', balloons of mixed sizes ' + sizeTxt + ' packed tightly together' :
+      t === 'grid' ? 'a flat balloon wall' + D(' of ' + cm(bb.w) + ' × ' + cm(bb.h)) + ' built from ' + sizeTxt + ' balloons in rows' :
+      t === 'number' ? 'a number centerpiece: foil number balloon(s) standing on a base of latex balloon clusters' + D(', ' + cm(bb.w) + ' wide') :
+      t === 'bouquet' ? 'a helium balloon bouquet' + D(', ' + cm(bb.h) + ' tall') + ', balloons floating on thin ribbons tied to a weight on the floor' :
+      t === 'ceiling' ? 'helium balloons floating against the ceiling' + D(' over an area of ' + cm(bb.w) + ' wide') + ', ribbons hanging down' : 'a tight cluster of balloons';
     parts.push(what + ', ' + bs.length + ' balloons in ' + colTxt);
   });
   if (singles.length) { var sc = {}; singles.forEach(function (b) { sc[b.code] = (sc[b.code] || 0) + 1; }); parts.push(singles.length + ' loose balloons in ' + Object.keys(sc).map(colourPhrase).join(', ')); }
   return parts;
 }
-function aiPrompt() {
-  var list = state.balloons, hasLoc = !!(state.loc && state.loc.img), parts = describeGroups(list);
-  var p = 'Edit this image. The balloons drawn on it are the exact layout: replace every drawn balloon with a photorealistic latex balloon in the same position, same size and same colour. ' + list.length + ' balloons in total, no more, no fewer. Do not move, add, remove or rearrange anything.' +
-    (hasLoc ? ' Keep the rest of the photo exactly as it is: room, wall, floor, plants, furniture, lighting.' : ' Put them in a clean, softly lit event space with a plain light wall and floor.') +
-    ' What you are looking at: ' + parts.join('; ') + '.' +
-    ' Render the latex realistically with the finishes as described (matte, pearl, silk, chrome), soft shadows and contact shadows where balloons touch the wall or floor, light direction as in the photo. No text, no people, no extra decoration.';
-  return p;
+/* AI job. With a location photo the AI only gets a crop around the design (more pixels for the
+   balloons, no room to move them) and the result is pasted back into the original photo at that exact
+   spot with a soft edge. The rest of the photo stays the photo. Without a photo: the whole sheet. */
+var AI_RATIOS = [[1, 1], [4, 3], [3, 4], [3, 2], [2, 3], [16, 9], [9, 16]];
+function designPhotoBox() {
+  var L = state.loc, x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9;
+  function add(x, y) { if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; }
+  state.balloons.forEach(function (b) {
+    var p = applyH(L.M, b.x, b.y), r = b.d / 2 * localScale(b.x, b.y, 'location'); add(p.x - r, p.y - r); add(p.x + r, p.y + r);
+    if (b.ax != null) { var a = applyH(L.M, b.ax, b.ay); add(a.x, a.y); }
+  });
+  state.foils.forEach(function (f) { var p = applyH(L.M, f.x, f.y), sc = localScale(f.x, f.y, 'location'); add(p.x - f.w * sc / 2, p.y - f.h * sc); add(p.x + f.w * sc / 2, p.y); });
+  if (x1 < x0) return null;
+  return { x0: Math.max(0, x0), y0: Math.max(0, y0), x1: Math.min(L.pw, x1), y1: Math.min(L.ph, y1) };
 }
-function referenceImage(cb) {
-  var mode = state.loc && state.loc.img ? 'location' : 'sheet';
-  var off = renderOption(state.balloons, 1600, mode);
-  cb(off.toDataURL('image/jpeg', 0.9), off.width, off.height);
+function aiCrop() {
+  var L = state.loc, bb = designPhotoBox(); if (!bb) return null;
+  var bw = Math.max(8, bb.x1 - bb.x0), bh = Math.max(8, bb.y1 - bb.y0), cx = (bb.x0 + bb.x1) / 2, cy = (bb.y0 + bb.y1) / 2;
+  // room around the design: about 2.6x its size, at least half the short side of the photo for context
+  var want = Math.max(bw * 2.6, bh * 2.6, Math.min(L.pw, L.ph) * 0.5), best = null;
+  AI_RATIOS.forEach(function (r) {
+    var w = want, h = want * r[1] / r[0];
+    if (h < bh * 2.2) { h = bh * 2.2; w = h * r[0] / r[1]; }
+    if (w < bw * 2.2) { w = bw * 2.2; h = w * r[1] / r[0]; }
+    var k = Math.min(1, L.pw / w, L.ph / h); w *= k; h *= k;
+    if (w < bw * 1.15 || h < bh * 1.15) return;   // the design would not fit with a margin
+    var area = w * h; if (!best || area < best.area) best = { w: w, h: h, area: area };
+  });
+  if (!best || best.area > L.pw * L.ph * 0.7) return null;   // design fills most of the photo: send the whole photo
+  var x = Math.max(0, Math.min(L.pw - best.w, cx - best.w / 2)), y = Math.max(0, Math.min(L.ph - best.h, cy - best.h / 2));
+  return { x: Math.round(x), y: Math.round(y), w: Math.round(best.w), h: Math.round(best.h) };
+}
+function pct(v) { return Math.round(v * 100); }
+function aiPrompt(job) {
+  var list = state.balloons, hasLoc = !!(state.loc && state.loc.img), n = list.length + state.foils.length;
+  if (!hasLoc) {
+    return 'Edit this image. The balloons drawn on it are the exact layout: replace every drawn balloon with a photorealistic latex balloon in the same position, same size and same colour. ' + list.length + ' balloons in total, no more, no fewer. Do not move, add, remove or rearrange anything.' +
+      ' Put them in a clean, softly lit event space with a plain light wall and floor.' +
+      ' What you are looking at: ' + describeGroups(list).join('; ') + '.' +
+      ' Render the latex realistically with the finishes as described (matte, pearl, silk, chrome), soft shadows and contact shadows where balloons touch the wall or floor. No text, no people, no extra decoration.';
+  }
+  var b = job && job.box;   // box of the design inside the image that is sent, 0..1
+  var where = b ? ' Its place and size are fixed: it fills the area from ' + pct(b.l) + '% to ' + pct(b.r) + '% of the image width and from ' + pct(b.t) + '% to ' + pct(b.b) + '% of the image height, and its base stands at ' + pct(b.b) + '% from the top.' : '';
+  return 'Edit this photo. A balloon design is drawn on it as flat coloured circles. Turn only those drawn circles into photorealistic latex balloons.' + where +
+    ' Keep the design exactly where it is drawn and exactly as large as it is drawn: do not enlarge it, do not move it closer to the camera, do not shift it. It looks this size because of where it stands in the room; the perspective of the photo is right.' +
+    ' What is drawn: ' + describeGroups(list, true).join('; ') + (state.foils.length ? '; ' + state.foils.length + ' foil balloon(s) as drawn' : '') + '. ' + n + ' balloons in total, no more, no fewer: every balloon keeps its own position, size and colour.' +
+    ' Keep everything else in the photo exactly as it is: walls, floor, shelves, objects, lighting and perspective.' +
+    ' Render the latex realistically with the finishes as described (matte, pearl, silk, chrome), soft contact shadows on the floor, light from the same direction as in the photo. No text, no people, no extra decoration.';
+}
+/* cb(job): job.ref (data URL sent to the AI), job.w/h, job.crop (photo px, or null), job.box, job.prompt */
+function aiJob(cb) {
+  var hasLoc = !!(state.loc && state.loc.img);
+  var off = renderOption(state.balloons, hasLoc ? state.loc.pw : 1600, hasLoc ? 'location' : 'sheet');
+  var job = { crop: null, box: null };
+  if (hasLoc) {
+    var crop = aiCrop(), bb = designPhotoBox();
+    if (crop) {
+      // small crops go up in size so the AI sees the balloons
+      var cv = document.createElement('canvas'), up = Math.max(1, Math.min(2.5, 1024 / Math.max(crop.w, crop.h)));
+      cv.width = Math.round(crop.w * up); cv.height = Math.round(crop.h * up);
+      cv.getContext('2d').drawImage(off, crop.x, crop.y, crop.w, crop.h, 0, 0, cv.width, cv.height);
+      off = cv; job.crop = crop;
+      job.box = { l: (bb.x0 - crop.x) / crop.w, r: (bb.x1 - crop.x) / crop.w, t: (bb.y0 - crop.y) / crop.h, b: (bb.y1 - crop.y) / crop.h };
+    } else if (bb) job.box = { l: bb.x0 / state.loc.pw, r: bb.x1 / state.loc.pw, t: bb.y0 / state.loc.ph, b: bb.y1 / state.loc.ph };
+  }
+  job.ref = off.toDataURL('image/jpeg', 0.9); job.w = off.width; job.h = off.height;
+  job.prompt = aiPrompt(job);
+  cb(job);
+}
+/* paste an AI result for a crop back into the location photo, soft edge where it meets the photo */
+function compositeCrop(resultSrc, crop, cb) {
+  var L = state.loc, im = new Image();
+  im.onload = function () {
+    var out = document.createElement('canvas'); out.width = L.pw; out.height = L.ph;
+    var c = out.getContext('2d'); c.drawImage(L.img, 0, 0, L.pw, L.ph);
+    var t = document.createElement('canvas'); t.width = crop.w; t.height = crop.h;
+    var tc = t.getContext('2d'); tc.drawImage(im, 0, 0, crop.w, crop.h);
+    var d = tc.getImageData(0, 0, crop.w, crop.h), px = d.data, f = Math.max(6, Math.round(Math.min(crop.w, crop.h) * 0.08));
+    var fl = crop.x > 0, fr = crop.x + crop.w < L.pw, ft = crop.y > 0, fb = crop.y + crop.h < L.ph;   // no fade on the photo's own edges
+    for (var y = 0; y < crop.h; y++) for (var x = 0; x < crop.w; x++) {
+      var a = 1;
+      if (fl) a = Math.min(a, x / f); if (fr) a = Math.min(a, (crop.w - 1 - x) / f);
+      if (ft) a = Math.min(a, y / f); if (fb) a = Math.min(a, (crop.h - 1 - y) / f);
+      if (a < 1) px[(y * crop.w + x) * 4 + 3] = Math.max(0, Math.round(255 * a * a * (3 - 2 * a)));
+    }
+    tc.putImageData(d, 0, 0);
+    c.drawImage(t, crop.x, crop.y);
+    cb(out.toDataURL('image/jpeg', 0.88));
+  };
+  im.onerror = function () { cb(resultSrc); };
+  im.src = resultSrc;
+}
+/* a result with the crop's shape goes back into the photo; anything else is used as it is */
+function placeResult(src, job, cb) {
+  if (!job || !job.crop) { shrinkImage(src, 1600, cb); return; }
+  var im = new Image();
+  im.onload = function () {
+    if (Math.abs((im.width / im.height) / (job.crop.w / job.crop.h) - 1) < 0.06) compositeCrop(src, job.crop, cb); else shrinkImage(src, 1600, cb);
+  };
+  im.onerror = function () { cb(src); };
+  im.src = src;
 }
 function openAiModal() {
   if (!state.balloons.length) { toast('Build something first'); return; }
-  var box = $('modal-box'), cfg = window.STX_AI || {}, prompt = aiPrompt(), hasLoc = !!(state.loc && state.loc.img);
-  referenceImage(function (ref, rw, rh) {
+  var box = $('modal-box'), cfg = window.STX_AI || {}, hasLoc = !!(state.loc && state.loc.img);
+  aiJob(function (job) {
+    var ref = job.ref, rw = job.w, rh = job.h, prompt = job.prompt;
     box.innerHTML = '<h3>AI impression</h3>' +
-      '<p>The build drawing stays the truth. The impression is a photo-real version of it for your client, made from the reference below with image-to-image AI.' + (hasLoc ? '' : ' Add a location photo first if you want it in the real room.') + '</p>' +
+      '<p>The build drawing stays the truth. The impression is a photo-real version of it for your client, made from the reference below with image-to-image AI.' + (hasLoc ? (job.crop ? ' Only the part around the design goes to the AI; the result goes back into your photo at exactly this spot, the rest of the photo stays untouched.' : '') : ' Add a location photo first if you want it in the real room.') + '</p>' +
       '<img class="photo-thumb" src="' + ref + '" alt="">' +
       (cfg.endpoint && ON_SHOP ? '<div class="stack"><button class="btn primary" id="ai-gen">Generate impression</button></div><div class="note" id="ai-status" style="margin-bottom:12px">' + (cfg.used != null ? cfg.used + ' of ' + cfg.limit + ' impressions used this month on your account.' : 'Takes about half a minute. Beta: for a small group of accounts.') + '</div>' +
         '<details style="margin-bottom:12px"><summary class="note" style="cursor:pointer">Or make it yourself in another AI tool</summary>' : '') +
@@ -3057,7 +3162,7 @@ function openAiModal() {
             if (d && d.used != null) { cfg.used = d.used; cfg.limit = d.limit; }
             if (!d || !d.image) { fail(escHtml((d && d.error) || 'No image came back. Try again.')); return; }
             clearInterval(tick);
-            shrinkImage(d.image, 1600, function (small) { setImpression(small, userPrompt); track('ai_generate', { ok: true, s: Math.round((Date.now() - t0) / 1000) }); openAiModal(); });
+            placeResult(d.image, job, function (small) { setImpression(small, userPrompt); track('ai_generate', { ok: true, s: Math.round((Date.now() - t0) / 1000) }); openAiModal(); });
           })
           .catch(function () { fail('The AI server did not answer. Try again in a moment.'); });
       });
@@ -3066,14 +3171,9 @@ function openAiModal() {
     $('ai-file').addEventListener('change', function () {
       var f = this.files[0]; if (!f) return; var rd = new FileReader();
       rd.onload = function () {
-        var im = new Image();
-        im.onload = function () {
-          var max = 1600, sc = Math.min(1, max / Math.max(im.width, im.height));
-          var cv = document.createElement('canvas'); cv.width = Math.round(im.width * sc); cv.height = Math.round(im.height * sc);
-          cv.getContext('2d').drawImage(im, 0, 0, cv.width, cv.height);
-          setImpression(cv.toDataURL('image/jpeg', 0.85), ($('ai-prompt') ? $('ai-prompt').value : prompt)); closeModal(); toast('Impression added. Drag the divider to compare.'); track('ai_upload', {});
-        };
-        im.src = rd.result;
+        placeResult(rd.result, job, function (img) {
+          setImpression(img, ($('ai-prompt') ? $('ai-prompt').value : prompt)); closeModal(); toast('Impression added. Drag the divider to compare.'); track('ai_upload', { crop: !!job.crop });
+        });
       };
       rd.readAsDataURL(f);
     });

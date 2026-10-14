@@ -191,11 +191,20 @@ const server = http.createServer(async (req, res) => {
   await page.goto(base + '/design-sheet#stxdesign');
   await page.waitForFunction(() => { const fr = document.getElementById('stx-ds-frame'); return fr && fr.contentWindow && fr.contentWindow.STX && fr.contentWindow.STX.state.balloons.length; }, null, { timeout: 30000 });
   f = page.frames().find(x => x.url() === 'about:srcdoc');
+  // location photo with the design small in it, like a far wall: the AI gets a crop, the result goes back in place
+  const photo = 'data:image/jpeg;base64,' + fs.readFileSync(path.join(__dirname, 'location-test.jpg')).toString('base64');
+  await f.evaluate(src => new Promise(r => { window.STX.setLocation(src, 1200, 700); setTimeout(r, 800); }), photo);
+  await page.screenshot({ path: path.join(OUT, 'location-scale.png') });
+  await f.click('#corner-done');
   await f.click('#btn-ai');
   await f.waitForSelector('#ai-gen');
+  const pr = await f.$eval('#ai-prompt', el => el.value);
+  assert.ok(/fills the area from \d+% to \d+% of the image width/.test(pr) && !/m high/.test(pr), pr);
   await f.click('#ai-gen');
   await f.waitForFunction(() => window.STX.state.impression && window.STX.state.impression.img, null, { timeout: 20000 });
   assert.strictEqual(aiRequests, 1);
+  const imp = await f.evaluate(() => [window.STX.state.impression.img.width, window.STX.state.loc.pw, window.STX.state.impression.img.height, window.STX.state.loc.ph]);
+  assert.ok(imp[0] === imp[1] && imp[2] === imp[3], 'impression is the full photo with the crop pasted in: ' + imp);
   ok('AI impression: request logged in Odoo, image back from the AI server, compare view on');
 
   // 9. not logged in: device storage only, clear message
