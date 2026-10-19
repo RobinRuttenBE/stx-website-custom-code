@@ -12,6 +12,11 @@ const OUT = __dirname;
 let cartCalls = [];
 let updateCalls = [];
 let comboCalls = 0;
+let searchCalls = 0;
+// Stock per template id, only for the products listed here (test 10). The live shop (measured 19/10/2026) silently
+// caps /shop/cart/add and /shop/cart/update at the free stock and adds nothing when the stock is 0.
+let stock = {};
+function capQty(tid, q) { return stock[tid] === undefined ? q : Math.min(q, stock[tid]); }
 // Fake Odoo cart. /shop/cart/add ADDS to what is already on the line (that is what the live shop
 // does, tested 21/09/2026) and /shop/cart/update sets an exact quantity. The section has to end up
 // with the quantity from the file, whatever was in the cart before.
@@ -59,18 +64,26 @@ const server = http.createServer(async (req, res) => {
     const body = JSON.parse(await readBody(req) || '{}');
     res.setHeader('Content-Type', 'application/json');
     if (u.pathname.endsWith('/website/snippet/autocomplete')) {
+      searchCalls++;
       await new Promise(r => setTimeout(r, 30));
       const term = body.params.term;
       return res.end(JSON.stringify({ jsonrpc: '2.0', id: 1, result: FIX[term] || { results_count: 0, results: [] } }));
     }
-    if (u.pathname === '/website_sale/get_combination_info') { comboCalls++; return res.end(JSON.stringify({ jsonrpc: '2.0', id: 1, result: { product_id: body.params.product_template_id * 10, price: 1 } })); }
+    if (u.pathname === '/website_sale/get_combination_info') {
+      comboCalls++;
+      const tid = body.params.product_template_id;
+      const r = { product_id: tid * 10, price: 1 };
+      if (stock[tid] !== undefined) Object.assign(r, { is_storable: true, allow_out_of_stock_order: false, free_qty: stock[tid], cart_qty: cartQtyOf(tid) });
+      return res.end(JSON.stringify({ jsonrpc: '2.0', id: 1, result: r }));
+    }
     if (u.pathname === '/shop/cart/add') {
       cartCalls.push(body.params);
       const tid = body.params.product_template_id;
       if (tid === 3773) return res.end(JSON.stringify({ jsonrpc: '2.0', id: 1, error: { message: 'Odoo Server Error', data: { message: 'The given product does not exist therefore it cannot be added to cart.' } } }));
       let lid = lineByTid[tid];
+      if (capQty(tid, cartQtyOf(tid) + body.params.quantity) <= 0) return res.end(JSON.stringify({ jsonrpc: '2.0', id: 1, result: { quantity: 0, cart_quantity: cartTotal(), notification_info: { warning: 'out of stock', lines: [] } } }));
       if (!lid) { lid = ++nextLineId; lineByTid[tid] = lid; fakeCart[lid] = { tid, qty: 0 }; }
-      fakeCart[lid].qty += body.params.quantity;
+      fakeCart[lid].qty = capQty(tid, fakeCart[lid].qty + body.params.quantity);
       return res.end(JSON.stringify({ jsonrpc: '2.0', id: 1, result: { quantity: fakeCart[lid].qty, cart_quantity: cartTotal(), notification_info: { warning: '', lines: [{ id: lid, quantity: fakeCart[lid].qty, name: 'x' }] } } }));
     }
     if (u.pathname === '/shop/cart/update') {
@@ -83,8 +96,9 @@ const server = http.createServer(async (req, res) => {
       if (!fakeCart[lid]) return res.end(JSON.stringify({ jsonrpc: '2.0', id: 1, error: { message: 'Odoo Server Error', data: { message: 'Missing record' } } }));
       const before = fakeCart[lid].qty;
       if (body.params.quantity <= 0) { delete lineByTid[fakeCart[lid].tid]; delete fakeCart[lid]; }
-      else fakeCart[lid].qty = body.params.quantity;
-      return res.end(JSON.stringify({ jsonrpc: '2.0', id: 1, result: { line_id: lid, quantity: body.params.quantity, added_qty: body.params.quantity - before, cart_quantity: cartTotal() } }));
+      else fakeCart[lid].qty = capQty(fakeCart[lid].tid, body.params.quantity);
+      const now = fakeCart[lid] ? fakeCart[lid].qty : 0;
+      return res.end(JSON.stringify({ jsonrpc: '2.0', id: 1, result: { line_id: lid, quantity: now, added_qty: now - before, cart_quantity: cartTotal() } }));
     }
   }
   res.statusCode = 404; res.end('nope');
@@ -158,7 +172,7 @@ function assert(c, msg) { if (!c) { console.error('FAIL', msg); process.exitCode
   await page.waitForSelector('#su-preview:not([hidden])');
   const rows2 = await page.$$eval('#su-rows tr', trs => trs.map(tr => tr.querySelector('.su-code').textContent + ':' + tr.querySelector('.su-qty').textContent + ':' + tr.className));
   console.log('   paste rows:', rows2.join(' | '));
-  assert(rows2.length === 4 && rows2[0] === 'R12005:5:ok' && rows2[1] === 'N260080:1:ok' && rows2[2] === 'FOOBAR1:4:no' && rows2[3] === 'MULTI1:9:multi', 'paste: merged, header skipped, junk skipped, unknown red, ambiguous dropdown');
+  assert(rows2.length === 4 && rows2[0] === 'MULTI1:9:multi' && rows2[1] === 'FOOBAR1:4:no' && rows2[2] === 'R12005:5:ok' && rows2[3] === 'N260080:1:ok', 'paste: merged, header skipped, junk skipped, unknown red, ambiguous dropdown, problem lines on top');
   assert((await page.textContent('#su-add')).trim() === '3 regels in winkelmandje', 'paste: 3 addable');
   await page.selectOption('#su-rows tr.multi select', '1');
   const qtyBefore = {}; Object.keys(lineByTid).forEach(tid => { qtyBefore[tid] = cartQtyOf(Number(tid)); });
@@ -218,6 +232,63 @@ function assert(c, msg) { if (!c) { console.error('FAIL', msg); process.exitCode
   delete fakeCart[ghost];
   await page.goto('about:blank'); await page.goto(base + '/shop/cart'); await page.waitForSelector('#stx-upl:not([hidden])');
   assert(await page.$eval('.stx-empty-btn', e => e.hidden), 'empty cart: no empty button');
+  // 10. stock: out of stock is shown and not added, less stock gets an input set to what is there
+  const T_R12005 = 3979, T_N260080 = 3811, T_LOL6015 = 3689;
+  Object.keys(fakeCart).forEach(k => delete fakeCart[k]); lineByTid = {};
+  stock = { [T_R12005]: 3, [T_N260080]: 0, [T_LOL6015]: 50 };
+  await page.goto('about:blank'); await page.goto(base + '/shop/cart'); await page.waitForSelector('#stx-upl:not([hidden])');
+  await page.click('#su-toggle'); await page.click('#su-pastebtn');
+  await page.fill('#su-paste', 'LOL6015;2\nR12005;10\nN260080;5\n');
+  await page.click('#su-paste-go');
+  await page.waitForSelector('#su-preview:not([hidden])');
+  const rows10 = await page.$$eval('#su-rows tr', trs => trs.map(tr => tr.querySelector('.su-code').textContent + ':' + tr.className + ':' + tr.querySelector('.su-st').textContent));
+  console.log('   stock rows:', rows10.join(' | '));
+  assert(rows10[0] === 'N260080:oos:niet op voorraad' && rows10[1] === 'R12005:short:3 van 10 op voorraad' && rows10[2] === 'LOL6015:ok:gevonden', 'out of stock first, then less stock, then the rest');
+  assert(await page.$eval('#su-rows tr.short input.su-qin', e => e.value === '3' && e.max === '3'), 'less stock: input filled with the 3 that are there');
+  const notices = await page.textContent('#su-notices');
+  assert(notices.includes('Niet op voorraad, wordt niet toegevoegd') && notices.includes('N260080') && notices.includes('Minder voorraad dan je vroeg'), 'notice names the out of stock product and the short one: ' + notices.trim());
+  assert((await page.textContent('#su-add')).trim() === '2 regels in winkelmandje', 'add button counts 2 lines (out of stock left out)');
+  await page.fill('#su-rows tr.short input.su-qin', '2');
+  assert((await page.textContent('#su-sum')).includes('4 zakken in totaal'), 'total follows the edited quantity (2 + 2)');
+  await page.fill('#su-rows tr.short input.su-qin', '9');
+  await page.press('#su-rows tr.short input.su-qin', 'Tab');
+  assert(await page.$eval('#su-rows tr.short input.su-qin', e => e.value === '3'), 'typing more than the stock goes back to the stock');
+  await page.fill('#su-rows tr.short input.su-qin', '2');
+  await page.screenshot({ path: path.join(OUT, 'stock-nl.png'), fullPage: true });
+  stock[T_LOL6015] = 1; // stock changes between the preview and the click: Odoo caps it, the result must say so
+  cartCalls = []; updateCalls = [];
+  const nav10 = page.waitForNavigation({ timeout: 15000 }); // same URL before and after, so waitForURL would not wait for the reload
+  await page.click('#su-add'); await nav10; await page.waitForSelector('#su-lastresult:not([hidden])');
+  assert(!cartCalls.some(c => c.product_template_id === T_N260080), 'out of stock product never sent to the cart');
+  assert(cartCalls.some(c => c.product_template_id === T_R12005 && c.quantity === 2), 'edited quantity (2) sent for R12005');
+  assert(cartQtyOf(T_R12005) === 2 && cartQtyOf(T_LOL6015) === 1, 'cart: R12005 2, LOL6015 capped to 1');
+  const res10 = await page.textContent('#su-lastresult'); console.log('   stock result:', res10.replace(/\s+/g, ' ').trim());
+  assert(res10.includes('Niet op voorraad, niet toegevoegd (1)') && res10.includes('N260080'), 'after reload: out of stock list');
+  assert(res10.includes('Minder voorraad dan gevraagd (2)') && res10.includes('2 van 10 zakken') && res10.includes('1 van 2 zakken'), 'after reload: short list with what ended up in the cart');
+  assert(await page.$eval('#su-lastresult', e => e.classList.contains('warn')), 'result shown as a warning');
+  await page.screenshot({ path: path.join(OUT, 'stock-result-nl.png'), fullPage: true });
+  stock = {};
+  // 11. max 500 order lines: 501 refused without a single shop call, 500 accepted, a 6 MB file not even read
+  await page.click('#su-pastebtn');
+  searchCalls = 0;
+  // fill() chokes on 30000 lines, so the value is set directly
+  const pasteLines = n => page.$eval('#su-paste', (e, n) => { e.value = Array.from({ length: n }, (_, i) => 'X' + i + ';1').join('\n'); }, n);
+  await pasteLines(30000);
+  await page.click('#su-paste-go'); await page.waitForTimeout(300);
+  const st30k = await page.textContent('#su-status');
+  assert(st30k.includes('30.000 bestelregels') && st30k.includes('maximaal 500'), '30000 lines refused: ' + st30k);
+  assert(searchCalls === 0 && await page.$eval('#su-preview', e => e.hidden), 'no shop call and no preview for a refused file');
+  await pasteLines(501);
+  await page.click('#su-paste-go'); await page.waitForTimeout(200);
+  assert((await page.textContent('#su-status')).includes('501 bestelregels') && searchCalls === 0, '501 lines refused');
+  await pasteLines(500);
+  await page.click('#su-paste-go');
+  await page.waitForSelector('#su-preview:not([hidden])', { timeout: 60000 });
+  assert((await page.$$('#su-rows tr')).length === 500 && searchCalls === 500, '500 lines accepted (' + searchCalls + ' searches)');
+  await page.click('#su-reset'); searchCalls = 0;
+  await page.setInputFiles('#su-file', { name: 'huge.csv', mimeType: 'text/csv', buffer: Buffer.alloc(6 * 1024 * 1024, 'A') });
+  await page.waitForTimeout(200);
+  assert((await page.textContent('#su-status')).includes('te groot') && searchCalls === 0, '6 MB file refused before reading');
   // mobile screenshot
   const mp = await b.newPage({ viewport: { width: 390, height: 800 } });
   await mp.goto(base + '/en_GB/shop/cart'); await mp.waitForSelector('#stx-upl:not([hidden])'); await mp.click('#su-toggle');

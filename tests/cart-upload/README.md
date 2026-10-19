@@ -42,6 +42,21 @@ zijn vervangen door een vast patroon**, want bestelhoeveelheden van een klant ho
 Wil je met een echt bestand testen, zet dan `STX_ORDER_CSV` naar dat pad. De assertions over aantallen
 regels kloppen dan mogelijk niet meer.
 
+## Voorraad en maximaal 500 regels (19/10/2026)
+
+`get_combination_info` geeft voor de producten in `stock` (template-id → vrije voorraad) ook `is_storable`,
+`allow_out_of_stock_order: false` en `free_qty` terug, zoals de live shop voor een ingelogd account. `/shop/cart/add`
+en `/shop/cart/update` toppen het aantal dan stil af op die voorraad en voegen bij 0 niets toe (gemeten op de live
+shop op 19/10/2026: 304 gevraagd, 254 in het mandje, alleen een warning).
+
+Test 10: niet op voorraad staat rood bovenaan en gaat nooit naar het mandje, minder voorraad krijgt een invulveld
+op de vrije voorraad (meer typen springt terug), de teller volgt het aangepaste aantal, en een voorraad die
+tussen preview en klik daalt komt ook in de resultaatmelding. Die melding (na het herladen) somt per product op
+wat niet op voorraad was en hoeveel er in het mandje kwam.
+
+Test 11: 30.000 en 501 regels worden geweigerd zonder een enkele zoekcall, 500 regels gaan door, een bestand van
+6 MB wordt niet eens gelezen.
+
 ## Winkelmandje leegmaken (28/09/2026)
 
 De nagebouwde winkelmandpagina toont de regels nu zoals Odoo (een `input.js_quantity` met `data-line-id`
