@@ -100,6 +100,8 @@
 
   if (window.__stxBirthday) { return; }
   window.__stxBirthday = true;
+  /* Nooit op een partnerpagina (/partner/<slug>/..., alle talen): white-label, geen Sempertex-popup (19/10/2026). */
+  if (/^(\/(en_gb|fr|de))?\/partner(\/|$)/i.test(window.location.pathname || '') || document.documentElement.classList.contains('stx-partner')) { return; }
   if (document.body.classList.contains('editor_enable') || document.querySelector('.odoo-editor-editable') || document.querySelector('#wrap.o_editable')) { return; }
 
   var h = (window.location.hash || '').toLowerCase();

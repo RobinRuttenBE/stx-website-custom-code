@@ -108,10 +108,15 @@ const LOADER = `<script>
   var SECTIONS = [
     { file: 'inspiration-v18.html', paths: ['/inspiration', '/inspiratie', '/test-inspo', '/tools'] },
     { file: 'partner-calculator-v1.html',
-      re: /^(\\/(en_gb|fr|de))?\\/partner\\/[a-z0-9-]+\\/tools$/, paths: [] }
+      re: /^(\\/(en_gb|fr|de))?\\/partner\\/[a-z0-9-]+\\/tools$/, paths: [] },
+    { file: 'silkmas-v1.html', all: true, brand: true, paths: [] },
+    { file: 'birthday-v1.html', all: true, brand: true, paths: [] }
   ];
   var p = (window.location.pathname || '/').toLowerCase();
   if (p.length > 1 && p.charAt(p.length - 1) === '/') { p = p.slice(0, -1); }
+  /* Zoals de echte loader (v29): brand-secties nooit op een partnerpagina. ?noflag=1 zet dat hier uit,
+     om het tweede slot in de secties zelf apart te testen. */
+  var partnerPage = /^(\\/(en_gb|fr|de))?\\/partner(\\/|$)/.test(p) && !/noflag=1/.test(window.location.search);
   function onPage(paths) { return paths.some(function (pp) { return p.slice(-pp.length) === pp; }); }
   var pending = 0;
   function sectionDone() {
@@ -152,7 +157,8 @@ const LOADER = `<script>
     var hits = [];
     for (var i = 0; i < SECTIONS.length; i++) {
       var sec = SECTIONS[i];
-      if (sec.re ? sec.re.test(p) : onPage(sec.paths)) { hits.push(sec); }
+      if (sec.brand && partnerPage) { continue; }
+      if (sec.all ? true : (sec.re ? sec.re.test(p) : onPage(sec.paths))) { hits.push(sec); }
     }
     pending = hits.length;
     for (var j = 0; j < hits.length; j++) { load(hits[j]); }
@@ -223,6 +229,8 @@ function check(name, ok, extra) {
   // instead of holding the page open.
   async function open(pathname, width = 1400) {
     const ctx = await browser.newContext({ viewport: { width, height: 1000 } });
+    // Silkmas testmodus aan, zoals in Robins browser: dan zou de banner overal moeten verschijnen, behalve hier.
+    await ctx.addInitScript(() => { try { localStorage.setItem('stx_silkmas_beta', '1'); } catch (e) {} });
     const page = await ctx.newPage();
     await page.route('**', (route) => {
       const u = route.request().url();
@@ -252,6 +260,8 @@ function check(name, ok, extra) {
     check('Sempertex header verborgen', (await shown('header#top')) === 'verborgen');
     check('Sempertex menu verborgen', (await shown('#top_menu_container')) === 'verborgen');
     check('Sempertex footer verborgen', (await shown('footer#bottom')) === 'verborgen');
+    check('geen Silkmas-banner (ook niet met de testmodus aan)', (await page.$('#stx-sm-bar, [id^="stx-sm-"]')) === null);
+    check('geen verjaardagspopup', (await page.$('[id^="stx-bd"], [class*="stx-bday"]')) === null);
 
     // De livechat hoort hier helemaal niet te booten, want het anti-flitsblok zet
     // can_load_livechat uit voordat de lazy bundle hem bouwt.
@@ -402,9 +412,19 @@ function check(name, ok, extra) {
     await ctx.close();
   }
 
+  console.log('\n/partner/liragram/tools?noflag=1 (loader laadt Silkmas toch: het slot in de sectie zelf)');
+  {
+    const { ctx, page } = await open('/partner/liragram/tools?noflag=1');
+    await page.waitForTimeout(400);
+    check('Silkmas-sectie stopt zelf op een partnerpagina', (await page.$('[id^="stx-sm-"]')) === null);
+    check('Silkmas-sectie is wel geladen (anders test dit niets)', await page.evaluate(() => window.__stxSilkmas === true));
+    await ctx.close();
+  }
+
   console.log('\n/tools (de gewone Sempertex pagina mag niet veranderen)');
   {
     const ctx = await browser.newContext({ viewport: { width: 1400, height: 1000 } });
+    await ctx.addInitScript(() => { try { localStorage.setItem('stx_silkmas_beta', '1'); } catch (e) {} });
     const page = await ctx.newPage();
     await page.route('**', (r) => (r.request().url().startsWith(base) ? r.continue() : r.abort()));
     await page.goto(base + '/tools', { waitUntil: 'domcontentloaded' });
@@ -423,6 +443,7 @@ function check(name, ok, extra) {
     check('livechat staat er gewoon', (await vis('.o-livechat-root')) === 'zichtbaar');
     check('zijmenu met de drie tools staat er', (await vis('.stx-insp .side')) === 'zichtbaar');
     check('geen partnerheader', (await page.$('.stx-pt-bar')) === null);
+    check('Silkmas-banner staat hier wel (testmodus aan)', (await vis('#stx-sm-bar')) === 'zichtbaar');
     check('geen bestelblok', (await page.$('.stx-pt-order')) === null);
     check('tabtitel ongewijzigd', (await page.title()) === 'Tools | Sempertex Europe', await page.title());
     const h = await page.textContent('#view-calculator h2');
