@@ -13,6 +13,7 @@ let cartCalls = [];
 let updateCalls = [];
 let comboCalls = 0;
 let searchCalls = 0;
+let flakyFails = {}, triesByTerm = {};
 // Stock per template id, only for the products listed here (test 10). The live shop (measured 19/10/2026) silently
 // caps /shop/cart/add and /shop/cart/update at the free stock and adds nothing when the stock is 0.
 let stock = {};
@@ -67,6 +68,12 @@ const server = http.createServer(async (req, res) => {
       searchCalls++;
       await new Promise(r => setTimeout(r, 30));
       const term = body.params.term;
+      // Flaky connection (test 12): a term fails its first flakyFails[term] attempts, as HTTP 429 or a dropped connection.
+      triesByTerm[term] = (triesByTerm[term] || 0) + 1;
+      if (flakyFails[term] && triesByTerm[term] <= flakyFails[term]) {
+        if (triesByTerm[term] % 2) { res.statusCode = 429; return res.end('Too Many Requests'); }
+        return req.socket.destroy();
+      }
       return res.end(JSON.stringify({ jsonrpc: '2.0', id: 1, result: FIX[term] || { results_count: 0, results: [] } }));
     }
     if (u.pathname === '/website_sale/get_combination_info') {
@@ -289,6 +296,33 @@ function assert(c, msg) { if (!c) { console.error('FAIL', msg); process.exitCode
   await page.setInputFiles('#su-file', { name: 'huge.csv', mimeType: 'text/csv', buffer: Buffer.alloc(6 * 1024 * 1024, 'A') });
   await page.waitForTimeout(200);
   assert((await page.textContent('#su-status')).includes('te groot') && searchCalls === 0, '6 MB file refused before reading');
+  // 12. flaky connection (Balloon Market, 16/10/2026: 41 and 47 "not found" that were in the shop).
+  // A search that fails is never "not found": it is retried, and what still fails is "niet gecontroleerd" with a button.
+  await page.goto('about:blank'); await page.goto(base + '/shop/cart'); await page.waitForSelector('#stx-upl:not([hidden])');
+  await page.click('#su-toggle'); await page.click('#su-pastebtn');
+  triesByTerm = {};
+  flakyFails = { R12005: 2, LOL6015: 1, N260080: 99 }; // R12005 and LOL6015 recover on their own, N260080 keeps failing
+  await page.fill('#su-paste', 'R12005;3\nLOL6015;2\nN260080;1\nFOOBAR1;4\n');
+  await page.click('#su-paste-go');
+  await page.waitForSelector('#su-preview:not([hidden])', { timeout: 30000 });
+  const rows12 = await page.$$eval('#su-rows tr', trs => trs.map(tr => tr.querySelector('.su-code').textContent + ':' + tr.className + ':' + tr.querySelector('.su-st').textContent));
+  console.log('   flaky rows:', rows12.join(' | '));
+  assert(rows12.includes('R12005:ok:gevonden') && rows12.includes('LOL6015:ok:gevonden'), 'codes that failed 1-2 times are found after the automatic retries');
+  assert(rows12[0] === 'N260080:err:niet gecontroleerd', 'a code that keeps failing is "niet gecontroleerd" at the top, not "niet gevonden"');
+  assert(rows12.includes('FOOBAR1:no:niet gevonden'), 'a code the shop really does not know is still "niet gevonden"');
+  // 3 tries in the first round + 3 in the calm second round = 6 from the card; Chrome itself silently resends some
+  // requests whose connection was dropped, so the server can see more.
+  assert(triesByTerm.N260080 >= 6, 'the failing code was tried at least 3 + 3 times (' + triesByTerm.N260080 + ' requests seen by the server)');
+  const n12 = await page.textContent('#su-notices');
+  assert(n12.includes('haperende verbinding, geen ontbrekend product') && !!(await page.$('#su-recheck')), 'notice explains it and offers "Opnieuw controleren"');
+  assert((await page.textContent('#su-add')).trim() === '2 regels in winkelmandje', 'unchecked line is not added');
+  await page.screenshot({ path: path.join(OUT, 'flaky-nl.png'), fullPage: true });
+  flakyFails = {}; // the connection is fine again
+  await page.click('#su-recheck');
+  await page.waitForFunction(() => !document.querySelector('#su-recheck') && !document.querySelector('#su-rows tr.err'), null, { timeout: 15000 });
+  const r12b = await page.$$eval('#su-rows tr', trs => trs.map(tr => tr.querySelector('.su-code').textContent + ':' + tr.className));
+  assert(r12b.includes('N260080:ok') && (await page.textContent('#su-add')).trim() === '3 regels in winkelmandje', 'after "Opnieuw controleren" the code is found and can be added');
+
   // mobile screenshot
   const mp = await b.newPage({ viewport: { width: 390, height: 800 } });
   await mp.goto(base + '/en_GB/shop/cart'); await mp.waitForSelector('#stx-upl:not([hidden])'); await mp.click('#su-toggle');

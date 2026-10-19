@@ -154,6 +154,7 @@
   .stx-upl tr.oos td.su-qty { color: var(--ink-soft); text-decoration: line-through; }
   .stx-upl tr.short .su-st { background: #fff3d6; color: var(--amber); }
   .stx-upl tr.short { background: #fffaf0; }
+  .stx-upl tr.err .su-st { background: #fff3d6; color: var(--amber); }
   .stx-upl input.su-qin { width: 72px; border: 1.5px solid var(--amber); border-radius: 8px; padding: 4px 6px; font: inherit; font-weight: 700; text-align: right; background: #fff; }
   .stx-upl input.su-qin:focus { outline: 2px solid var(--purple-light); border-color: var(--purple); }
   .stx-upl .su-status.su-err { color: var(--red); font-weight: 700; }
@@ -298,7 +299,8 @@
         + '  A code can be the shop reference or the SAP or barcode of the product, both are matched. Lines that are not found are skipped. Products that are out of stock are not added; where there is less stock than you asked, you can change the quantity before adding.',
       too_many: 'This file has {n} order lines. You can upload up to {max} lines at once. Check that this is the right file, or split your order into smaller files.', too_big: 'This file is too large for an order (up to {max} lines). Check that this is the right file.',
       oos: '{n} out of stock', short: '{n} with less stock', notice_oos: 'Out of stock, will not be added:', notice_short: 'Less stock than you asked: we filled in what is available. You can change the quantity in the Packs column.', notice_top: 'You will find them at the top of the list.',
-      res_oos: 'Out of stock, not added ({n}):', res_short: 'Less in stock than you asked ({n}):', res_short_line: '{g} of {w} packs in your cart', more: '+{n} more'
+      res_oos: 'Out of stock, not added ({n}):', res_short: 'Less in stock than you asked ({n}):', res_short_line: '{g} of {w} packs in your cart', more: '+{n} more',
+      st_err: 'could not check', err: '{n} could not be checked', notice_err: 'The shop did not answer for these codes, so we could not check them. That is a connection hiccup, not a missing product.', recheck: 'Check them again', rechecking: 'Checking {n} codes again...', res_err: 'Not checked, not added ({n}):'
     },
     nl: {
       kicker: 'Bestellen in een keer', title: 'Upload je bestelling als CSV of Excel', lede: 'De eerste kolom is de productcode, de tweede kolom is het aantal zakken dat je wil bestellen.',
@@ -315,7 +317,8 @@
         + '  Een code mag de shopreferentie of de SAP- of barcode van het product zijn, allebei worden herkend. Regels die niet gevonden zijn worden overgeslagen. Producten die niet op voorraad zijn worden niet toegevoegd; is er minder voorraad dan je vroeg, dan kan je het aantal aanpassen voor je toevoegt.',
       too_many: 'Dit bestand heeft {n} bestelregels. Je kan maximaal {max} regels in een keer uploaden. Controleer of dit het juiste bestand is, of verdeel je bestelling over kleinere bestanden.', too_big: 'Dit bestand is te groot voor een bestelling (maximaal {max} regels). Controleer of dit het juiste bestand is.',
       oos: '{n} niet op voorraad', short: '{n} beperkte voorraad', notice_oos: 'Niet op voorraad, wordt niet toegevoegd:', notice_short: 'Minder voorraad dan je vroeg: we vulden in wat er is. Je kan het aantal aanpassen in de kolom Zakken.', notice_top: 'Ze staan bovenaan de lijst.',
-      res_oos: 'Niet op voorraad, niet toegevoegd ({n}):', res_short: 'Minder voorraad dan gevraagd ({n}):', res_short_line: '{g} van {w} zakken in je mandje', more: '+{n} meer'
+      res_oos: 'Niet op voorraad, niet toegevoegd ({n}):', res_short: 'Minder voorraad dan gevraagd ({n}):', res_short_line: '{g} van {w} zakken in je mandje', more: '+{n} meer',
+      st_err: 'niet gecontroleerd', err: '{n} niet gecontroleerd', notice_err: 'De shop antwoordde niet voor deze codes, dus konden we ze niet controleren. Dat is een haperende verbinding, geen ontbrekend product.', recheck: 'Opnieuw controleren', rechecking: '{n} codes opnieuw controleren...', res_err: 'Niet gecontroleerd, niet toegevoegd ({n}):'
     },
     fr: {
       kicker: 'Commander en une fois', title: 'Importez votre commande en CSV ou Excel', lede: 'La première colonne est le code produit, la deuxième colonne le nombre de sachets que vous souhaitez commander.',
@@ -332,7 +335,8 @@
         + '  Un code peut être la référence boutique ou le code SAP ou code-barres du produit, les deux sont reconnus. Les lignes introuvables sont ignorées. Les produits en rupture de stock ne sont pas ajoutés ; s’il y a moins de stock que demandé, vous pouvez modifier la quantité avant d’ajouter.',
       too_many: 'Ce fichier contient {n} lignes de commande. Vous pouvez importer au maximum {max} lignes à la fois. Vérifiez qu’il s’agit du bon fichier, ou répartissez votre commande sur plusieurs fichiers.', too_big: 'Ce fichier est trop volumineux pour une commande (maximum {max} lignes). Vérifiez qu’il s’agit du bon fichier.',
       oos: '{n} en rupture', short: '{n} stock limité', notice_oos: 'En rupture de stock, ne sera pas ajouté :', notice_short: 'Moins de stock que demandé : nous avons indiqué la quantité disponible. Vous pouvez la modifier dans la colonne Sachets.', notice_top: 'Ils figurent en haut de la liste.',
-      res_oos: 'En rupture de stock, non ajoutés ({n}) :', res_short: 'Moins de stock que demandé ({n}) :', res_short_line: '{g} sur {w} sachets dans votre panier', more: '+{n} autres'
+      res_oos: 'En rupture de stock, non ajoutés ({n}) :', res_short: 'Moins de stock que demandé ({n}) :', res_short_line: '{g} sur {w} sachets dans votre panier', more: '+{n} autres',
+      st_err: 'non vérifié', err: '{n} non vérifiés', notice_err: 'La boutique n’a pas répondu pour ces codes, nous n’avons donc pas pu les vérifier. C’est un problème de connexion, pas un produit manquant.', recheck: 'Vérifier à nouveau', rechecking: 'Nouvelle vérification de {n} codes...', res_err: 'Non vérifiés, non ajoutés ({n}) :'
     },
     de: {
       kicker: 'Auf einmal bestellen', title: 'Bestellung als CSV oder Excel hochladen', lede: 'Die erste Spalte ist der Produktcode, die zweite Spalte die Anzahl Beutel, die Sie bestellen möchten.',
@@ -349,7 +353,8 @@
         + '  Ein Code kann die Shop-Referenz oder der SAP- oder Barcode des Produkts sein, beide werden erkannt. Nicht gefundene Zeilen werden übersprungen. Produkte, die nicht auf Lager sind, werden nicht hinzugefügt; ist weniger Bestand da als gewünscht, können Sie die Menge vor dem Hinzufügen ändern.',
       too_many: 'Diese Datei enthält {n} Bestellzeilen. Sie können höchstens {max} Zeilen auf einmal hochladen. Prüfen Sie, ob es die richtige Datei ist, oder teilen Sie die Bestellung auf kleinere Dateien auf.', too_big: 'Diese Datei ist zu groß für eine Bestellung (höchstens {max} Zeilen). Prüfen Sie, ob es die richtige Datei ist.',
       oos: '{n} nicht auf Lager', short: '{n} begrenzter Bestand', notice_oos: 'Nicht auf Lager, wird nicht hinzugefügt:', notice_short: 'Weniger Bestand als gewünscht: Wir haben die verfügbare Menge eingetragen. Sie können sie in der Spalte Beutel ändern.', notice_top: 'Sie stehen oben in der Liste.',
-      res_oos: 'Nicht auf Lager, nicht hinzugefügt ({n}):', res_short: 'Weniger Bestand als gewünscht ({n}):', res_short_line: '{g} von {w} Beuteln im Warenkorb', more: '+{n} weitere'
+      res_oos: 'Nicht auf Lager, nicht hinzugefügt ({n}):', res_short: 'Weniger Bestand als gewünscht ({n}):', res_short_line: '{g} von {w} Beuteln im Warenkorb', more: '+{n} weitere',
+      st_err: 'nicht geprüft', err: '{n} nicht geprüft', notice_err: 'Der Shop hat für diese Codes nicht geantwortet, daher konnten wir sie nicht prüfen. Das ist ein Verbindungsproblem, kein fehlendes Produkt.', recheck: 'Erneut prüfen', rechecking: '{n} Codes werden erneut geprüft...', res_err: 'Nicht geprüft, nicht hinzugefügt ({n}):'
     }
   };
   var S = T[lang] || T.en;
@@ -386,17 +391,18 @@
   /* Resultaat van een upload: eerst de samenvatting, daarna per product wat niet op voorraad was en wat
      met minder dan gevraagd in het mandje kwam. Dezelfde melding direct na het toevoegen en na het herladen. */
   function showResult(box, r) {
-    var oos = r.oos || [], short = r.short || [], failed = r.failed || [];
+    var oos = r.oos || [], short = r.short || [], failed = r.failed || [], unchecked = r.unchecked || [];
     var msg = esc(t('done', { l: r.done, p: r.packs }));
     if (r.skipped) { msg += ' ' + esc(t('skipped', { n: r.skipped })); }
     if (r.adjusted) { msg += ' ' + esc(t('qty_warn', { n: r.adjusted })); }
     if (failed.length) { msg += ' ' + esc(t('fail', { names: failed.join(', ') })); }
     if (r.srvErr) { msg += ' ' + esc(t('srv_err', { m: r.srvErr })); }
     function item(x) { return '<li><code>' + esc(x.code) + '</code> ' + esc(x.name || '') + (x.got != null ? ': ' + esc(t('res_short_line', { g: x.got, w: x.want })) : '') + '</li>'; }
+    if (unchecked.length) { msg += '<div class="su-rlist"><strong>' + esc(t('res_err', { n: unchecked.length })) + '</strong><ul>' + unchecked.map(item).join('') + '</ul></div>'; }
     if (oos.length) { msg += '<div class="su-rlist"><strong>' + esc(t('res_oos', { n: oos.length })) + '</strong><ul>' + oos.map(item).join('') + '</ul></div>'; }
     if (short.length) { msg += '<div class="su-rlist"><strong>' + esc(t('res_short', { n: short.length })) + '</strong><ul>' + short.map(item).join('') + '</ul></div>'; }
     box.innerHTML = msg; box.hidden = false;
-    box.classList.toggle('warn', !!(failed.length || r.srvErr || r.adjusted || oos.length || short.length));
+    box.classList.toggle('warn', !!(failed.length || r.srvErr || r.adjusted || oos.length || short.length || unchecked.length));
   }
 
   /* ---- UI ---- */
@@ -533,14 +539,31 @@
   }
 
   /* ---- productherkenning via de shop-zoekroute ---- */
-  function shopSearch(term, limit, cb) {
+  /* cb(resultaten, reden). Een zoekopdracht die mislukt (netwerk, HTTP-fout, Odoo-fout, leeg antwoord) is NIET
+     "niet gevonden": op 16/10/2026 kreeg Balloon Market (VK) met hetzelfde bestand 41 en dan 47 codes "niet gevonden"
+     die gewoon in de shop staan, terwijl hier alle 215 lukten. Dus: tot 3 pogingen met een pauze ertussen, en lukt het
+     dan nog niet, dan cb(null, reden) en wordt de regel "niet gecontroleerd" (oranje, met een knop om opnieuw te proberen). */
+  var RETRY_WAIT = [600, 1800];
+  function shopSearch(term, limit, cb, attempt) {
+    attempt = attempt || 0;
+    function fail(why) {
+      if (attempt < RETRY_WAIT.length) { setTimeout(function () { shopSearch(term, limit, cb, attempt + 1); }, RETRY_WAIT[attempt]); }
+      else { cb(null, why); }
+    }
     fetch(SEARCH_URL, {
       method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ jsonrpc: '2.0', method: 'call', id: Date.now(), params: {
         search_type: 'products', term: term, order: 'name asc', limit: limit, max_nb_chars: 120,
         options: { displayDescription: false, displayDetail: true, displayExtraLink: false, displayImage: false, allowFuzzy: false }
       } })
-    }).then(function (r) { return r.json(); }).then(function (d) { cb(((d && d.result) || {}).results || []); }).catch(function () { cb(null); });
+    }).then(function (r) {
+      if (!r.ok) { fail('HTTP ' + r.status); return; }
+      return r.json().then(function (d) {
+        if (d && d.error) { fail('rpc: ' + String((d.error.data && d.error.data.message) || d.error.message || '').split('\n')[0].slice(0, 80)); return; }
+        if (!d || !d.result || !d.result.results) { fail('empty answer'); return; }
+        cb(d.result.results, '');
+      }, function () { fail('not json'); });
+    }).catch(function (e) { fail('network: ' + String(e && e.message || e).slice(0, 60)); });
   }
   function strip(v) { return String(v == null ? '' : v).replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim(); }
   function slug(s) {
@@ -565,9 +588,9 @@
     return out;
   }
   function matchOne(line, cb) {
-    shopSearch(line.code, 10, function (results) {
+    shopSearch(line.code, 10, function (results, why) {
       line.options = [];
-      if (results === null) { line.status = 'no'; cb(); return; }
+      if (results === null) { line.status = 'err'; line.why = why; cb(); return; }
       var hits = hitsFor(line.code, results);
       var exact = hits.filter(function (h) { return h.exact; });
       var pre = hits.filter(function (h) { return h.prefix; });
@@ -602,12 +625,13 @@
   /* want = gevraagd in het bestand, qty = wat we toevoegen. Bij te weinig voorraad staat qty op de vrije voorraad. */
   function applyStock(l, s) { l.pid = s.pid; l.avail = s.avail; l.qty = Math.min(l.want, l.avail); }
   function kind(l) {
+    if (l.status === 'err') { return 'err'; }
     if (!l.tid || l.status === 'no') { return 'no'; }
     if (l.avail <= 0) { return 'oos'; }
     if (l.want > l.avail) { return 'short'; }
     return l.status === 'multi' ? 'multi' : 'ok';
   }
-  function addable(l) { var k = kind(l); return k !== 'no' && k !== 'oos' && l.qty > 0; }
+  function addable(l) { var k = kind(l); return k !== 'no' && k !== 'oos' && k !== 'err' && l.qty > 0; }
   function matchAll(lines, dup) {
     lines.forEach(function (l) { l.status = 'no'; l.tid = null; l.name = ''; l.want = l.qty; l.avail = Infinity; l.pid = null; l.opt = 0; l.pick = function (h) { this.tid = h.tid; this.name = h.name; this.url = h.url; }; });
     state.lines = lines;
@@ -618,15 +642,30 @@
       var l = lines[next++];
       matchOne(l, function () {
         done++; setStatus(t('matching', { i: Math.min(done + 1, n), n: n })); setBar(done / n);
-        if (done >= n) { busy(false); setStatus(''); render(dup); } else { step(); }
+        if (done >= n) { recheck(function () { busy(false); setStatus(''); render(dup); }); } else { step(); }
       });
     }
     for (var k = 0; k < Math.min(PARALLEL, n); k++) { step(); }
   }
+  /* Codes die "niet gecontroleerd" bleven nog eens proberen, een voor een en na een korte pauze (rustiger voor de
+     verbinding dan 4 tegelijk). Automatisch na het eerste rondje, en via de knop "Opnieuw controleren". */
+  function recheck(cb) {
+    var todo = state.lines.filter(function (l) { return l.status === 'err'; });
+    if (!todo.length) { cb(); return; }
+    var i = 0;
+    setStatus(t('rechecking', { n: todo.length })); setBar(0);
+    function next() {
+      if (i >= todo.length) { cb(); return; }
+      var l = todo[i++];
+      l.status = 'no'; l.tid = null; l.why = '';
+      matchOne(l, function () { setBar(i / todo.length); setTimeout(next, 150); });
+    }
+    setTimeout(next, 1000);
+  }
 
   /* ---- preview ---- */
   function counts() {
-    var c = { ok: 0, multi: 0, short: 0, oos: 0, no: 0, add: 0, packs: 0 };
+    var c = { ok: 0, multi: 0, short: 0, oos: 0, no: 0, err: 0, add: 0, packs: 0 };
     state.lines.forEach(function (l) { c[kind(l)]++; if (addable(l)) { c.add++; c.packs += l.qty; } });
     return c;
   }
@@ -643,21 +682,25 @@
     if (c.multi) { sum += '<span class="su-pill chk">' + esc(t('check', { n: c.multi })) + '</span>'; }
     if (c.short) { sum += '<span class="su-pill short">' + esc(t('short', { n: c.short })) + '</span>'; }
     if (c.oos) { sum += '<span class="su-pill no">' + esc(t('oos', { n: c.oos })) + '</span>'; }
+    if (c.err) { sum += '<span class="su-pill short">' + esc(t('err', { n: c.err })) + '</span>'; }
     if (c.no) { sum += '<span class="su-pill no">' + esc(t('missing', { n: c.no })) + '</span>'; }
     if (state.dup) { sum += '<span class="su-pill">' + esc(t('dup', { n: state.dup })) + '</span>'; }
     sum += '<span class="su-pill">' + esc(t('tot_packs', { n: c.packs })) + '</span>';
     $('su-sum').innerHTML = sum;
     var oos = state.lines.filter(function (l) { return kind(l) === 'oos'; });
     var notes = '';
+    if (c.err) { notes += '<div class="su-notice"><p><strong>' + esc(t('notice_err')) + '</strong></p><p><button type="button" class="su-btn su-yellow" id="su-recheck">' + esc(t('recheck')) + '</button></p></div>'; }
     if (oos.length) { notes += '<div class="su-notice oos"><p><strong>' + esc(t('notice_oos')) + '</strong> ' + nameList(oos, 12) + '</p><p>' + esc(t('notice_top')) + '</p></div>'; }
     if (c.short) { notes += '<div class="su-notice"><p><strong>' + esc(t('notice_short')) + '</strong></p>' + (oos.length ? '' : '<p>' + esc(t('notice_top')) + '</p>') + '</div>'; }
     $('su-notices').innerHTML = notes;
+    var rb = $('su-recheck');
+    if (rb) { rb.addEventListener('click', function () { if (state.busy) { return; } busy(true); rb.disabled = true; recheck(function () { busy(false); setStatus(''); render(); }); }); }
     $('su-add').textContent = t('add', { n: c.add });
     $('su-add').disabled = c.add === 0;
     return c;
   }
   /* Probleemregels bovenaan (niet op voorraad, te weinig voorraad, kiezen, niet gevonden), daarna de rest in de volgorde van het bestand. */
-  var RANK = { oos: 0, short: 1, multi: 2, no: 3, ok: 4 };
+  var RANK = { err: 0, oos: 1, short: 2, multi: 3, no: 4, ok: 5 };
   function render(dup) {
     if (dup != null) { state.dup = dup; }
     var tb = $('su-rows'); tb.innerHTML = '';
@@ -675,7 +718,7 @@
       var qty = k === 'short'
         ? '<input type="number" class="su-qin" data-i="' + i + '" min="0" max="' + l.avail + '" step="1" value="' + l.qty + '" aria-label="' + esc(t('th_qty') + ' ' + l.code) + '">'
         : String(l.want);
-      var st = k === 'short' ? t('st_short', { a: l.avail, w: l.want }) : t({ ok: 'st_ok', multi: 'st_multi', no: 'st_no', oos: 'st_oos' }[k]);
+      var st = k === 'short' ? t('st_short', { a: l.avail, w: l.want }) : t({ ok: 'st_ok', multi: 'st_multi', no: 'st_no', oos: 'st_oos', err: 'st_err' }[k]);
       tr.innerHTML = '<td class="su-code">' + esc(l.code) + '</td><td>' + prod + '</td><td class="su-qty" data-unit="' + esc(t('th_qty')) + '">' + qty + '</td><td><span class="su-st">' + esc(st) + '</span></td>';
       tb.appendChild(tr);
     });
@@ -699,7 +742,8 @@
     var c = renderSummary();
     $('su-preview').hidden = false;
     root.classList.add('su-open');
-    if (dup != null) { track('cart_upload_matched', { lines: state.lines.length, found: c.ok + c.short, check: c.multi, missing: c.no, out_of_stock: c.oos, low_stock: c.short }); }
+    if (dup != null) { var whys = {}; state.lines.forEach(function (l) { if (l.status === 'err' && l.why) { whys[l.why] = (whys[l.why] || 0) + 1; } });
+      track('cart_upload_matched', { lines: state.lines.length, found: c.ok + c.short, check: c.multi, missing: c.no, out_of_stock: c.oos, low_stock: c.short, unchecked: c.err, unchecked_reasons: JSON.stringify(whys).slice(0, 300) }); }
   }
 
   /* ---- in het winkelmandje ----
@@ -754,9 +798,10 @@
     if (state.busy) { return; }
     var groups = [], byTid = {};
     /* Voor de resultaatmelding: wat niet op voorraad was en wat met minder dan gevraagd in het mandje kwam. */
-    var oosList = [], shortList = [];
+    var oosList = [], shortList = [], errList = [];
     state.lines.forEach(function (l) {
       var k = kind(l);
+      if (k === 'err') { errList.push({ code: l.code, name: '' }); return; }
       if (k === 'oos') { oosList.push({ code: l.code, name: l.name, want: l.want }); return; }
       if (k === 'short' && l.qty <= 0) { shortList.push({ code: l.code, name: l.name, want: l.want, got: 0 }); return; }
       if (!addable(l)) { return; }
@@ -774,7 +819,7 @@
     function markGroup(g, cls, key, vars) { g.lines.forEach(function (l) { mark(l, cls, key, vars); }); }
     function finish() {
       busy(false);
-      var res = { done: done, packs: packs, failed: failed, skipped: skipped, adjusted: adjusted, srvErr: srvErr, oos: oosList, short: shortList };
+      var res = { done: done, packs: packs, failed: failed, skipped: skipped, adjusted: adjusted, srvErr: srvErr, oos: oosList, short: shortList, unchecked: errList };
       track('cart_upload_added', { lines: done, packs: packs, failed: failed.length, skipped: skipped, adjusted: adjusted, out_of_stock: oosList.length, low_stock: shortList.length });
       var box = $('su-lastresult');
       showResult(box, res);
