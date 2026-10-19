@@ -174,6 +174,7 @@ function odooPage() {
 ${LOADWALL_HEAD}
 ${LIVECHAT_SESSION}
 ${HEAD_ANTIFLASH}
+<script>window.__headTitle = document.title; window.__headIcon = (document.querySelector('link[rel~="icon"]') || {}).href || '';</script>
 </head><body>
 <div id="wrapwrap">
   <header id="top" class="o_header_standard"><div id="top_menu_container">
@@ -184,6 +185,7 @@ ${HEAD_ANTIFLASH}
   </header>
   <main><div id="wrap"><div class="oe_structure"></div></div></main>
   <footer id="bottom"><div class="o_footer">Sempertex Europe BV</div></footer>
+  <div id="website_cookies_bar" class="s_popup o_snippet_invisible o_no_save"><div class="modal s_popup_no_backdrop o_cookies_classic s_popup_bottom show" style="display: block; position: fixed; bottom: 0; left: 0; right: 0; height: 200px; background: #fff;"><h3>Respecting your privacy is our priority.</h3></div></div>
 </div>
 ${LOADWALL_BODY}
 ${LOADER}
@@ -261,6 +263,9 @@ function check(name, ok, extra) {
     check('Sempertex menu verborgen', (await shown('#top_menu_container')) === 'verborgen');
     check('Sempertex footer verborgen', (await shown('footer#bottom')) === 'verborgen');
     check('geen Silkmas-banner (ook niet met de testmodus aan)', (await page.$('#stx-sm-bar, [id^="stx-sm-"]')) === null);
+    check('geen cookiebanner van Odoo', (await page.evaluate(() => getComputedStyle(document.querySelector('#website_cookies_bar .modal')).display)) === 'none');
+    check('tabtitel tijdens het laden is al zonder Sempertex', await page.evaluate(() => window.__headTitle === 'Liragram'), await page.evaluate(() => window.__headTitle));
+    check('favicon tijdens het laden is niet dat van Sempertex', await page.evaluate(() => window.__headIcon.startsWith('data:image/gif')), await page.evaluate(() => window.__headIcon.slice(0, 30)));
     check('geen verjaardagspopup', (await page.$('[id^="stx-bd"], [class*="stx-bday"]')) === null);
 
     // De livechat hoort hier helemaal niet te booten, want het anti-flitsblok zet
@@ -299,7 +304,25 @@ function check(name, ok, extra) {
     const inner = await page.textContent('[data-i18n="calc_inner"]');
     check('labels zijn vertaald', (inner || '').trim() === 'Globo interior', inner);
     const note = await page.textContent('[data-i18n="calc_note"]');
-    check('disclaimer is vertaald', /aproximacion/.test(note || ''), (note || '').slice(0, 40));
+    check('disclaimer is vertaald', /aproximación/.test(note || ''), (note || '').slice(0, 40));
+
+    check('Match a colour is Spaans', (await page.textContent('#dsm .picker-label')) === 'Encuentra un color' && (await page.textContent('#dsm .dsm-up')) === 'Subir una foto'
+      && (await page.textContent('#dsm .dsm-native span')) === 'o elige un color', await page.textContent('#dsm .dsm-head'));
+    check('kleurkiezer staat er nog in het label', (await page.$('#dsm .dsm-native input[type=color]')) !== null);
+    await page.$eval('#dsm .dsm-native input[type=color]', (e) => { e.value = '#c0392b'; e.dispatchEvent(new Event('input', { bubbles: true })); e.dispatchEvent(new Event('change', { bubbles: true })); });
+    await page.waitForTimeout(400);
+    const dsmOut = await page.textContent('#dsm .dsm-out');
+    check('resultaten na een kleurkeuze zijn Spaans', /Tu color/.test(dsmOut) && /(Muy parecido|Parecido|Cercano|La opción más cercana)/.test(dsmOut) && !/(Very close|Close|Nearby|Closest option|Your colour)/.test(dsmOut), dsmOut.replace(/\s+/g, ' ').slice(0, 160));
+    const english = await page.evaluate(() => {
+      const out = [];
+      document.querySelectorAll('#view-calculator *').forEach((el) => {
+        if (el.children.length || !el.offsetParent) { return; }
+        const t = (el.textContent || '').trim();
+        if (/\b(the|Upload|colour|Tap|closest|Your|Match a)\b/.test(t)) { out.push(t.slice(0, 50)); }
+      });
+      return out;
+    });
+    check('geen Engelse zinnen meer in de calculator', english.length === 0, english.join(' | '));
 
     const brand = await page.evaluate(() =>
       getComputedStyle(document.querySelector('.stx-insp')).getPropertyValue('--purple').trim());
@@ -443,6 +466,7 @@ function check(name, ok, extra) {
     check('livechat staat er gewoon', (await vis('.o-livechat-root')) === 'zichtbaar');
     check('zijmenu met de drie tools staat er', (await vis('.stx-insp .side')) === 'zichtbaar');
     check('geen partnerheader', (await page.$('.stx-pt-bar')) === null);
+    check('cookiebanner staat hier gewoon', (await vis('#website_cookies_bar .modal')) === 'zichtbaar');
     check('Silkmas-banner staat hier wel (testmodus aan)', (await vis('#stx-sm-bar')) === 'zichtbaar');
     check('geen bestelblok', (await page.$('.stx-pt-order')) === null);
     check('tabtitel ongewijzigd', (await page.title()) === 'Tools | Sempertex Europe', await page.title());

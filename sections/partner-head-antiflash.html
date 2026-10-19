@@ -26,6 +26,16 @@
      inmiddels in .o-livechat-root met een shadow root. Zie de opmerking
      bij de CSS hieronder.
 
+     19/10/2026: ook de cookiebanner van Odoo (Engels, Sempertex-stijl)
+     gaat weg, en de tabtitel en het favicon van Sempertex worden hier
+     al vervangen. Odoo zet "partner/liragram/tools | Sempertex Europe"
+     en ons pictogram in de <head>, en dit blok staat daarna maar nog
+     voor de eerste paint. Titel = de partnernaam uit het pad; de skin
+     zet daarna de volledige titel en het favicon van de partner.
+     Zonder cookiebanner geeft niemand toestemming voor optionele
+     cookies, dus laadt Google Analytics hier niet (Odoo houdt dat
+     script tegen tot er toestemming is).
+
      Verwijderen = dit blok weghalen. Sinds 21/09/2026.
      ============================================================ -->
 <script>
@@ -50,12 +60,21 @@
        de host, dan gaat alles wat erin zit mee.
        .o-livechat-root = huidige Odoo, .o_livechat_button = oude versies. */
     + 'html.stx-partner .o-livechat-root,html.stx-partner .o_livechat_button,'
-    + 'html.stx-partner .o-livechat-LivechatButton{display:none!important}'
+    + 'html.stx-partner .o-livechat-LivechatButton,'
+    /* Cookiebanner van Odoo. De popup erin (.modal) zet Odoo zelf op display:block, vandaar ook die. */
+    + 'html.stx-partner #website_cookies_bar,html.stx-partner #website_cookies_bar .modal,'
+    + 'html.stx-partner .o_cookies_classic{display:none!important}'
     + 'html.stx-partner #wrap{padding:0!important;margin:0!important}'
     /* Spinner van laadscherm deel 1 neutraal houden op een partnerpagina. */
     + 'html.stx-partner.stx-loading::after{border-color:#e6e6e6!important;'
     + 'border-top-color:#9a9a9a!important}';
   document.head.appendChild(s);
+  /* Tabtitel en favicon: nooit "Sempertex Europe" of ons pictogram, ook niet tijdens het laden. */
+  var slug = p.split('/partner/')[1].split('/')[0];
+  document.title = slug.split('-').map(function (w) { return w.charAt(0).toUpperCase() + w.slice(1); }).join(' ');
+  Array.prototype.forEach.call(document.querySelectorAll('link[rel~="icon"]'), function (l) {
+    l.href = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
+  });
   /* Tweede slot op de livechat: dit blok staat na het session-info
      script van Odoo, dus we kunnen de chat uitzetten voordat de lazy
      bundle hem bouwt. Scheelt op een partnerpagina ook een websocket

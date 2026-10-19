@@ -3324,14 +3324,14 @@
       var box = document.createElement('div');
       box.className = 'dsm'; box.id = 'dsm';
       box.innerHTML =
-        '<div class="dsm-head"><div><div class="picker-label">' + esc(STR.dsm_label) + '</div><p class="dsm-hint">' + esc(STR.dsm_hint) + '</p></div>'
-        + '<div class="dsm-acts"><button type="button" class="btn-cart dsm-up">' + esc(STR.dsm_up) + '</button>'
-        + '<label class="dsm-native">' + esc(STR.dsm_pick) + '<input type="color" value="#d5a6c8"></label>'
+        '<div class="dsm-head"><div><div class="picker-label" data-i18n="dsm_label">' + esc(STR.dsm_label) + '</div><p class="dsm-hint" data-i18n="dsm_hint">' + esc(STR.dsm_hint) + '</p></div>'
+        + '<div class="dsm-acts"><button type="button" class="btn-cart dsm-up" data-i18n="dsm_up">' + esc(STR.dsm_up) + '</button>'
+        + '<label class="dsm-native"><span data-i18n="dsm_pick">' + esc(STR.dsm_pick) + '</span><input type="color" value="#d5a6c8"></label>'
         + '<input type="file" accept="image/*" hidden></div></div>'
         + '<div class="dsm-body"><div class="dsm-photo"><div class="dsm-cvbox"><canvas></canvas><div class="dsm-lens"></div></div>'
-        + '<p class="dsm-tip">' + esc(STR.dsm_tip) + '</p></div>'
-        + '<div class="dsm-out"><div class="dsm-target"><span class="dsm-sw"></span><div><div class="dsm-tl">' + esc(STR.dsm_target) + '</div><div class="dsm-hex"></div></div></div>'
-        + '<p class="dsm-best">' + esc(STR.dsm_best) + '</p><div class="dsm-list"></div><p class="dsm-single"></p></div></div>';
+        + '<p class="dsm-tip" data-i18n="dsm_tip">' + esc(STR.dsm_tip) + '</p></div>'
+        + '<div class="dsm-out"><div class="dsm-target"><span class="dsm-sw"></span><div><div class="dsm-tl" data-i18n="dsm_target">' + esc(STR.dsm_target) + '</div><div class="dsm-hex"></div></div></div>'
+        + '<p class="dsm-best" data-i18n="dsm_best">' + esc(STR.dsm_best) + '</p><div class="dsm-list"></div><p class="dsm-single"></p></div></div>';
       grid.parentNode.insertBefore(box, grid);
 
       var fileIn = box.querySelector('input[type=file]'), native = box.querySelector('input[type=color]');
@@ -3837,6 +3837,9 @@
   function shopFlag() {
     if (root && root.classList) root.classList.toggle('stx-shop-on', pricesOk === true && catalogLive);
   }
+  /* De teksten van deze pagina, voor de partnerskin (partner-calculator-v1.html): die legt er een
+     vertaling over, ook voor teksten die pas later verschijnen (Match a colour na een foto). */
+  root.stxStr = STR;
   root.stxShop = {
     ready: function () { return pricesOk === true && catalogLive; },
     // sizes: SKU prefixes, e.g. ['R5', 'R12', 'R18']; 1 pack per colour per size.

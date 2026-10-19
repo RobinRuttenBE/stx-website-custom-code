@@ -104,7 +104,21 @@
         calc_lbl_outer: 'Exterior',
         calc_lbl_result: 'Resultado',
         calc_swap: 'Intercambiar interior y exterior',
-        calc_note: 'Esta vista previa es una aproximacion. El color final depende del tamano de inflado, la luz y el acabado de los globos utilizados.'
+        calc_note: 'Esta vista previa es una aproximación. El color final depende del tamaño de inflado, la luz y el acabado de los globos utilizados.',
+        /* Match a colour (19/10/2026). dsm_other, dsm_q1-4 en dsm_single verschijnen pas na een foto of kleurkeuze. */
+        dsm_label: 'Encuentra un color',
+        dsm_hint: 'Sube una foto y toca el color que quieres. La calculadora encuentra el globo interior y el exterior que más se acercan.',
+        dsm_up: 'Subir una foto',
+        dsm_other: 'Otra foto',
+        dsm_pick: 'o elige un color',
+        dsm_tip: 'Toca el color que quieres conseguir. La foto se queda en tu dispositivo.',
+        dsm_target: 'Tu color',
+        dsm_best: 'Las combinaciones más cercanas. Toca una para cargarla en la calculadora.',
+        dsm_q1: 'Muy parecido',
+        dsm_q2: 'Parecido',
+        dsm_q3: 'Cercano',
+        dsm_q4: 'La opción más cercana',
+        dsm_single: 'Consejo: {name} solo ya se acerca mucho, no necesitas double stuffing.'
       },
 
       /* -- HEADER / FOOTER -- */
@@ -114,7 +128,7 @@
       /* -- BESTELBLOK ONDER DE CALCULATOR -- */
       order: {
         title: 'Pide estos globos en Liragram',
-        lead: 'Anota los codigos y busca los globos en la tienda. Necesitas una cuenta Liragram para ver precios y comprar.',
+        lead: 'Anota los códigos y busca los globos en la tienda. Necesitas una cuenta Liragram para ver precios y comprar.',
         innerLabel: 'Interior',
         outerLabel: 'Exterior',
         mainBtn: 'Ver globos Sempertex',
@@ -359,6 +373,9 @@
       var el = root.querySelector('[data-i18n="' + key + '"]');
       if (el) { el.innerHTML = S[key]; }
     });
+    /* Ook in de tekstenlijst van de calculator zelf, voor teksten die pas later verschijnen
+       (Match a colour: "Otra foto", de kwaliteitslabels en de tip na een foto). */
+    if (root.stxStr) { Object.keys(S).forEach(function (key) { root.stxStr[key] = S[key]; }); }
 
     /* -- Sempertex winkelmandknop weg: die hoort hier niet -- */
     var cart = root.querySelector('#calc-cart');
@@ -437,7 +454,9 @@
     var timer = setInterval(function () {
       tries++;
       var root = document.getElementById('stx-insp-root');
-      if (root && root.querySelector('#view-calculator .calc-grid')) {
+      /* Ook wachten op het blok Match a colour (#dsm), anders blijft dat Engels. Komt het niet
+         binnen 2 seconden (bv. ooit uitgezet), dan gaat de skin zonder. */
+      if (root && root.querySelector('#view-calculator .calc-grid') && (root.querySelector('#dsm') || tries > 20)) {
         clearInterval(timer);
         build(root);
       } else if (tries > 200) {           /* 20 seconden, dan opgeven */
