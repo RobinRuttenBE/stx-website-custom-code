@@ -395,10 +395,13 @@
   }
 
   /* Taalschakelaar rechtsboven (langs: ['nl', 'en']). Odoo kent elke pagina in elke taal:
-     /partner/<slug>/tools is Nederlands, /en_GB/partner/<slug>/tools Engels. Getest
-     20/10/2026: de taalcookie van Odoo stuurt niet terug, ook niet na een bezoek in het Engels. */
+     /partner/<slug>/tools is Nederlands, /en_GB/partner/<slug>/tools Engels.
+     Nederlands MOET via /nl/...: na een bezoek in het Engels staat de taalcookie van Odoo op
+     Engels en stuurt Odoo /partner/... in de browser terug naar /en_GB/ (Robin 20/10/2026).
+     /nl/... zet de cookie op Nederlands en stuurt door naar /partner/..., net als Odoo's eigen
+     taalkiezer. De hash (de open tool) gaat mee door de doorverwijzing. */
   var LANGS = (P.langs || []).filter(function (l) { return /^(nl|en|fr|de)$/.test(l); });
-  var LANG_PREFIX = { nl: '', en: '/en_GB', fr: '/fr', de: '/de' };
+  var LANG_PREFIX = { nl: '/nl', en: '/en_GB', fr: '/fr', de: '/de' };
   function langUrl(l) { return LANG_PREFIX[l] + '/partner/' + SLUG + '/tools' + (window.location.hash || ''); }
 
   /* Welke tools deze partner krijgt. Zonder lijst alleen de double stuffing calculator. */

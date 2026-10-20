@@ -200,6 +200,8 @@ function serve() {
   return new Promise((resolve) => {
     const server = http.createServer((req, res) => {
       const url = req.url.split('?')[0];
+      // Zoals Odoo: /nl/... zet de taal op Nederlands en stuurt door naar het pad zonder prefix.
+      if (url.startsWith('/nl/')) { res.writeHead(302, { location: req.url.slice(3) }).end(); return; }
       if (url.startsWith('/sections/')) {
         const file = path.basename(url);
         const full = path.resolve(SECTIONS, file);
@@ -459,7 +461,7 @@ function check(name, ok, extra) {
 
     // Taalschakelaar rechtsboven
     const langs = await page.$$eval('.stx-pt-lang a', (els) => els.map((e) => e.textContent + '|' + e.getAttribute('href') + '|' + (e.classList.contains('on') ? 'aan' : 'uit')));
-    check('taalschakelaar NL/EN, NL staat aan', JSON.stringify(langs) === JSON.stringify(['NL|/partner/mooideco/tools#calculator|aan', 'EN|/en_GB/partner/mooideco/tools#calculator|uit']), JSON.stringify(langs));
+    check('taalschakelaar NL/EN, NL staat aan', JSON.stringify(langs) === JSON.stringify(['NL|/nl/partner/mooideco/tools#calculator|aan', 'EN|/en_GB/partner/mooideco/tools#calculator|uit']), JSON.stringify(langs));
     const barBox = await page.evaluate(() => { const b = document.querySelector('.stx-pt-bar .stx-pt-in').getBoundingClientRect(); const l = document.querySelector('.stx-pt-lang').getBoundingClientRect(); return { right: Math.round(b.right - l.right), top: Math.round(l.top - b.top) }; });
     check('taalschakelaar staat rechtsboven', barBox.right < 60 && barBox.top < 40, JSON.stringify(barBox));
 
@@ -542,7 +544,7 @@ function check(name, ok, extra) {
     check('Engelse tabbladen', JSON.stringify(tabs) === JSON.stringify(['Double Stuffing Calculator', 'Cost Calculator', 'Colour Matching Tool']), JSON.stringify(tabs));
     check('opent op dezelfde tool', (await page.textContent('.stx-pt-tab.on')) === 'Cost Calculator');
     check('EN staat aan', (await page.textContent('.stx-pt-lang a.on')) === 'EN');
-    check('NL-link gaat terug naar dezelfde tool', (await page.getAttribute('.stx-pt-lang a[data-lang="nl"]', 'href')) === '/partner/mooideco/tools#cost');
+    check('NL-link gaat terug naar dezelfde tool', (await page.getAttribute('.stx-pt-lang a[data-lang="nl"]', 'href')) === '/nl/partner/mooideco/tools#cost');
     check('tabtitel Engels', (await page.title()) === 'Balloon colour and price tools | Mooideco', await page.title());
     check('terugknop Engels', (await page.textContent('.stx-pt-back')) === 'Visit the webshop');
     check('bestelblok Engels', (await page.textContent('.stx-pt-order h3')) === 'Order these balloons from Mooideco');
@@ -553,7 +555,7 @@ function check(name, ok, extra) {
     check('geen Nederlandse teksten op de Engelse pagina', !nl);
     await page.click('.stx-pt-tab[data-tool="colour"]');
     await page.waitForTimeout(200);
-    check('NL-link volgt het tabblad', (await page.getAttribute('.stx-pt-lang a[data-lang="nl"]', 'href')) === '/partner/mooideco/tools#colour');
+    check('NL-link volgt het tabblad', (await page.getAttribute('.stx-pt-lang a[data-lang="nl"]', 'href')) === '/nl/partner/mooideco/tools#colour');
     await page.click('.stx-pt-lang a[data-lang="nl"]');
     await page.waitForFunction(() => location.pathname === '/partner/mooideco/tools' && !!document.querySelector('.stx-pt-tab.on'), undefined, { timeout: 20000 });
     await page.waitForTimeout(800);
