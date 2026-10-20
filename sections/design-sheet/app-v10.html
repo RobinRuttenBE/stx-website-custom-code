@@ -2985,12 +2985,12 @@ function drawProposal(blocks, preparedBy, mode) {
 /* =====================================================================
    AI IMPRESSION (reference render + prompt → Artlist image-to-image, or an endpoint with credits)
    ===================================================================== */
-var FINISH_WORDS = { Fashion: 'matte latex', 'Pastel Matte': 'soft matte pastel latex', 'Pastel Dusk': 'muted matte latex', Pearl: 'pearl latex with a satin sheen', Silk: 'silk latex with a soft sheen', Reflex: 'glossy reflective latex with bright highlights and soft reflections of the room, a touch less mirror-like than chrome', Metallic: 'metallic latex with a pearly metallic shine', Crystal: 'transparent clear latex', Neon: 'vivid matte neon latex' };
-/* 20/10/2026: Reflex came out as hard metal balls. The first fix (soft diffuse highlights, no reflections)
-   overshot: the AI then barely touched the drawing and the balloons stayed flat. The problem was the shape,
-   not the shine: shiny finishes keep their gloss, the shape is latex. Every prompt ends with this. */
-var LATEX_LOOK = ' Make every balloon look photographed, not drawn: light and highlights from the scene, soft shadows between the balloons, tiny natural differences in shape and size.' +
-  ' Each one is an inflated latex balloon, slightly oval with a small knot, never a hard perfect sphere. Shiny finishes (Reflex, Metallic) really shine and reflect their surroundings, just a little softer than a chrome Christmas bauble.';
+var FINISH_WORDS = { Fashion: 'matte latex', 'Pastel Matte': 'soft matte pastel', 'Pastel Dusk': 'muted matte', Pearl: 'satin pearl sheen', Silk: 'soft silky sheen', Reflex: 'glossy chrome-look latex', Metallic: 'metallic shine', Crystal: 'transparent clear latex', Neon: 'vivid matte neon' };
+/* Live test 20/10/2026 on Robin's garage photo, 5 variants side by side: the prompt Robin gave Nano Banana Pro
+   by hand (whole photo, real sizes, short finish words) gave real balloons. Extra lines about a soft latex shape
+   and soft highlights made the AI copy the drawing instead. Keep the prompt short. Reflex as 'glossy chrome-look
+   latex' (instead of 'mirror-chrome') was as realistic and a little less harsh. */
+var LATEX_LOOK = '';
 function colourPhrase(code) { var c = BY_CODE[code]; return c.name + ' (' + FINISH_WORDS[c.range] + ')'; }
 function inferType(bs, bb) {
   if (bs[0].t) return bs[0].t;
@@ -3067,7 +3067,7 @@ function aiPrompt(job) {
     return 'Edit this image. The balloons drawn on it are the exact layout: replace every drawn balloon with a photorealistic latex balloon in the same position, same size and same colour. ' + list.length + ' balloons in total, no more, no fewer. Do not move, add, remove or rearrange anything.' +
       ' Put them in a clean, softly lit event space with a plain light wall and floor.' +
       ' What you are looking at: ' + describeGroups(list).join('; ') + '.' +
-      ' Render the latex realistically with the finishes as described, soft shadows and contact shadows where balloons touch the wall or floor.' + LATEX_LOOK + ' No text, no people, no extra decoration.';
+      ' Render the latex realistically with the finishes as described (matte, pearl, silk, chrome), soft shadows and contact shadows where balloons touch the wall or floor.' + LATEX_LOOK + ' No text, no people, no extra decoration.';
   }
   // Same shape as the prompt Robin gave Nano Banana Pro by hand (whole photo, real sizes), which gave the
   // best results (20/10/2026). The long list of "do not enlarge, do not shift, the perspective is right"
@@ -3076,7 +3076,7 @@ function aiPrompt(job) {
   return 'Edit this ' + (crop ? 'close-up of a photo' : 'photo') + '. The balloons drawn on it are the exact layout: replace every drawn balloon with a photorealistic latex balloon in the same position, same size and same colour. ' + n + ' balloons in total, no more, no fewer. Do not move, add, remove or rearrange anything.' +
     ' Keep the rest of the photo exactly as it is: building, walls, floor, objects, lighting.' +
     ' What you are looking at: ' + describeGroups(list).join('; ') + (state.foils.length ? '; ' + state.foils.length + ' foil balloon(s) as drawn' : '') + '.' +
-    ' Render the latex realistically with the finishes as described, soft shadows and contact shadows where balloons touch the wall or floor, light direction as in the photo.' + LATEX_LOOK + ' No text, no people, no extra decoration.';
+    ' Render the latex realistically with the finishes as described (matte, pearl, silk, chrome), soft shadows and contact shadows where balloons touch the wall or floor, light direction as in the photo.' + LATEX_LOOK + ' No text, no people, no extra decoration.';
 }
 /* cb(job): job.ref (data URL sent to the AI), job.w/h, job.crop (photo px, or null), job.box, job.prompt */
 /* 20/10/2026: a small location photo (Robin's garage: 474 x 355 px) gave the AI a blurry crop of about
@@ -3090,7 +3090,7 @@ function aiJob(cb) {
   var off = renderOption(state.balloons, hasLoc ? Math.round(state.loc.pw * k) : 1600, hasLoc ? 'location' : 'sheet', true);
   var job = { crop: null, box: null, k: k };
   if (hasLoc) {
-    var crop = state.aiWhole ? null : aiCrop(), bb = designPhotoBox();
+    var crop = state.aiWhole === false ? aiCrop() : null, bb = designPhotoBox();   // whole photo unless the user picks the crop
     if (crop) {
       // small crops go up in size so the AI sees the balloons
       var cv = document.createElement('canvas'), up = Math.max(1, Math.min(2.5, 1024 / Math.max(crop.w * k, crop.h * k)));
@@ -3154,7 +3154,7 @@ function openAiModal() {
     var ref = job.ref, rw = job.w, rh = job.h, prompt = job.prompt;
     box.innerHTML = '<h3>AI impression</h3>' +
       '<p>The build drawing stays the truth. The impression is a photo-real version of it for your client, made from the reference below with image-to-image AI.' + (hasLoc ? (job.crop ? ' Only the framed part goes to the AI, so the balloons get all its attention. The result is pasted back into your full photo at exactly that spot; the rest of the photo stays untouched.' : '') : ' Add a location photo first if you want it in the real room.') + '</p>' +
-      (hasLoc ? '<div class="seg" id="ai-send" style="margin-bottom:8px"><button data-v="crop"' + (state.aiWhole ? '' : ' class="on"') + '>Around the design (most accurate)</button><button data-v="whole"' + (state.aiWhole ? ' class="on"' : '') + '>Whole photo</button></div>' : '') +
+      (hasLoc ? '<div class="seg" id="ai-send" style="margin-bottom:8px"><button data-v="whole"' + (state.aiWhole === false ? '' : ' class="on"') + '>Whole photo (most realistic)</button><button data-v="crop"' + (state.aiWhole === false ? ' class="on"' : '') + '>Only around the design</button></div>' : '') +
       '<img class="photo-thumb" src="' + job.preview + '" alt="">' +
       (cfg.endpoint && ON_SHOP ? '<div class="stack"><button class="btn primary" id="ai-gen">Generate impression</button></div><div class="note" id="ai-status" style="margin-bottom:12px">' + (cfg.used != null ? cfg.used + ' of ' + cfg.limit + ' impressions used this month on your account.' : 'Takes about half a minute. Beta: for a small group of accounts.') + '</div>' +
         '<details style="margin-bottom:12px"><summary class="note" style="cursor:pointer">Or make it yourself in another AI tool</summary>' : '') +

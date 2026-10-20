@@ -205,7 +205,8 @@ const server = http.createServer(async (req, res) => {
   await f.waitForSelector('#ai-gen');
   const pr = await f.$eval('#ai-prompt', el => el.value);
   // shape of Robin's own working prompt: exact layout, real sizes, no long list of "do not enlarge"
-  assert.ok(/^Edit this close-up of a photo\. The balloons drawn on it are the exact layout/.test(pr) && /m high/.test(pr) && !/do not enlarge/.test(pr), pr);
+  // whole photo by default, in the shape of Robin's own working prompt: exact layout, real sizes, short
+  assert.ok(/^Edit this photo\. The balloons drawn on it are the exact layout/.test(pr) && /m high/.test(pr) && /glossy chrome-look latex/.test(pr) && !/do not enlarge|never a hard/.test(pr), pr);
   await f.click('#ai-gen');
   await f.waitForFunction(() => window.STX.state.impression && window.STX.state.impression.img, null, { timeout: 20000 });
   assert.strictEqual(aiRequests, 1);
@@ -214,7 +215,7 @@ const server = http.createServer(async (req, res) => {
   assert.ok(Math.max(imp[0], imp[2]) >= 1600 && Math.abs(imp[0] / imp[2] - imp[1] / imp[3]) < 0.01, 'impression is the full photo with the crop pasted in, at work size: ' + imp);
   ok('AI impression: request logged in Odoo, image back from the AI server, compare view on');
   // manual route: a crop-only result from another AI tool, uploaded, goes back into the full photo
-  await f.evaluate(() => { document.getElementById('modal').classList.remove('show'); });
+  await f.evaluate(() => { document.getElementById('modal').classList.remove('show'); window.STX.state.aiWhole = false; });   // the crop route
   await f.click('#btn-ai');
   await f.waitForSelector('#ai-file', { state: 'attached' });
   await f.evaluate(() => { window.__impBefore = window.STX.state.impression; });
