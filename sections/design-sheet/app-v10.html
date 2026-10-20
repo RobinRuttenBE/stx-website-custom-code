@@ -3088,7 +3088,7 @@ function aiPrompt(job) {
   // Whole photo (default): the AI may seat the design naturally in the scene (Robin 20/10/2026: by hand the AI put
   // the arch a little deeper and further forward and it looked real, not pasted on). The crop stays strict.
   var place = crop ? 'replace every drawn balloon with a photorealistic latex balloon in the same position, same size and same colour. ' + n + ' balloons in total, no more, no fewer. Do not move, add, remove or rearrange anything.'
-    : 'replace every drawn balloon with a photorealistic latex balloon in the same colour, keeping the same design, size and pattern. ' + n + ' balloons in total, no more, no fewer. Do not add or remove balloons. Place the design so it truly stands in the scene: feet firmly on the ground with real depth and perspective, it may sit slightly deeper or further forward than drawn if that looks more natural. It must never look pasted on.';
+    : 'replace every drawn balloon with a photorealistic latex balloon in the same colour, keeping the same design, size and pattern. ' + n + ' balloons in total, no more, no fewer. Do not add or remove balloons. Place the design so it truly stands in the scene: feet firmly on the ground with real depth and perspective, at the size it is drawn. It must never look pasted on.';
   return 'Edit this ' + (crop ? 'close-up of a photo' : 'photo') + '. The balloons drawn on it are the exact layout: ' + place +
     (crop ? ' Keep the rest of the photo exactly as it is: building, walls, floor, objects, lighting.'
       // live test 20/10/2026 (variant G): "keep the rest exactly as it is" made the AI keep the drawn balloons'
@@ -3108,6 +3108,14 @@ var AI_WORK_PX = 1600;
    handed the drawing back in 5 of 6 images; with the same balloons softened (blurred, no highlights) all 4 of 4
    came back as real, photographed balloons. So the reference shows them soft: colour, size and place stay, the
    look has to come from the AI. Mask = where the render differs from the photo alone (balloons and foils). */
+/* Blur follows the balloon size in the photo: a far column of 8 px balloons blurred by 7 px became one vague
+   streak and the AI made up a far too big column (Robin's warehouse, 20/10/2026). About a quarter of the
+   typical balloon diameter, between 1.5 and 7 px at 1600 wide. */
+function softenRadius(W) {
+  var L = state.loc, k = W / L.pw, ds = state.balloons.map(function (b) { return b.d * localScale(b.x, b.y, 'location') * k; }).sort(function (a, b) { return a - b; });
+  var med = ds.length ? ds[Math.floor(ds.length / 2)] : 40;
+  return Math.max(1.5, Math.min(7 * W / 1600, med * 0.25));
+}
 function softenBalloons(off) {
   try {
     var W = off.width, H = off.height, bare = [];
@@ -3123,7 +3131,7 @@ function softenBalloons(off) {
     mc.putImageData(md, 0, 0);
     var layer = document.createElement('canvas'); layer.width = W; layer.height = H;
     var lc = layer.getContext('2d');
-    lc.filter = 'blur(' + Math.max(3, Math.round(7 * W / 1600)) + 'px) saturate(1.15)'; lc.drawImage(off, 0, 0); lc.filter = 'none';
+    lc.filter = 'blur(' + softenRadius(W).toFixed(1) + 'px) saturate(1.15)'; lc.drawImage(off, 0, 0); lc.filter = 'none';
     lc.globalCompositeOperation = 'destination-in'; lc.drawImage(mask, 0, 0);
     var out = document.createElement('canvas'); out.width = W; out.height = H;
     var oc = out.getContext('2d'); oc.drawImage(photo, 0, 0); oc.drawImage(layer, 0, 0);
