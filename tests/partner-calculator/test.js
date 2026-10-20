@@ -409,6 +409,102 @@ function check(name, ok, extra) {
     await ctx.close();
   }
 
+  console.log('\n/partner/liragram/tools#cost (tool die Liragram niet heeft)');
+  {
+    const { ctx, page } = await open('/partner/liragram/tools#cost');
+    await page.waitForTimeout(300);
+    check('hash gaat terug naar de calculator', await page.evaluate(() => location.hash) === '#calculator', await page.evaluate(() => location.hash));
+    const v = await page.evaluate(() => getComputedStyle(document.querySelector('#view-cost')).display);
+    check('kostprijscalculator blijft verborgen', v === 'none', v);
+    check('geen tabbladen bij 1 tool', (await page.$('.stx-pt-tabs')) === null);
+    await ctx.close();
+  }
+
+  console.log('\n/partner/mooideco/tools (3 tools)');
+  {
+    const { ctx, page } = await open('/partner/mooideco/tools');
+    const shown = (sel) => page.evaluate((s) => {
+      const el = document.querySelector(s);
+      if (!el) { return 'ontbreekt'; }
+      const cs = getComputedStyle(el);
+      return (cs.display === 'none' || cs.visibility === 'hidden') ? 'verborgen' : 'zichtbaar';
+    }, sel);
+
+    check('Sempertex header verborgen', (await shown('header#top')) === 'verborgen');
+    check('Sempertex zijmenu verborgen', (await shown('.stx-insp .side')) === 'verborgen');
+    check('Mooideco header staat er', (await shown('.stx-pt-bar')) === 'zichtbaar');
+    const tabs = await page.$$eval('.stx-pt-tab', (els) => els.map((e) => e.textContent.trim() + '|' + e.getAttribute('href')));
+    check('drie tabbladen, Nederlands', JSON.stringify(tabs) === JSON.stringify(['Double Stuffing Calculator|#calculator', 'Kostprijscalculator|#cost', 'Kleurmatch-tool|#colour']), JSON.stringify(tabs));
+    check('calculator opent standaard', (await shown('#view-calculator')) === 'zichtbaar' && (await page.textContent('.stx-pt-tab.on')) === 'Double Stuffing Calculator');
+    check('tabtitel is van Mooideco', (await page.title()) === 'Ballontools | Mooideco', await page.title());
+    const icon = await page.evaluate(() => (document.querySelector('link[rel~="icon"]') || {}).href || '');
+    check('favicon is het Mooideco-icoon', icon.startsWith('data:image/png'), icon.slice(0, 30));
+    const brand = await page.evaluate(() => getComputedStyle(document.querySelector('.stx-insp')).getPropertyValue('--purple').trim());
+    check('huisstijlkleur van Mooideco', brand === '#5A6186', brand);
+    check('font Montserrat', /Montserrat/.test(await page.evaluate(() => getComputedStyle(document.querySelector('.stx-insp')).fontFamily)));
+
+    // Bestelblok: elke gekozen kleur is een zoeklink op mooideco.nl met de kleurcode.
+    await page.click('#sw-inner .swatch:nth-child(3)');
+    await page.click('#sw-outer .swatch:nth-child(5)');
+    await page.waitForTimeout(250);
+    const picks = await page.$$eval('a.stx-pt-pick', (els) => els.map((e) => ({ href: e.getAttribute('href'), code: e.getAttribute('data-code'), target: e.getAttribute('target') })));
+    check('beide kleuren linken naar de zoekfunctie van Mooideco', picks.length === 2 && picks.every((p) =>
+      /^https:\/\/www\.mooideco\.nl\/website\/index\.php\?Show=Search&KeyWord=\d{3}%20Sempertex$/.test(p.href) && p.href.includes(p.code) && p.target === '_blank'), JSON.stringify(picks));
+    check('hoofdknop naar de Sempertex categorie van Mooideco', (await page.getAttribute('#stx-pt-main', 'href')) === 'https://www.mooideco.nl/sempertex-groothandel');
+
+    // Kostprijscalculator
+    await page.click('.stx-pt-tab[data-tool="cost"]');
+    await page.waitForTimeout(300);
+    check('tab kostprijscalculator opent de kostprijscalculator', (await shown('#view-cost')) === 'zichtbaar' && (await shown('#view-calculator')) === 'verborgen');
+    check('actief tabblad volgt', (await page.textContent('.stx-pt-tab.on')) === 'Kostprijscalculator');
+    check('geen "alles in de winkelmand"', (await shown('#cc-cart-all')) === 'verborgen');
+    const hint = await page.textContent('[data-i18n="cc_mat_hint"]');
+    check('uitleg vraagt de eigen aankoopprijs, niet inloggen', /eigen aankoopprijs/.test(hint) && !/ingelogd/.test(hint), hint.slice(0, 80));
+    const note = await page.textContent('#cc-cat-note');
+    check('catalogusregel zegt eigen prijs invullen', /Vul je eigen aankoopprijs per stuk in/.test(note) && !/shopaccount/.test(note), note);
+    check('offerte zegt Mooideco, niet STX Tools', /Mooideco/.test(await page.textContent('#cc-doc-stx')), await page.textContent('#cc-doc-stx'));
+    check('geen vraag naar onze shopprijzen', await page.evaluate(() => !(performance.getEntriesByType('resource') || []).some((r) => /snippet\/autocomplete|get_combination_info/.test(r.name))));
+    await page.screenshot({ path: path.resolve(__dirname, 'mooideco-cost.png'), fullPage: false });
+
+    // Kleurmatch-tool
+    await page.click('.stx-pt-tab[data-tool="colour"]');
+    await page.waitForTimeout(400);
+    check('tab kleurmatch-tool opent de kleurmatch-tool', (await shown('#view-colour')) === 'zichtbaar');
+    await page.$eval('#ct-root input[type=color]', (e) => { e.value = '#7b87bf'; e.dispatchEvent(new Event('input', { bubbles: true })); e.dispatchEvent(new Event('change', { bubbles: true })); }).catch(() => {});
+    await page.waitForTimeout(400);
+    const shopBtn = await page.getAttribute('#ct-shop-btn', 'href');
+    check('"Shop deze kleur" zoekt bij Mooideco', /^https:\/\/www\.mooideco\.nl\/website\/index\.php\?Show=Search&KeyWord=\d{3}%20Sempertex$/.test(shopBtn || ''), shopBtn);
+    const ctLinks = await page.$$eval('#ct-root a.js-shop', (els) => els.map((e) => e.getAttribute('href') || ''));
+    check('ballonnen in de palettes linken naar Mooideco', ctLinks.length > 0 && ctLinks.every((u) => u.startsWith('https://www.mooideco.nl/')), ctLinks.slice(0, 3).join(' '));
+    check('geen winkelmandknoppen in de palettes', await page.evaluate(() => [...document.querySelectorAll('#ct-root .js-cart, #ct-root [class*="cart"]')].every((e) => !e.offsetParent)));
+    await page.screenshot({ path: path.resolve(__dirname, 'mooideco-colour.png'), fullPage: false });
+
+    const links = await page.$$eval('a', (els) => els.filter((e) => e.offsetParent !== null).map((e) => e.getAttribute('href') || ''));
+    const homeward = links.filter((u) => /sempertex-?europe|^\/(shop|tools|inspiration|event|blog)/.test(u));
+    check('geen zichtbare link terug naar onze eigen site', homeward.length === 0, homeward.join(' '));
+
+    await page.click('.stx-pt-tab[data-tool="calculator"]');
+    await page.waitForTimeout(300);
+    await page.screenshot({ path: path.resolve(__dirname, 'mooideco-desktop.png'), fullPage: true });
+    check('laadscherm gaat 1x weg', (await page.evaluate(() => window.stxHideCalls)) === 1);
+    await ctx.close();
+  }
+
+  console.log('\n/partner/mooideco/tools op telefoonformaat');
+  {
+    const { ctx, page } = await open('/partner/mooideco/tools#cost', 390);
+    for (const tool of ['cost', 'colour', 'calculator']) {
+      await page.click(`.stx-pt-tab[data-tool="${tool}"]`);
+      await page.waitForTimeout(300);
+      const scroll = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+      check(`geen horizontale scroll op ${tool}`, scroll <= 2, scroll + 'px');
+    }
+    const tabsFit = await page.evaluate(() => { const n = document.querySelector('.stx-pt-tabs .stx-pt-in'); return n.scrollWidth - n.clientWidth; });
+    check('tabbladen passen op een telefoon', tabsFit <= 2, tabsFit + 'px');
+    await page.screenshot({ path: path.resolve(__dirname, 'mooideco-mobile.png'), fullPage: false });
+    await ctx.close();
+  }
+
   console.log('\n/partner/liragram/tools?livechat=force (het CSS-vangnet apart)');
   {
     // Zet Odoo de chat ooit op een andere manier neer, dan moet de CSS hem alsnog
