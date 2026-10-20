@@ -3577,7 +3577,27 @@ $('order-quote').addEventListener('click', function () {
    'saved on this device' and carries on.
    ===================================================================== */
 var CLOUD = { model: 'x_stx_design', state: 'off', uid: null, byPid: {}, t: null, busy: {} };
-function odoo(model, method, args, kwargs, cb) { rpc('/web/dataset/call_kw/' + model + '/' + method, { model: model, method: method, args: args, kwargs: kwargs || {} }, cb); }
+function odooRaw(model, method, args, kwargs, cb) { rpc('/web/dataset/call_kw/' + model + '/' + method, { model: model, method: method, args: args, kwargs: kwargs || {} }, cb); }
+/* x_name is optional on the STX models. Models made under Instellingen > Technisch get no x_name
+   (the live x_stx_design and x_stx_ai_request have none, 20/10/2026), and Odoo then refuses the
+   whole call. Without it: drop x_name from what is written, and read the name from x_data. */
+var NO_XNAME = {};
+function stripXName(model, method, args, kwargs) {
+  args = JSON.parse(JSON.stringify(args)); kwargs = JSON.parse(JSON.stringify(kwargs || {}));
+  if (method === 'create') { (Array.isArray(args[0]) ? args[0] : [args[0]]).forEach(function (v) { if (v) delete v.x_name; }); }
+  if (method === 'write' && args[1]) delete args[1].x_name;
+  if (kwargs.fields) { var i = kwargs.fields.indexOf('x_name'); if (i >= 0) { kwargs.fields.splice(i, 1); if (model === CLOUD.model && kwargs.fields.indexOf('x_data') < 0) kwargs.fields.push('x_data'); } }
+  if (method === 'read' && Array.isArray(args[1])) { args[1] = args[1].filter(function (x) { return x !== 'x_name'; }); }
+  return { args: args, kwargs: kwargs };
+}
+function odoo(model, method, args, kwargs, cb) {
+  function go() { var a = stripXName(model, method, args, kwargs); odooRaw(model, method, a.args, a.kwargs, cb); }
+  if (NO_XNAME[model]) { go(); return; }
+  odooRaw(model, method, args, kwargs, function (res, err) {
+    if (res == null && /x_name/.test(err || '')) { NO_XNAME[model] = true; go(); return; }
+    cb(res, err);
+  });
+}
 function odooDate(s) { return s ? new Date(String(s).replace(' ', 'T') + 'Z') : new Date(0); }
 function cloudStatus() {
   var el = $('cloud-status'); if (!el) return;
@@ -3598,7 +3618,11 @@ function cloudList(cb) {
   odoo(CLOUD.model, 'search_read', [[['create_uid', '=', CLOUD.uid]]], { fields: ['x_pid', 'x_name', 'x_thumb', 'write_date'], order: 'write_date desc', limit: 200 }, function (res, err) {
     if (!res) { CLOUD.state = /access|exist|not found|object/i.test(err) ? 'off' : 'error'; cloudStatus(); if (cb) cb(); return; }
     CLOUD.state = 'on'; CLOUD.byPid = {};
-    res.forEach(function (r) { if (r.x_pid) CLOUD.byPid[r.x_pid] = r; });
+    res.forEach(function (r) {
+      if (r.x_name == null && r.x_data) { try { r.x_name = JSON.parse(r.x_data).name || ''; } catch (e) {} }
+      delete r.x_data;
+      if (r.x_pid) CLOUD.byPid[r.x_pid] = r;
+    });
     cloudStatus(); if (cb) cb();
   });
 }

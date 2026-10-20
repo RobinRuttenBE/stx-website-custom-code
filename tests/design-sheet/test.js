@@ -17,6 +17,7 @@ const LIVE = 'www.sempertexeurope.com';
 const cartAdds = [];
 const odooCalls = [];
 const designs = {};           // id -> record (fake x_stx_design)
+let xNameRefused = 0;         // calls the fake Odoo refused because they used x_name
 let nextId = 1;
 let aiRequests = 0;
 let loggedIn = true;
@@ -60,8 +61,10 @@ const server = http.createServer(async (req, res) => {
   if (url === '/web/session/get_session_info') { if (loggedIn) rpcOk(res, { uid: 5, name: 'Tester' }); else rpcErr(res, 'Session expired'); return; }
   if (url.indexOf('/web/dataset/call_kw/') === 0) {
     const p = JSON.parse(body).params; odooCalls.push(p.model + '.' + p.method);
+    // Like the live models (20/10/2026): no x_name field, and Odoo refuses the whole call when it is used.
+    if (/x_stx_/.test(p.model) && /"x_name"/.test(JSON.stringify([p.args, p.kwargs]))) { xNameRefused++; rpcErr(res, "Invalid field 'x_name' on '" + p.model + "'"); return; }
     if (p.model === 'x_stx_design') {
-      if (p.method === 'search_read') { rpcOk(res, Object.values(designs).map(d => ({ id: d.id, x_pid: d.x_pid, x_name: d.x_name, x_thumb: d.x_thumb, write_date: d.write_date }))); return; }
+      if (p.method === 'search_read') { const fl = (p.kwargs && p.kwargs.fields) || []; rpcOk(res, Object.values(designs).map(d => { const r = { id: d.id }; fl.forEach(k => { r[k] = d[k]; }); return r; })); return; }
       if (p.method === 'create') { const v = p.args[0][0]; const id = nextId++; designs[id] = Object.assign({ id: id, write_date: '2026-10-14 10:00:00' }, v); rpcOk(res, [id]); return; }
       if (p.method === 'write') { const id = p.args[0][0]; Object.assign(designs[id], p.args[1]); rpcOk(res, true); return; }
       if (p.method === 'read') { rpcOk(res, p.args[0].map(i => ({ id: i, x_data: designs[i].x_data }))); return; }
@@ -174,6 +177,8 @@ const server = http.createServer(async (req, res) => {
   await f2.click('[data-cload]');
   await f2.waitForFunction(() => window.STX.state.balloons.length > 50 && window.STX.state.foils.length >= 3, null, { timeout: 15000 });
   ok('second device: project listed "on your account" and opened from Odoo');
+  assert.ok(xNameRefused > 0, 'fake Odoo never refused x_name, the test checks nothing');
+  ok('models without x_name (like live): ' + xNameRefused + ' call(s) refused once, retried without; project list still works');
 
   // 7. quote: hand-off to the cost calculator
   const nav2 = p2.waitForURL(/\/tools#cost$/, { timeout: 30000 });
