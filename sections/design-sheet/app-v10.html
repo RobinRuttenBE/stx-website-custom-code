@@ -3104,10 +3104,37 @@ function aiPrompt(job) {
    looked just like the drawing. The AI now works on the photo scaled up to at least AI_WORK_PX on its
    long side (balloons drawn sharp at that size), and the result is pasted into that larger version. */
 var AI_WORK_PX = 1600;
+/* Live test 20/10/2026 (Robin's organic garland): with the balloons drawn photo-real (textures, highlights) the AI
+   handed the drawing back in 5 of 6 images; with the same balloons softened (blurred, no highlights) all 4 of 4
+   came back as real, photographed balloons. So the reference shows them soft: colour, size and place stay, the
+   look has to come from the AI. Mask = where the render differs from the photo alone (balloons and foils). */
+function softenBalloons(off) {
+  try {
+    var W = off.width, H = off.height, bare = [];
+    bare.__foils = [];
+    var photo = renderOption(bare, W, 'location', true);
+    var a = off.getContext('2d').getImageData(0, 0, W, H).data, p = photo.getContext('2d').getImageData(0, 0, W, H).data;
+    var mask = document.createElement('canvas'); mask.width = W; mask.height = H;
+    var mc = mask.getContext('2d'), md = mc.createImageData(W, H);
+    for (var i = 0; i < W * H; i++) {
+      var k = i * 4, d = Math.abs(a[k] - p[k]) + Math.abs(a[k + 1] - p[k + 1]) + Math.abs(a[k + 2] - p[k + 2]);
+      if (d > 40) md.data[k + 3] = 255;
+    }
+    mc.putImageData(md, 0, 0);
+    var layer = document.createElement('canvas'); layer.width = W; layer.height = H;
+    var lc = layer.getContext('2d');
+    lc.filter = 'blur(' + Math.max(3, Math.round(7 * W / 1600)) + 'px) saturate(1.15)'; lc.drawImage(off, 0, 0); lc.filter = 'none';
+    lc.globalCompositeOperation = 'destination-in'; lc.drawImage(mask, 0, 0);
+    var out = document.createElement('canvas'); out.width = W; out.height = H;
+    var oc = out.getContext('2d'); oc.drawImage(photo, 0, 0); oc.drawImage(layer, 0, 0);
+    return out;
+  } catch (e) { return off; }
+}
 function aiJob(cb) {
   var hasLoc = !!(state.loc && state.loc.img);
   var k = hasLoc ? Math.max(1, AI_WORK_PX / Math.max(state.loc.pw, state.loc.ph)) : 1;   // photo px -> work px
   var off = renderOption(state.balloons, hasLoc ? Math.round(state.loc.pw * k) : 1600, hasLoc ? 'location' : 'sheet', true);
+  if (hasLoc) off = softenBalloons(off);
   var job = { crop: null, box: null, k: k };
   if (hasLoc) {
     var crop = state.aiWhole === false ? aiCrop() : null, bb = designPhotoBox();   // whole photo unless the user picks the crop
