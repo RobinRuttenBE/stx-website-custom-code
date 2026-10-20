@@ -2883,10 +2883,11 @@ function foilIn(f) {
 }
 function serializeBalloons() { return state.balloons.map(function (b) { var o = { x: +b.x.toFixed(2), y: +b.y.toFixed(2), z: b.z, d: +b.d.toFixed(2), size: b.size, code: b.code, g: b.g, t: b.t }; if (b.he) o.he = 1; if (b.ax != null) { o.ax = +b.ax.toFixed(1); o.ay = +b.ay.toFixed(1); } if (b.noWeight) o.nw = 1; if (b.k != null) { o.k = b.k; o.i = b.i; } if (b.ci != null) { o.ci = b.ci; o.cj = b.cj; } if (b.dg != null) o.dg = b.dg; if (b.gk) { o.gk = b.gk; o.gt = b.gt; } if (b.rr) { o.rdx = +b.rdx.toFixed(2); o.rdy = +b.rdy.toFixed(2); o.rr = +b.rr.toFixed(2); o.a0 = +b.a0.toFixed(4); o.a1 = +b.a1.toFixed(4); o.q = b.q; } return o; }); }
 function reviveBalloons(list) { return (list || []).filter(function (b) { return BY_CODE[b.code]; }).map(function (b) { return { id: uid(), x: b.x, y: b.y, z: b.z || 0, d: b.d, size: b.size, code: b.code, g: b.g || null, t: b.t, he: !!b.he, ax: b.ax != null ? b.ax : undefined, ay: b.ay != null ? b.ay : undefined, noWeight: !!b.nw, k: b.k, i: b.i, ci: b.ci, cj: b.cj, dg: b.dg, gk: b.gk, gt: b.gt, rdx: b.rdx, rdy: b.rdy, rr: b.rr, a0: b.a0, a1: b.a1, q: b.q }; }); }
+function countText(nBalloons, nFoils) { return nBalloons + ' balloons' + (nFoils ? ' + ' + nFoils + ' foil' + (nFoils > 1 ? 's' : '') : ''); }
 function openOptionsModal() {
   var box = $('modal-box'), opts = state.options;
   var rows = opts.map(function (o, i) {
-    return '<div class="li opt-row"><b>' + o.name.replace(/</g, '&lt;') + '</b><span>' + o.balloons.length + ' balloons' + (o.impression ? ' · AI' : '') + '</span><button class="btn small" data-load="' + i + '">Open</button><button class="btn small ghost" data-ren="' + i + '">Rename</button><button class="btn small ghost" data-del="' + i + '">✕</button></div>';
+    return '<div class="li opt-row"><b>' + o.name.replace(/</g, '&lt;') + '</b><span>' + countText(o.balloons.length, (o.foils || []).length) + (o.impression ? ' · AI' : '') + '</span><button class="btn small" data-load="' + i + '">Open</button><button class="btn small ghost" data-ren="' + i + '">Rename</button><button class="btn small ghost" data-del="' + i + '">✕</button></div>';
   }).join('');
   box.innerHTML = '<h3>Options</h3><p>Save the sheet as option A, change it, save as option B. The proposal export puts them side by side for your client.</p>' +
     '<div class="legend">' + (rows || '<div class="note">No options saved yet. The sheet as it is now counts as option A.</div>') + '</div>' +
@@ -2898,7 +2899,7 @@ function openOptionsModal() {
     updateOptBadge(); persistDraft(); openOptionsModal(); toast('Option ' + optionLetter(state.options.length - 1) + ' saved with the project'); track('option_save', { n: state.options.length });
   });
   $('op-close').addEventListener('click', closeModal);
-  box.querySelectorAll('[data-load]').forEach(function (b) { b.addEventListener('click', function () { snapshot(); state.balloons = reviveBalloons(state.options[+b.dataset.load].balloons); state.foils = (state.options[+b.dataset.load].foils || []).map(function (f) { var nf = foilIn(f); resolveFoil(nf); return nf; }); var oi = state.options[+b.dataset.load].impression; state.impression = null; updateImpToggle(); if (oi && oi.src) setImpression(oi.src, oi.prompt, true); state.selected = {}; afterChange(); closeModal(); toast(state.options[+b.dataset.load].name + ' opened'); }); });
+  box.querySelectorAll('[data-load]').forEach(function (b) { b.addEventListener('click', function () { snapshot(); state.balloons = reviveBalloons(state.options[+b.dataset.load].balloons); state.foils = (state.options[+b.dataset.load].foils || []).map(function (f) { var nf = foilIn(f); resolveFoil(nf); return nf; }); var oi = state.options[+b.dataset.load].impression; state.impression = null; updateImpToggle(); if (oi && oi.src) setImpression(oi.src, oi.prompt, true); state.selected = {}; afterChange(); closeModal(); fit(); setTimeout(function () { fit(); }, 300); toast(state.options[+b.dataset.load].name + ' opened'); }); });
   box.querySelectorAll('[data-ren]').forEach(function (b) { b.addEventListener('click', function () { var o = state.options[+b.dataset.ren], v = prompt('Name', o.name); if (v) { o.name = v.slice(0, 40); persistDraft(); openOptionsModal(); } }); });
   box.querySelectorAll('[data-del]').forEach(function (b) { b.addEventListener('click', function () { state.options.splice(+b.dataset.del, 1); updateOptBadge(); persistDraft(); openOptionsModal(); }); });
 }
@@ -2934,13 +2935,13 @@ function exportLocation() {
   track('export_location', { count: state.balloons.length });
 }
 function exportProposal(preparedBy) {
-  var opts = state.options.length ? state.options : [{ name: 'Option A', balloons: serializeBalloons(), impression: state.impression }];
+  var opts = state.options.length ? state.options : [{ name: 'Option A', balloons: serializeBalloons(), foils: serializeFoils(), impression: state.impression }];
   var mode = state.loc && state.loc.img ? 'location' : 'sheet', W = 1600, pad = 90, innerW = W - pad * 2;
   var blocks = opts.map(function (o) {
     var list = reviveBalloons(o.balloons); list.__foils = (o.foils || []).map(foilIn);
     var img = renderOption(list, innerW, mode), bb = bounds(list);
     var bags = 0; var saveB = state.balloons; state.balloons = list; bags = bagsTotal(); state.balloons = saveB;
-    return { o: o, img: img, h: Math.round(img.height * innerW / img.width), count: list.length, bb: bb, bags: bags, imp: null };
+    return { o: o, img: img, h: Math.round(img.height * innerW / img.width), count: list.length, foils: list.__foils.length, bb: bb, bags: bags, imp: null };
   });
   var pending = blocks.filter(function (b) { return b.o.impression && b.o.impression.src; }).length;
   if (pending) {
@@ -2964,7 +2965,7 @@ function drawProposal(blocks, preparedBy, mode) {
   blocks.forEach(function (b) {
     c.fillStyle = '#1b073d'; c.font = '800 34px "Rethink Sans", sans-serif'; c.fillText(b.o.name, pad, y);
     c.font = '600 20px "Rethink Sans", sans-serif'; c.fillStyle = 'rgba(27,7,61,0.7)'; c.textAlign = 'right';
-    c.fillText(b.count + ' balloons' + (b.bb ? '  ·  ' + cm(b.bb.w) + ' × ' + cm(b.bb.h) : ''), W - pad, y); c.textAlign = 'left';
+    c.fillText(countText(b.count, b.foils) + (b.bb ? '  ·  ' + cm(b.bb.w) + ' × ' + cm(b.bb.h) : ''), W - pad, y); c.textAlign = 'left';
     y += 24;
     c.save(); c.shadowColor = 'rgba(27,7,61,0.12)'; c.shadowBlur = 30; c.shadowOffsetY = 12;
     c.drawImage(b.img, pad, y, innerW, b.h); c.restore();
@@ -3061,12 +3062,22 @@ function aiCrop() {
   return { x: Math.round(x), y: Math.round(y), w: Math.round(best.w), h: Math.round(best.h) };
 }
 function pct(v) { return Math.round(v * 100); }
+/* Foils were only "N foil balloon(s) as drawn" and came out pasted on (Robin 20/10/2026). Name them and say what real foil looks like. */
+function foilPhrase() {
+  var fs = state.foils; if (!fs.length) return '';
+  var names = {}; fs.forEach(function (f) {
+    var n = f.pname ? f.pname.replace(/\s*-\s*Grabo$/i, '').replace(/\s+-\s+/g, ' ') : ((f.ch ? 'number ' + f.ch : (f.round ? 'round' : 'star')) + ' foil balloon in ' + (f.colour || 'gold'));
+    names[n] = (names[n] || 0) + 1;
+  });
+  var list = Object.keys(names).map(function (n) { return (names[n] > 1 ? names[n] + ' x ' : '') + n; }).join(', ');
+  return '; ' + fs.length + ' foil balloon' + (fs.length > 1 ? 's' : '') + ' (' + list + ') exactly where drawn: real metallic mylar foil balloons with fine crinkles, seams and soft reflections of the scene, part of the design (tied into it, not floating in front), lit by the same light as the latex and casting the same soft shadows';
+}
 function aiPrompt(job) {
   var list = state.balloons, hasLoc = !!(state.loc && state.loc.img), n = list.length + state.foils.length;
   if (!hasLoc) {
     return 'Edit this image. The balloons drawn on it are the exact layout: replace every drawn balloon with a photorealistic latex balloon in the same position, same size and same colour. ' + list.length + ' balloons in total, no more, no fewer. Do not move, add, remove or rearrange anything.' +
       ' Put them in a clean, softly lit event space with a plain light wall and floor.' +
-      ' What you are looking at: ' + describeGroups(list).join('; ') + '.' +
+      ' What you are looking at: ' + describeGroups(list).join('; ') + foilPhrase() + '.' +
       ' Render the latex realistically with the finishes as described (matte, pearl, silk, chrome), soft shadows and contact shadows where balloons touch the wall or floor.' + LATEX_LOOK + ' No text, no people, no extra decoration.';
   }
   // Same shape as the prompt Robin gave Nano Banana Pro by hand (whole photo, real sizes), which gave the
@@ -3083,7 +3094,7 @@ function aiPrompt(job) {
       // pixels too. Letting it recreate the whole photo (sharper, same content) gave real balloons, like Robin's
       // result by hand, where the app also redrew and sharpened the whole photo.
       : ' Recreate the whole photo as a sharp, high-quality photograph of the same scene (it may be upscaled and sharpened), and keep its content as it is: building, walls, floor, objects, lighting.') +
-    ' What you are looking at: ' + describeGroups(list).join('; ') + (state.foils.length ? '; ' + state.foils.length + ' foil balloon(s) as drawn' : '') + '.' +
+    ' What you are looking at: ' + describeGroups(list).join('; ') + foilPhrase() + '.' +
     ' Render the latex realistically with the finishes as described (matte, pearl, silk, chrome), soft shadows and contact shadows where balloons touch the wall or floor, light direction as in the photo.' + LATEX_LOOK + ' No text, no people, no extra decoration.';
 }
 /* cb(job): job.ref (data URL sent to the AI), job.w/h, job.crop (photo px, or null), job.box, job.prompt */
