@@ -204,12 +204,14 @@ const server = http.createServer(async (req, res) => {
   await f.click('#btn-ai');
   await f.waitForSelector('#ai-gen');
   const pr = await f.$eval('#ai-prompt', el => el.value);
-  assert.ok(/fills the area from \d+% to \d+% of the image width/.test(pr) && !/m high/.test(pr), pr);
+  // shape of Robin's own working prompt: exact layout, real sizes, no long list of "do not enlarge"
+  assert.ok(/^Edit this close-up of a photo\. The balloons drawn on it are the exact layout/.test(pr) && /m high/.test(pr) && !/do not enlarge/.test(pr), pr);
   await f.click('#ai-gen');
   await f.waitForFunction(() => window.STX.state.impression && window.STX.state.impression.img, null, { timeout: 20000 });
   assert.strictEqual(aiRequests, 1);
   const imp = await f.evaluate(() => [window.STX.state.impression.img.width, window.STX.state.loc.pw, window.STX.state.impression.img.height, window.STX.state.loc.ph]);
-  assert.ok(imp[0] === imp[1] && imp[2] === imp[3], 'impression is the full photo with the crop pasted in: ' + imp);
+  // full photo with the crop pasted in, at work size (long side at least 1600 px) so the AI's detail survives
+  assert.ok(Math.max(imp[0], imp[2]) >= 1600 && Math.abs(imp[0] / imp[2] - imp[1] / imp[3]) < 0.01, 'impression is the full photo with the crop pasted in, at work size: ' + imp);
   ok('AI impression: request logged in Odoo, image back from the AI server, compare view on');
   // manual route: a crop-only result from another AI tool, uploaded, goes back into the full photo
   await f.evaluate(() => { document.getElementById('modal').classList.remove('show'); });
@@ -219,7 +221,19 @@ const server = http.createServer(async (req, res) => {
   await f.setInputFiles('#ai-file', path.join(__dirname, 'ai-result-crop.jpg'));
   await f.waitForFunction(() => window.STX.state.impression !== window.__impBefore && window.STX.state.impression.img, null, { timeout: 15000 });
   const up = await f.evaluate(() => [window.STX.state.impression.img.width, window.STX.state.loc.pw, window.STX.state.impression.img.height, window.STX.state.loc.ph]);
-  assert.ok(up[0] === up[1] && up[2] === up[3], 'uploaded crop result is pasted into the full photo: ' + up);
+  assert.ok(Math.max(up[0], up[2]) >= 1600 && Math.abs(up[0] / up[2] - up[1] / up[3]) < 0.01, 'uploaded crop result is pasted into the full photo: ' + up);
+  // a small photo (Robin's garage was 474 x 355): the AI still gets a sharp reference, not a 300 px crop
+  const small = await f.evaluate(() => new Promise(r => {
+    const L = window.STX.state.loc, cv = document.createElement('canvas'); cv.width = 474; cv.height = 355;
+    cv.getContext('2d').drawImage(L.img, 0, 0, 474, 355);
+    const keep = { img: L.img, pw: L.pw, ph: L.ph };
+    const im = new Image(); im.onload = () => {
+      L.img = im; L.pw = 474; L.ph = 355;
+      window.STX.aiJob(job => { const out = [job.w, job.h, job.k]; L.img = keep.img; L.pw = keep.pw; L.ph = keep.ph; r(out); });
+    }; im.src = cv.toDataURL('image/jpeg', 0.9);
+  }));
+  assert.ok(small[2] > 3 && Math.max(small[0], small[1]) >= 1000, 'small photo: reference ' + small);
+  ok('small photo (474 x 355): the AI works at ' + small[2].toFixed(1) + 'x, reference ' + small[0] + ' x ' + small[1]);
   await f.evaluate(() => window.STX.setView('impression'));
   await page.waitForTimeout(600);
   await page.screenshot({ path: path.join(OUT, 'ai-upload-composite.png') });
