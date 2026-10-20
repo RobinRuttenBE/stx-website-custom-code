@@ -174,7 +174,7 @@ canvas#c { display: block; width: 100%; height: 100%; touch-action: none; }
 .seg button:last-child { border-right: 0; }
 .seg button.on { background: var(--dark); color: var(--yellow); }
 .gen-tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
-.gen-tabs button { flex: 1 1 17%; min-width: 0; border: 2px solid var(--dark); border-radius: 6px; padding: 8px 2px; font-weight: 800; font-size: 12px; background: #fff; display: flex; flex-direction: column; align-items: center; gap: 3px; }
+.gen-tabs button { flex: 1 1 22%; min-width: 0; border: 2px solid var(--dark); border-radius: 6px; padding: 8px 2px; font-weight: 800; font-size: 12px; background: #fff; display: flex; flex-direction: column; align-items: center; gap: 3px; }
 .gen-tabs button svg { width: 22px; height: 22px; }
 .gen-tabs button.on { background: var(--purple-light); border-color: var(--purple); }
 .gen { display: none; }
@@ -308,7 +308,7 @@ table.bom select { padding: 4px 6px; font-size: 12px; border-width: 1px; border-
   .pane { padding: 14px 14px 90px; }
   .gen-tabs { gap: 5px; }
   .gen-tabs { flex-wrap: wrap; }
-  .gen-tabs button { font-size: 11px; padding: 8px 2px; flex: 1 1 17%; }
+  .gen-tabs button { font-size: 11px; padding: 8px 2px; flex: 1 1 22%; }
   .gen-tabs button svg { width: 22px; height: 22px; }
 }
 @media (max-width: 400px) {
@@ -333,7 +333,7 @@ table.bom select { padding: 4px 6px; font-size: 12px; border-width: 1px; border-
   .tabs button { padding: 8px 2px; font-size: 10px; letter-spacing: 0.08em; }
   .pane { padding: 12px 12px 70px; }
   .gen-tabs { flex-wrap: wrap; gap: 4px; }
-  .gen-tabs button { font-size: 10px; padding: 5px 2px; flex: 1 1 17%; }
+  .gen-tabs button { font-size: 10px; padding: 5px 2px; flex: 1 1 22%; }
   .gen-tabs button svg { width: 18px; height: 18px; }
   .stage .dims { top: 8px; left: 8px; }
   .stage .zoom { top: 8px; right: 8px; }
@@ -438,7 +438,6 @@ table.bom select { padding: 4px 6px; font-size: 12px; border-width: 1px; border-
       <button data-gen="grid"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="5" cy="5" r="2.4"/><circle cx="12" cy="5" r="2.4"/><circle cx="19" cy="5" r="2.4"/><circle cx="5" cy="12" r="2.4"/><circle cx="12" cy="12" r="2.4"/><circle cx="19" cy="12" r="2.4"/><circle cx="5" cy="19" r="2.4"/><circle cx="12" cy="19" r="2.4"/><circle cx="19" cy="19" r="2.4"/></svg>Grid</button>
       <button data-gen="number"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="5" r="2.2"/><circle cx="6" cy="10" r="2.2"/><circle cx="6" cy="15" r="2.2"/><circle cx="6" cy="20" r="2.2"/><circle cx="14" cy="4" r="2.2"/><circle cx="19" cy="7" r="2.2"/><circle cx="16" cy="12" r="2.2"/><circle cx="13" cy="17" r="2.2"/><circle cx="18" cy="20" r="2.2"/></svg>Number</button>
       <button data-gen="bouquet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="8" cy="6" r="3"/><circle cx="15" cy="5" r="3"/><circle cx="12" cy="11" r="3"/><path d="M8 9l4 12M15 8l-3 13M12 14v7"/></svg>Bouquet</button>
-      <button data-gen="ceiling"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 4h20"/><circle cx="5" cy="8" r="2.5"/><circle cx="12" cy="8" r="2.5"/><circle cx="19" cy="8" r="2.5"/><path d="M5 10.5v6M12 10.5v6M19 10.5v6"/></svg>Ceiling</button>
       <button data-gen="stamp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="10" r="6"/><path d="M12 16v6"/></svg>Stamp</button>
       <button data-gen="foil"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 2.5l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 17.3l-5.8 3.1 1.1-6.5-4.7-4.6 6.5-.9z"/></svg>Foil</button>
     </div>
@@ -2986,7 +2985,10 @@ function drawProposal(blocks, preparedBy, mode) {
 /* =====================================================================
    AI IMPRESSION (reference render + prompt → Artlist image-to-image, or an endpoint with credits)
    ===================================================================== */
-var FINISH_WORDS = { Fashion: 'matte latex', 'Pastel Matte': 'soft matte pastel', 'Pastel Dusk': 'muted matte', Pearl: 'satin pearl sheen', Silk: 'soft silky sheen', Reflex: 'mirror-chrome', Metallic: 'metallic shine', Crystal: 'transparent clear latex', Neon: 'vivid matte neon' };
+var FINISH_WORDS = { Fashion: 'matte latex', 'Pastel Matte': 'soft matte pastel latex', 'Pastel Dusk': 'muted matte latex', Pearl: 'pearl latex with a soft satin sheen', Silk: 'silk latex with a soft, low sheen', Reflex: 'reflective latex with a soft satin-metallic sheen, still a soft inflated balloon', Metallic: 'metallic latex with a soft pearly lustre', Crystal: 'transparent clear latex', Neon: 'vivid matte neon latex' };
+/* Shiny finishes came out as hard metal or chrome balls (Robin 20/10/2026, Reflex gold and silver). Every prompt ends with this. */
+var LATEX_LOOK = ' Every balloon is an inflated latex balloon, never a hard ball: a slightly soft, rounded teardrop shape with a small knot, a thin skin and gentle squash where balloons press against each other.' +
+  ' Shiny finishes (Reflex, Metallic, Silk, Pearl) keep that latex look: broad, soft, diffuse highlights and a satin glow, colour still clearly visible, no mirror reflections of the room, no chrome or Christmas-bauble look, not polished metal.';
 function colourPhrase(code) { var c = BY_CODE[code]; return c.name + ' (' + FINISH_WORDS[c.range] + ')'; }
 function inferType(bs, bb) {
   if (bs[0].t) return bs[0].t;
@@ -3010,7 +3012,9 @@ function describeGroups(list, noSize) {
     bs.forEach(function (b) { cols[b.code] = (cols[b.code] || 0) + 1; sizes[b.size] = 1; });
     var colTxt = Object.keys(cols).sort(function (a, b2) { return cols[b2] - cols[a]; }).slice(0, 5).map(colourPhrase).join(', ');
     var sizeTxt = Object.keys(sizes).sort(function (a, b2) { return +a - +b2; }).map(function (s) { return sizeLabel(s); }).join(' and ');
-    var what = t === 'column' ? 'a classic spiral balloon column' + D(', ' + cm(bb.h) + ' high and about ' + cm(bb.w) + ' wide') + ', built from stacked clusters of four balloons around a pole (from the front you see 2 or 3 balloons per layer, never a single stack)' :
+    var layers = {}; bs.forEach(function (b) { if (b.k != null) layers[b.k] = 1; }); var nl = Object.keys(layers).length;
+    var dMax = bs.reduce(function (a, b) { return Math.max(a, b.d); }, 0), slim = bb.w ? ' The design is ' + (Math.round(bb.h / bb.w * 10) / 10) + ' times as tall as it is wide; one balloon is about ' + Math.round(dMax / bb.h * 100) + '% of its height.' : '';
+    var what = t === 'column' ? 'a classic spiral balloon column' + D(', ' + cm(bb.h) + ' high and about ' + cm(bb.w) + ' wide') + ', built from ' + (nl ? 'exactly ' + nl + ' ' : '') + 'stacked clusters of four balloons around a pole (from the front you see 2 or 3 balloons per layer, never a single stack). Keep that number of layers and that slim shape: do not use fewer, bigger balloons.' + slim :
       t === 'arch' ? 'a classic spiral balloon arch' + D(', ' + cm(bb.w) + ' wide and ' + cm(bb.h) + ' high') + ', built from clusters of four balloons along a curved frame' :
       t === 'organic' ? 'an organic balloon garland' + D(', ' + cm(bb.w) + ' wide') + ', balloons of mixed sizes ' + sizeTxt + ' packed tightly together' :
       t === 'grid' ? 'a flat balloon wall' + D(' of ' + cm(bb.w) + ' × ' + cm(bb.h)) + ' built from ' + sizeTxt + ' balloons in rows' :
@@ -3061,7 +3065,7 @@ function aiPrompt(job) {
     return 'Edit this image. The balloons drawn on it are the exact layout: replace every drawn balloon with a photorealistic latex balloon in the same position, same size and same colour. ' + list.length + ' balloons in total, no more, no fewer. Do not move, add, remove or rearrange anything.' +
       ' Put them in a clean, softly lit event space with a plain light wall and floor.' +
       ' What you are looking at: ' + describeGroups(list).join('; ') + '.' +
-      ' Render the latex realistically with the finishes as described (matte, pearl, silk, chrome), soft shadows and contact shadows where balloons touch the wall or floor. No text, no people, no extra decoration.';
+      ' Render the latex realistically with the finishes as described, soft shadows and contact shadows where balloons touch the wall or floor.' + LATEX_LOOK + ' No text, no people, no extra decoration.';
   }
   var b = job && job.box;   // box of the design inside the image that is sent, 0..1
   var where = b ? ' Its place and size are fixed: it fills the area from ' + pct(b.l) + '% to ' + pct(b.r) + '% of the image width and from ' + pct(b.t) + '% to ' + pct(b.b) + '% of the image height, and its base stands at ' + pct(b.b) + '% from the top.' : '';
@@ -3069,7 +3073,7 @@ function aiPrompt(job) {
     ' Keep the design exactly where it is drawn and exactly as large as it is drawn: do not enlarge it, do not move it closer to the camera, do not shift it. It looks this size because of where it stands in the room; the perspective of the photo is right.' +
     ' What is drawn: ' + describeGroups(list, true).join('; ') + (state.foils.length ? '; ' + state.foils.length + ' foil balloon(s) as drawn' : '') + '. ' + n + ' balloons in total, no more, no fewer: every balloon keeps its own position, size and colour.' +
     ' Keep everything else in the photo exactly as it is: walls, floor, shelves, objects, lighting and perspective.' +
-    ' Render the latex realistically with the finishes as described (matte, pearl, silk, chrome), soft contact shadows on the floor, light from the same direction as in the photo. No text, no people, no extra decoration.';
+    ' Render the latex realistically with the finishes as described, soft contact shadows on the floor, light from the same direction as in the photo.' + LATEX_LOOK + ' No text, no people, no extra decoration.';
 }
 /* cb(job): job.ref (data URL sent to the AI), job.w/h, job.crop (photo px, or null), job.box, job.prompt */
 function aiJob(cb) {
