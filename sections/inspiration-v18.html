@@ -1337,6 +1337,10 @@
   // shopprijzen of winkelmand: de klant van de partner koopt niet bij ons. De kostprijscalculator
   // vraagt dan om de eigen aankoopprijs, en de winkellinks volgen root.stxPartnerShopUrl.
   var partnerTools = /^(?:\/(?:fr|de|en_gb))?\/partner\/[a-z0-9-]+\/tools$/i.test(p);
+  // Elke partner bewaart apart (offertes, instellingen, paletten): zelfde domein als onze eigen /tools,
+  // dus zonder dit zag een klant van Go International zijn Sempertex-offertes en omgekeerd (20/10/2026).
+  var partnerSlug = partnerTools ? p.replace(/\/+$/, '').split('/').slice(-2)[0].toLowerCase() : '';
+  function storeKey(k) { return partnerSlug && k !== 'stx_quote_import' ? k + '@' + partnerSlug : k; }
   if (!isFile && !onPage) {
     allRoots.forEach(function (r) { if (r.parentNode) { r.parentNode.removeChild(r); } });
     return;
@@ -2616,6 +2620,16 @@
   // de partner en roept dan root.stxRelang() aan. Alle data-i18n teksten gaan opnieuw uit STR, en
   // elke tool tekent zijn dynamische teksten opnieuw (relangHooks). Op onze eigen pagina's niet gebruikt.
   var relangHooks = [];
+  // Partnerskin: vaste taal van de partner (bv. Italiaans voor Euro Party, Engels voor een Britse
+  // partner), los van het Odoo-pad. pack = teksten voor een taal die hier niet in I18N staat.
+  root.stxI18N = I18N;
+  root.stxUseLang = function (code, pack) {
+    var src = {};
+    [I18N.en, I18N[code] || {}, pack || {}].forEach(function (d) { Object.keys(d).forEach(function (k) { src[k] = d[k]; }); });
+    Object.keys(src).forEach(function (k) { if (/_partner$/.test(k)) { src[k.replace(/_partner$/, '')] = src[k]; } });
+    Object.keys(src).forEach(function (k) { STR[k] = src[k]; });
+    lang = code;
+  };
   root.stxRelang = function () {
     root.querySelectorAll('[data-i18n]').forEach(function (el) {
       var k = el.getAttribute('data-i18n');
@@ -3595,6 +3609,13 @@
     save('stx_quote_settings', settings);
   }
   // lang, STR, I18N and track come from the inspiration section (outer scope).
+  // Partnerskin: eigen beginwaarden (GBP en mijlen voor een Britse partner). Alleen zolang deze
+  // bezoeker zelf nog geen instellingen bewaard heeft; daarna gelden altijd de zijne.
+  root.stxCcDefaults = function (d) {
+    var mine = null; try { mine = localStorage.getItem(storeKey('stx_quote_settings')); } catch (e) {}
+    if (mine || !d) return;
+    Object.keys(d).forEach(function (k) { settings[k] = d[k]; });
+  };
   var state = load('stx_quote_draft', null) || freshState();
   if (!state.v) { state = freshState(); } // drafts from the demo build carried sample prices
 
@@ -3612,15 +3633,15 @@
 
   /* ---------------- helpers ---------------- */
   function $(id) { return document.getElementById(id); }
-  function load(k, d) { try { var v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } }
-  function save(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+  function load(k, d) { try { var v = localStorage.getItem(storeKey(k)); return v ? JSON.parse(v) : d; } catch (e) { return d; } }
+  function save(k, v) { try { localStorage.setItem(storeKey(k), JSON.stringify(v)); } catch (e) {} }
   function t(key, vars) {
     var s = STR['cc_' + key] || I18N.en['cc_' + key] || key;
     if (vars) Object.keys(vars).forEach(function (k) { s = s.split('{' + k + '}').join(vars[k]); });
     return s;
   }
   function money(n) {
-    var loc = { nl: 'nl-BE', en: 'en-GB', de: 'de-DE', fr: 'fr-BE' }[lang] || 'en-GB';
+    var loc = { nl: 'nl-BE', en: 'en-GB', de: 'de-DE', fr: 'fr-BE', it: 'it-IT' }[lang] || 'en-GB';
     return new Intl.NumberFormat(loc, { style: 'currency', currency: settings.currency || 'EUR', maximumFractionDigits: 2 }).format(n || 0);
   }
   function num(v) { var n = parseFloat(v); return isNaN(n) ? 0 : n; }
@@ -4440,8 +4461,8 @@
     if (state.base) { renderCard(); renderPalettes(); }
     renderSaved();
   });
-  function load(k, d) { try { var v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } }
-  function save(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+  function load(k, d) { try { var v = localStorage.getItem(storeKey(k)); return v ? JSON.parse(v) : d; } catch (e) { return d; } }
+  function save(k, v) { try { localStorage.setItem(storeKey(k), JSON.stringify(v)); } catch (e) {} }
   function toast(msg) { var el = $('toast'); el.textContent = msg; el.classList.add('on'); clearTimeout(el._t); el._t = setTimeout(function () { el.classList.remove('on'); }, 1600); }
   function shopUrl(code) {
     if (partnerTools) { return typeof root.stxPartnerShopUrl === 'function' ? (root.stxPartnerShopUrl(code) || '') : ''; }

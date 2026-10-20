@@ -358,6 +358,232 @@
           }
         }
       }
+    },
+
+    /* Go International (Stevenage, UK), 20/10/2026. Engels, GBP en mijlen. */
+    'go-international': {
+      name: 'Go International',
+      tools: ['calculator', 'cost', 'colour'],
+
+      /* -- HUISSTIJL --
+         Uit hun eigen site (gointernational.co.uk, stylesheet_stylesv22.css):
+           blauw  #0c6eaf  (--primary: knoppen, links, winkelmand)
+           navy   #1c355e  (donkere blokken)
+           licht  #70b0f7  (nieuwsbriefblok), hier als highlight
+         Font = Albert Sans, zoals op hun site. Logo uit "Distri huisstijlen/Go International",
+         witte achtergrond weg, 319x100; favicon = de GO-ringen. */
+      logo: 'data:image/png;base64,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',
+      logoHeight: 50,
+      homeUrl: 'https://gointernational.co.uk/',
+      shopUrl: 'https://gointernational.co.uk/sempertex',
+
+      brand: '#0c6eaf',
+      brandDark: '#1c355e',
+      brandLight: '#eef5fb',
+      accent: '#a9d0fa',
+      chart: '#70b0f7',
+      font: "'Albert Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif",
+      fontUrl: 'https://fonts.googleapis.com/css2?family=Albert+Sans:wght@400;500;600;700;800&display=swap',
+      favicon: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAMAAACdt4HsAAABgFBMVEUAAABaovIMWqhPlNZPmegYZbMqd8VHi84/f79jqfI5hNBNi8VosfwAf39Vqv9Ni8NIhLr///9VVap///9PjMRHg7gA//84dapJhr0AAP84c6ckcb4hbbtVqqo5dqxTkcp/f79TksstZpkAf/9CfbJ/f/9Nh7sPRnZCfrRDfbEFOWsxZ5kxbKFmmcw7d65De60bWI0iW44ybKMsaJwrWZAAAFV/v78AAChOisFKhr0YV4UAVaoAK1hJhbRSjcB/v/8HQ3YaSYooaK4zmcxIbbZff79Vf9Rci7kiVXciRHeqqv9Ej+BQk89foN5/f39iibAAFVUcVXE/v/8/e69goNoxbaM5cp8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACV3owBAAAAgHRSTlMA/Pz5/f38+AT+/s//AgOxkAEDAppzAVOsATH+/QNtzgS5LAJsAk4Qi1AUFU8FiC8sLDJJEQMECHLCGwMJMFoEJRIPBQcIBgsPDwP8nPwCDQwJBK7/YigAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKjfTfoAAASOSURBVHja7VcHduM4DIVDSZREW8VNck9sxy1xeplJ2Snbe9/7H2U/KMmV3r1AkJeI5Ac+QRAgGaI3eRODNKsuS7ViwCo51jxoXXHjdcetbmFVd92uuSZ+qtbwZzFMxv1xcvOEdtxbYbr11J5rbMEco73ZYX7dGAjP88r4FYNoiNFMjX05jwqsJMLGNVGwvRJMcRuKctkrZeKhOUigRvq3P9CmK0yEw9ytXAL6GHrl0raA4ppqlZhuByvjFYeXLmgdlholIjOHkyy5QfnnPtCZt43l9OJc+wdp1aDjZSpCpVEUpUpoI6tUTj+GZXzZH8ZmGsuV+7kPAUXQsTCi+le5T9MEEdGDwuNPWaTJIseu+srzLLB6s2zDaZapqltNh1wJOB+uQja1PIuxlJljjbHS+UDTaoYe9bPOBTRWGdLsQTERbA0OLJeCXnOVb0SPs8yI6JSGgpvQibdzbxTQtdA+DK4o2M49UPQ1xgTKY/tbWu7l1h93Wqk0uHN387+1pL/ZPVAl/EVAv9zL7YBSjZXKFxtbXsiSLoBS/DLAJF5qsB9hcTz/RZLcUGu/dlx6X8ISEnZSfIorBoWIg6MO1e4zQgSCsCQxicHFFn0vLGmJ8/izuXr1DPSkle6a+yo9mpd+lJZCmA/IaXMoaG5JaYVbhbXBL2VpbHCukJjeU2T5vjVuuSZUWb4UQ6ocJKhS/7BSk74T0rfUfx2gFWqTEL6UC8MujegfAefComTN8i1BSWzOUn04zuSr40smqD98zb2Hg4EQvgOC2AS1mWD8f/cACOSaYETJT/VCToTjiEHeiT6T+TqQvuOvl/AD55XIBZDj5D0LgR4dJJDTIogBhWxlEHlm9OBXUjCQ7WIbQYC8KERbZl9f3R/YxkhioY0ikZAZJ2tBDBCEkwG+vnE7OZHm0un4qSmVCeRdR4xpBhXRINecymfS6TpyuCqmSq2Qb2pz0e36agqNjrw01NRzsy1Qzr5ty8hYzmzalX9Ku+uo+9hUbqkkmgubXYhHpnKUtu381cEMphVU6UZ26Zd75dg2ouCaYgwCG3DHtIkIvPJt2E0EtBCrpeFQjbA++8ASlxTBkh3hKNiiTx92S7Ly4ZN02AdFy+beY4YaPDNaMVaS+bAzTS/G1dRhAtGmWnX3YtH2dnb26aaovwAYtTaeSw3RObLx40iwnxZHa+sZ5tNQG8k82uIIHV+NH/moDNxA73miJFtrDhkm+h0RZPfubw3p8zDyq2DQqlI12lM99NhuKOkcQXzh88dhLL/525GS3Q17DjcWxGpdnG8qDdNQSb/DA7aIFqHUGKpWpWkISPp6oIPsOF4xJFJPBJMO16CddRzJczQyX4Ax1MkxXyUbUXdpWi/UVuJIvMV6eP+1Q9nZhmxH1hdbu4ZyhJpf0B/ZWE04Xz3zJsC6Kwyrqbez5+PGPQC1s3chFsgiZfgOKrVs50aI/OUaU2HjDLR7V0GFZ/v9cjL5YjK5vONNW09R5c07e2Xs9fWFvaqYH9vrg+V050oeuesDIXAPP9hb+k1fHbVM/wqcaqzSevuv6E125F/DHFtA/RcoewAAAABJRU5ErkJggg==',
+
+      /* Zoeken op kleurcode: "Sempertex 640" geeft daar alle maten van Pastel Matte Blue (getest 20/10/2026). */
+      searchUrl: 'https://gointernational.co.uk/index.php?main_page=search_result&keyword=Sempertex%20{q}',
+
+      /* Prijscalculator: beginwaarden voor een Britse klant (tot hij zelf iets bewaart). */
+      costDefaults: { currency: 'GBP', dist: 'mi', vat: 20 },
+
+      order: {
+        sizes: [
+          { label: 'Fashion', url: 'https://gointernational.co.uk/sempertex/latex-by-colour/fashion' },
+          { label: 'Pastel Matte', url: 'https://gointernational.co.uk/sempertex/latex-by-colour/matte' },
+          { label: 'Pastel Dusk', url: 'https://gointernational.co.uk/sempertex-latex-by-colour/pastel-dusk-colour-latex-balloons' },
+          { label: 'Satin Pearl', url: 'https://gointernational.co.uk/sempertex/latex-by-colour/satin' },
+          { label: 'Metallic', url: 'https://gointernational.co.uk/sempertex/latex-by-colour/metallic' },
+          { label: 'Reflex', url: 'https://gointernational.co.uk/sempertex/latex-by-colour/reflex' },
+          { label: 'Neon', url: 'https://gointernational.co.uk/sempertex/latex-by-colour/neon' },
+          { label: 'Crystal', url: 'https://gointernational.co.uk/sempertex/latex-by-colour/crystal' },
+          { label: 'Silk', url: 'https://gointernational.co.uk/silk-colour-latex-balloons' }
+        ]
+      },
+
+      langs: ['en'],
+      text: {
+        en: {
+          pageTitle: 'Balloon colour and price tools | Go International',
+          langLabel: 'Language',
+          skipLabel: 'Skip to content',
+          tabsLabel: 'Tools',
+          backLabel: 'Back to the shop',
+          footerText: 'Built by Sempertex Europe for Go International.',
+          order: {
+            title: 'Order these balloons from Go International',
+            lead: 'Click a colour to see it in every size on the Go International shop. Prices show once you are logged in to your trade account.',
+            innerLabel: 'Inner',
+            outerLabel: 'Outer',
+            mainBtn: 'All Sempertex balloons',
+            sizesLabel: 'Or pick a range:'
+          },
+          strings: {
+            calcp_eyebrow: 'Go International / Double stuffing',
+            cost_eyebrow: 'Go International / Cost calculator',
+            ct_eyebrow: 'Go International / Colour matching',
+            cc_q_stx: 'Small "made with the Go International calculator" line',
+            cc_doc_stx: 'Made with the Go International calculator',
+            ct_btn_shop: 'View at Go International'
+          }
+        }
+      }
+    },
+
+    /* Datta's Wholesale (UK), 20/10/2026. Engels, GBP en mijlen. */
+    'dattas-wholesale': {
+      name: "Datta's Wholesale",
+      tools: ['calculator', 'cost', 'colour'],
+
+      /* -- HUISSTIJL --
+         Logokleur volgens "DATTA'S WHOLESALE LOGO COLOUR.docx": Pantone 2925 C (C80 M27 Y0 K0).
+         Op hun site (dattaswholesale.co.uk, /dattas/styles.css):
+           blauw  #0b81be  (bovenbalk, zoekknop, koppen)
+           grijs  #7e8c94  (menubalk), donkergrijs #2f3336 zoals de letters in het logo
+           licht  #E6EEF0  (panelen)
+         Highlight = lichte tint van 2925 C. Font = Montserrat, zoals op hun site.
+         Logo 333x100 (transparant), favicon = de D. */
+      logo: 'data:image/png;base64,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',
+      logoHeight: 46,
+      homeUrl: 'https://www.dattaswholesale.co.uk/',
+      shopUrl: 'https://www.dattaswholesale.co.uk/brands/sempertex',
+
+      brand: '#0b81be',
+      brandDark: '#2f3336',
+      brandLight: '#E6EEF0',
+      accent: '#a6dcf3',
+      chart: '#7e8c94',
+      font: "'Montserrat', 'Helvetica Neue', Helvetica, Arial, sans-serif",
+      fontUrl: 'https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap',
+      favicon: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAMAAACdt4HsAAABgFBMVEUAAAALebYLgr0MhsECfboKba0AqqoAVaoAf38KdrAKeLQAAP8KdbIAf/8KdbEA//8KdLEJa6wKdbEMfsAIaqcKbKsKgrwEaJkKbKsJbasNkM4KbawKbKoKhsAAqv8LisULiMMLgrwLg74LiMMAmcwAWpYMicQAOXIMiMMLgbsLgLoLgLkIg70JicQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABg1ueDAAAAgHRSTlMA/f7+CPoDAwItSwHOAq4Bbw+N/jDQSgqxT/+Pa0oDsIo6kmsFCNYEPMmhcR8aAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADS9Y+4AAAMfSURBVHjapZeJcuowDEWV2MEGZyFAGqAL7ev21v//vSdbcuJstCTqTAcx+FxZukkcAMjgTlyLj8vz4z8AWCkYjQKk+CLOQlxe/6JUNgZYweNZfBnns7j8BHgyowDxrUDEC4CaD7CI5xLkAgAiPl7gaQkA4xWU6QHublgeC/HcI9wGQML5R7cPNwIQ0SNYQHxbiD8hYQ5AbAI/zAAgQWZ6CSAWv3HdEkAsXhrCTMAvrRcBYnHnPb2CzSxACnoRII7XPMq5ALFjN80GpLLdQjQncA/ZIoDY0h7mA/KlgBQfCYt6EEkwSwARAvQywLoLEL0Cp7MWkAUAka8popEs5SyNpwFRScZax7w/yvxPXcgrFVhr60zXkAua8Rtmb01WYyZhJ670wOGyVhIvNc2SeA+V7hwwmEI7RhSxF+cTifDF7iVTWbhs2y0gNf5istnG3uO6kgbK0PSFTPtWXrUAL0kiqepIlrZU2fdLcDE1kkaOSPKdQ0PaawE/XagCaUJJyZKBY5VvbxuuMALsSVLrUDKD3GZ72qqCfN9Zzt87wB5hRdNOnq/qTXRQwIYBCpuzc/f4VlI5MEnmzm440W4B2Gg+ZiCATKRGTRRNmIh3TQAvuSO0N9G+M9F934ZFW8HGDCT9RFnI9Exkv/fPRvRbDaFkzZIsZMKJBh3onziNId9GXd9OmWgdHlkNhJLlN0yEG1gNDu0qlMxYsjFRF5CPHXinTZTBodeAMhuc2tlEEU1UNRmbqLe+mUATyoscyEScnewOCr4tNOvr4Xr83X3HRJypzkR5/+8wfHFpTHSiO1FN2QOZqKyC9VsY0XeSCf5VbKIHlyU1meiEnzES/J8eIBt560ETuQUsWdSVy+7ZRFSAhWw/h/MDL5lYSfCSVo5NdKAsSrc1QDb+5qcq96NWkjIy0ZF6dyphaD8/AieZJIdAMmknmhx3djVIM77eidgVR2ci11CXUbmlfHdOU1PLMT6pZieJXaDs1BaspTPEVBhQruTKD9gCokr5cesr0v46sFtASU0dcdnD+MAmenDAMVWyYEGbkYm+G9jqYyvZzb6K/63ZMkX1vvjlAAAAAElFTkSuQmCC',
+
+      /* Hun zoekfunctie kent geen kleurcodes (titels zijn "12in Pastel Matte Blue 50pc"),
+         wel kleurnamen: {name} = "Pastel Matte Blue". Getest 20/10/2026: Pastel Matte Blue 5 treffers,
+         Fashion White 9, Metallic Gold 8. */
+      searchUrl: 'https://www.dattaswholesale.co.uk/action/search?search={name}%20sempertex',
+
+      costDefaults: { currency: 'GBP', dist: 'mi', vat: 20 },
+
+      /* Geen categoriepagina per reeks op hun site: de reeksknoppen zijn zoekopdrachten. */
+      order: {
+        sizes: [
+          { label: 'Fashion', url: 'https://www.dattaswholesale.co.uk/action/search?search=sempertex%20fashion' },
+          { label: 'Pastel Matte', url: 'https://www.dattaswholesale.co.uk/action/search?search=sempertex%20pastel%20matte' },
+          { label: 'Pastel Dusk', url: 'https://www.dattaswholesale.co.uk/action/search?search=sempertex%20pastel%20dusk' },
+          { label: 'Pearl', url: 'https://www.dattaswholesale.co.uk/action/search?search=sempertex%20pearl' },
+          { label: 'Metallic', url: 'https://www.dattaswholesale.co.uk/action/search?search=sempertex%20metallic' },
+          { label: 'Reflex', url: 'https://www.dattaswholesale.co.uk/action/search?search=sempertex%20reflex' },
+          { label: 'Neon', url: 'https://www.dattaswholesale.co.uk/action/search?search=sempertex%20neon' },
+          { label: 'Crystal', url: 'https://www.dattaswholesale.co.uk/action/search?search=sempertex%20crystal' },
+          { label: 'Silk', url: 'https://www.dattaswholesale.co.uk/action/search?search=sempertex%20silk' }
+        ]
+      },
+
+      langs: ['en'],
+      text: {
+        en: {
+          pageTitle: "Balloon colour and price tools | Datta's Wholesale",
+          langLabel: 'Language',
+          skipLabel: 'Skip to content',
+          tabsLabel: 'Tools',
+          backLabel: 'Back to the shop',
+          footerText: "Built by Sempertex Europe for Datta's Wholesale.",
+          order: {
+            title: "Order these balloons from Datta's",
+            lead: "Click a colour to find it on the Datta's Wholesale shop. Prices show once you are logged in to your account.",
+            innerLabel: 'Inner',
+            outerLabel: 'Outer',
+            mainBtn: 'All Sempertex balloons',
+            sizesLabel: 'Or pick a range:'
+          },
+          strings: {
+            calcp_eyebrow: "Datta's Wholesale / Double stuffing",
+            cost_eyebrow: "Datta's Wholesale / Cost calculator",
+            ct_eyebrow: "Datta's Wholesale / Colour matching",
+            cc_q_stx: "Small \"made with the Datta's calculator\" line",
+            cc_doc_stx: "Made with the Datta's Wholesale calculator",
+            ct_btn_shop: "View at Datta's"
+          }
+        }
+      }
+    },
+
+    /* Euro Party (europarty.it, Balloon Fantasy group), 20/10/2026. Italiaans, EUR, IVA 22%.
+       Odoo heeft geen Italiaans: de teksten van de tools komen uit LANG_PACKS.it hieronder. */
+    europarty: {
+      name: 'Euro Party',
+      tools: ['calculator', 'cost', 'colour'],
+
+      /* -- HUISSTIJL --
+         Uit hun logo en site (europarty.it, styles.css van het thema Italmarket/Europarty):
+           magenta #e5007e  ("Euro" in het logo, .rosa)
+           blauw   #009ee2  ("Party", .btn-primary, menubalk)
+           tekst   #1f2937
+         Knoppen in magenta: wit op hun blauw #009ee2 leest te slecht (contrast 3:1).
+         Font = Open Sans, zoals op hun site. Logo 288x100, favicon = "Euro". */
+      logo: 'data:image/png;base64,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',
+      logoHeight: 50,
+      homeUrl: 'https://www.europarty.it/',
+      shopUrl: 'https://www.europarty.it/palloncini/lattice-professionale-sempertex/',
+
+      brand: '#e5007e',
+      brandDark: '#1f2937',
+      brandLight: '#fdeef6',
+      accent: '#9fdcf6',
+      chart: '#009ee2',
+      font: "'Open Sans', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif",
+      fontUrl: 'https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&display=swap',
+      favicon: 'data:image/png;base64,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',
+
+      /* Titels bevatten de kleurcode: "Sempertex 640" geeft 13 treffers, allemaal 640 (getest 20/10/2026). */
+      searchUrl: 'https://www.europarty.it/catalogsearch/result/?q=Sempertex%20{q}',
+
+      costDefaults: { currency: 'EUR', dist: 'km', vat: 22 },
+
+      order: {
+        sizes: [
+          { label: 'Fashion', url: 'https://www.europarty.it/palloncini/lattice-professionale-sempertex/fashion-solid/' },
+          { label: 'Pastel Matte', url: 'https://www.europarty.it/palloncini/lattice-professionale-sempertex/pastello/' },
+          { label: 'Pastel Dusk', url: 'https://www.europarty.it/palloncini/lattice-professionale-sempertex/pastel-dusk/' },
+          { label: 'Pearl', url: 'https://www.europarty.it/palloncini/lattice-professionale-sempertex/satinati/' },
+          { label: 'Metallic', url: 'https://www.europarty.it/palloncini/lattice-professionale-sempertex/metallizzati/' },
+          { label: 'Reflex', url: 'https://www.europarty.it/palloncini/lattice-professionale-sempertex/reflex/' },
+          { label: 'Neon', url: 'https://www.europarty.it/palloncini/lattice-professionale-sempertex/neon/' },
+          { label: 'Crystal', url: 'https://www.europarty.it/palloncini/lattice-professionale-sempertex/crystal/' },
+          { label: 'Silk', url: 'https://www.europarty.it/palloncini/lattice-professionale-sempertex/silk/' }
+        ]
+      },
+
+      langs: ['it'],
+      text: {
+        it: {
+          pageTitle: 'Strumenti per colori e prezzi dei palloncini | Euro Party',
+          langLabel: 'Lingua',
+          skipLabel: 'Vai al contenuto',
+          tabsLabel: 'Strumenti',
+          backLabel: 'Torna allo shop',
+          footerText: 'Realizzato da Sempertex Europe per Euro Party.',
+          order: {
+            title: 'Ordina questi palloncini su Euro Party',
+            lead: 'Clicca su un colore e lo vedi subito in tutte le misure nello shop di Euro Party.',
+            innerLabel: 'Interno',
+            outerLabel: 'Esterno',
+            mainBtn: 'Tutti i palloncini Sempertex',
+            sizesLabel: 'Oppure scegli una gamma:'
+          },
+          strings: {
+            calcp_eyebrow: 'Euro Party / Double stuffing',
+            cost_eyebrow: 'Euro Party / Calcolatore prezzi',
+            ct_eyebrow: 'Euro Party / Trova colore',
+            ct_btn_shop: 'Vedi su Euro Party'
+          }
+        }
+      }
     }
 
     /* Volgende partner hier, zelfde vorm:
@@ -365,6 +591,250 @@
     */
   };
   /* ================= EINDE CONFIG ================= */
+
+  /* Italiaans voor de drie tools (Euro Party, 20/10/2026). Odoo heeft geen Italiaans, dus deze
+     teksten staan hier en niet in inspiration-v18. Kleur- en reeksnamen blijven Engels (productnamen). */
+  var LANG_PACKS = {
+    it: {
+      nav_calc: 'Calcolatore double stuffing',
+      nav_cost: 'Calcolatore prezzi',
+      nav_colour: 'Trova colore',
+      calcp_eyebrow: 'Strumenti / Calcolatore',
+      calcp_h: 'Calcolatore <span class="hl">double stuffing</span>',
+      calcp_lede: 'Scegli un palloncino interno e uno esterno e guarda il colore che ottieni prima di gonfiarne anche solo uno.',
+      calc_h: 'Calcolatore double stuffing',
+      calc_inner: 'Palloncino interno',
+      calc_outer: 'Palloncino esterno',
+      calc_result: 'Risultato',
+      calc_lbl_inner: 'Interno',
+      calc_lbl_outer: 'Esterno',
+      calc_lbl_result: 'Risultato',
+      calc_swap: 'Inverti interno ed esterno',
+      calc_note: 'Questa anteprima è un’approssimazione. Il colore finale dipende da quanto gonfi, dalla luce e dalla finitura dei palloncini.',
+      dsm_label: 'Trova un colore',
+      dsm_hint: 'Carica una foto e tocca il colore che vuoi. Il calcolatore trova il palloncino interno e quello esterno che ci si avvicinano di più.',
+      dsm_up: 'Carica una foto',
+      dsm_other: 'Altra foto',
+      dsm_pick: 'oppure scegli un colore',
+      dsm_tip: 'Tocca il colore che vuoi ottenere. La foto resta sul tuo dispositivo.',
+      dsm_target: 'Il tuo colore',
+      dsm_best: 'Le combinazioni più vicine. Toccane una per caricarla nel calcolatore.',
+      dsm_q1: 'Molto vicino',
+      dsm_q2: 'Vicino',
+      dsm_q3: 'Simile',
+      dsm_q4: 'L’opzione più vicina',
+      dsm_single: 'Consiglio: {name} da solo è già molto vicino, non serve il double stuffing.',
+
+      ct_eyebrow: 'Strumenti / Trova colore',
+      ct_h: 'Trova <span class="hl">colore</span>',
+      ct_lede: 'Scegli un colore, toccalo in una foto o parti da un colore Sempertex che conosci. Ottieni i palloncini più vicini e palette che funzionano, tutti prodotti reali.',
+      ct_btn_saved: 'Palette salvate',
+      ct_pick_h: 'Dammi un colore',
+      ct_pick_hint: 'Scegli un colore RGB, scrivi un codice PMS, toccalo in una foto o parti da un colore Sempertex che conosci già.',
+      ct_pick_lbl: 'Il tuo colore',
+      ct_pick_native: 'Oppure usa il selettore colori del dispositivo',
+      ct_tab_pick: 'Scegli un colore RGB o PMS',
+      ct_tab_photo: 'Da una foto',
+      ct_tab_chart: 'Dalla cartella colori',
+      ct_drop_h: 'Trascina qui una foto o tocca per sceglierla',
+      ct_drop_s: 'Moodboard, abito, location, logo. La foto resta sul tuo dispositivo.',
+      ct_auto5: 'Scegli 5 colori per me',
+      ct_photo_clear: 'Altra foto',
+      ct_photo_tip: 'Tocca un punto della foto per usare quel colore.',
+      ct_pal_h: 'Combinazioni che funzionano',
+      ct_pal_hint: 'Tre palette attorno al colore Sempertex più vicino al tuo. Ogni palloncino è un prodotto reale. Toccalo per vederlo nello shop.',
+      ct_pal_count: 'Colori per palette',
+      ct_card_cap: 'Il tuo colore',
+      ct_card_matches: 'I colori Sempertex più vicini',
+      ct_card_note: 'Uno schermo mostra i colori in modo diverso dal lattice. Usalo per una prima scelta, poi guarda un palloncino vero alla luce del giorno.',
+      ct_btn_shop: 'Vedi nello shop',
+      ct_btn_copy: 'Copia i codici',
+      ct_saved_h: 'Palette salvate',
+      ct_saved_hint: 'Salvate in questo browser. Aprine una per rivederla.',
+      ct_dist_great: 'molto vicino',
+      ct_dist_ok: 'vicino',
+      ct_dist_far: 'il più vicino',
+      ct_from_photo: 'dalla tua foto',
+      ct_from_chart: 'dalla cartella colori',
+      ct_from_pick: 'scelto',
+      ct_pms_lbl: 'Oppure scrivi un codice PMS',
+      ct_pms_found: 'PMS {c} C',
+      ct_pms_none: 'Non conosciamo questo codice PMS. Prova per esempio 185, 7408 o Cool Gray 1.',
+      ct_pms_official: 'Abbinamento ufficiale Sempertex: {n}',
+      ct_from_pms: 'da PMS {c} C',
+      ct_p_tone: 'Tono su tono',
+      ct_p_tone_w: 'Stessa famiglia, più chiaro e più scuro, con un neutro delicato.',
+      ct_p_soft: 'Contrasto morbido',
+      ct_p_soft_w: 'Colori vicini sulla ruota cromatica. Calmi, facili, funzionano sempre.',
+      ct_p_statement: 'Di carattere',
+      ct_p_statement_w: 'Il colore opposto per dare grinta, bilanciato da un neutro.',
+      ct_pal_save: 'Salva',
+      ct_pal_copy: 'Copia',
+      ct_pal_saved: 'Palette salvata',
+      ct_card_ds: 'Non è proprio la sfumatura che cerchi? Mescola due palloncini nel <a href="#calculator">calcolatore double stuffing</a>.',
+      ct_copied: 'Copiato',
+      ct_sv_open: 'Apri',
+      ct_sv_del: 'Elimina',
+      ct_saved_empty: 'Ancora niente di salvato. Salva una palette con il pulsante accanto.',
+      ct_base_used: 'base delle palette',
+      ct_use_this: 'Usa questo',
+      ct_fin_all: 'Tutte le finiture',
+      ct_aria_hue: 'Tonalità',
+
+      cost_eyebrow: 'Strumenti / Calcolatore prezzi',
+      cost_h: 'Calcolatore <span class="hl">prezzi</span>',
+      cost_lede: 'Materiali, ore e costi fissi. Inizia da Impostazioni: inserisci la tua tariffa oraria, il costo al km e i costi fissi. Poi il prezzo si aggiorna mentre scrivi e il preventivo per il tuo cliente è a un clic.',
+      cost_lede_mi: 'Materiali, ore e costi fissi. Inizia da Impostazioni: inserisci la tua tariffa oraria, il costo per miglio e i costi fissi. Poi il prezzo si aggiorna mentre scrivi e il preventivo per il tuo cliente è a un clic.',
+      cc_btn_saved: 'Preventivi salvati',
+      cc_btn_settings: 'Impostazioni',
+      cc_btn_reset: 'Azzera il calcolo',
+      cc_reset_confirm: 'Tocca di nuovo per azzerare 01, 02 e 03',
+      cc_toast_reset: 'Azzerato. Le tue impostazioni restano come sono.',
+      cc_set_dist: 'Distanza in',
+      cc_dist_km: 'Chilometri (km)',
+      cc_dist_mi: 'Miglia (mi)',
+      cc_set_km_mi: 'Tariffa per miglio',
+      cc_travel_note_mi: '{r} per miglio, il tempo di viaggio non si fattura',
+      cc_leg_over_mi: 'Costi fissi e miglia',
+      cc_time_hint_mi: 'La tariffa oraria, la tariffa per miglio e i costi fissi mensili vengono dalle tue impostazioni. Impostali una volta, valgono per ogni lavoro.',
+      cc_keep_hint_mi: 'Si tolgono solo le spese vere: materiali, costi fissi e miglia. Le tue ore sono soldi che guadagni.',
+      cc_default_footer_mi: 'Prezzi esclusa consegna oltre 20 miglia. L’acconto conferma la data. I palloncini sono un prodotto naturale, i colori possono variare leggermente rispetto all’anteprima.',
+      cc_mat_h: 'Materiali',
+      cc_mat_hint_partner: 'Scrivi una misura, un colore o un codice e scegli l’articolo dal catalogo Sempertex. Puoi aggiungere anche articoli tuoi: scrivi il nome e il tuo prezzo al pezzo. <strong>Inserisci il tuo prezzo d’acquisto al pezzo</strong>, poi il numero di palloncini che ti servono per il lavoro. Il prezzo si calcola da solo.',
+      cc_price_note_off_partner: 'Inserisci il tuo prezzo d’acquisto al pezzo.',
+      cc_col_item: 'Articolo',
+      cc_col_qty: 'Q.tà',
+      cc_col_unit: 'Al pezzo',
+      cc_col_total: 'Totale',
+      cc_col_task: 'Attività',
+      cc_col_hours: 'Ore',
+      cc_col_rate: 'Tariffa',
+      cc_mat_waste: 'Scorta',
+      cc_mat_sub: 'Subtotale materiali',
+      cc_mat_add: '+ Aggiungi riga',
+      cc_time_h: 'Tempo e costi fissi',
+      cc_time_travel: 'Viaggio, andata e ritorno',
+      cc_time_overhead: 'Quota dei tuoi costi fissi mensili',
+      cc_time_sub: 'Subtotale tempo e costi fissi',
+      cc_t_inflate: 'Gonfiaggio e preparazione',
+      cc_t_inflate_s: 'Legare, calibrare, montare in laboratorio',
+      cc_t_setup: 'Montaggio e smontaggio sul posto',
+      cc_t_setup_s: 'Compresa l’attesa per la sala',
+      cc_t_admin: 'Contatti con il cliente e amministrazione',
+      cc_t_admin_s: 'Telefonate, messaggi, questo preventivo',
+      cc_travel_note: '{r} al km, il tempo di viaggio non si fattura',
+      cc_overhead_note: '{m} al mese su {hm} h = {r} all’ora',
+      cc_fin_h: 'Prezzo finale',
+      cc_fin_hint: 'Costi più guadagno. Da 1,30 a 1,50 è la fascia normale per i lavori di decorazione.',
+      cc_fin_mat: 'Subtotale materiali',
+      cc_fin_time: 'Subtotale tempo e costi fissi',
+      cc_fin_cost: 'Il tuo costo',
+      cc_fin_profit: 'Margine di guadagno',
+      cc_fin_round: 'Arrotonda a un prezzo pulito',
+      cc_fin_profit_eur: 'Quello che ti resta da questo lavoro (le tue ore + margine)',
+      cc_fin_quote: 'Prezzo per il cliente',
+      cc_card_cap: 'Prezzo per il cliente',
+      cc_card_exvat: 'IVA esclusa',
+      cc_card_inclvat: 'IVA inclusa',
+      cc_leg_mat: 'Materiali',
+      cc_leg_time: 'Le tue ore',
+      cc_leg_over: 'Costi fissi e km',
+      cc_leg_profit: 'Margine',
+      cc_hourly_cap: 'Quanto guadagni davvero all’ora',
+      cc_hourly_note_ok: 'Sopra la tua tariffa oraria di {r}. Bene.',
+      cc_hourly_note_low: 'Sotto la tua tariffa oraria di {r}. Alza il margine o le ore.',
+      cc_hourly_note_none: 'Aggiungi le ore per vederlo.',
+      cc_btn_quote: 'Crea il preventivo',
+      cc_btn_save: 'Salva questo lavoro',
+      cc_back: 'Torna al calcolo',
+      cc_q_lines_h: 'Cosa vede il cliente',
+      cc_q_add_line: '+ Aggiungi riga',
+      cc_q_appendix: 'Mostra i materiali in allegato',
+      cc_q_stx: 'Piccola riga "fatto con il calcolatore di Euro Party"',
+      cc_q_job_h: 'Questo lavoro',
+      cc_q_job_name: 'Nome del lavoro',
+      cc_q_event_date: 'Data dell’evento',
+      cc_q_status: 'Stato',
+      cc_st_quoted: 'Preventivato',
+      cc_st_booked: 'Confermato',
+      cc_btn_pdf: 'Scarica in PDF',
+      cc_btn_save_quote: 'Salva preventivo',
+      cc_q_print_hint: 'Il PDF si crea dalla finestra di stampa del browser. Scegli "Salva come PDF" come stampante.',
+      cc_doc_title: 'Preventivo',
+      cc_doc_number: 'Preventivo',
+      cc_doc_date: 'Data',
+      cc_doc_valid: 'Valido fino al',
+      cc_doc_for: 'Per',
+      cc_doc_event: 'Evento',
+      cc_doc_desc: 'Descrizione',
+      cc_doc_amount: 'Importo',
+      cc_doc_sub: 'Subtotale',
+      cc_doc_vat: 'IVA {v}%',
+      cc_doc_total: 'Totale',
+      cc_doc_dep: 'Acconto del {d}% per confermare',
+      cc_doc_appendix: 'Materiali',
+      cc_doc_stx: 'Fatto con il calcolatore di Euro Party',
+      cc_doc_default_line: 'Decorazione con palloncini',
+      cc_doc_ph: 'Qui vanno il tuo logo e i dati della tua attività. Tocca per aggiungerli.',
+      cc_doc_appendix_waste: 'Compresa una scorta del {w}% per gli scarti',
+      cc_set_h: 'Impostazioni',
+      cc_set_hint: 'Imposta una volta. Valgono per ogni calcolo e ogni preventivo.',
+      cc_set_rates: 'Le tue tariffe',
+      cc_set_hourly: 'Tariffa oraria',
+      cc_set_km: 'Tariffa al km',
+      cc_set_overhead: 'Costi fissi al mese',
+      cc_set_hours: 'Ore di lavoro al mese',
+      cc_set_overhead_hint: 'Somma tutto quello che paghi ogni mese, anche in un mese senza lavori: furgone o auto, assicurazione, magazzino o laboratorio, software, telefono, sito web, commercialista. Inserisci quel totale mensile e le ore che dedichi ai lavori in un mese normale. Lo strumento ne ricava una quota di costi fissi all’ora. Una colonna da 20 minuti ne porta poca, una giornata intera di gonfiaggio e montaggio ne porta tanta.',
+      cc_set_overhead_ex: 'Esempio: furgone 150 + assicurazione 60 + magazzino 120 + software 30 + telefono 40 = 400 al mese. Con 40 ore di lavori al mese fanno 10 all’ora. Un lavoro di 4 ore ne porta 40, uno di 1 ora ne porta 10.',
+      cc_set_currency: 'Valuta',
+      cc_set_vat: 'Aliquota IVA %',
+      cc_set_business: 'La tua attività, sul preventivo',
+      cc_set_logo: 'Logo',
+      cc_set_logo_hint: 'Tocca per caricare un PNG o JPG',
+      cc_set_name: 'Nome dell’attività',
+      cc_set_details: 'Indirizzo, partita IVA, email, telefono',
+      cc_set_valid: 'Preventivo valido per (giorni)',
+      cc_set_deposit: 'Acconto %',
+      cc_set_footer: 'Testo in fondo al preventivo',
+      cc_set_accent: 'Colore del preventivo',
+      cc_set_save: 'Salva impostazioni',
+      cc_saved_h: 'Preventivi salvati',
+      cc_saved_hint: 'Salvati in questo browser. Aprine uno per modificarlo o duplicalo per un lavoro simile.',
+      cc_saved_empty: 'Ancora niente di salvato. Calcola un lavoro e premi "Salva questo lavoro".',
+      cc_sv_open: 'Apri',
+      cc_sv_dup: 'Duplica',
+      cc_sv_book: 'Segna come confermato',
+      cc_sv_del: 'Elimina',
+      cc_sv_unbook: 'Torna a preventivato',
+      cc_toast_saved: 'Salvato',
+      cc_toast_settings: 'Impostazioni salvate',
+      cc_toast_loaded: 'Caricato',
+      cc_toast_deleted: 'Eliminato',
+      cc_toast_dup: 'Duplicato come nuovo preventivo',
+      cc_ph_desc: 'Descrizione',
+      cc_default_footer: 'Prezzi esclusa consegna oltre 30 km. L’acconto conferma la data. I palloncini sono un prodotto naturale, i colori possono variare leggermente rispetto all’anteprima.',
+      cc_q_line_setup: 'Consegna, montaggio e smontaggio',
+      cc_cat_note: 'Non è stato possibile caricare il catalogo Sempertex. Scrivi i tuoi articoli e prezzi.',
+      cc_cat_note_live: '{n} prodotti Sempertex nel catalogo.',
+      cc_pack_note: '{p} per confezione da {n}',
+      cc_ac_none: 'Nessun risultato. Continua a scrivere per usare un articolo tuo.',
+      cc_ac_more: 'Altri {n}. Continua a scrivere per restringere.',
+      cc_time_hint: 'La tariffa oraria, la tariffa al km e i costi fissi mensili vengono dalle tue impostazioni. Impostali una volta, valgono per ogni lavoro.',
+      cc_btn_open_settings: 'Apri impostazioni',
+      cc_fin_margin: 'Margine sopra il tuo costo',
+      cc_leg_keep: 'Tuo: ore + margine',
+      cc_keep_hint: 'Si tolgono solo le spese vere: materiali, costi fissi e km. Le tue ore sono soldi che guadagni.',
+      cc_aria_remove: 'Rimuovi',
+      cc_aria_mult: 'Moltiplicatore di guadagno',
+      cc_follows: 'Segue il calcolo',
+      cc_unit_h: 'h',
+      cc_ph_item: 'Cerca nel catalogo o scrivi un articolo tuo',
+      cc_ph_client: 'Nome e indirizzo del cliente',
+      cc_ph_event: 'Evento, data e location',
+      cc_ph_job: 'Ghirlanda organica 3 m, bianco e rosa cipria'
+    }
+  };
+
 
   /* Pad: /partner/<slug>/tools, met of zonder taalprefix. */
   var PATH_RE = /^(?:\/(?:fr|de|en_gb))?\/partner\/([a-z0-9-]+)\/tools$/;
@@ -379,6 +849,9 @@
      (Odoo zet geen prefix voor Nederlands). */
   var LANG = (/^\/(en_gb|fr|de)\//.exec(path) || [])[1] || 'nl';
   if (LANG === 'en_gb') { LANG = 'en'; }
+  /* Partner met 1 taal (langs: ['en'] voor een Britse partner, ['it'] voor Euro Party): altijd die
+     taal, welk pad Odoo ook toont. Odoo heeft geen Italiaans, dus /it/ bestaat niet. */
+  if (P.langs && P.langs.length === 1) { LANG = P.langs[0]; }
   var SLUG = m[1];
 
   /* Teksten per taal (text: { nl: {...}, en: {...} }). Wat daarin staat overschrijft de
@@ -413,8 +886,16 @@
      elke kleurlink naar de Sempertex categorie van de partner. order.searchUrl is
      de oude plek van dit veld en werkt nog steeds. */
   var SEARCH = P.searchUrl || (P.order && P.order.searchUrl) || '';
+  var COLROOT = null;   /* root van inspiration-v18, gezet in build() */
   function partnerShopUrl(code) {
-    return (SEARCH && code) ? SEARCH.replace('{q}', encodeURIComponent(code)) : P.shopUrl;
+    if (!SEARCH || !code) { return P.shopUrl; }
+    /* {name} = kleurnaam ("Pastel Matte Blue") voor een webshop die niet op kleurcode zoekt (Datta's). */
+    if (SEARCH.indexOf('{name}') > -1) {
+      var cols = (COLROOT && COLROOT.stxColour && COLROOT.stxColour.COLOURS) || [], nm = '';
+      for (var i = 0; i < cols.length; i++) { if (cols[i].code === code) { nm = cols[i].name; break; } }
+      return nm ? SEARCH.replace('{name}', encodeURIComponent(nm.toLowerCase())) : P.shopUrl;
+    }
+    return SEARCH.replace('{q}', encodeURIComponent(code));
   }
 
   /* Nooit draaien in de Odoo editor. */
@@ -709,11 +1190,16 @@
 
   function build(root) {
     if (built) { return; }
+    COLROOT = root;
     built = true;
     document.body.classList.add('stx-partner-page');
 
     /* -- Teksten van de calculator vervangen -- */
     var S = P.strings || {};
+    /* Taal van de partner over de tools leggen (Engels voor een Britse partner op /partner/...,
+       Italiaans uit LANG_PACKS), en de beginwaarden van de prijscalculator (valuta, km of mijl, btw). */
+    if (typeof root.stxUseLang === 'function' && (P.langs || []).length === 1) { root.stxUseLang(LANG, LANG_PACKS[LANG]); }
+    if (typeof root.stxCcDefaults === 'function' && P.costDefaults) { root.stxCcDefaults(P.costDefaults); }
     /* In de tekstenlijst van de tools zelf, ook voor teksten die pas later verschijnen
        (Match a colour na een foto, de rijen van de kostprijscalculator, de palettes). */
     if (root.stxStr) { Object.keys(S).forEach(function (key) { root.stxStr[key] = S[key]; }); }

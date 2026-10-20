@@ -610,6 +610,87 @@ function check(name, ok, extra) {
     await ctx.close();
   }
 
+  // Drie partners met 1 vaste taal (20/10/2026). Geopend op het pad zonder taalprefix, dus Odoo's
+  // Nederlands: de skin moet daar toch Engels of Italiaans van maken.
+  const NEW_PARTNERS = [
+    { slug: 'go-international', name: 'Go International', brand: '#0c6eaf', font: 'Albert Sans',
+      tabs: ['Double Stuffing Calculator', 'Cost Calculator', 'Colour Matching Tool'],
+      title: 'Balloon colour and price tools | Go International', cur: '£', curCode: 'GBP', dist: 'mi', vat: 20,
+      shop: /^https:\/\/gointernational\.co\.uk\/index\.php\?main_page=search_result&keyword=Sempertex%20\d{3}$/,
+      hint: /Enter your own purchase price per piece/, foreign: /\b(Kleurmixer|opdracht|inkoopprijs|Bewaar|Instellingen|Materiaal)\b/ },
+    { slug: 'dattas-wholesale', name: "Datta's", brand: '#0b81be', font: 'Montserrat',
+      tabs: ['Double Stuffing Calculator', 'Cost Calculator', 'Colour Matching Tool'],
+      title: "Balloon colour and price tools | Datta's Wholesale", cur: '£', curCode: 'GBP', dist: 'mi', vat: 20,
+      shop: /^https:\/\/www\.dattaswholesale\.co\.uk\/action\/search\?search=[a-z]+(%20[a-z]+)+%20sempertex$/,
+      hint: /Enter your own purchase price per piece/, foreign: /\b(Kleurmixer|opdracht|inkoopprijs|Bewaar|Instellingen|Materiaal)\b/ },
+    { slug: 'europarty', name: 'Euro Party', brand: '#e5007e', font: 'Open Sans',
+      tabs: ['Calcolatore double stuffing', 'Calcolatore prezzi', 'Trova colore'],
+      title: 'Strumenti per colori e prezzi dei palloncini | Euro Party', cur: '€', curCode: 'EUR', dist: 'km', vat: 22,
+      shop: /^https:\/\/www\.europarty\.it\/catalogsearch\/result\/\?q=Sempertex%20\d{3}$/,
+      hint: /Inserisci il tuo prezzo d’acquisto al pezzo/,
+      foreign: /\b(Kleurmixer|opdracht|inkoopprijs|Bewaar|Instellingen|Materiaal|Settings|Saved quotes|Materials|Inner balloon|Upload a photo|Shop this colour)\b/ }
+  ];
+  for (const N of NEW_PARTNERS) {
+    console.log(`\n/partner/${N.slug}/tools (vaste taal, ${N.curCode})`);
+    const { ctx, page } = await open(`/partner/${N.slug}/tools`);
+    const tabs = await page.$$eval('.stx-pt-tab', (els) => els.map((e) => e.textContent.trim()));
+    check('tabbladen in de taal van de partner', JSON.stringify(tabs) === JSON.stringify(N.tabs), JSON.stringify(tabs));
+    check('geen taalschakelaar', (await page.$('.stx-pt-lang')) === null);
+    check('tabtitel', (await page.title()) === N.title, await page.title());
+    const brand = await page.evaluate(() => getComputedStyle(document.querySelector('.stx-insp')).getPropertyValue('--purple').trim());
+    check('huisstijlkleur', brand.toLowerCase() === N.brand, brand);
+    check('font ' + N.font, new RegExp(N.font).test(await page.evaluate(() => getComputedStyle(document.querySelector('.stx-insp')).fontFamily)));
+    const logo = await page.evaluate(() => { const i = document.querySelector('.stx-pt-bar img'); return i && i.complete && i.naturalWidth > 200 && i.getBoundingClientRect().height > 30; });
+    check('logo staat in de header', logo);
+    await page.click('#sw-inner .swatch:nth-child(3)');
+    await page.click('#sw-outer .swatch:nth-child(5)');
+    await page.waitForTimeout(250);
+    const picks = await page.$$eval('a.stx-pt-pick', (els) => els.map((e) => e.getAttribute('href')));
+    check('gekozen kleuren zoeken in de webshop van de partner', picks.length === 2 && picks.every((h) => N.shop.test(h)), JSON.stringify(picks));
+
+    await page.click('.stx-pt-tab[data-tool="cost"]');
+    await page.waitForTimeout(400);
+    const hint = await page.textContent('[data-i18n="cc_mat_hint"]');
+    check('prijscalculator vraagt eigen inkoopprijs', N.hint.test(hint), hint.slice(0, 90));
+    check('offerte noemt de partner', (await page.textContent('#cc-doc-stx')).includes(N.name.replace("'s", '')), await page.textContent('#cc-doc-stx'));
+    await page.click('#cc-open-settings');
+    await page.waitForTimeout(300);
+    const cur = await page.evaluate(() => document.getElementById('cc-s-currency').value + '|' + document.getElementById('cc-s-dist').value + '|' + document.getElementById('cc-s-vat').value);
+    check(`instellingen beginnen op ${N.curCode}, ${N.dist}, btw ${N.vat}%`, cur === `${N.curCode}|${N.dist}|${N.vat}`, cur);
+    await page.click('#cc-scrim', { position: { x: 5, y: 500 } });
+    await page.waitForTimeout(300);
+    check(`bedragen in ${N.cur}`, (await page.textContent('#view-cost')).includes(N.cur));
+    await page.screenshot({ path: path.resolve(__dirname, `${N.slug}-cost.png`), fullPage: false });
+
+    await page.click('.stx-pt-tab[data-tool="colour"]');
+    await page.waitForTimeout(400);
+    await page.$eval('#ct-root input[type=color]', (e) => { e.value = '#7b87bf'; e.dispatchEvent(new Event('input', { bubbles: true })); e.dispatchEvent(new Event('change', { bubbles: true })); }).catch(() => {});
+    await page.waitForTimeout(400);
+    const shopBtn = await page.getAttribute('#ct-shop-btn', 'href');
+    check('"shop deze kleur" zoekt bij de partner', N.shop.test(shopBtn || ''), shopBtn);
+    const bad = await page.evaluate((re) => { const m = new RegExp(re).exec(document.body.innerText); return m ? m[0] : ''; }, N.foreign.source);
+    check('geen woorden uit een andere taal', !bad, bad);
+    await page.screenshot({ path: path.resolve(__dirname, `${N.slug}-colour.png`), fullPage: false });
+
+    // Opslaan: per partner apart, nooit in de sleutels van onze eigen /tools.
+    await page.click('.stx-pt-tab[data-tool="cost"]');
+    await page.waitForTimeout(200);
+    const keys = await page.evaluate(() => { const ks = []; for (let i = 0; i < localStorage.length; i++) { ks.push(localStorage.key(i)); } return ks; });
+    check('bewaart onder een eigen sleutel', keys.includes(`stx_quote_draft@${N.slug}`) && !keys.includes('stx_quote_draft'), keys.join(','));
+    await page.click('#sw-inner .swatch:nth-child(3)').catch(() => {});
+    await page.screenshot({ path: path.resolve(__dirname, `${N.slug}-desktop.png`), fullPage: false });
+    await ctx.close();
+  }
+
+  console.log('\n/partner/go-international/tools op telefoonformaat');
+  {
+    const { ctx, page } = await open('/partner/go-international/tools#cost', 390);
+    const scroll = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+    check('geen horizontale scroll', scroll <= 2, scroll + 'px');
+    await page.screenshot({ path: path.resolve(__dirname, 'go-international-mobile.png'), fullPage: false });
+    await ctx.close();
+  }
+
   console.log('\n/partner/liragram/tools?livechat=force (het CSS-vangnet apart)');
   {
     // Zet Odoo de chat ooit op een andere manier neer, dan moet de CSS hem alsnog
