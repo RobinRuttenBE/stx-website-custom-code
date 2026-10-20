@@ -3189,7 +3189,7 @@ function openAiModal() {
       odoo('x_stx_ai_request', 'create', [[{ x_name: ($('design-name').value || 'Untitled design').slice(0, 120), x_prompt: userPrompt.slice(0, 4000), x_state: 'new' }]], {}, function (res, err) {
         var id = Array.isArray(res) ? res[0] : res;
         if (!id) { fail(/session|login|expired/i.test(err) ? 'Log in on the shop first.' : 'The AI impression is in beta for a small group of accounts. Want to try it? Ask Sempertex Europe.'); return; }
-        fetch(cfg.endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ request_id: id, image: ref, prompt: userPrompt, width: rw, height: rh }) })
+        fetch(cfg.endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ request_id: id, image: ref, prompt: userPrompt, width: rw, height: rh, box: job.box }) })
           .then(function (r) { return r.json(); })
           .then(function (d) {
             if (d && d.used != null) { cfg.used = d.used; cfg.limit = d.limit; }
