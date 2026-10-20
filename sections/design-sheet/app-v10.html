@@ -3019,7 +3019,7 @@ function describeGroups(list, noSize) {
     var dMax = bs.reduce(function (a, b) { return Math.max(a, b.d); }, 0), slim = bb.w ? ' The design is ' + (Math.round(bb.h / bb.w * 10) / 10) + ' times as tall as it is wide; one balloon is about ' + Math.round(dMax / bb.h * 100) + '% of its height.' : '';
     var what = t === 'column' ? 'a classic spiral balloon column' + D(', ' + cm(bb.h) + ' high and about ' + cm(bb.w) + ' wide') + ', built from ' + (nl ? 'exactly ' + nl + ' ' : '') + 'stacked clusters of four balloons around a pole (from the front you see 2 or 3 balloons per layer, never a single stack). Keep that number of layers and that slim shape: do not use fewer, bigger balloons.' + slim :
       t === 'arch' ? 'a classic spiral balloon arch' + D(', ' + cm(bb.w) + ' wide and ' + cm(bb.h) + ' high') + ', built from clusters of four balloons along a curved frame' :
-      t === 'organic' ? 'an organic balloon garland' + D(', ' + cm(bb.w) + ' wide') + ', balloons of mixed sizes ' + sizeTxt + ' packed tightly together' + (sizes['5'] ? ' (the small 5" balloons are tucked deep into the gaps between the bigger balloons, pressed against them and part of the garland; none of them floats loose or sits apart in the air)' : '') :
+      t === 'organic' ? 'an organic balloon garland' + D(', ' + cm(bb.w) + ' wide') + ', balloons of mixed sizes ' + sizeTxt + ' packed tightly together' :
       t === 'grid' ? 'a flat balloon wall' + D(' of ' + cm(bb.w) + ' × ' + cm(bb.h)) + ' built from ' + sizeTxt + ' balloons in rows' :
       t === 'number' ? 'a number centerpiece: foil number balloon(s) standing on a base of latex balloon clusters' + D(', ' + cm(bb.w) + ' wide') :
       t === 'bouquet' ? 'a helium balloon bouquet' + D(', ' + cm(bb.h) + ' tall') + ', balloons floating on thin ribbons tied to a weight on the floor' :
@@ -3070,7 +3070,8 @@ function foilPhrase() {
     names[n] = (names[n] || 0) + 1;
   });
   var list = Object.keys(names).map(function (n) { return (names[n] > 1 ? names[n] + ' x ' : '') + n; }).join(', ');
-  return '; ' + fs.length + ' foil balloon' + (fs.length > 1 ? 's' : '') + ' (' + list + ') exactly where drawn: real metallic mylar foil balloons with fine crinkles, seams and soft reflections of the scene, part of the design (tied into it, not floating in front), lit by the same light as the latex and casting the same soft shadows';
+  // short on purpose: every extra descriptive line made the AI copy the drawing instead of painting (20/10/2026)
+  return '; ' + fs.length + ' foil balloon' + (fs.length > 1 ? 's' : '') + ' (' + list + '), real mylar foil, part of the design';
 }
 function aiPrompt(job) {
   var list = state.balloons, hasLoc = !!(state.loc && state.loc.img), n = list.length + state.foils.length;
