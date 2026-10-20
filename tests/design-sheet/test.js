@@ -206,7 +206,11 @@ const server = http.createServer(async (req, res) => {
   const pr = await f.$eval('#ai-prompt', el => el.value);
   // shape of Robin's own working prompt: exact layout, real sizes, no long list of "do not enlarge"
   // whole photo by default, in the shape of Robin's own working prompt: exact layout, real sizes, short
-  assert.ok(/^Edit this photo\. The balloons drawn on it are the exact layout/.test(pr) && /m high/.test(pr) && /glossy chrome-look latex/.test(pr) && /Recreate the whole photo as a sharp/.test(pr) && !/do not enlarge|never a hard/.test(pr), pr);
+  // small design in a big photo: the crop goes by default (a far column came back far too big with the whole photo)
+  assert.ok(/^Edit this close-up of a photo\. The balloons drawn on it are the exact layout/.test(pr) && /m high/.test(pr) && /glossy chrome-look latex/.test(pr) && !/do not enlarge|never a hard/.test(pr), pr);
+  const whole = await f.evaluate(() => new Promise(r => { window.STX.state.aiWhole = true; window.STX.aiJob(j => { window.STX.state.aiWhole = undefined; r(j.prompt); }); }));
+  assert.ok(/^Edit this photo\./.test(whole) && /Recreate the whole photo as a sharp/.test(whole), whole.slice(0, 200));
+  ok('AI prompt: crop by default for a small design, whole photo (recreated sharp) when picked');
   await f.click('#ai-gen');
   await f.waitForFunction(() => window.STX.state.impression && window.STX.state.impression.img, null, { timeout: 20000 });
   assert.strictEqual(aiRequests, 1);

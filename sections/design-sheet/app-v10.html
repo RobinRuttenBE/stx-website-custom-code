@@ -3138,6 +3138,16 @@ function softenBalloons(off) {
     return out;
   } catch (e) { return off; }
 }
+/* Whole photo or only around the design. Default (nothing picked): the whole photo, unless the design is small in
+   the photo (under 30% of its width and of its height). Live 20/10/2026: a far column in Robin's warehouse came back
+   far too big with the whole photo, and at the right size and place with the crop; big designs (arch, organic) were
+   best with the whole photo. */
+function aiUseCrop() {
+  if (state.aiWhole === true) return false;
+  if (state.aiWhole === false) return true;
+  var L = state.loc, bb = designPhotoBox(); if (!L || !bb) return false;
+  return (bb.x1 - bb.x0) < 0.3 * L.pw && (bb.y1 - bb.y0) < 0.3 * L.ph;
+}
 function aiJob(cb) {
   var hasLoc = !!(state.loc && state.loc.img);
   var k = hasLoc ? Math.max(1, AI_WORK_PX / Math.max(state.loc.pw, state.loc.ph)) : 1;   // photo px -> work px
@@ -3145,7 +3155,7 @@ function aiJob(cb) {
   if (hasLoc) off = softenBalloons(off);
   var job = { crop: null, box: null, k: k };
   if (hasLoc) {
-    var crop = state.aiWhole === false ? aiCrop() : null, bb = designPhotoBox();   // whole photo unless the user picks the crop
+    var crop = aiUseCrop() ? aiCrop() : null, bb = designPhotoBox();
     if (crop) {
       // small crops go up in size so the AI sees the balloons
       var cv = document.createElement('canvas'), up = Math.max(1, Math.min(2.5, 1024 / Math.max(crop.w * k, crop.h * k)));
@@ -3209,7 +3219,7 @@ function openAiModal() {
     var ref = job.ref, rw = job.w, rh = job.h, prompt = job.prompt;
     box.innerHTML = '<h3>AI impression</h3>' +
       '<p>The build drawing stays the truth. The impression is a photo-real version of it for your client, made from the reference below with image-to-image AI.' + (hasLoc ? (job.crop ? ' Only the framed part goes to the AI, so the balloons get all its attention. The result is pasted back into your full photo at exactly that spot; the rest of the photo stays untouched.' : '') : ' Add a location photo first if you want it in the real room.') + '</p>' +
-      (hasLoc ? '<div class="seg" id="ai-send" style="margin-bottom:8px"><button data-v="whole"' + (state.aiWhole === false ? '' : ' class="on"') + '>Whole photo (most realistic)</button><button data-v="crop"' + (state.aiWhole === false ? ' class="on"' : '') + '>Only around the design</button></div>' : '') +
+      (hasLoc ? '<div class="seg" id="ai-send" style="margin-bottom:8px"><button data-v="whole"' + (aiUseCrop() ? '' : ' class="on"') + '>Whole photo</button><button data-v="crop"' + (aiUseCrop() ? ' class="on"' : '') + '>Only around the design</button></div>' : '') +
       '<img class="photo-thumb" src="' + job.preview + '" alt="">' +
       (cfg.endpoint && ON_SHOP ? '<div class="stack"><button class="btn primary" id="ai-gen">Generate impression</button></div><div class="note" id="ai-status" style="margin-bottom:12px">' + (cfg.used != null ? cfg.used + ' of ' + cfg.limit + ' impressions used this month on your account.' : 'Takes about half a minute. Beta: for a small group of accounts.') + '</div>' +
         '<details style="margin-bottom:12px"><summary class="note" style="cursor:pointer">Or make it yourself in another AI tool</summary>' : '') +
