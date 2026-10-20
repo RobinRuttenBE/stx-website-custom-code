@@ -171,6 +171,7 @@ function odooPage() {
   return `<!doctype html><html lang="nl"><head><meta charset="utf-8">
 <title>Tools | Sempertex Europe</title>
 <link rel="icon" href="/web/image/website/1/favicon">
+<style>/* Zoals het Odoo-thema: koppen in ons font en donkerpaars, ook binnen de tools. */ h1,h2,h3,h4,h5,h6{font-family:'RethinkSans-ExtraBold',sans-serif;color:rgb(27,7,61)}</style>
 ${LOADWALL_HEAD}
 ${LIVECHAT_SESSION}
 ${HEAD_ANTIFLASH}
@@ -331,6 +332,8 @@ function check(name, ok, extra) {
     const font = await page.evaluate(() =>
       getComputedStyle(document.querySelector('.stx-insp')).fontFamily);
     check('font van de partner', /Nunito/.test(font), font);
+    const lh2 = await page.evaluate(() => getComputedStyle(document.querySelector('#view-calculator h2')).fontFamily);
+    check('titel in het font van de partner, niet dat van het Odoo-thema', /Nunito/.test(lh2), lh2);
 
     // Pick a colour on each side and read the order block back.
     await page.click('#sw-inner .swatch:nth-child(3)');
@@ -442,6 +445,8 @@ function check(name, ok, extra) {
     const brand = await page.evaluate(() => getComputedStyle(document.querySelector('.stx-insp')).getPropertyValue('--purple').trim());
     check('huisstijlkleur van Mooideco', brand === '#5A6186', brand);
     check('font Montserrat', /Montserrat/.test(await page.evaluate(() => getComputedStyle(document.querySelector('.stx-insp')).fontFamily)));
+    const h2 = await page.evaluate(() => { const cs = getComputedStyle(document.querySelector('#view-calculator h2')); return cs.fontFamily + ' | ' + cs.color; });
+    check('titel niet in het font en paars van het Odoo-thema', /Montserrat/.test(h2) && !/27, 7, 61/.test(h2), h2);
 
     // Bestelblok: elke gekozen kleur is een zoeklink op mooideco.nl met de kleurcode.
     await page.click('#sw-inner .swatch:nth-child(3)');
@@ -463,6 +468,10 @@ function check(name, ok, extra) {
     const note = await page.textContent('#cc-cat-note');
     check('catalogusregel zegt eigen prijs invullen', /Vul je eigen aankoopprijs per stuk in/.test(note) && !/shopaccount/.test(note), note);
     check('offerte zegt Mooideco, niet STX Tools', /Mooideco/.test(await page.textContent('#cc-doc-stx')), await page.textContent('#cc-doc-stx'));
+    const heads = await page.$$eval('#view-cost h2, #view-cost h3', (els) => els.filter((e) => e.offsetParent).map((e) => getComputedStyle(e).fontFamily.split(',')[0] + ' ' + getComputedStyle(e).color));
+    check('koppen van de kostprijscalculator in Montserrat', heads.length > 0 && heads.every((h) => /Montserrat/.test(h) && !/27, 7, 61/.test(h)), heads.join(' | '));
+    const dot = await page.evaluate(() => getComputedStyle(document.querySelector('.cc-legend > :nth-child(1) i')).backgroundColor);
+    check('legenda in Mooideco-kleuren', dot === 'rgb(58, 58, 93)', dot);
     check('geen vraag naar onze shopprijzen', await page.evaluate(() => !(performance.getEntriesByType('resource') || []).some((r) => /snippet\/autocomplete|get_combination_info/.test(r.name))));
     await page.screenshot({ path: path.resolve(__dirname, 'mooideco-cost.png'), fullPage: false });
 

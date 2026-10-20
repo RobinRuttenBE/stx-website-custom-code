@@ -185,6 +185,7 @@
       brandDark: '#3A3A5D',
       brandLight: '#FDF1F5',
       accent: '#DDACBB',
+      chart: '#9F9FCA',        // 4e kleur in de kostenbalk (overhead en km); weglaten = brand
       font: "'Montserrat', 'Helvetica Neue', Helvetica, Arial, sans-serif",
       fontUrl: 'https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap',
 
@@ -389,6 +390,20 @@
     '  --ct-glow-y: 0 8px 22px rgba(0,0,0,.18);',
     '  font-family: ' + P.font + ';',
     '}',
+    /* Kostprijscalculator: balk en legenda met de vier kostendelen. De legenda heeft
+       vaste Sempertex-kleuren inline, vandaar !important. Kinderen 1,3,5,7,9 = de labels. */
+    '.stx-partner-page .stx-cc .cc-bar .cc-o { background: ' + (P.chart || P.brand) + '; }',
+    '.stx-partner-page .stx-cc .cc-legend > :nth-child(1) i { background: ' + P.brandDark + ' !important; }',
+    '.stx-partner-page .stx-cc .cc-legend > :nth-child(3) i { background: ' + P.brand + ' !important; }',
+    '.stx-partner-page .stx-cc .cc-legend > :nth-child(5) i { background: ' + (P.chart || P.brand) + ' !important; }',
+    '.stx-partner-page .stx-cc .cc-legend > :nth-child(7) i { background: ' + P.accent + ' !important; }',
+    '.stx-partner-page .stx-cc .cc-legend > :nth-child(9) i { background: linear-gradient(90deg,' + P.brand + ',' + P.accent + ') !important; }',
+    /* Koppen: het Odoo-thema zet h1-h6 in Rethink Sans en ons donkerpaars, ook binnen
+       de tools (20/10/2026 live gezien, ook op Liragram). Font altijd dat van de partner;
+       kleur erven van de tool, met lage specificiteit zodat koppen op een donkere kaart
+       of met een eigen kleur uit de tool die gewoon houden. */
+    '.stx-partner-page .stx-insp :is(h1,h2,h3,h4,h5,h6) { font-family: inherit !important; }',
+    ':where(.stx-partner-page .stx-insp) :is(h1,h2,h3,h4,h5,h6) { color: inherit; }',
     /* De balk met de benaderings-melding staat met een vaste Sempertex
        lila in het sectiebestand, niet op een variabele. Hier overschreven. */
     '.stx-partner-page .stx-insp .calc-notice { background: ' + P.brandLight + ' !important; }',
