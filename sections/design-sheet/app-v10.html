@@ -3073,8 +3073,16 @@ function aiPrompt(job) {
   // best results (20/10/2026). The long list of "do not enlarge, do not shift, the perspective is right"
   // made the AI copy the drawing instead of painting balloons.
   var crop = !!(job && job.crop);
-  return 'Edit this ' + (crop ? 'close-up of a photo' : 'photo') + '. The balloons drawn on it are the exact layout: replace every drawn balloon with a photorealistic latex balloon in the same position, same size and same colour. ' + n + ' balloons in total, no more, no fewer. Do not move, add, remove or rearrange anything.' +
-    ' Keep the rest of the photo exactly as it is: building, walls, floor, objects, lighting.' +
+  // Whole photo (default): the AI may seat the design naturally in the scene (Robin 20/10/2026: by hand the AI put
+  // the arch a little deeper and further forward and it looked real, not pasted on). The crop stays strict.
+  var place = crop ? 'replace every drawn balloon with a photorealistic latex balloon in the same position, same size and same colour. ' + n + ' balloons in total, no more, no fewer. Do not move, add, remove or rearrange anything.'
+    : 'replace every drawn balloon with a photorealistic latex balloon in the same colour, keeping the same design, size and pattern. ' + n + ' balloons in total, no more, no fewer. Do not add or remove balloons. Place the design so it truly stands in the scene: feet firmly on the ground with real depth and perspective, it may sit slightly deeper or further forward than drawn if that looks more natural. It must never look pasted on.';
+  return 'Edit this ' + (crop ? 'close-up of a photo' : 'photo') + '. The balloons drawn on it are the exact layout: ' + place +
+    (crop ? ' Keep the rest of the photo exactly as it is: building, walls, floor, objects, lighting.'
+      // live test 20/10/2026 (variant G): "keep the rest exactly as it is" made the AI keep the drawn balloons'
+      // pixels too. Letting it recreate the whole photo (sharper, same content) gave real balloons, like Robin's
+      // result by hand, where the app also redrew and sharpened the whole photo.
+      : ' Recreate the whole photo as a sharp, high-quality photograph of the same scene (it may be upscaled and sharpened), and keep its content as it is: building, walls, floor, objects, lighting.') +
     ' What you are looking at: ' + describeGroups(list).join('; ') + (state.foils.length ? '; ' + state.foils.length + ' foil balloon(s) as drawn' : '') + '.' +
     ' Render the latex realistically with the finishes as described (matte, pearl, silk, chrome), soft shadows and contact shadows where balloons touch the wall or floor, light direction as in the photo.' + LATEX_LOOK + ' No text, no people, no extra decoration.';
 }

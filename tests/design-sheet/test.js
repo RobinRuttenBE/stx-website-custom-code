@@ -206,7 +206,7 @@ const server = http.createServer(async (req, res) => {
   const pr = await f.$eval('#ai-prompt', el => el.value);
   // shape of Robin's own working prompt: exact layout, real sizes, no long list of "do not enlarge"
   // whole photo by default, in the shape of Robin's own working prompt: exact layout, real sizes, short
-  assert.ok(/^Edit this photo\. The balloons drawn on it are the exact layout/.test(pr) && /m high/.test(pr) && /glossy chrome-look latex/.test(pr) && !/do not enlarge|never a hard/.test(pr), pr);
+  assert.ok(/^Edit this photo\. The balloons drawn on it are the exact layout/.test(pr) && /m high/.test(pr) && /glossy chrome-look latex/.test(pr) && /Recreate the whole photo as a sharp/.test(pr) && !/do not enlarge|never a hard/.test(pr), pr);
   await f.click('#ai-gen');
   await f.waitForFunction(() => window.STX.state.impression && window.STX.state.impression.img, null, { timeout: 20000 });
   assert.strictEqual(aiRequests, 1);
