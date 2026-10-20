@@ -1754,6 +1754,11 @@
       cc_price_note_off: 'Your shop account does not show prices, so they are not filled in here either. Type your own purchase price per piece.',
       cc_mat_hint_partner: 'Type a size, colour or code and pick the item from the Sempertex catalogue. Own items work too: type the name and your own price per piece. <strong>Enter your own purchase price per piece</strong>, then the number of balloons you need for your job. The price is calculated for you.',
       cc_price_note_off_partner: 'Enter your own purchase price per piece.',
+      cc_aria_remove: 'Remove',
+      cc_aria_mult: 'Profit multiplier',
+      cc_follows: 'Follows the calculation',
+      cc_unit_h: 'h',
+      ct_aria_hue: 'Hue',
       cc_set_overhead_ex: 'Example: van 150 + insurance 60 + storage 120 + software 30 + phone 40 = 400 per month. With 40 hours on jobs a month that is 10 per hour. A job of 4 hours carries 40, a job of 1 hour carries 10.',
       cc_ph_item: 'Search the catalogue or type your own item',
       cc_ph_client: 'Client name and address',
@@ -2028,6 +2033,11 @@
       cc_price_note_off: 'Dein Shop-Konto zeigt keine Preise, deshalb werden sie auch hier nicht ausgef\u00fcllt. Gib deinen eigenen Einkaufspreis pro St\u00fcck ein.',
       cc_mat_hint_partner: 'Tippe Größe, Farbe oder Code und wähle den Artikel aus dem Sempertex-Katalog. Eigene Artikel gehen auch: tippe den Namen und deinen eigenen Stückpreis. <strong>Trage deinen eigenen Einkaufspreis pro Stück ein</strong>, dann die Anzahl Ballons für deinen Auftrag. Der Preis wird für dich berechnet.',
       cc_price_note_off_partner: 'Trage deinen eigenen Einkaufspreis pro Stück ein.',
+      cc_aria_remove: 'Entfernen',
+      cc_aria_mult: 'Gewinnfaktor',
+      cc_follows: 'Folgt der Berechnung',
+      cc_unit_h: 'Std.',
+      ct_aria_hue: 'Farbton',
       cc_set_overhead_ex: 'Beispiel: Lieferwagen 150 + Versicherung 60 + Lager 120 + Software 30 + Telefon 40 = 400 pro Monat. Bei 40 Stunden f\u00fcr Auftr\u00e4ge im Monat sind das 10 pro Stunde. Ein Auftrag von 4 Stunden tr\u00e4gt 40, ein Auftrag von 1 Stunde tr\u00e4gt 10.',
       cc_ph_item: 'Katalog durchsuchen oder eigenen Artikel eingeben',
       cc_ph_client: 'Name und Adresse des Kunden',
@@ -2302,6 +2312,11 @@
       cc_price_note_off: 'Votre compte boutique n\'affiche pas les prix, ils ne sont donc pas remplis ici non plus. Tapez votre propre prix d\'achat par pi\u00e8ce.',
       cc_mat_hint_partner: 'Tapez une taille, une couleur ou un code et choisissez l\'article dans le catalogue Sempertex. Vos propres articles fonctionnent aussi : tapez le nom et votre prix par pièce. <strong>Saisissez votre propre prix d\'achat par pièce</strong>, puis le nombre de ballons nécessaires pour votre prestation. Le prix se calcule tout seul.',
       cc_price_note_off_partner: 'Saisissez votre propre prix d\'achat par pièce.',
+      cc_aria_remove: 'Supprimer',
+      cc_aria_mult: 'Multiplicateur de marge',
+      cc_follows: 'Suit le calcul',
+      cc_unit_h: 'h',
+      ct_aria_hue: 'Teinte',
       cc_set_overhead_ex: 'Exemple : camionnette 150 + assurance 60 + stockage 120 + logiciels 30 + t\u00e9l\u00e9phone 40 = 400 par mois. Avec 40 heures de missions par mois, cela fait 10 par heure. Une mission de 4 heures porte 40, une mission de 1 heure porte 10.',
       cc_ph_item: 'Chercher dans le catalogue ou taper votre article',
       cc_ph_client: 'Nom et adresse du client',
@@ -2576,6 +2591,11 @@
       cc_price_note_off: 'Je shopaccount toont geen prijzen, dus worden ze hier ook niet ingevuld. Typ je eigen aankoopprijs per stuk.',
       cc_mat_hint_partner: 'Typ een maat, kleur of code en kies het item uit de Sempertex-catalogus. Eigen items kunnen ook: typ de naam en je eigen prijs per stuk. <strong>Vul je eigen aankoopprijs per stuk in</strong> en daarna het aantal ballonnen dat je nodig hebt voor je job. De prijs rekent vanzelf mee.',
       cc_price_note_off_partner: 'Vul je eigen aankoopprijs per stuk in.',
+      cc_aria_remove: 'Verwijderen',
+      cc_aria_mult: 'Winstfactor',
+      cc_follows: 'Volgt de berekening',
+      cc_unit_h: 'u',
+      ct_aria_hue: 'Tint',
       cc_set_overhead_ex: 'Voorbeeld: bestelwagen 150 + verzekering 60 + opslag 120 + software 30 + telefoon 40 = 400 per maand. Met 40 uur aan jobs per maand is dat 10 per uur. Een job van 4 uur draagt 40, een job van 1 uur draagt 10.',
       cc_ph_item: 'Zoek in de catalogus of typ je eigen item',
       cc_ph_client: 'Naam en adres van de klant',
@@ -2588,6 +2608,17 @@
   if (partnerTools) {
     Object.keys(STR).forEach(function (k) { if (/_partner$/.test(k)) { STR[k.replace(/_partner$/, '')] = STR[k]; } });
   }
+  // Voor de partnerskin (partner-calculator-v1.html): die vult root.stxStr aan met de teksten van
+  // de partner en roept dan root.stxRelang() aan. Alle data-i18n teksten gaan opnieuw uit STR, en
+  // elke tool tekent zijn dynamische teksten opnieuw (relangHooks). Op onze eigen pagina's niet gebruikt.
+  var relangHooks = [];
+  root.stxRelang = function () {
+    root.querySelectorAll('[data-i18n]').forEach(function (el) {
+      var k = el.getAttribute('data-i18n');
+      if (STR[k] != null) { el.innerHTML = STR[k]; }
+    });
+    relangHooks.forEach(function (fn) { try { fn(); } catch (e) { if (window.console) { console.warn('[STX relang]', e); } } });
+  };
   function t(v) { if (typeof v === 'string') return v; return v[lang] || v.en || v.nl || ''; }
   function esc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
   // Kleurcode (3 cijfers) -> Odoo shop-categorie id. Het id-only pad
@@ -3591,6 +3622,7 @@
   function num(v) { var n = parseFloat(v); return isNaN(n) ? 0 : n; }
   function clamp(n, lo, hi) { return Math.min(hi, Math.max(lo, n)); }
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function fmtNum(n) { var loc = { nl: 'nl-BE', en: 'en-GB', de: 'de-DE', fr: 'fr-BE' }[lang] || 'en-GB'; return Number(n || 0).toLocaleString(loc); }
   function fmtDate(d) { if (!d) return ''; var loc = { nl: 'nl-BE', en: 'en-GB', de: 'de-DE', fr: 'fr-BE' }[lang] || 'en-GB'; return new Date(d).toLocaleDateString(loc, { day: 'numeric', month: 'long', year: 'numeric' }); }
   function toast(msg, html, ms) { var el = $('cc-toast'); if (html) { el.innerHTML = msg; } else { el.textContent = msg; } el.classList.add('cc-on'); clearTimeout(el._t); el._t = setTimeout(function () { el.classList.remove('cc-on'); }, ms || 1800); }
   function persist() { save('stx_quote_draft', state); }
@@ -3694,7 +3726,7 @@
         '<div><input class="cc-in" type="number" min="0" step="1" data-f="qty" value="' + esc(r.qty) + '"></div>' +
         '<div><input class="cc-in" type="number" min="0" step="0.01" data-f="unit" value="' + esc(r.unit) + '"></div>' +
         '<div class="cc-num cc-col-total">' + money(num(r.qty) * num(r.unit)) + '</div>' +
-        '<button class="cc-x" type="button" aria-label="Remove">&times;</button>';
+        '<button class="cc-x" type="button" aria-label="' + esc(t('aria_remove')) + '">&times;</button>';
       var nameIn = row.querySelector('[data-f=name]'), list = acPortal(), noteEl = row.querySelector('.cc-pack-note');
       function refreshTotal() { row.querySelector('.cc-col-total').textContent = money(num(state.mat[i].qty) * num(state.mat[i].unit)); }
       function closeList() { if (list.owner === nameIn) { list.classList.remove('cc-on'); list.innerHTML = ''; list.owner = null; } }
@@ -4026,10 +4058,10 @@
     $('cc-travel-rate').textContent = money(settings.km) + '/' + distUnit();
     $('cc-travel-total').textContent = money(c.travelCost);
     $('cc-travel-note').textContent = t(isMiles() ? 'travel_note_mi' : 'travel_note', { r: money(settings.km) });
-    var hoursTxt = (Math.round(c.hours * 10) / 10) + ' h';
+    var hoursTxt = fmtNum(Math.round(c.hours * 10) / 10) + ' ' + t('unit_h');
     $('cc-overhead-note').textContent = t('overhead_note', { m: money(settings.overhead), hm: settings.hoursMonth, r: money(c.ohRate) });
     $('cc-overhead-h').textContent = hoursTxt;
-    $('cc-overhead-rate').textContent = money(c.ohRate) + '/h';
+    $('cc-overhead-rate').textContent = money(c.ohRate) + '/' + t('unit_h');
     $('cc-overhead-total').textContent = money(c.overhead);
     $('cc-hours-total').textContent = hoursTxt;
     $('cc-time-sub').textContent = money(c.timeSub);
@@ -4055,7 +4087,7 @@
     bar[2].style.width = (100 * (c.overhead + c.kmCost) / tot) + '%';
     bar[3].style.width = (100 * Math.max(0, c.margin) / tot) + '%';
     var hv = $('cc-hourly-val');
-    hv.textContent = money(c.hourly) + '/h';
+    hv.textContent = money(c.hourly) + '/' + t('unit_h');
     hv.classList.toggle('cc-low', c.hours > 0 && c.hourly < num(settings.hourly));
     $('cc-hourly-note').textContent = c.hours === 0 ? t('hourly_note_none') : (c.hourly >= num(settings.hourly) ? t('hourly_note_ok', { r: money(settings.hourly) }) : t('hourly_note_low', { r: money(settings.hourly) }));
     persist();
@@ -4081,8 +4113,8 @@
       var row = document.createElement('div'); row.className = 'cc-line-edit';
       row.innerHTML =
         '<input class="cc-in cc-text" type="text" placeholder="' + esc(t('ph_desc')) + '" value="' + esc(l.desc) + '">' +
-        '<input class="cc-in" type="number" step="0.01" value="' + esc(Math.round(l.amount * 100) / 100) + '"' + (l.auto ? ' title="Follows the calculation"' : '') + '>' +
-        '<button class="cc-x" type="button" aria-label="Remove">&times;</button>';
+        '<input class="cc-in" type="number" step="0.01" value="' + esc(Math.round(l.amount * 100) / 100) + '"' + (l.auto ? ' title="' + esc(t('follows')) + '"' : '') + '>' +
+        '<button class="cc-x" type="button" aria-label="' + esc(t('aria_remove')) + '">&times;</button>';
       var inputs = row.querySelectorAll('input');
       inputs[0].addEventListener('input', function (e) { l.desc = e.target.value; l.touched = true; renderDoc(); });
       inputs[1].addEventListener('input', function (e) { l.amount = num(e.target.value); l.auto = false; renderDoc(); });
@@ -4320,7 +4352,16 @@
     if (first) ensureMarkup();
     if (first) importFromDesign();
     applyLang(); applyDist();
+    $('cc-mult').setAttribute('aria-label', t('aria_mult'));
+    $('cc-drawer-settings').setAttribute('aria-label', t('set_h'));
     renderMat(); renderTime(); update();
+    if (first) {
+      relangHooks.push(function () {
+        // applyDist bewaart de km-tekst van de pagina; die is net vervangen, dus opnieuw inlezen.
+        root.querySelectorAll('[data-km-text]').forEach(function (el) { delete el.dataset.kmText; });
+        init(false);
+      });
+    }
     if (first) {
       $('cc-waste').addEventListener('input', function (e) { state.waste = clamp(num(e.target.value), 0, 50); update(); });
       $('cc-travel-km').addEventListener('input', function (e) { state.travelKm = Math.max(0, num(e.target.value)); update(); });
@@ -4387,6 +4428,14 @@
   if (!ctRoot) return;
   function $(id) { return ctRoot.querySelector('#ct-' + id); }
   function ct(k) { return STR['ct_' + k] || I18N.en['ct_' + k] || k; }
+  if ($('hue')) { $('hue').setAttribute('aria-label', ct('aria_hue')); }
+  relangHooks.push(function () {
+    if ($('hue')) { $('hue').setAttribute('aria-label', ct('aria_hue')); }
+    renderFinFilter();
+    if ($('card-ds')) { $('card-ds').innerHTML = ct('card_ds'); }
+    if (state.base) { renderCard(); renderPalettes(); }
+    renderSaved();
+  });
   function load(k, d) { try { var v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } }
   function save(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
   function toast(msg) { var el = $('toast'); el.textContent = msg; el.classList.add('on'); clearTimeout(el._t); el._t = setTimeout(function () { el.classList.remove('on'); }, 1600); }

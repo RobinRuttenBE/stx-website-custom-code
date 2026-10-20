@@ -189,19 +189,8 @@
       font: "'Montserrat', 'Helvetica Neue', Helvetica, Arial, sans-serif",
       fontUrl: 'https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap',
 
-      pageTitle: 'Ballontools | Mooideco',
+      pageTitle: 'Kleuren en prijzen berekenen | Mooideco',
       favicon: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAMAAACdt4HsAAAAYFBMVEXhr76qqqr1rOj/f3/5wtLXqK6/f79/f3//f///AADhr73ptcXntMPir77/AP/hsMD/zMwAAADcq7rptcX////bqrnaqrncq7rbq7ncq7r9qqrcq7rgrr38vr7YqrW/v78HagPIAAAAIHRSTlPqAwsC/hAEAgIBo6PSYgFiBQD+/QFPLtBtrwOO+QQTBIEkRigAAANGSURBVHjanVfrmqIwDC0gII6zs+kVsMD7v+WmqNCUtjLLD/1EckhOkpOUQfYaAZqfG+Puut1KAHkNnmAf7OdvxoSwaG/xi32vmGcBugLUXQi+X0J8aWhOAEgpV/uemD8hFCx5gHYpnyAjPELzNZKeIIQA1RpiXdb4GbN3TiifB3Zgvfy+Gc7NXam4PfqgQcYB/kjQX8g28i2YtgkALoyMA+DtjTXR9yn7NYgmAiCrYngbMa550gN0YZZHgK6EzZ6LBzow5FwoDwAka0KZy6DTLgxbIthuX3v2GIFQjyQA49M7ERtAJc1a8q83YA61ydCooaAAJaCJ2f7vHxejefray/ENUCCDRtvt/yFHgSMZJgIgYfZTL9RweagcwBB40GAETA/CS8IngJEATC6HWDv/DYBF5AftQhhUngMawhWIBWYhY/3MAiWxBeLzWsk2B6CCECogtGNGWc4By+egEhvKgWMxF8OxFyZUAm4sJzHwX3RjAeiz8H3UGQ6EmQ56IEfqc16RPGF+A6wxkIbVlqUFqTpoomsGe9IFouubHpThGBB1IhFeCnwA2c6cspDoZ2tnWcUGywhB8Sc0DRkc46Nt9FT5OUdjorYrwQGgkjOzYRBhMQg7Vm1qOh+D6A8tjWo6pveD5ZAJHd6gsz0EkONEohZshpuIamlivFcwexNRiBnamXk3BjnK/JI1ws6b2wMKHPjbmuNmagsftrQFibRbxS5PSLYFJOETAMb4Yh7tJx9S7OMsv2S9+hL5rndIge8PE5hc8xyC2O1fCHe9idDHPbHBTYlsgzMoXDBrOAsgcUF9QOv/Fo6B6iTAmjkModh6RGMtYA5beQ6gwiHjvxHn5gWl4nKo4rQH6qv/6TfKizWx9q676iQHjra/5GddqrKA0yR2Tcl1U/jlqXkN19MAWHuGPI4sHNswA4D7EiWsm40GeRrAjQjSNoXzKGEfAyjD510EcjoPsEA/kLqfYEhSkApB+8c7FFu+FH/Ok4hrtyGtL8E8or2caqai5uRchN3wqzpwPvunmlXvh2gnJABkN5nZ62c8DGlznkQXc21IJVzhdwC4MZkxULkhrmhxgMbVvh/ytTV9cGbOS1ppiIChRpladlGAfxvpG2DeAf5aAAAAAElFTkSuQmCC',
-
-      /* -- TAAL --
-         De pagina is Nederlands (geen taalprefix), net als Mooideco.
-         Alleen de regels die naar ons verwijzen gaan eruit. */
-      strings: {
-        cc_q_stx: 'Kleine regel "gemaakt met de ballontools van Mooideco"',
-        cc_doc_stx: 'Gemaakt met de ballontools van Mooideco'
-      },
-
-      backLabel: 'Naar de webshop',
-      footerText: 'Tools ontwikkeld door Sempertex Europe voor Mooideco.',
 
       /* Zoeken in de webshop van Mooideco (CCV Shop) op kleurcode.
          "640 Sempertex" geeft daar alle maten van Pastel Matte Blue
@@ -210,12 +199,6 @@
       searchUrl: 'https://www.mooideco.nl/website/index.php?Show=Search&KeyWord={q}%20Sempertex',
 
       order: {
-        title: 'Bestel deze ballonnen bij Mooideco',
-        lead: 'Klik op een kleur en je ziet hem meteen in alle maten in de webshop van Mooideco.',
-        innerLabel: 'Binnen',
-        outerLabel: 'Buiten',
-        mainBtn: 'Alle Sempertex ballonnen',
-        sizesLabel: 'Of kies een reeks:',
         sizes: [
           { label: 'Fashion', url: 'https://www.mooideco.nl/Sempertex-Fashion' },
           { label: 'Pastel Matte', url: 'https://www.mooideco.nl/Sempertex-Pastel-Matte-Kleuren' },
@@ -226,6 +209,154 @@
           { label: 'Neon', url: 'https://www.mooideco.nl/Sempertex-Neon-Kleuren' },
           { label: 'Crystal', url: 'https://www.mooideco.nl/Sempertex-Crystal-Kleuren' }
         ]
+      },
+
+      /* -- TALEN --
+         NL/EN-schakelaar rechtsboven. /partner/mooideco/tools = Nederlands,
+         /en_GB/partner/mooideco/tools = Engels. Per taal hieronder alle
+         teksten van de pagina; wat er niet in staat komt uit de tools zelf.
+         Kleurnamen en reeksen (Pastel Matte Blue, Fashion, Pearl) blijven
+         Engels: dat zijn de productnamen, ook in de webshop van Mooideco. */
+      langs: ['nl', 'en'],
+      text: {
+
+        /* Nederlands uit Nederland (Mooideco zit in Rotterdam): geen Engelse
+           woorden en geen Vlaamse ("job", "eender welke", "voorschot") zoals
+           op onze eigen NL-pagina. */
+        nl: {
+          pageTitle: 'Kleuren en prijzen berekenen | Mooideco',
+          langLabel: 'Taal',
+          skipLabel: 'Naar de inhoud',
+          tabsLabel: 'Onderdelen',
+          backLabel: 'Naar de webshop',
+          footerText: 'Ontwikkeld door Sempertex Europe voor Mooideco.',
+          order: {
+            title: 'Bestel deze ballonnen bij Mooideco',
+            lead: 'Klik op een kleur en je ziet hem meteen in alle maten in de webshop van Mooideco.',
+            innerLabel: 'Binnen',
+            outerLabel: 'Buiten',
+            mainBtn: 'Alle Sempertex-ballonnen',
+            sizesLabel: 'Of kies een reeks:'
+          },
+          strings: {
+            /* Tabbladen */
+            nav_calc: 'Kleurmixer',
+            nav_cost: 'Prijscalculator',
+            nav_colour: 'Kleurzoeker',
+
+            /* Kleurmixer (double stuffing) */
+            calcp_eyebrow: 'Mooideco / Kleurmixer',
+            calcp_h: 'Ballon-in-ballon <span class="hl">kleurmixer</span>',
+            calcp_lede: 'Kies een binnen- en een buitenballon en zie de mengkleur voordat je ook maar één ballon opblaast.',
+            calc_h: 'Kleurmixer',
+            calc_note: 'Dit is een benadering. De uiteindelijke kleur hangt af van hoe ver je opblaast, het licht en de afwerking van de ballonnen.',
+            dsm_label: 'Zoek een kleur',
+            dsm_hint: 'Kies een foto en tik op de kleur die je wilt. De kleurmixer zoekt de binnen- en buitenballon die het dichtst in de buurt komen.',
+            dsm_up: 'Foto kiezen',
+            dsm_tip: 'Tik op de kleur die je wilt maken. De foto blijft op je apparaat.',
+            dsm_best: 'De beste combinaties. Tik erop om ze in de kleurmixer te zetten.',
+            dsm_single: 'Tip: {name} alleen komt al heel dichtbij, dan heb je geen tweede ballon nodig.',
+
+            /* Prijscalculator */
+            cost_eyebrow: 'Mooideco / Prijscalculator',
+            cost_h: 'Prijs<span class="hl">calculator</span>',
+            cost_lede: 'Materiaal, uren en vaste kosten. Begin bij Instellingen: vul je eigen uurtarief, kilometerprijs en vaste kosten in. Daarna rekent de prijs mee terwijl je typt, en staat de offerte voor je klant één klik verder.',
+            cost_lede_mi: 'Materiaal, uren en vaste kosten. Begin bij Instellingen: vul je eigen uurtarief, prijs per mijl en vaste kosten in. Daarna rekent de prijs mee terwijl je typt, en staat de offerte voor je klant één klik verder.',
+            cc_mat_hint: 'Typ een maat, kleur of code en kies het artikel uit de Sempertex-catalogus. Eigen artikelen kunnen ook: typ de naam en je eigen prijs per stuk. <strong>Vul je eigen inkoopprijs per stuk in</strong> en daarna het aantal ballonnen dat je voor de opdracht nodig hebt. De prijs rekent vanzelf mee.',
+            cc_price_note_off: 'Vul je eigen inkoopprijs per stuk in.',
+            cc_col_item: 'Artikel',
+            cc_ph_item: 'Zoek in de catalogus of typ je eigen artikel',
+            cc_cat_note: 'De Sempertex-catalogus kon niet geladen worden. Typ je eigen artikelen en prijzen.',
+            cc_ac_none: 'Niets gevonden. Typ verder om je eigen artikel te gebruiken.',
+            cc_time_h: 'Tijd en vaste kosten',
+            cc_time_travel: 'Reizen, heen en terug',
+            cc_time_sub: 'Subtotaal tijd en vaste kosten',
+            cc_time_hint: 'Je uurtarief, je tarief per km en je vaste maandkosten komen uit je instellingen. Eén keer instellen, daarna gelden ze bij elke opdracht.',
+            cc_time_hint_mi: 'Je uurtarief, je tarief per mijl en je vaste maandkosten komen uit je instellingen. Eén keer instellen, daarna gelden ze bij elke opdracht.',
+            cc_travel_note: '{r} per km, reistijd reken je niet',
+            cc_travel_note_mi: '{r} per mijl, reistijd reken je niet',
+            cc_fin_time: 'Subtotaal tijd en vaste kosten',
+            cc_fin_cost: 'Jouw kosten',
+            cc_fin_profit_eur: 'Wat je overhoudt aan deze opdracht (je uren + marge)',
+            cc_leg_over: 'Vaste kosten en km',
+            cc_leg_over_mi: 'Vaste kosten en mijlen',
+            cc_keep_hint: 'Alleen echte kosten gaan eraf: materiaal, vaste kosten en km. Je uren zijn geld dat je verdient.',
+            cc_keep_hint_mi: 'Alleen echte kosten gaan eraf: materiaal, vaste kosten en mijlen. Je uren zijn geld dat je verdient.',
+            cc_btn_save: 'Bewaar deze opdracht',
+            cc_q_job_h: 'Deze opdracht',
+            cc_q_job_name: 'Naam van de opdracht',
+            cc_q_event_date: 'Datum van het feest',
+            cc_ph_job: 'Ballonslinger 3 m, wit en zachtroze',
+            cc_ph_event: 'Feest, datum en locatie',
+            cc_doc_event: 'Feest',
+            cc_doc_dep: 'Aanbetaling van {d}% ter bevestiging',
+            cc_btn_pdf: 'Opslaan als pdf',
+            cc_q_print_hint: 'De pdf maak je via het printvenster van je browser. Kies "Opslaan als pdf" als printer.',
+            cc_q_stx: 'Kleine regel "gemaakt met de rekenhulp van Mooideco"',
+            cc_doc_stx: 'Gemaakt met de rekenhulp van Mooideco',
+            cc_default_footer: 'Prijzen exclusief bezorging buiten 30 km. De aanbetaling bevestigt de datum. Ballonnen zijn een natuurproduct, kleuren kunnen iets afwijken van het voorbeeld.',
+            cc_default_footer_mi: 'Prijzen exclusief bezorging buiten 20 mijl. De aanbetaling bevestigt de datum. Ballonnen zijn een natuurproduct, kleuren kunnen iets afwijken van het voorbeeld.',
+            cc_set_overhead: 'Vaste kosten per maand',
+            cc_set_hours: 'Uren aan opdrachten per maand',
+            cc_set_overhead_hint: 'Tel alles op wat je elke maand betaalt, ook in een maand zonder één opdracht: bus of auto, verzekering, opslag of atelier, software, telefoon, website, boekhouder. Vul dat maandtotaal in, plus de uren die je in een normale maand aan opdrachten werkt. De calculator maakt daar een tarief per uur van. Een pilaar van 20 minuten draagt een klein deel, een hele dag opblazen en opbouwen een groot deel.',
+            cc_set_overhead_ex: 'Voorbeeld: bus 150 + verzekering 60 + opslag 120 + software 30 + telefoon 40 = 400 per maand. Met 40 uur aan opdrachten per maand is dat 10 per uur. Een opdracht van 4 uur draagt 40, een opdracht van 1 uur draagt 10.',
+            cc_set_currency: 'Valuta',
+            cc_set_business: 'Jouw bedrijf, op de offerte',
+            cc_set_name: 'Naam van je bedrijf',
+            cc_set_deposit: 'Aanbetaling %',
+            cc_saved_hint: 'Bewaard in deze browser. Open er een om te bewerken, of maak een kopie voor een vergelijkbare opdracht.',
+            cc_saved_empty: 'Nog niets bewaard. Bereken een opdracht en klik op "Bewaar deze opdracht".',
+
+            /* Kleurzoeker */
+            ct_eyebrow: 'Mooideco / Kleurzoeker',
+            ct_h: 'Kleur<span class="hl">zoeker</span>',
+            ct_lede: 'Kies een kleur, tik hem aan in een foto of begin bij een Sempertex-kleur die je kent. Je krijgt de ballonnen die het dichtst in de buurt komen en paletten die werken, allemaal echte producten.',
+            ct_btn_saved: 'Opgeslagen paletten',
+            ct_pick_hint: 'Kies een RGB-kleur, typ een PMS-code, tik hem aan in een foto of begin bij een Sempertex-kleur die je al kent.',
+            ct_pick_native: 'Of gebruik de kleurkiezer van je apparaat',
+            ct_tab_chart: 'Uit de kleurenkaart',
+            ct_from_chart: 'uit de kleurenkaart',
+            ct_drop_s: 'Inspiratiebord, jurk, zaal, logo. De foto blijft op je apparaat.',
+            ct_pal_hint: 'Drie paletten rond de Sempertex-kleur die het dichtst bij jouw kleur ligt. Elke ballon is een echt product. Tik erop om hem in de webshop te bekijken.',
+            ct_pal_count: 'Kleuren per palet',
+            ct_card_note: 'Een scherm toont kleuren anders dan latex. Gebruik dit als eerste selectie en bekijk daarna een echte ballon bij daglicht.',
+            ct_btn_shop: 'Bekijk in de webshop',
+            ct_saved_h: 'Opgeslagen paletten',
+            ct_saved_empty: 'Nog niets bewaard. Bewaar een palet met de knop ernaast.',
+            ct_pal_saved: 'Palet bewaard',
+            ct_base_used: 'basis voor paletten',
+            ct_fin_all: 'Alle afwerkingen',
+            ct_p_tone: 'Toon op toon',
+            ct_p_statement: 'Opvallend',
+            ct_p_statement_w: 'De tegenovergestelde kleur voor contrast, rustig gehouden door een neutrale kleur.',
+            ct_card_ds: 'Niet precies de tint die je zoekt? Meng twee ballonnen in de <a href="#calculator">kleurmixer</a>.'
+          }
+        },
+
+        en: {
+          pageTitle: 'Balloon colour and price tools | Mooideco',
+          langLabel: 'Language',
+          skipLabel: 'Skip to content',
+          tabsLabel: 'Tools',
+          backLabel: 'Visit the webshop',
+          footerText: 'Built by Sempertex Europe for Mooideco.',
+          order: {
+            title: 'Order these balloons from Mooideco',
+            lead: 'Click a colour to see it in every size in the Mooideco webshop.',
+            innerLabel: 'Inner',
+            outerLabel: 'Outer',
+            mainBtn: 'All Sempertex balloons',
+            sizesLabel: 'Or pick a range:'
+          },
+          strings: {
+            calcp_eyebrow: 'Mooideco / Double stuffing',
+            cost_eyebrow: 'Mooideco / Cost calculator',
+            ct_eyebrow: 'Mooideco / Colour matching',
+            cc_q_stx: 'Small "made with the Mooideco calculator" line',
+            cc_doc_stx: 'Made with the Mooideco calculator',
+            ct_btn_shop: 'View in the webshop'
+          }
+        }
       }
     }
 
@@ -243,6 +374,32 @@
   if (!m) { return; }
   var P = PARTNERS[m[1]];
   if (!P) { return; }
+
+  /* Taal van de pagina, uit het pad: /en_gb/... = en, /fr/... = fr, /de/... = de, anders nl
+     (Odoo zet geen prefix voor Nederlands). */
+  var LANG = (/^\/(en_gb|fr|de)\//.exec(path) || [])[1] || 'nl';
+  if (LANG === 'en_gb') { LANG = 'en'; }
+  var SLUG = m[1];
+
+  /* Teksten per taal (text: { nl: {...}, en: {...} }). Wat daarin staat overschrijft de
+     velden van de partner; order gaat veld per veld, zodat links en reeksen gedeeld blijven.
+     Partners zonder text (Liragram) blijven zoals ze zijn. */
+  if (P.text) {
+    var T = P.text[LANG] || P.text[(P.langs || ['nl'])[0]] || {};
+    var merged = {};
+    Object.keys(P).forEach(function (k) { merged[k] = P[k]; });
+    Object.keys(T).forEach(function (k) { merged[k] = T[k]; });
+    merged.order = {};
+    [P.order || {}, T.order || {}].forEach(function (o) { Object.keys(o).forEach(function (k) { merged.order[k] = o[k]; }); });
+    P = merged;
+  }
+
+  /* Taalschakelaar rechtsboven (langs: ['nl', 'en']). Odoo kent elke pagina in elke taal:
+     /partner/<slug>/tools is Nederlands, /en_GB/partner/<slug>/tools Engels. Getest
+     20/10/2026: de taalcookie van Odoo stuurt niet terug, ook niet na een bezoek in het Engels. */
+  var LANGS = (P.langs || []).filter(function (l) { return /^(nl|en|fr|de)$/.test(l); });
+  var LANG_PREFIX = { nl: '', en: '/en_GB', fr: '/fr', de: '/de' };
+  function langUrl(l) { return LANG_PREFIX[l] + '/partner/' + SLUG + '/tools' + (window.location.hash || ''); }
 
   /* Welke tools deze partner krijgt. Zonder lijst alleen de double stuffing calculator. */
   var ALL_TOOLS = ['calculator', 'cost', 'colour'];
@@ -276,6 +433,7 @@
     try {
       params = params || {};
       params.partner = P.name;
+      params.lang = LANG;
       params.page_section = 'partner_calculator';
       if (typeof window.gtag === 'function') { window.gtag('event', ev, params); }
       else if (window.dataLayer && window.dataLayer.push) { window.dataLayer.push(Object.assign({ event: ev }, params)); }
@@ -447,7 +605,16 @@
     '.stx-pt-sizes span { font-weight: 700; opacity: .7; margin-right: 8px; }',
     '.stx-pt-sizes a { display: inline-block; margin: 6px 8px 0 0; font-size: 13px; font-weight: 700; text-decoration: none; color: ' + P.brandDark + '; background: #fff; border-radius: 999px; padding: 7px 14px; }',
     '.stx-pt-sizes a:hover { background: ' + P.brand + '; color: #fff; }',
-    '@media (max-width: 600px) { .stx-pt-bar .stx-pt-in { flex-wrap: wrap; } .stx-pt-back { margin-left: 0; } }'
+    '@media (max-width: 600px) { .stx-pt-bar .stx-pt-in { flex-wrap: wrap; } .stx-pt-back { margin-left: 0; } }',
+
+    /* -- Taalschakelaar -- */
+    '.stx-pt-lang { display: flex; flex: none; border: 2px solid ' + P.brand + '; border-radius: 999px; overflow: hidden; }',
+    '.stx-pt-lang a { font-size: 13px; font-weight: 800; letter-spacing: .04em; padding: 7px 12px; text-decoration: none; color: ' + P.brandDark + '; line-height: 1.2; }',
+    '.stx-pt-lang a:hover { background: ' + P.brandLight + '; }',
+    '.stx-pt-lang a.on { background: ' + P.brand + '; color: #fff; }',
+    '.stx-pt-bar.stx-pt-has-lang .stx-pt-in { gap: 12px; }',
+    /* Telefoon: logo, terugknop en taal op 1 regel. */
+    '@media (max-width: 600px) { .stx-pt-bar.stx-pt-has-lang .stx-pt-in { flex-wrap: nowrap; padding: 10px 12px; gap: 8px; } .stx-pt-bar.stx-pt-has-lang img { height: ' + Math.round(P.logoHeight * 0.72) + 'px; } .stx-pt-bar.stx-pt-has-lang .stx-pt-back { margin-left: auto; font-size: 12.5px; padding: 6px 11px; white-space: nowrap; } .stx-pt-has-lang .stx-pt-lang a { padding: 6px 9px; font-size: 12px; } }'
   ].join('\n');
   document.head.appendChild(css);
 
@@ -477,6 +644,9 @@
       tabs[i].classList.toggle('on', on);
       if (on) { tabs[i].setAttribute('aria-current', 'page'); } else { tabs[i].removeAttribute('aria-current'); }
     }
+    /* Taalschakelaar blijft op dezelfde tool. */
+    var langs = document.querySelectorAll('.stx-pt-lang a[data-lang]');
+    for (var j = 0; j < langs.length; j++) { langs[j].href = langUrl(langs[j].getAttribute('data-lang')); }
   }
 
   /* Winkellinks van de kleurmatch-tool die er al stonden voor de skin binnen was
@@ -541,13 +711,18 @@
 
     /* -- Teksten van de calculator vervangen -- */
     var S = P.strings || {};
-    Object.keys(S).forEach(function (key) {
-      var els = root.querySelectorAll('[data-i18n="' + key + '"]');
-      for (var n = 0; n < els.length; n++) { els[n].innerHTML = S[key]; }
-    });
-    /* Ook in de tekstenlijst van de calculator zelf, voor teksten die pas later verschijnen
-       (Match a colour: "Otra foto", de kwaliteitslabels en de tip na een foto). */
+    /* In de tekstenlijst van de tools zelf, ook voor teksten die pas later verschijnen
+       (Match a colour na een foto, de rijen van de kostprijscalculator, de palettes). */
     if (root.stxStr) { Object.keys(S).forEach(function (key) { root.stxStr[key] = S[key]; }); }
+    if (typeof root.stxRelang === 'function') {
+      /* inspiration-v18 zet dan alle teksten opnieuw en tekent elke tool opnieuw. */
+      root.stxRelang();
+    } else {
+      Object.keys(S).forEach(function (key) {
+        var els = root.querySelectorAll('[data-i18n="' + key + '"]');
+        for (var n = 0; n < els.length; n++) { els[n].innerHTML = S[key]; }
+      });
+    }
 
     /* -- Sempertex winkelmandknop weg: die hoort hier niet -- */
     var cart = root.querySelector('#calc-cart');
@@ -560,8 +735,21 @@
     bar.innerHTML = '<div class="stx-pt-in">'
       + '<a href="' + esc(P.homeUrl) + '" target="_blank" rel="noopener"><img src="' + esc(P.logo) + '" alt="' + esc(P.name) + '"></a>'
       + '<a class="stx-pt-back" href="' + esc(P.shopUrl) + '" target="_blank" rel="noopener">' + esc(P.backLabel) + '</a>'
+      + (LANGS.length > 1
+          ? '<nav class="stx-pt-lang" aria-label="' + esc(P.langLabel || 'Taal / Language') + '">'
+            + LANGS.map(function (l) {
+                return '<a href="' + esc(langUrl(l)) + '" data-lang="' + l + '" hreflang="' + l + '" lang="' + l + '"'
+                  + (l === LANG ? ' class="on" aria-current="true"' : '') + '>' + l.toUpperCase() + '</a>';
+              }).join('')
+            + '</nav>'
+          : '')
       + '</div>';
+    if (LANGS.length > 1) { bar.classList.add('stx-pt-has-lang'); }
     root.parentNode.insertBefore(bar, root);
+    bar.addEventListener('click', function (e) {
+      var a = e.target.closest('.stx-pt-lang a');
+      if (a) { track('partner_lang_switch', { to: a.getAttribute('data-lang') }); }
+    });
 
     /* -- Tabbladen, alleen als de partner meer dan 1 tool heeft -- */
     if (TOOLS.length > 1) {
@@ -569,7 +757,7 @@
       var NAV = { calculator: 'nav_calc', cost: 'nav_cost', colour: 'nav_colour' };
       var tabs = document.createElement('nav');
       tabs.className = 'stx-pt-tabs';
-      tabs.setAttribute('aria-label', 'Tools');
+      tabs.setAttribute('aria-label', P.tabsLabel || 'Tools');
       tabs.innerHTML = '<div class="stx-pt-in">' + TOOLS.map(function (v) {
         var label = S[NAV[v]] || STR[NAV[v]] || v;
         return '<a class="stx-pt-tab" href="#' + v + '" data-tool="' + v + '">' + esc(label) + '</a>';
@@ -584,6 +772,19 @@
 
     /* -- Winkellinks van de kleurmatch-tool naar de partner -- */
     fixShopLinks(root);
+    syncTabs();
+
+    /* Odoo zet bovenaan een verborgen link "Skip to Content" (zichtbaar bij navigeren met
+       het toetsenbord), ook op een Nederlandse pagina in het Engels. Komt soms pas later. */
+    function skipLink() {
+      if (!P.skipLabel) { return; }
+      var as = document.querySelectorAll('a.o_skip_to_content, a[href="#wrap"]');
+      for (var k = 0; k < as.length; k++) {
+        if (/skip to content/i.test(as[k].textContent || '')) { as[k].textContent = P.skipLabel; }
+      }
+    }
+    skipLink();
+    setTimeout(skipLink, 1500);
 
     /* -- Bestelblok onder de calculator -- */
     var view = root.querySelector('#view-calculator .calc');
