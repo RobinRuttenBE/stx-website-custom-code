@@ -2985,10 +2985,12 @@ function drawProposal(blocks, preparedBy, mode) {
 /* =====================================================================
    AI IMPRESSION (reference render + prompt → Artlist image-to-image, or an endpoint with credits)
    ===================================================================== */
-var FINISH_WORDS = { Fashion: 'matte latex', 'Pastel Matte': 'soft matte pastel latex', 'Pastel Dusk': 'muted matte latex', Pearl: 'pearl latex with a soft satin sheen', Silk: 'silk latex with a soft, low sheen', Reflex: 'reflective latex with a soft satin-metallic sheen, still a soft inflated balloon', Metallic: 'metallic latex with a soft pearly lustre', Crystal: 'transparent clear latex', Neon: 'vivid matte neon latex' };
-/* Shiny finishes came out as hard metal or chrome balls (Robin 20/10/2026, Reflex gold and silver). Every prompt ends with this. */
-var LATEX_LOOK = ' Every balloon is an inflated latex balloon, never a hard ball: a slightly soft, rounded teardrop shape with a small knot, a thin skin and gentle squash where balloons press against each other.' +
-  ' Shiny finishes (Reflex, Metallic, Silk, Pearl) keep that latex look: broad, soft, diffuse highlights and a satin glow, colour still clearly visible, no mirror reflections of the room, no chrome or Christmas-bauble look, not polished metal.';
+var FINISH_WORDS = { Fashion: 'matte latex', 'Pastel Matte': 'soft matte pastel latex', 'Pastel Dusk': 'muted matte latex', Pearl: 'pearl latex with a satin sheen', Silk: 'silk latex with a soft sheen', Reflex: 'glossy reflective latex with bright highlights and soft reflections of the room, a touch less mirror-like than chrome', Metallic: 'metallic latex with a pearly metallic shine', Crystal: 'transparent clear latex', Neon: 'vivid matte neon latex' };
+/* 20/10/2026: Reflex came out as hard metal balls. The first fix (soft diffuse highlights, no reflections)
+   overshot: the AI then barely touched the drawing and the balloons stayed flat. The problem was the shape,
+   not the shine: shiny finishes keep their gloss, the shape is latex. Every prompt ends with this. */
+var LATEX_LOOK = ' Make every balloon look photographed, not drawn: light and highlights from the scene, soft shadows between the balloons, tiny natural differences in shape and size.' +
+  ' Each one is an inflated latex balloon, slightly oval with a small knot, never a hard perfect sphere. Shiny finishes (Reflex, Metallic) really shine and reflect their surroundings, just a little softer than a chrome Christmas bauble.';
 function colourPhrase(code) { var c = BY_CODE[code]; return c.name + ' (' + FINISH_WORDS[c.range] + ')'; }
 function inferType(bs, bb) {
   if (bs[0].t) return bs[0].t;
@@ -3062,14 +3064,14 @@ function pct(v) { return Math.round(v * 100); }
 function aiPrompt(job) {
   var list = state.balloons, hasLoc = !!(state.loc && state.loc.img), n = list.length + state.foils.length;
   if (!hasLoc) {
-    return 'Edit this image. The balloons drawn on it are the exact layout: replace every drawn balloon with a photorealistic latex balloon in the same position, same size and same colour. ' + list.length + ' balloons in total, no more, no fewer. Do not move, add, remove or rearrange anything.' +
+    return 'Edit this image. The balloons drawn on it are a rough preview of the exact layout: repaint every drawn balloon as a real, photographed latex balloon in the same position, same size and same colour. ' + list.length + ' balloons in total, no more, no fewer. Do not move, add, remove or rearrange anything.' +
       ' Put them in a clean, softly lit event space with a plain light wall and floor.' +
       ' What you are looking at: ' + describeGroups(list).join('; ') + '.' +
       ' Render the latex realistically with the finishes as described, soft shadows and contact shadows where balloons touch the wall or floor.' + LATEX_LOOK + ' No text, no people, no extra decoration.';
   }
   var b = job && job.box;   // box of the design inside the image that is sent, 0..1
   var where = b ? ' Its place and size are fixed: it fills the area from ' + pct(b.l) + '% to ' + pct(b.r) + '% of the image width and from ' + pct(b.t) + '% to ' + pct(b.b) + '% of the image height, and its base stands at ' + pct(b.b) + '% from the top.' : '';
-  return 'Edit this photo. A balloon design is drawn on it as flat coloured circles. Turn only those drawn circles into photorealistic latex balloons.' + where +
+  return 'Edit this photo. A balloon design is drawn on it as a rough preview. Repaint every drawn balloon as a real, photographed latex balloon; do not keep the drawn look.' + where +
     ' Keep the design exactly where it is drawn and exactly as large as it is drawn: do not enlarge it, do not move it closer to the camera, do not shift it. It looks this size because of where it stands in the room; the perspective of the photo is right.' +
     ' What is drawn: ' + describeGroups(list, true).join('; ') + (state.foils.length ? '; ' + state.foils.length + ' foil balloon(s) as drawn' : '') + '. ' + n + ' balloons in total, no more, no fewer: every balloon keeps its own position, size and colour.' +
     ' Keep everything else in the photo exactly as it is: walls, floor, shelves, objects, lighting and perspective.' +
