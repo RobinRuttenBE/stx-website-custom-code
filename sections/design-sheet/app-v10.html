@@ -3019,7 +3019,7 @@ function describeGroups(list, noSize) {
     var dMax = bs.reduce(function (a, b) { return Math.max(a, b.d); }, 0), slim = bb.w ? ' The design is ' + (Math.round(bb.h / bb.w * 10) / 10) + ' times as tall as it is wide; one balloon is about ' + Math.round(dMax / bb.h * 100) + '% of its height.' : '';
     var what = t === 'column' ? 'a classic spiral balloon column' + D(', ' + cm(bb.h) + ' high and about ' + cm(bb.w) + ' wide') + ', built from ' + (nl ? 'exactly ' + nl + ' ' : '') + 'stacked clusters of four balloons around a pole (from the front you see 2 or 3 balloons per layer, never a single stack). Keep that number of layers and that slim shape: do not use fewer, bigger balloons.' + slim :
       t === 'arch' ? 'a classic spiral balloon arch' + D(', ' + cm(bb.w) + ' wide and ' + cm(bb.h) + ' high') + ', built from clusters of four balloons along a curved frame' :
-      t === 'organic' ? 'an organic balloon garland' + D(', ' + cm(bb.w) + ' wide') + ', balloons of mixed sizes ' + sizeTxt + ' packed tightly together' :
+      t === 'organic' ? 'an organic balloon garland' + D(', ' + cm(bb.w) + ' wide') + ', balloons of mixed sizes ' + sizeTxt + ' packed tightly together' + (sizes['5'] ? ' (the small 5" balloons are tucked deep into the gaps between the bigger balloons, pressed against them and part of the garland; none of them floats loose or sits apart in the air)' : '') :
       t === 'grid' ? 'a flat balloon wall' + D(' of ' + cm(bb.w) + ' × ' + cm(bb.h)) + ' built from ' + sizeTxt + ' balloons in rows' :
       t === 'number' ? 'a number centerpiece: foil number balloon(s) standing on a base of latex balloon clusters' + D(', ' + cm(bb.w) + ' wide') :
       t === 'bouquet' ? 'a helium balloon bouquet' + D(', ' + cm(bb.h) + ' tall') + ', balloons floating on thin ribbons tied to a weight on the floor' :
@@ -3206,7 +3206,15 @@ function openAiModal() {
             if (d && d.used != null) { cfg.used = d.used; cfg.limit = d.limit; }
             if (!d || !d.image) { fail(escHtml((d && d.error) || 'No image came back. Try again.')); return; }
             clearInterval(tick);
-            placeResult(d.image, job, function (small) { setImpression(small, userPrompt); track('ai_generate', { ok: true, s: Math.round((Date.now() - t0) / 1000) }); openAiModal(); });
+            var all = [d.image].concat(d.alts || []);
+            if (all.length < 2) { placeResult(d.image, job, function (small) { setImpression(small, userPrompt); track('ai_generate', { ok: true, s: Math.round((Date.now() - t0) / 1000) }); openAiModal(); }); return; }
+            // the server made more than one version (best first): place all of them, the best is on, the customer picks
+            st.textContent = 'Almost there…';
+            Promise.all(all.map(function (src) { return new Promise(function (r) { placeResult(src, job, r); }); })).then(function (placed) {
+              setImpression(placed[0], userPrompt);
+              track('ai_generate', { ok: true, s: Math.round((Date.now() - t0) / 1000), versions: placed.length });
+              showAiChoice(placed, userPrompt);
+            });
           })
           .catch(function () { fail('The AI server did not answer. Try again in a moment.'); });
       });
@@ -3224,6 +3232,29 @@ function openAiModal() {
     var bRem = $('ai-remove'); if (bRem) bRem.addEventListener('click', function () { state.impression = null; updateImpToggle(); if (state.viewMode === 'impression') setView('location'); persistDraft(); closeModal(); });
     $('ai-close').addEventListener('click', closeModal);
   });
+}
+/* Pick between the versions the AI server made for one click (Robin 20/10/2026: the same prompt gives different
+   results, let the customer choose). Only the picked one is kept with the project. */
+function showAiChoice(placed, prompt) {
+  var box = $('modal-box');
+  box.innerHTML = '<h3>Pick your favourite</h3><p>The AI made ' + placed.length + ' versions of your design. Tap the one you like best. The other is not kept.</p>' +
+    '<div style="display:grid;grid-template-columns:repeat(' + Math.min(placed.length, 2) + ',minmax(0,1fr));gap:12px;margin:0 0 14px">' +
+    placed.map(function (src, i) {
+      return '<button type="button" data-pick="' + i + '" style="padding:0;border:3px solid ' + (i === 0 ? 'var(--purple)' : 'transparent') + ';border-radius:10px;background:#fff;cursor:pointer;overflow:hidden;text-align:left">' +
+        '<img src="' + src + '" alt="Version ' + (i + 1) + '" style="display:block;width:100%;height:auto">' +
+        '<span style="display:block;padding:8px 10px;font-weight:800;font-size:14px">Version ' + (i + 1) + (i === 0 ? ' · now on the sheet' : '') + '</span></button>';
+    }).join('') + '</div>' +
+    '<div class="stack"><button class="btn ghost" id="ai-pick-close">Keep version 1</button></div>';
+  $('modal').classList.add('show');
+  box.querySelectorAll('[data-pick]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var i = +b.dataset.pick;
+      if (i !== 0) setImpression(placed[i], prompt);
+      track('ai_pick', { version: i + 1, of: placed.length });
+      closeModal(); toast('Version ' + (i + 1) + ' kept. Drag the divider to compare.');
+    });
+  });
+  $('ai-pick-close').addEventListener('click', function () { track('ai_pick', { version: 1, of: placed.length }); closeModal(); });
 }
 /* AI results come back as large PNGs; a JPEG of at most 1600 px keeps projects small enough to save */
 function shrinkImage(src, max, cb) {

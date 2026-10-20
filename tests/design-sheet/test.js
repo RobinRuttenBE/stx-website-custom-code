@@ -76,7 +76,7 @@ const server = http.createServer(async (req, res) => {
   if (url === '/fake-ai') {
     const b = JSON.parse(body);
     assert.ok(b.request_id > 900 && b.image.indexOf('data:image/jpeg') === 0 && b.prompt.length > 50);
-    json(res, { image: b.image, used: 1, limit: 40 }); return;
+    json(res, { image: b.image, alts: [b.image], used: 1, limit: 40 }); return;   // best of 2: a second version comes back too
   }
   res.writeHead(404); res.end('nf ' + url);
 });
@@ -213,6 +213,14 @@ const server = http.createServer(async (req, res) => {
   const imp = await f.evaluate(() => [window.STX.state.impression.img.width, window.STX.state.loc.pw, window.STX.state.impression.img.height, window.STX.state.loc.ph]);
   // full photo with the crop pasted in, at work size (long side at least 1600 px) so the AI's detail survives
   assert.ok(Math.max(imp[0], imp[2]) >= 1600 && Math.abs(imp[0] / imp[2] - imp[1] / imp[3]) < 0.01, 'impression is the full photo with the crop pasted in, at work size: ' + imp);
+  // two versions came back: the customer picks one, the pick is what stays on the sheet
+  await f.waitForSelector('[data-pick="1"]', { timeout: 10000 });
+  const nPick = await f.$$eval('[data-pick]', els => els.length);
+  assert.strictEqual(nPick, 2);
+  await f.evaluate(() => { window.__impFirst = window.STX.state.impression; });
+  await f.click('[data-pick="1"]');
+  await f.waitForFunction(() => window.STX.state.impression !== window.__impFirst && window.STX.state.impression.img, null, { timeout: 10000 });
+  ok('two AI versions: pick screen, version 2 picked and kept');
   ok('AI impression: request logged in Odoo, image back from the AI server, compare view on');
   // manual route: a crop-only result from another AI tool, uploaded, goes back into the full photo
   await f.evaluate(() => { document.getElementById('modal').classList.remove('show'); window.STX.state.aiWhole = false; });   // the crop route
