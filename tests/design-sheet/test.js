@@ -252,6 +252,43 @@ const server = http.createServer(async (req, res) => {
   await page.screenshot({ path: path.join(OUT, 'ai-upload-composite.png') });
   ok('manual upload of a crop result: pasted back into the full photo');
 
+  // floor mode (Robin's warehouse aisle): a floor rectangle + the spot where the design stands.
+  // Further back = smaller, the virtual wall stands on the spot, and it survives save/load.
+  const floor = await f.evaluate(() => {
+    const S = window.STX, L = S.state.loc;
+    S.setView('location');
+    S.setLocKind('floor');
+    L.fquad = [{ x: L.pw * 0.4, y: L.ph * 0.5 }, { x: L.pw * 0.6, y: L.ph * 0.5 }, { x: L.pw * 0.9, y: L.ph * 0.95 }, { x: L.pw * 0.1, y: L.ph * 0.95 }];
+    L.FW = 300; L.FD = 1000;
+    const widthAt = (y) => { L.spot = { x: L.pw * 0.5, y: y }; S.computeLoc(false); return { w: L.quad[2].x - L.quad[3].x, bottom: (L.quad[2].y + L.quad[3].y) / 2, W: L.W }; };
+    const back = widthAt(L.ph * 0.55), front = widthAt(L.ph * 0.9);
+    const saved = JSON.parse(JSON.stringify(S.serialize().loc));
+    return { isFloor: S.isFloor(L), back, front, spotY: L.spot.y, saved };
+  });
+  assert.ok(floor.isFloor, 'floor mode on');
+  assert.ok(floor.back.w > 0 && floor.front.w > floor.back.w * 1.5, 'closer = bigger: back ' + floor.back.w.toFixed(0) + ' px, front ' + floor.front.w.toFixed(0) + ' px');
+  assert.ok(Math.abs(floor.front.bottom - floor.spotY) < 2, 'the virtual wall stands on the spot: ' + floor.front.bottom + ' vs ' + floor.spotY);
+  assert.strictEqual(floor.front.W, 300);
+  assert.ok(floor.saved.kind === 'floor' && floor.saved.fquad.length === 4 && floor.saved.FW === 300 && floor.saved.FD === 1000 && floor.saved.spot, JSON.stringify(floor.saved).slice(0, 200));
+  await f.click('#btn-photo');
+  assert.ok(await f.$('#lc-fw') && await f.$('#lc-fd'), 'location window shows floor width and depth');
+  await page.screenshot({ path: path.join(OUT, 'location-floor-modal.png') });
+  await f.click('#lc-corners');
+  await page.waitForTimeout(400);
+  assert.ok(/floor rectangle/.test(await f.$eval('#cornerhint-text', el => el.textContent)));
+  await page.screenshot({ path: path.join(OUT, 'location-floor.png') });
+  await f.click('#corner-done');
+  // round trip: load the saved project, still floor, same size at the spot
+  const again = await f.evaluate((saved) => new Promise(r => {
+    const S = window.STX, obj = S.serialize(); obj.loc = saved; S.load(obj);
+    setTimeout(() => { const L = S.state.loc; r({ isFloor: S.isFloor(L), w: L.quad[2].x - L.quad[3].x }); }, 1200);
+  }), floor.saved);
+  assert.ok(again.isFloor && Math.abs(again.w - floor.front.w) < 1, 'reloaded floor: ' + JSON.stringify(again));
+  // back to wall: the old wall comes back
+  const wall = await f.evaluate(() => { const S = window.STX; S.setLocKind('wall'); return [S.isFloor(S.state.loc), S.state.loc.W, S.state.loc.H]; });
+  assert.deepStrictEqual(wall, [false, 1200, 700]);
+  ok('floor mode: closer is ' + (floor.front.w / floor.back.w).toFixed(1) + 'x bigger, the design stands on the purple spot, saved and reloaded as floor, back to wall keeps 1200 x 700');
+
   // 9. not logged in: device storage only, clear message
   loggedIn = false;
   await page.goto(base + '/design-sheet?reload=1#stxdesign');
