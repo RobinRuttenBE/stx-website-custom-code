@@ -858,7 +858,12 @@
       if (root && !root.stxPartnerShopUrl) { root.stxPartnerShopUrl = partnerShopUrl; }
       /* Ook wachten op het blok Match a colour (#dsm), anders blijft dat Engels. Komt het niet
          binnen 2 seconden (bv. ooit uitgezet), dan gaat de skin zonder. */
-      if (root && root.querySelector('#view-calculator .calc-grid') && (root.querySelector('#dsm') || tries > 20)) {
+      /* En wachten tot inspiration-v18 echt gedraaid heeft (root.stxStr). Een opgeslagen kopie
+         van de tools in de Odoo-pagina staat er al voor die code draait, en wordt dan nog
+         vervangen; op die kopie bouwen gaf half Engelse teksten (Mooideco 20/10/2026).
+         Na 10 seconden zonder gaat de skin toch verder. */
+      if (root && root.querySelector('#view-calculator .calc-grid') && (root.stxStr || tries > 100)
+          && (root.querySelector('#dsm') || tries > 20)) {
         clearInterval(timer);
         build(root);
       } else if (tries > 200) {           /* 20 seconden, dan opgeven */

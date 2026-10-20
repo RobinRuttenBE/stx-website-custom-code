@@ -167,7 +167,18 @@ const LOADER = `<script>
 })();
 </script>`;
 
-function odooPage() {
+// Een opgeslagen kopie van de tools in de Odoo-pagina (pagina gedupliceerd van /tools of in de
+// editor opgeslagen), zoals op de echte Mooideco-pagina van 20/10/2026. Builderteksten blijven anders staan.
+function savedCopy() {
+  const sec = read('inspiration-v18.html');
+  const html = sec.slice(0, sec.indexOf('<script>'));
+  return html
+    .replace('id="stx-insp-root"', 'id="stx-insp-root" data-stx-v="31" style="display: block;"')
+    .replace(/(data-i18n="cost_h">)[\s\S]*?(<\/h2>)/, '$1Cost calculator OPGESLAGEN$2')
+    .replace(/(data-i18n="cc_col_item">)[^<]*/, '$1Item OPGESLAGEN');
+}
+
+function odooPage(saved) {
   return `<!doctype html><html lang="nl"><head><meta charset="utf-8">
 <title>Tools | Sempertex Europe</title>
 <link rel="icon" href="/web/image/website/1/favicon">
@@ -184,7 +195,7 @@ ${HEAD_ANTIFLASH}
       <li class="nav-item"><a href="/tools" class="nav-link"><span>Tools</span></a></li>
     </ul></nav></div>
   </header>
-  <main><div id="wrap"><div class="oe_structure"></div></div></main>
+  <main><div id="wrap"><div class="oe_structure">${saved ? savedCopy() : ''}</div></div></main>
   <footer id="bottom"><div class="o_footer">Sempertex Europe BV</div></footer>
   <div id="website_cookies_bar" class="s_popup o_snippet_invisible o_no_save"><div class="modal s_popup_no_backdrop o_cookies_classic s_popup_bottom show" style="display: block; position: fixed; bottom: 0; left: 0; right: 0; height: 200px; background: #fff;"><h3>Respecting your privacy is our priority.</h3></div></div>
 </div>
@@ -206,13 +217,17 @@ function serve() {
         const file = path.basename(url);
         const full = path.resolve(SECTIONS, file);
         if (!fs.existsSync(full)) { res.writeHead(404).end('nope'); return; }
-        res.writeHead(200, { 'content-type': 'text/html; charset=utf-8' });
-        res.end(fs.readFileSync(full));
+        // Zoals live: de tools-code (538 KB via de CDN) komt seconden na de kleine skin binnen.
+        const slow = file === 'inspiration-v18.html' && /[?&]saved=1/.test(req.headers.referer || '');
+        setTimeout(() => {
+          res.writeHead(200, { 'content-type': 'text/html; charset=utf-8' });
+          res.end(fs.readFileSync(full));
+        }, slow ? 3500 : 0);
         return;
       }
       // Every other path renders the Odoo page: /tools and /partner/<slug>/tools alike.
       res.writeHead(200, { 'content-type': 'text/html; charset=utf-8' });
-      res.end(odooPage());
+      res.end(odooPage(/[?&]saved=1/.test(req.url)));
     });
     server.listen(0, '127.0.0.1', () => resolve(server));
   });
@@ -560,6 +575,21 @@ function check(name, ok, extra) {
     await page.waitForFunction(() => location.pathname === '/partner/mooideco/tools' && !!document.querySelector('.stx-pt-tab.on'), undefined, { timeout: 20000 });
     await page.waitForTimeout(800);
     check('klik op NL: Nederlandse pagina, zelfde tool', (await page.textContent('.stx-pt-tab.on')) === 'Kleurzoeker', await page.textContent('.stx-pt-tab.on'));
+    await ctx.close();
+  }
+
+  console.log('\n/partner/mooideco/tools?saved=1 (Odoo-pagina met een opgeslagen kopie van de tools)');
+  {
+    const { ctx, page } = await open('/partner/mooideco/tools?saved=1#cost');
+    await page.waitForTimeout(400);
+    check('maar 1 keer de tools op de pagina', (await page.$$('[id="stx-insp-root"]')).length === 1);
+    const tabs = await page.$$eval('.stx-pt-tab', (els) => els.map((e) => e.textContent.trim()));
+    check('tabbladen Nederlands', JSON.stringify(tabs) === JSON.stringify(['Kleurmixer', 'Prijscalculator', 'Kleurzoeker']), JSON.stringify(tabs));
+    const h = await page.textContent('#view-cost h2');
+    check('teksten van de partner, niet die van de opgeslagen kopie', /Prijscalculator/.test(h.replace(/\s/g, '')) && !/OPGESLAGEN/.test(await page.evaluate(() => document.body.innerText)), h);
+    check('kolom Artikel', (await page.textContent('[data-i18n="cc_col_item"]')) === 'Artikel');
+    check('skin staat boven de tools die blijven', await page.evaluate(() => { const bar = document.querySelector('.stx-pt-bar'); const r = document.getElementById('stx-insp-root'); return !!bar && !!r && document.body.contains(bar) && !!(bar.compareDocumentPosition(r) & Node.DOCUMENT_POSITION_FOLLOWING); }));
+    check('1 header en 1 rij tabbladen', (await page.$$('.stx-pt-bar')).length === 1 && (await page.$$('.stx-pt-tabs')).length === 1);
     await ctx.close();
   }
 

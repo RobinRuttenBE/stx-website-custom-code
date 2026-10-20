@@ -1308,7 +1308,11 @@
   // MAAR: is de opgeslagen kopie van een OUDERE structuurversie, dan
   // wordt hij automatisch opgeruimd en bouwt het script alles vers op.
   var STX_V = '31';
-  if (saved && fresh && saved.getAttribute('data-stx-v') !== STX_V) {
+  // Een partnerpagina (/partner/<slug>/tools) wordt volledig door de code gestuurd (teksten per
+  // partner en per taal). Een opgeslagen kopie daar (bv. pagina gedupliceerd van /tools,
+  // Mooideco 20/10/2026) gaat altijd weg, anders blijven de builderteksten staan.
+  var partnerPage = /^(?:\/(?:fr|de|en_gb))?\/partner\/[a-z0-9-]+\/tools\/?$/i.test(window.location.pathname);
+  if (saved && fresh && (saved.getAttribute('data-stx-v') !== STX_V || partnerPage)) {
     if (saved.parentNode) { saved.parentNode.removeChild(saved); }
     saved = null;
   }
