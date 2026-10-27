@@ -84,14 +84,52 @@
   var prefix = m ? '/' + (m[1].toLowerCase() === 'en_gb' ? 'en_GB' : m[1].toLowerCase()) : '';
 
   var css = document.createElement('style');
-  css.textContent =
-    '#stx-ds-soon{max-width:560px;margin:80px auto;padding:32px 24px;font-family:"Rethink Sans",sans-serif;color:#1b073d;text-align:center}' +
-    '#stx-ds-soon .k{display:inline-block;background:#ffdb5a;font-weight:700;font-size:12px;letter-spacing:.12em;text-transform:uppercase;padding:3px 8px;border-radius:3px;margin-bottom:14px}' +
-    '#stx-ds-soon h1{font-size:34px;font-weight:800;letter-spacing:-.02em;margin:0 0 10px}' +
-    '#stx-ds-soon p{font-size:17px;opacity:.8;margin:0}' +
-    '#stx-ds-soon p.in{font-size:15px;margin-top:18px}' +
-    '#stx-ds-soon p.in a{color:#6b3fb9;font-weight:700}' +
-    'html.stx-ds-on,html.stx-ds-on body{overflow:hidden!important;height:100%}' +
+  css.textContent = [
+    // short message card (tool did not load)
+    '#stx-ds-soon{max-width:560px;margin:80px auto;padding:32px 24px;font-family:"Rethink Sans",sans-serif;color:#1b073d;text-align:center}',
+    '#stx-ds-soon h1{font-size:34px;font-weight:800;letter-spacing:-.02em;margin:0 0 10px}',
+    '#stx-ds-soon p{font-size:17px;opacity:.8;margin:0}',
+    // coming soon (27/10/2026): dark purple block, the sheet draws an arch on its own
+    '#stx-ds-soon.hero{max-width:1180px;margin:40px auto 64px;padding:0 16px;text-align:left}',
+    '#stx-ds-soon .box{position:relative;overflow:hidden;border-radius:28px;background:linear-gradient(135deg,#1b073d 0%,#341072 60%,#4a1d96 100%);color:#fff;padding:clamp(28px,5vw,64px);display:grid;grid-template-columns:1.05fr 1fr;grid-template-areas:"top demo" "bot demo";column-gap:clamp(28px,4vw,56px);row-gap:0;align-items:center;box-shadow:0 30px 80px -30px rgba(27,7,61,.55)}',
+    '#stx-ds-soon .fl{position:absolute;border-radius:50%;filter:blur(2px);opacity:.35;animation:stxdsFloat 9s ease-in-out infinite alternate;pointer-events:none}',
+    '#stx-ds-soon .fl.a{width:180px;height:200px;left:-50px;bottom:-70px;background:radial-gradient(circle at 35% 30%,#f1d9ff,#6b3fb9 70%)}',
+    '#stx-ds-soon .fl.b{width:90px;height:100px;right:44%;top:-40px;background:radial-gradient(circle at 35% 30%,#fff3c2,#ffdb5a 70%);animation-delay:-3s;opacity:.25}',
+    '#stx-ds-soon .fl.c{width:120px;height:134px;right:-36px;bottom:24%;background:radial-gradient(circle at 35% 30%,#ff9cc4,#cd0b5c 70%);animation-delay:-6s;opacity:.28}',
+    '@keyframes stxdsFloat{from{transform:translateY(0) rotate(-4deg)}to{transform:translateY(-26px) rotate(4deg)}}',
+    '#stx-ds-soon .txt{position:relative;z-index:1}',
+    '#stx-ds-soon .top{grid-area:top;align-self:end}#stx-ds-soon .bot{grid-area:bot;align-self:start}#stx-ds-soon .demo{grid-area:demo}',
+    '#stx-ds-soon .k{display:inline-flex;align-items:center;gap:8px;background:#ffdb5a;color:#1b073d;font-weight:800;font-size:12px;letter-spacing:.14em;text-transform:uppercase;padding:6px 12px;border-radius:999px;margin-bottom:18px}',
+    '#stx-ds-soon .k i{width:8px;height:8px;border-radius:50%;background:#cd0b5c;animation:stxdsBlink 1.6s ease-in-out infinite}',
+    '@keyframes stxdsBlink{50%{opacity:.25}}',
+    '#stx-ds-soon.hero h1{font-family:"Rethink Sans",sans-serif;font-size:clamp(38px,5.4vw,64px);line-height:1.02;font-weight:800;letter-spacing:-.03em;margin:0 0 16px;color:#fff}',
+    '#stx-ds-soon h1 span{color:#ffdb5a}',
+    '#stx-ds-soon .lede{font-size:clamp(16px,1.5vw,19px);line-height:1.55;color:rgba(255,255,255,.84);margin:0 0 26px;max-width:520px;opacity:1}',
+    '#stx-ds-soon .feats{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:0 0 24px;padding:0;list-style:none}',
+    '#stx-ds-soon .feats li{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:14px 14px 13px;font-size:14px;line-height:1.45;color:rgba(255,255,255,.78)}',
+    '#stx-ds-soon .feats b{display:flex;align-items:center;gap:9px;color:#fff;font-family:"Rethink Sans",sans-serif;font-size:15px;margin-bottom:4px}',
+    '#stx-ds-soon .feats svg{flex:0 0 26px;width:26px;height:26px;padding:5px;border-radius:9px;background:#ffdb5a;color:#1b073d}',
+    '#stx-ds-soon p.in{font-size:15px;margin:0;color:rgba(255,255,255,.8);opacity:1}',
+    '#stx-ds-soon p.in a{color:#ffdb5a;font-weight:800;text-decoration:underline;text-underline-offset:3px}',
+    '#stx-ds-soon .demo{position:relative;z-index:1}',
+    '#stx-ds-soon .sheet{background:#fbfaf3;border-radius:20px;box-shadow:0 24px 60px -20px rgba(0,0,0,.55);transform:rotate(1.5deg);overflow:hidden}',
+    '#stx-ds-soon .bar{display:flex;align-items:center;gap:6px;padding:10px 14px;background:#f1d9ff;color:#1b073d;font:800 12px "Rethink Sans",sans-serif;letter-spacing:.06em}',
+    '#stx-ds-soon .bar i{width:9px;height:9px;border-radius:50%;background:#6b3fb9;opacity:.5}',
+    '#stx-ds-soon .bar span{margin-left:6px}',
+    '#stx-ds-soon svg.art{display:block;width:100%;height:auto}',
+    '#stx-ds-soon .bl{transform-box:fill-box;transform-origin:50% 100%;transform:scale(0);opacity:0;transition:transform .45s cubic-bezier(.3,1.7,.5,1),opacity .2s}',
+    '#stx-ds-soon .bl.on{transform:scale(1);opacity:1}',
+    '#stx-ds-soon .pen{transition:transform .2s ease-out}',
+    '#stx-ds-soon .count{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 14px;border-top:1px solid #ece4f7;font-family:"Rethink Sans",sans-serif;color:#1b073d}',
+    '#stx-ds-soon .count b{font-size:22px;font-weight:800;color:#6b3fb9;font-variant-numeric:tabular-nums}',
+    '#stx-ds-soon .cart{display:inline-flex;align-items:center;gap:6px;background:#1b073d;color:#ffdb5a;font-weight:800;font-size:13px;padding:7px 12px;border-radius:999px;transform:translateY(8px) scale(.9);opacity:0;transition:transform .35s cubic-bezier(.3,1.6,.5,1),opacity .25s}',
+    '#stx-ds-soon .cart.on{transform:none;opacity:1}',
+    '@media (max-width:860px){#stx-ds-soon .box{grid-template-columns:1fr;grid-template-areas:"top" "demo" "bot";row-gap:24px}#stx-ds-soon .demo{max-width:460px}#stx-ds-soon .lede{margin-bottom:0}}',
+    '@media (max-width:520px){#stx-ds-soon .feats{grid-template-columns:1fr}#stx-ds-soon.hero{margin-top:20px}}',
+    '@media (prefers-reduced-motion:reduce){#stx-ds-soon .fl,#stx-ds-soon .k i{animation:none}#stx-ds-soon .bl,#stx-ds-soon .cart,#stx-ds-soon .pen{transition:none}}',
+    // the tool
+    'html.stx-ds-on,html.stx-ds-on body{overflow:hidden!important;height:100%}'
+  ].join('') +
     '#stx-ds-frame{position:fixed;inset:0;width:100vw;height:100vh;height:100dvh;border:0;z-index:2147482000;background:#fefcfa}' +
     '#stx-ds-wait{position:fixed;inset:0;z-index:2147482001;background:#fefcfa;display:flex;align-items:center;justify-content:center}' +
     '#stx-ds-wait i{width:46px;height:46px;border-radius:50%;border:4px solid #f1d9ff;border-top-color:#6b3fb9;animation:stxdsspin .8s linear infinite}' +
@@ -99,15 +137,103 @@
   document.head.appendChild(css);
 
   var T = {
-    nl: ['Binnenkort', 'Design Sheet', 'Teken je ballonopstelling, tel elke ballon en bestel in een klik. We testen hem nog even.', 'Heb je al vroege toegang? <a href="{u}">Log in</a>'],
-    fr: ['Bientôt', 'Design Sheet', 'Dessinez votre installation, comptez chaque ballon et commandez en un clic. Encore quelques tests.', 'Vous avez déjà un accès anticipé ? <a href="{u}">Connectez-vous</a>'],
-    de: ['Demnächst', 'Design Sheet', 'Zeichne deinen Ballonaufbau, zähle jeden Ballon und bestelle mit einem Klick. Wir testen noch.', 'Du hast schon frühen Zugang? <a href="{u}">Anmelden</a>'],
-    en: ['Coming soon', 'Design Sheet', 'Draw your balloon setup, count every balloon and order in one click. We are still testing it.', 'Already have early access? <a href="{u}">Log in</a>']
+    nl: { k: 'Binnenkort', lede: 'Schets je ballonontwerp op een raster, zie elke ballon meteen geteld terwijl je tekent en zet de hele lijst in één klik in je winkelmand.',
+      f: [['Teken op een echt raster', 'Bogen, zuilen, slingers en cijfers, op ware grootte.'], ['Elke ballon geteld', 'Kleuren, maten en aantallen tellen mee terwijl je tekent.'],
+          ['In één klik in je winkelmand', 'Ballonnen, folies en gewichten rechtstreeks uit de shop.'], ['Zie het op locatie', 'Upload een foto van de zaal en bekijk je ontwerp ter plaatse.']],
+      login: 'Heb je al vroege toegang? <a href="{u}">Log in</a>', ask: 'Wil je hem als een van de eersten proberen? <a href="{u}">Laat het ons weten</a>',
+      n: 'ballonnen', cart: 'In je winkelmand' },
+    fr: { k: 'Bientôt', lede: 'Dessinez votre décor sur une grille, voyez chaque ballon compté pendant que vous dessinez et envoyez toute la liste dans votre panier en un clic.',
+      f: [['Dessinez sur une vraie grille', 'Arches, colonnes, guirlandes et chiffres, à taille réelle.'], ['Chaque ballon compté', 'Couleurs, tailles et quantités s\'additionnent pendant que vous dessinez.'],
+          ['Un clic vers votre panier', 'Ballons, ballons aluminium et poids, directement depuis la boutique.'], ['Voyez-le sur place', 'Ajoutez une photo du lieu et visualisez votre décor en situation.']],
+      login: 'Vous avez déjà un accès anticipé ? <a href="{u}">Connectez-vous</a>', ask: 'Envie de l\'essayer parmi les premiers ? <a href="{u}">Dites-le-nous</a>',
+      n: 'ballons', cart: 'Ajouté au panier' },
+    de: { k: 'Demnächst', lede: 'Skizziere dein Ballondesign auf einem Raster, sieh jeden Ballon beim Zeichnen gezählt und lege die ganze Liste mit einem Klick in den Warenkorb.',
+      f: [['Auf einem echten Raster zeichnen', 'Bögen, Säulen, Girlanden und Zahlen in echter Größe.'], ['Jeder Ballon gezählt', 'Farben, Größen und Mengen zählen beim Zeichnen mit.'],
+          ['Mit einem Klick in den Warenkorb', 'Ballons, Folienballons und Gewichte direkt aus dem Shop.'], ['Sieh es vor Ort', 'Lade ein Foto der Location hoch und sieh dein Design an Ort und Stelle.']],
+      login: 'Du hast schon frühen Zugang? <a href="{u}">Anmelden</a>', ask: 'Möchtest du ihn vor allen anderen ausprobieren? <a href="{u}">Sag uns Bescheid</a>',
+      n: 'Ballons', cart: 'Im Warenkorb' },
+    en: { k: 'Coming soon', lede: 'Sketch your balloon design on a grid, see every balloon counted as you draw and send the whole list to your cart in one click.',
+      f: [['Draw on a real grid', 'Arches, columns, garlands and number stacks, true to size.'], ['Every balloon counted', 'Colours, sizes and quantities add up while you draw.'],
+          ['One click to your cart', 'Balloons, foils and weights straight from the shop.'], ['See it on location', 'Upload a photo of the venue and preview your design in place.']],
+      login: 'Already have early access? <a href="{u}">Log in</a>', ask: 'Want to try it before everyone else? <a href="{u}">Let us know</a>',
+      n: 'balloons', cart: 'Added to cart' }
   }[lang];
+  var ICONS = [
+    '<path d="M3 3h18v18H3zM3 9h18M3 15h18M9 3v18M15 3v18" fill="none" stroke="currentColor" stroke-width="2"/>',
+    '<path d="M5 13l4 4L19 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>',
+    '<path d="M3 4h2l2.4 11h11l2-8H6.2M9 20a1 1 0 100-2 1 1 0 000 2zm9 0a1 1 0 100-2 1 1 0 000 2z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
+    '<path d="M4 7h3l2-3h6l2 3h3v13H4zM12 17a4 4 0 100-8 4 4 0 000 8z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>'
+  ];
+  // An arch of 13 clusters (4 balloons each) on a design sheet, drawn one cluster at a time.
+  var ARCH = 13, PER = 4, COLS = ['#6b3fb9', '#f1d9ff', '#ffdb5a', '#cd0b5c', '#b58ce8'];
+  function archSvg() {
+    var g = '', i, a, x, y, c;
+    for (i = 0; i <= 420; i += 28) { g += '<path d="M' + i + ' 0V300" stroke="#ece4f7"/>'; }
+    for (i = 0; i <= 300; i += 28) { g += '<path d="M0 ' + i + 'H420" stroke="#ece4f7"/>'; }
+    var b = '';
+    for (i = 0; i < ARCH; i++) {
+      a = Math.PI - (Math.PI * i) / (ARCH - 1);
+      x = 210 + Math.cos(a) * 150; y = 262 - Math.sin(a) * 196;
+      c = COLS[i % COLS.length];
+      b += '<g class="bl" data-x="' + x.toFixed(1) + '" data-y="' + y.toFixed(1) + '">' +
+        '<circle cx="' + (x - 9).toFixed(1) + '" cy="' + (y + 4).toFixed(1) + '" r="15" fill="' + c + '" stroke="rgba(27,7,61,.18)"/>' +
+        '<circle cx="' + (x + 9).toFixed(1) + '" cy="' + (y + 4).toFixed(1) + '" r="15" fill="' + c + '" stroke="rgba(27,7,61,.18)"/>' +
+        '<circle cx="' + x.toFixed(1) + '" cy="' + (y - 7).toFixed(1) + '" r="15" fill="' + c + '" stroke="rgba(27,7,61,.18)"/>' +
+        '<ellipse cx="' + (x - 5).toFixed(1) + '" cy="' + (y - 12).toFixed(1) + '" rx="4" ry="6" fill="#fff" opacity=".55"/></g>';
+    }
+    return '<svg class="art" viewBox="0 0 420 300" aria-hidden="true">' + g +
+      '<path d="M48 284H372" stroke="#1b073d" stroke-width="3" stroke-linecap="round" opacity=".2"/>' + b +
+      '<g class="pen" transform="translate(60 262)"><circle r="7" fill="#1b073d"/><circle r="15" fill="none" stroke="#1b073d" stroke-width="2" opacity=".25"/></g></svg>';
+  }
   function soon(loggedIn) {
     var login = prefix + '/web/login?redirect=' + encodeURIComponent(location.pathname);
-    root.innerHTML = '<div id="stx-ds-soon"><span class="k">' + T[0] + '</span><h1>' + T[1] + '</h1><p>' + T[2] + '</p>' +
-      (loggedIn ? '' : '<p class="in">' + T[3].replace('{u}', login) + '</p>') + '</div>';
+    var mail = 'mailto:info@sempertexeurope.com?subject=' + encodeURIComponent('Design Sheet early access');
+    var feats = T.f.map(function (f, i) {
+      return '<li><b><svg viewBox="0 0 24 24" aria-hidden="true">' + ICONS[i] + '</svg>' + f[0] + '</b>' + f[1] + '</li>';
+    }).join('');
+    root.innerHTML = '<div id="stx-ds-soon" class="hero"><div class="box">' +
+      '<i class="fl a"></i><i class="fl b"></i><i class="fl c"></i>' +
+      '<div class="txt top"><span class="k"><i></i>' + T.k + '</span>' +
+      '<h1>Design <span>Sheet</span></h1><p class="lede">' + T.lede + '</p></div>' +
+      '<div class="txt bot"><ul class="feats">' + feats + '</ul>' +
+      '<p class="in">' + (loggedIn ? T.ask.replace('{u}', mail) : T.login.replace('{u}', login)) + '</p></div>' +
+      '<div class="demo"><div class="sheet"><div class="bar"><i></i><i></i><i></i><span>DESIGN SHEET</span></div>' + archSvg() +
+      '<div class="count"><span><b>0</b> ' + T.n + '</span><span class="cart">&#10003; ' + T.cart + '</span></div></div></div>' +
+      '</div></div>';
+    play();
+  }
+  // The sheet draws the arch, the counter runs up, then "added to cart"; again after a pause.
+  function play() {
+    var box = root.querySelector('#stx-ds-soon .sheet');
+    if (!box) { return; }
+    var bls = box.querySelectorAll('.bl'), pen = box.querySelector('.pen'), num = box.querySelector('.count b'), cart = box.querySelector('.cart');
+    var still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (still) {
+      Array.prototype.forEach.call(bls, function (b) { b.classList.add('on'); });
+      num.textContent = ARCH * PER; cart.classList.add('on'); pen.style.display = 'none';
+      return;
+    }
+    var i = 0;
+    function step() {
+      if (!document.body.contains(box)) { return; }
+      if (i < bls.length) {
+        var b = bls[i];
+        pen.setAttribute('transform', 'translate(' + b.getAttribute('data-x') + ' ' + b.getAttribute('data-y') + ')');
+        b.classList.add('on');
+        i++; num.textContent = i * PER;
+        setTimeout(step, 260);
+      } else {
+        cart.classList.add('on');
+        setTimeout(function () {
+          if (!document.body.contains(box)) { return; }
+          Array.prototype.forEach.call(bls, function (b) { b.classList.remove('on'); });
+          cart.classList.remove('on'); num.textContent = 0; i = 0;
+          pen.setAttribute('transform', 'translate(60 262)');
+          setTimeout(step, 900);
+        }, 3200);
+      }
+    }
+    setTimeout(step, 700);
   }
 
   rpc('/web/session/get_session_info').catch(function () { return null; }).then(function (info) {

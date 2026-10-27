@@ -71,6 +71,9 @@
   .stx-insp .side a:hover { color: var(--dark); transform: scale(1.03); box-shadow: var(--glow); background: #fff; }
   .stx-insp .side a.active { color: var(--dark); font-weight: 800; }
   .stx-insp .side a.active::before { content: ""; display: inline-block; width: 8px; height: 8px; background: var(--yellow); margin-right: 10px; }
+  .stx-insp .side .soon-tag { display: inline-block; margin-left: 6px; padding: 2px 7px; border-radius: 999px; background: var(--yellow); color: var(--dark); font-size: 10.5px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; vertical-align: 2px; animation: stxSoonPulse 2.4s ease-in-out infinite; }
+  @keyframes stxSoonPulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(255, 219, 90, 0.7); } 50% { box-shadow: 0 0 0 5px rgba(255, 219, 90, 0); } }
+  @media (prefers-reduced-motion: reduce) { .stx-insp .side .soon-tag { animation: none; } }
 
   /* ---- VIEWS ---- */
   .stx-insp .view { display: none; }
@@ -1553,6 +1556,8 @@
       dl_items: 'items',
       nav_cost: 'Cost Calculator',
       nav_colour: 'Colour Matching Tool',
+      nav_design: 'Design Sheet',
+      soon_tag: 'Soon',
       ct_eyebrow: 'Tools / Colour matching tool',
       ct_h: 'Colour matching <span class="hl">tool</span>',
       ct_lede: 'Pick any colour, tap it in a photo or start from a Sempertex colour you know. You get the closest balloons and palettes that work, every one a real product.',
@@ -1834,6 +1839,8 @@
       dl_items: 'Dateien',
       nav_cost: 'Kostenrechner',
       nav_colour: 'Farbabgleich-Tool',
+      nav_design: 'Design Sheet',
+      soon_tag: 'Bald',
       ct_eyebrow: 'Tools / Farbabgleich-Tool',
       ct_h: 'Farbabgleich-<span class="hl">Tool</span>',
       ct_lede: 'Wähle irgendeine Farbe, tippe sie in einem Foto an oder starte mit einer Sempertex-Farbe, die du kennst. Du bekommst die nächsten Ballons und Paletten, die funktionieren, jeder ein echtes Produkt.',
@@ -2115,6 +2122,8 @@
       dl_items: '\u00e9l\u00e9ments',
       nav_cost: 'Calculateur de co\u00fbts',
       nav_colour: 'Outil de correspondance couleurs',
+      nav_design: 'Design Sheet',
+      soon_tag: 'Bientôt',
       ct_eyebrow: 'Outils / Outil de correspondance couleurs',
       ct_h: 'Outil de correspondance <span class="hl">couleurs</span>',
       ct_lede: 'Choisissez n’importe quelle couleur, touchez-la dans une photo ou partez d’une couleur Sempertex que vous connaissez. Vous obtenez les ballons les plus proches et des palettes qui fonctionnent, chacun un vrai produit.',
@@ -2396,6 +2405,8 @@
       dl_items: 'items',
       nav_cost: 'Kostprijscalculator',
       nav_colour: 'Kleurmatch-tool',
+      nav_design: 'Design Sheet',
+      soon_tag: 'Binnenkort',
       ct_eyebrow: 'Tools / Kleurmatch-tool',
       ct_h: 'Kleurmatch-<span class="hl">tool</span>',
       ct_lede: 'Kies eender welke kleur, tik hem aan in een foto of vertrek van een Sempertex-kleur die je kent. Je krijgt de dichtstbijzijnde ballonnen en palettes die werken, elk een echt product.',
@@ -2699,6 +2710,17 @@
     root.querySelectorAll('.side a[data-view]').forEach(function (a) {
       if (OTHER_VIEWS.indexOf(a.getAttribute('data-view')) > -1 && a.parentNode) { a.parentNode.removeChild(a); }
     });
+    // Design Sheet (27/10/2026): own page /tools/design-sheet, "coming soon" except for accounts with the
+    // 'AI Beta' label. Only on our own /tools, never on a partner page.
+    var side = root.querySelector('.side');
+    if (side && isTools && !partnerTools && !isFile) {
+      var ds = document.createElement('a');
+      ds.className = 'side-soon';
+      ds.href = shopPrefix + '/tools/design-sheet';
+      ds.innerHTML = (STR.nav_design || 'Design Sheet') + ' <span class="soon-tag">' + (STR.soon_tag || 'Soon') + '</span>';
+      ds.addEventListener('click', function () { track('inspiration_view', { view: 'design_sheet_link', page: 'tools' }); });
+      side.appendChild(ds);
+    }
   })();
 
   // ---- ROUTER ----

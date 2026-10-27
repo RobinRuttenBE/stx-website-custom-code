@@ -113,9 +113,9 @@ const server = http.createServer(async (req, res) => {
   await page.goto(base + '/design-sheet');
   await page.waitForSelector('#stx-ds-soon');
   assert.strictEqual(await page.$('#stx-ds-frame'), null);
-  assert.strictEqual(await page.$('#stx-ds-soon p.in'), null);
+  assert.ok(/^mailto:info@sempertexeurope\.com/.test(await page.getAttribute('#stx-ds-soon p.in a', 'href')));
   assert.strictEqual(accessCalls, 1);
-  ok('logged in without the label: coming soon, no log in link');
+  ok('logged in without the label: coming soon, "let us know" instead of a log in link');
   await page.goto(base + '/design-sheet');
   await page.waitForSelector('#stx-ds-soon');
   assert.strictEqual(await page.$('#stx-ds-frame'), null);
