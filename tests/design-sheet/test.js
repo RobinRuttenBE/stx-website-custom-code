@@ -107,7 +107,8 @@ const server = http.createServer(async (req, res) => {
   const loginHref = await page.getAttribute('#stx-ds-soon p.in a', 'href');
   assert.ok(/\/web\/login\?redirect=%2Fdesign-sheet$/.test(loginHref), loginHref);
   assert.strictEqual(accessCalls, 0);
-  ok('logged out: coming soon with a log in link back to this page, no access check');
+  assert.ok(await page.evaluate(() => document.getElementById('stx-ds-root').parentElement.id === 'wrap'), 'card sits in the page content, not under the footer');
+  ok('logged out: coming soon with a log in link back to this page, no access check, in the page content (#wrap)');
   loggedIn = true; labelled = false;
   await page.goto(base + '/design-sheet');
   await page.waitForSelector('#stx-ds-soon');

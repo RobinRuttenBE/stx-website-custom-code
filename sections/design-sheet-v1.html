@@ -73,6 +73,10 @@
 
   var root = document.getElementById('stx-ds-root');
   if (!root) { wallDone(); return; }
+  // The loader adds sections at the end of <body>, under the footer. The full-screen tool did not mind,
+  // the "Coming soon" card does: move it into the page content (#wrap), at the top.
+  var wrapEl = document.getElementById('wrap');
+  if (wrapEl && root.parentNode !== wrapEl) { wrapEl.insertBefore(root, wrapEl.firstChild); }
   if (document.body.classList.contains('editor_enable') || document.querySelector('.odoo-editor-editable') || document.querySelector('#wrap.o_editable')) { wallDone(); return; }
 
   var m = /^\/(fr|de|en_gb)(\/|$)/i.exec(location.pathname);
