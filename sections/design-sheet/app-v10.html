@@ -685,10 +685,8 @@ table.bom select { padding: 4px 6px; font-size: 12px; border-width: 1px; border-
     <h3>Projects</h3>
     <p class="sub">Everything you build is saved as you go, options included.</p>
     <div class="out" id="cloud-status" style="margin-top:0">Saved on this device.</div>
-    <div class="stack" style="margin-bottom:16px"><button class="btn primary" id="btn-new">New design</button><button class="btn" id="btn-open-json">Open .stxdesign</button></div>
+    <div class="stack" style="margin-bottom:16px"><button class="btn primary" id="btn-new">New design</button></div>
     <div id="saved-list"></div>
-    <p class="note" style="margin-top:10px">⇪ puts a project in a .stxdesign file, to send to someone else.</p>
-    <input type="file" id="file-json" accept=".stxdesign,application/json" style="display:none">
 
     <h3 style="margin-top:28px">Settings</h3>
     <div class="row">
@@ -3897,7 +3895,7 @@ function renderSaved() {
   el.innerHTML = list.map(function (d, i) {
     var n = (d.balloons || []).length, cur = d.pid === state.pid, inCloud = acc && CLOUD.byPid[d.pid];
     return '<div class="proj' + (cur ? ' cur' : '') + '">' + (d.thumb ? '<img src="' + d.thumb + '" alt="">' : '<img alt="">') + '<div class="t"><b>' + escHtml(d.name || 'Untitled') + (cur ? ' <span>(open)</span>' : '') + '</b><span>' + n + ' balloons' + (d.options && d.options.length ? ' · ' + d.options.length + ' option' + (d.options.length > 1 ? 's' : '') : '') + ' · ' + new Date(d.date).toLocaleDateString('en-GB') + (acc ? (inCloud ? ' · on your account' : ' · this device') : '') + '</span></div>' +
-      (cur ? '' : '<button class="btn small" data-load="' + i + '">Open</button>') + '<button class="btn small ghost" data-exp="' + i + '" title="Save as .stxdesign file">⇪</button><button class="btn small ghost" data-dup="' + i + '" title="Duplicate">⧉</button><button class="btn small ghost" data-del="' + i + '" title="Delete">✕</button></div>';
+      (cur ? '' : '<button class="btn small" data-load="' + i + '">Open</button>') + '<button class="btn small ghost" data-dup="' + i + '" title="Duplicate">⧉</button><button class="btn small ghost" data-del="' + i + '" title="Delete">✕</button></div>';
   }).join('') + cloudOnly.map(function (d) {
     return '<div class="proj">' + (d.thumb ? '<img src="' + d.thumb + '" alt="">' : '<img alt="">') + '<div class="t"><b>' + escHtml(d.name || 'Untitled') + '</b><span>on your account · ' + new Date(d.date).toLocaleDateString('en-GB') + '</span></div><button class="btn small" data-cload="' + escHtml(d.pid) + '">Open</button><button class="btn small ghost" data-cdel="' + escHtml(d.pid) + '" title="Delete">✕</button></div>';
   }).join('');
@@ -3915,7 +3913,6 @@ function renderSaved() {
     cloudFetch(pid, function (cd) { if (!cd) { toast('Could not open this project from your account'); b.disabled = false; b.textContent = 'Open'; return; } cd.pid = pid; cd.thumb = rec && rec.x_thumb; openProject(cd, true); });
   }); });
   el.querySelectorAll('[data-cdel]').forEach(function (b) { b.addEventListener('click', function () { var r = CLOUD.byPid[b.dataset.cdel]; if (!confirm('Delete "' + ((r && r.x_name) || 'Untitled') + '" from your account? This cannot be undone.')) return; cloudDelete(b.dataset.cdel); renderSaved(); }); });
-  el.querySelectorAll('[data-exp]').forEach(function (b) { b.addEventListener('click', function () { var d = projects()[+b.dataset.exp]; if (d.pid === state.pid) { clearTimeout(autosaveT); persistDraftNow(); d = projects()[+b.dataset.exp]; } var o = JSON.parse(JSON.stringify(d)); delete o.thumb; download(((d.name || 'design').replace(/[^\w\- ]+/g, '').trim().replace(/\s+/g, '-') || 'design') + '.stxdesign', new Blob([JSON.stringify(o)], { type: 'application/json' })); toast('File saved. Open it with "Open .stxdesign" on the other computer.'); }); });
   el.querySelectorAll('[data-dup]').forEach(function (b) { b.addEventListener('click', function () { var l = projects(), d = JSON.parse(JSON.stringify(l[+b.dataset.dup])); d.pid = 'p' + Date.now().toString(36); d.name = (d.name || 'Untitled') + ' copy'; d.date = new Date().toISOString(); l.unshift(d); saveProjects(l); renderSaved(); }); });
   el.querySelectorAll('[data-del]').forEach(function (b) { b.addEventListener('click', function () { var l = projects(), d = l[+b.dataset.del], inCloud = CLOUD.state === 'on' && CLOUD.byPid[d.pid]; if (!confirm('Delete "' + (d.name || 'Untitled') + '"' + (inCloud ? ' from this device and your account' : '') + '? This cannot be undone.')) return; l.splice(+b.dataset.del, 1); saveProjects(l); cloudDelete(d.pid); if (d.pid === state.pid) { state.pid = null; load({ name: 'Untitled design', balloons: [] }); } renderSaved(); }); });
 }
@@ -3927,22 +3924,6 @@ $('design-name').addEventListener('input', persistDraft);
 $('btn-new').addEventListener('click', function () { clearTimeout(autosaveT); persistDraftNow(); state.pid = null; load({ name: 'Untitled design', balloons: [] }); try { localStorage.removeItem(LS_KEY + ':last'); } catch (e) {} renderSaved(); showPane('build'); toast('New design'); });
 function persistDraftNow() { if (!state.pid || (!state.balloons.length && !state.foils.length && !state.options.length)) return; var obj = serialize(); obj.pid = state.pid; obj.thumb = thumb(); var list = projects(), idx = -1; list.forEach(function (d, i) { if (d.pid === state.pid) idx = i; }); if (idx >= 0) list[idx] = obj; else list.unshift(obj); saveProjects(list.slice(0, 60)); clearTimeout(CLOUD.t); cloudSave(obj); }
 window.addEventListener('beforeunload', function () { clearTimeout(autosaveT); persistDraftNow(); });
-$('btn-open-json').addEventListener('click', function () { $('file-json').click(); });
-$('file-json').addEventListener('change', function () {
-  var f = this.files[0]; if (!f) return; var rd = new FileReader();
-  rd.onload = function () {
-    try {
-      var obj = JSON.parse(rd.result); if (!obj || !obj.balloons) throw new Error('x');
-      clearTimeout(autosaveT); persistDraftNow();
-      var list = projects(), exists = obj.pid && list.some(function (d) { return d.pid === obj.pid; });
-      if (!obj.pid || exists) obj.pid = 'p' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
-      load(obj); state.pid = obj.pid; persistDraft(); try { localStorage.setItem(LS_KEY + ':last', obj.pid); } catch (e) {}
-      showPane('build'); toast('Opened ' + (obj.name || f.name));
-    } catch (e) { toast('That is not a design file'); }
-  };
-  rd.readAsText(f); this.value = '';
-});
-
 /* =====================================================================
    INIT
    ===================================================================== */
