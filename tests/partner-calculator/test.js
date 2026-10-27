@@ -628,6 +628,14 @@ function check(name, ok, extra) {
       title: 'Strumenti per colori e prezzi dei palloncini | Euro Party', cur: '€', curCode: 'EUR', dist: 'km', vat: 22,
       shop: /^https:\/\/www\.europarty\.it\/catalogsearch\/result\/\?q=Sempertex%20\d{3}$/,
       hint: /Inserisci il tuo prezzo d’acquisto al pezzo/,
+      foreign: /\b(Kleurmixer|opdracht|inkoopprijs|Bewaar|Instellingen|Materiaal|Settings|Saved quotes|Materials|Inner balloon|Upload a photo|Shop this colour)\b/ },
+    // B2B-kopie van Euro Party (27/10/2026): alles hetzelfde, maar geen enkele link naar de B2C-shop.
+    { slug: 'europarty-b2b', name: 'Euro Party', brand: '#e5007e', font: 'Open Sans',
+      tabs: ['Calcolatore double stuffing', 'Calcolatore prezzi', 'Trova colore'],
+      title: 'Strumenti per colori e prezzi dei palloncini | Euro Party', cur: '€', curCode: 'EUR', dist: 'km', vat: 22,
+      shop: /^https:\/\/b2b\.europarty\.it\/catalogsearch\/result\/\?q=Sempertex%20\d{3}$/,
+      notHost: 'www.europarty.it',
+      hint: /Inserisci il tuo prezzo d’acquisto al pezzo/,
       foreign: /\b(Kleurmixer|opdracht|inkoopprijs|Bewaar|Instellingen|Materiaal|Settings|Saved quotes|Materials|Inner balloon|Upload a photo|Shop this colour)\b/ }
   ];
   for (const N of NEW_PARTNERS) {
@@ -647,6 +655,10 @@ function check(name, ok, extra) {
     await page.waitForTimeout(250);
     const picks = await page.$$eval('a.stx-pt-pick', (els) => els.map((e) => e.getAttribute('href')));
     check('gekozen kleuren zoeken in de webshop van de partner', picks.length === 2 && picks.every((h) => N.shop.test(h)), JSON.stringify(picks));
+    if (N.notHost) {
+      const wrong = await page.$$eval('a[href]', (els, host) => els.map((e) => e.href).filter((h) => h.includes(host)), N.notHost);
+      check('geen enkele link naar ' + N.notHost, wrong.length === 0, JSON.stringify(wrong.slice(0, 3)));
+    }
 
     await page.click('.stx-pt-tab[data-tool="cost"]');
     await page.waitForTimeout(400);

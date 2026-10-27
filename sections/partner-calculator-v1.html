@@ -590,6 +590,14 @@
     hahaentertainment: { name: 'Haha Entertainment', ... }
     */
   };
+  /* Euro Party B2B (b2b.europarty.it), 27/10/2026, op vraag van Euro Party: dezelfde drie tools en
+     dezelfde huisstijl, maar elke link gaat naar hun B2B-shop (andere prijzen, ander publiek).
+     Geen eigen blok: een kopie van europarty met het domein vervangen, zodat een aanpassing aan
+     Euro Party vanzelf ook voor B2B geldt. Zelfde Magento-paden en zoekroute (getest 27/10/2026).
+     Opslag staat apart (slug europarty-b2b). Prijzen tonen we hier nooit, dus hun login speelt geen rol. */
+  PARTNERS['europarty-b2b'] = JSON.parse(JSON.stringify(PARTNERS.europarty)
+    .split('https://www.europarty.it/').join('https://b2b.europarty.it/'));
+
   /* ================= EINDE CONFIG ================= */
 
   /* Italiaans voor de drie tools (Euro Party, 20/10/2026). Odoo heeft geen Italiaans, dus deze
