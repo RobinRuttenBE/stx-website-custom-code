@@ -1,0 +1,753 @@
+<!-- ============================================================
+     STX EU / MBP PAGINA v2
+     Bestand hoort in de repo onder /sections/ en wordt door de
+     stx-loader geladen op /mbp (alle talen). NIET los in Odoo plakken.
+
+     GEBOUWD met code/build-shadow-section.py uit Robins losse pagina
+     (mbp-certification-page.html). Niet met de hand aanpassen: pas de losse pagina aan
+     en bouw opnieuw, anders ben je de wijziging bij de volgende
+     build kwijt.
+
+     Werking: de pagina staat in een shadow root, in #wrap. Daardoor
+     raakt de CSS van de pagina (body, h2, section, footer, *) de rest
+     van de site niet, en de CSS van Odoo deze pagina niet. Wat Odoo
+     zelf in #wrap heeft staan, wordt verborgen (niet gewist): in de
+     editor zie je het nog en doet dit bestand niets.
+     Links naar www.sempertexeurope.com krijgen de taalprefix van de
+     pagina (/en_GB, /fr, /de). Beelden staan in assets/mbp/,
+     op dezelfde commit als de loader.
+     ============================================================ -->
+
+<template id="stx-mbp-tpl">
+<style>
+:host { all: initial; display: block; overflow-x: clip; }
+.stx-doc { display: block; }
+/* Sempertex Europe document system. Do not modify. Inlined by scripts/build_html.py */
+:host {
+  --purple: #6b3fb9;
+  --purple-light: #f1d9ff;
+  --purple-bg: #faf4ff;
+  --dark: #1b073d;
+  --yellow: #ffdb5a;
+  --yellow-soft: #fff4d6;
+  --warn: #cd0b5c;
+  --paper: #fefcfa;
+  --white: #ffffff;
+  --rule: #e8dcf5;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+:host { scroll-behavior: smooth; }
+
+.stx-doc {
+  font-family: 'Rethink Sans', sans-serif;
+  background: var(--paper);
+  color: var(--dark);
+  line-height: 1.55;
+  font-size: 17px;
+  -webkit-font-smoothing: antialiased;
+}
+
+.wrap { max-width: 880px; margin: 0 auto; padding: 80px 48px 120px; }
+
+/* HEADER */
+header.hero { padding: 20px 0 64px; border-bottom: 2px solid var(--dark); margin-bottom: 80px; }
+.eyebrow { font-size: 13px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--purple); margin-bottom: 24px; }
+h1.title { font-size: clamp(52px, 8vw, 96px); font-weight: 800; line-height: 0.95; letter-spacing: -0.03em; margin-bottom: 32px; }
+.hl { background: var(--yellow); padding: 0 0.15em; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+.dark-hl { background: var(--dark); color: var(--yellow); padding: 0 0.15em; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+.lede { font-size: 22px; line-height: 1.45; color: var(--dark); max-width: 680px; font-weight: 500; }
+.meta { margin-top: 40px; display: flex; gap: 48px; font-size: 13px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--dark); opacity: 0.6; }
+
+/* SECTIONS */
+section { margin-bottom: 88px; }
+.sec-num { font-size: 120px; font-weight: 800; line-height: 0.85; color: var(--purple-light); letter-spacing: -0.04em; margin-bottom: -40px; position: relative; z-index: 0; }
+h2 { font-size: clamp(34px, 5vw, 48px); font-weight: 800; line-height: 1.05; letter-spacing: -0.02em; margin-bottom: 28px; position: relative; z-index: 1; }
+h3 { font-size: 22px; font-weight: 700; margin: 32px 0 12px; line-height: 1.25; letter-spacing: -0.01em; }
+
+/* BODY */
+p { margin-bottom: 18px; max-width: 68ch; }
+p.lead { font-size: 20px; font-weight: 500; line-height: 1.5; margin-bottom: 24px; }
+strong { font-weight: 700; color: var(--dark); }
+em { font-style: italic; }
+a { color: var(--purple); }
+
+/* PULL QUOTE */
+.pull { font-size: 26px; font-weight: 700; line-height: 1.3; color: var(--purple); border-left: 4px solid var(--yellow); padding: 4px 0 4px 24px; margin: 32px 0; max-width: 62ch; letter-spacing: -0.01em; }
+
+/* QUOTE BOX */
+.quote-box { background: var(--purple-bg); border-left: 4px solid var(--purple); padding: 24px 28px; margin: 24px 0; border-radius: 0 8px 8px 0; }
+.quote-box p:last-of-type { margin-bottom: 0; }
+.quote-box .attr { margin-top: 12px; font-size: 13px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--purple); }
+
+/* LISTS */
+ul.clean, ol.clean { list-style: none; margin: 16px 0 24px; }
+ul.clean li, ol.clean li { position: relative; padding-left: 32px; margin-bottom: 14px; max-width: 68ch; }
+ul.clean li::before { content: ""; position: absolute; left: 0; top: 11px; width: 14px; height: 2px; background: var(--purple); }
+ol.clean { counter-reset: step; }
+ol.clean li { counter-increment: step; padding-left: 44px; }
+ol.clean li::before { content: counter(step, decimal-leading-zero); position: absolute; left: 0; top: 0; font-size: 14px; font-weight: 700; color: var(--purple); letter-spacing: 0.05em; }
+
+/* PAIR GRID */
+.pair-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin: 32px 0; }
+.pair { background: var(--paper); border: 2px solid var(--dark); padding: 24px; border-radius: 6px; position: relative; }
+.pair .plus { position: absolute; top: -16px; left: 20px; background: var(--yellow); color: var(--dark); font-weight: 800; padding: 2px 10px; font-size: 12px; letter-spacing: 0.08em; border-radius: 4px; }
+.pair h4 { font-size: 20px; font-weight: 800; margin-bottom: 8px; letter-spacing: -0.01em; }
+.pair p { font-size: 15px; line-height: 1.5; color: var(--dark); opacity: 0.85; margin: 0; }
+
+/* STAT GRID (numbers, KPIs) */
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin: 32px 0; }
+.stat { background: var(--purple-bg); border-radius: 8px; padding: 24px; }
+.stat .num { font-size: 44px; font-weight: 800; line-height: 1; letter-spacing: -0.03em; color: var(--dark); }
+.stat .num .unit { font-size: 20px; font-weight: 700; color: var(--purple); margin-left: 2px; }
+.stat .lbl { margin-top: 10px; font-size: 12px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--purple); }
+.stat .note { margin-top: 6px; font-size: 14px; line-height: 1.4; opacity: 0.8; }
+.stat.is-key { background: var(--yellow); }
+.stat.is-key .lbl, .stat.is-key .num .unit { color: var(--dark); }
+
+/* DATA TABLE */
+.table-scroll { overflow-x: auto; margin: 24px 0 32px; break-inside: avoid; }
+table.data { width: 100%; border-collapse: collapse; font-size: 15px; }
+table.data th { text-align: left; font-size: 12px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--purple); padding: 10px 14px; border-bottom: 2px solid var(--dark); white-space: nowrap; }
+table.data td { padding: 12px 14px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+table.data tr:nth-child(even) td { background: var(--purple-bg); }
+table.data td.num, table.data th.num { text-align: right; font-variant-numeric: tabular-nums; }
+table.data tr.total td { font-weight: 800; background: var(--yellow-soft); border-top: 2px solid var(--dark); border-bottom: none; }
+table.data td.neg { color: var(--warn); font-weight: 700; }
+
+/* FORBIDDEN GRID */
+.forbidden-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin: 24px 0 0; }
+.forbidden { background: var(--white); border: 2px solid var(--warn); padding: 14px 18px; border-radius: 6px; font-weight: 600; font-size: 15px; position: relative; }
+.forbidden::before { content: "×"; color: var(--warn); font-weight: 800; margin-right: 8px; font-size: 18px; }
+
+/* SLIDE / CASE STUDY */
+.case-intro { background: var(--purple-bg); padding: 32px 36px; border-radius: 8px; margin: 24px 0 40px; }
+.case-intro p { margin-bottom: 10px; }
+.case-intro p:last-child { margin-bottom: 0; }
+.slide-block { display: grid; grid-template-columns: 320px 1fr; gap: 40px; margin: 48px 0; align-items: start; }
+.slide-block img { width: 100%; border-radius: 8px; box-shadow: 0 12px 40px rgba(27, 7, 61, 0.12); display: block; }
+.img-placeholder { width: 100%; aspect-ratio: 4 / 3; border-radius: 8px; background: var(--purple-light); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--purple); text-align: center; padding: 16px; }
+.slide-num { font-size: 13px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--purple); margin-bottom: 8px; }
+.slide-verdict { display: inline-block; padding: 4px 12px; border-radius: 4px; font-size: 12px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 14px; }
+.verdict-strong { background: var(--dark); color: var(--yellow); }
+.verdict-ok { background: var(--purple-light); color: var(--dark); }
+.verdict-weak { background: var(--yellow-soft); color: var(--dark); border: 1px solid var(--yellow); }
+.slide-block h3 { margin-top: 0; font-size: 24px; line-height: 1.2; }
+.slide-block p { font-size: 16px; margin-bottom: 12px; }
+
+/* PRINCIPLE BANNER */
+.principle { background: var(--dark); color: var(--paper); padding: 48px 40px; border-radius: 8px; margin: 48px 0; position: relative; overflow: hidden; }
+.principle .label { font-size: 12px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--yellow); margin-bottom: 16px; }
+.principle .statement { font-size: clamp(28px, 4vw, 40px); font-weight: 800; line-height: 1.1; letter-spacing: -0.02em; }
+.principle .statement .hl { background: var(--yellow); color: var(--dark); }
+
+/* TWO COL */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin: 32px 0; }
+.role-card { padding: 28px; border-radius: 8px; }
+.role-frame { background: var(--purple-bg); border: 2px solid var(--purple); }
+.role-fill { background: var(--white); border: 2px solid var(--dark); }
+.role-card .role-label { font-size: 12px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--purple); margin-bottom: 10px; }
+.role-fill .role-label { color: var(--dark); }
+.role-card h4 { font-size: 22px; font-weight: 800; margin-bottom: 12px; letter-spacing: -0.01em; }
+.role-card ul { list-style: none; font-size: 15px; }
+.role-card ul li { padding: 4px 0 4px 16px; position: relative; }
+.role-card ul li::before { content: ""; position: absolute; left: 0; top: 15px; width: 8px; height: 2px; background: var(--purple); }
+
+/* CLOSING */
+.closing { background: var(--yellow); padding: 56px 48px; border-radius: 8px; margin: 64px 0 0; }
+.closing h2 { font-size: clamp(36px, 5vw, 52px); margin-bottom: 24px; }
+.closing p { font-size: 19px; font-weight: 500; margin-bottom: 16px; max-width: 68ch; }
+.closing .pull { border-left-color: var(--dark); color: var(--dark); }
+.closing ul.clean li::before { background: var(--dark); }
+
+/* TOC */
+.toc { background: var(--purple-bg); padding: 32px 36px; border-radius: 8px; margin-bottom: 80px; }
+.toc .toc-label { font-size: 12px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--purple); margin-bottom: 16px; }
+.toc ol { list-style: none; counter-reset: toc; }
+.toc ol li { counter-increment: toc; padding: 8px 0; border-bottom: 1px solid var(--rule); font-size: 16px; font-weight: 600; display: flex; gap: 20px; }
+.toc ol li:last-child { border-bottom: none; }
+.toc ol li::before { content: counter(toc, decimal-leading-zero); color: var(--purple); font-weight: 800; min-width: 28px; }
+.toc a { color: var(--dark); text-decoration: none; }
+.toc a:hover { color: var(--purple); }
+
+/* FOOTER */
+footer { margin-top: 120px; padding-top: 32px; border-top: 2px solid var(--dark); font-size: 13px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--dark); opacity: 0.6; display: flex; justify-content: space-between; }
+
+/* RESPONSIVE */
+@media screen and (max-width: 720px) {
+  .wrap { padding: 48px 24px 80px; }
+  .slide-block { grid-template-columns: 1fr; gap: 20px; }
+  .slide-block img { max-width: 320px; }
+  .two-col { grid-template-columns: 1fr; }
+  .sec-num { font-size: 80px; margin-bottom: -28px; }
+  .meta { flex-direction: column; gap: 12px; }
+  .closing { padding: 40px 28px; }
+}
+
+/* PRINT / PDF (A4). Margins come from @page, so .wrap loses its padding. */
+@page { size: A4; margin: 18mm 17mm 20mm; }
+@media print {
+  :host { --paper: #ffffff; } /* page margins print white, so paper surfaces match them */
+  :host, .stx-doc { background: var(--paper); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .stx-doc { font-size: 14.5px; }
+  .wrap { max-width: none; padding: 0; }
+  header.hero { padding: 0 0 40px; margin-bottom: 48px; }
+  h1.title { font-size: 60px; margin-bottom: 24px; }
+  .lede { font-size: 18px; }
+  .meta { margin-top: 28px; font-size: 11px; }
+  section { margin-bottom: 56px; }
+  .sec-num { font-size: 92px; margin-bottom: -30px; }
+  h2 { font-size: 34px; margin-bottom: 20px; break-after: avoid; }
+  h3 { font-size: 19px; break-after: avoid; }
+  .sec-num { break-after: avoid; }
+  p.lead { font-size: 17px; }
+  .pull { font-size: 21px; margin: 24px 0; }
+  .principle { padding: 36px 32px; margin: 32px 0; }
+  .principle .statement { font-size: 30px; }
+  .closing { padding: 40px 36px; margin-top: 40px; }
+  .closing h2 { font-size: 36px; }
+  .closing p { font-size: 16px; }
+  .toc { margin-bottom: 48px; padding: 24px 28px; }
+  .toc ol li { font-size: 14px; padding: 6px 0; }
+  .pair h4, .role-card h4 { font-size: 18px; }
+  .stat .num { font-size: 36px; }
+  table.data { font-size: 13px; }
+  .pair, .stat, .forbidden, .role-card, .quote-box, .pull, .principle, .closing, .slide-block, .case-intro, .toc, table.data tr, li { break-inside: avoid; }
+  .pair-grid { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; }
+  .pair { padding: 20px; }
+  .two-col { gap: 20px; }
+  .role-card { padding: 22px; }
+  .slide-block { grid-template-columns: 250px 1fr; gap: 28px; margin: 32px 0; }
+  .page-break { break-before: page; }
+  footer { display: none; } /* page footer comes from html_to_pdf.py */
+  a { text-decoration: none; }
+}
+
+/* STX:END */
+
+/* ---- page shell ---- */
+:host {
+  --mbp: #5a2482;          /* MBP purple */
+  --mbp-soft: #f3edf7;     /* MBP wash */
+  --mbp-light: #a97fc4;    /* MBP tint, light */
+  --mbp-line: #d9c7e6;     /* MBP tint for borders */
+}
+:host { scroll-padding-top: 16px; }
+.stx-doc { font-size: 17px; }
+button, input, select, textarea { font-family: inherit; }
+.stx-doc > section { margin-bottom: 0; }
+.band { padding: 68px 0; }
+.band-tight { padding: 44px 0; }
+.band-paper { background: var(--paper); }
+.band-wash { background: var(--purple-bg); }
+.inner { max-width: 1080px; margin: 0 auto; padding: 0 32px; }
+.narrow { max-width: 68ch; }
+h1 .hl, h2 .hl { white-space: nowrap; }
+h1.title .hl, .hero-grid h1 .hl, h2 .hl, .closing h2 .hl { background: none; padding: 0; color: var(--mbp); }
+.closing h2 .hl { color: var(--mbp); }
+.principle .statement .hl { background: var(--yellow); color: var(--dark); padding: 0 0.15em; }
+.sec-head::before, .head-row .sec-head::before { content: ""; display: block; width: 56px; height: 4px; border-radius: 2px; background: var(--mbp); margin-bottom: 20px; }
+.pair .plus { background: var(--mbp); color: var(--paper); }
+
+.band-mbp { background: var(--mbp-soft); }
+.fact.is-mbp { background: var(--mbp); border-color: var(--mbp); color: var(--paper); }
+.fact.is-mbp .lbl { color: var(--paper); opacity: 0.85; }
+.role-frame { background: var(--mbp-soft); border-color: var(--mbp); }
+.pair:hover { border-color: var(--mbp); }
+.figure figcaption { color: var(--mbp); }
+.faq summary::after { color: var(--mbp); }
+.step { border-color: var(--mbp-line); }
+.quote-box { background: var(--mbp-soft); border-left-color: var(--mbp); }
+
+/* ---- buttons ---- */
+.btn { display: inline-block; background: var(--yellow); color: var(--dark); font-weight: 800; font-size: 15px; letter-spacing: 0.02em; padding: 14px 24px; border-radius: 6px; text-decoration: none; border: 2px solid var(--yellow); transition: border-color 150ms, color 150ms; }
+.btn:hover { border-color: var(--dark); }
+.btn-ghost { background: transparent; border: 2px solid var(--dark); color: var(--dark); }
+.btn-ghost:hover { border-color: var(--purple); color: var(--purple); }
+.btn-sm { padding: 10px 18px; font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase; }
+.btn-row { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 28px; }
+
+/* ---- hero ---- */
+.hero-band { padding: 52px 0 64px; background: var(--paper); border-bottom: 2px solid var(--dark); }
+.hero-grid { display: grid; grid-template-columns: 1.02fr 0.98fr; gap: 56px; align-items: center; }
+.hero-grid h1 { font-size: clamp(34px, 4.1vw, 54px); font-weight: 800; line-height: 0.98; letter-spacing: -0.03em; margin-bottom: 24px; }
+.hero-grid .lede { font-size: 21px; }
+.figure img { width: 100%; display: block; border-radius: 8px; box-shadow: 0 12px 40px rgba(27, 7, 61, 0.12); }
+.figure figcaption { margin-top: 12px; font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--purple); }
+.trust { margin-top: 22px; font-size: 13px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--dark); opacity: 0.6; }
+
+/* ---- facts strip ---- */
+.facts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.fact { background: var(--white); border: 2px solid var(--dark); border-radius: 8px; padding: 24px; }
+.fact.is-key { background: var(--yellow); border-color: var(--yellow); }
+.fact .num { font-size: 46px; font-weight: 800; line-height: 1; letter-spacing: -0.03em; }
+.fact .lbl { margin-top: 10px; font-size: 12px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--purple); }
+.fact.is-key .lbl { color: var(--dark); }
+
+/* ---- section heads ---- */
+.sec-head { margin-bottom: 26px; }
+.sec-head h2 { max-width: 20ch; }
+.split { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; }
+
+.pair-grid { grid-template-columns: repeat(3, 1fr); margin: 26px 0 0; }
+.perks { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; list-style: none; margin: 8px 0 0; padding: 0; }
+.perks li { background: var(--mbp); border: 2px solid var(--mbp); border-radius: 8px; padding: 22px 20px 24px; color: var(--paper); transition: transform 150ms, box-shadow 150ms; }
+.perks li:hover { transform: translateY(-3px); box-shadow: 0 12px 30px rgba(27, 7, 61, 0.12); }
+.perks .tick { display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 50%; background: var(--yellow); color: var(--dark); margin-bottom: 14px; }
+.perks h4 { font-size: 18px; font-weight: 800; letter-spacing: -0.01em; line-height: 1.2; margin-bottom: 6px; }
+.perks p { font-size: 14px; line-height: 1.45; margin: 0; opacity: 0.85; }
+
+.two-col { margin: 0; }
+.pull { margin: 26px 0 0; }
+.table-scroll { margin: 20px 0 24px; }
+
+/* ---- perks ---- */
+
+/* ---- tabs ---- */
+.tab-label { font-size: 13px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--mbp); margin-bottom: 12px; }
+.tabs { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 30px; }
+.tab { background: var(--white); border: 2px solid var(--dark); border-radius: 6px; padding: 13px 20px; font-size: 13px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--dark); cursor: pointer; }
+.tab[aria-selected="true"] { background: var(--yellow); border-color: var(--yellow); }
+.panel[hidden] { display: none; }
+.panel-grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 48px; align-items: start; }
+.score { width: 100%; border-collapse: collapse; margin: 20px 0 24px; }
+.score th { text-align: left; font-size: 12px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--purple); padding: 0 0 10px; border-bottom: 2px solid var(--dark); }
+.score th.n, .score td.n { text-align: right; }
+.score td { padding: 12px 0; border-bottom: 1px solid var(--rule); font-size: 16px; }
+.score tr.sum td { background: var(--yellow-soft); font-weight: 800; padding: 12px 10px; border-bottom: none; }
+
+/* ---- steps ---- */
+.steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; counter-reset: stp; margin-bottom: 24px; }
+.step { background: var(--white); border: 2px solid var(--dark); border-radius: 8px; padding: 24px; counter-increment: stp; }
+.step::before { content: counter(stp, decimal-leading-zero); display: block; font-size: 13px; font-weight: 800; letter-spacing: 0.1em; color: var(--purple); margin-bottom: 10px; }
+.step p { font-size: 15px; margin: 0; }
+
+/* ---- faq ---- */
+.faq { max-width: 820px; border-top: 2px solid var(--dark); }
+.faq details { border-bottom: 1px solid var(--rule); }
+.faq summary { cursor: pointer; list-style: none; padding: 22px 36px 22px 0; font-size: 19px; font-weight: 700; letter-spacing: -0.01em; position: relative; transition: color 150ms; }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: "+"; position: absolute; right: 4px; top: 18px; font-size: 26px; font-weight: 800; color: var(--purple); }
+.faq details[open] summary::after { content: "\2013"; }
+.faq summary:hover { color: var(--purple); }
+.faq .answer { padding: 0 0 22px; font-size: 16px; max-width: 68ch; }
+
+/* ---- principle as a band ---- */
+section.principle { border-radius: 0; margin: 0; padding: 72px 0; background: var(--mbp); color: var(--paper); }
+section.principle .label { color: var(--yellow); }
+section.principle .statement { max-width: none; font-size: clamp(30px, 3.9vw, 48px); line-height: 1.08; }
+@media (max-width: 900px) { section.principle .statement { font-size: clamp(27px, 6vw, 34px); } }
+
+/* ---- closing + footer ---- */
+section.closing { border-radius: 0; margin: 0; padding: 72px 0; }
+section.closing h2 { max-width: 16ch; }
+.site-foot { background: var(--paper); border-top: 2px solid var(--dark); padding: 32px 0; }
+.site-foot .inner { display: flex; justify-content: space-between; gap: 20px; font-size: 13px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--dark); opacity: 0.6; }
+
+
+/* ---- hover life ---- */
+.pair { transition: border-color 150ms, box-shadow 150ms, transform 150ms; }
+.pair:hover { box-shadow: 0 12px 32px rgba(27, 7, 61, 0.12); transform: translateY(-3px); }
+.pair .plus { transition: transform 150ms; }
+.pair:hover .plus { transform: translateY(-2px); }
+.figure img { transition: box-shadow 200ms, transform 200ms; }
+.figure:hover img { box-shadow: 0 20px 50px rgba(27, 7, 61, 0.22); transform: scale(1.012); }
+.btn { transition: border-color 150ms, color 150ms, transform 150ms, box-shadow 150ms; }
+.btn:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(27, 7, 61, 0.16); }
+.fact { transition: transform 150ms, box-shadow 150ms; }
+.fact:hover { transform: translateY(-3px); box-shadow: 0 12px 30px rgba(27, 7, 61, 0.12); }
+.step { transition: border-color 150ms, transform 150ms, box-shadow 150ms; }
+.step:hover { border-color: var(--mbp); transform: translateY(-3px); box-shadow: 0 12px 30px rgba(27, 7, 61, 0.10); }
+.role-card { transition: box-shadow 150ms, transform 150ms; }
+.role-card:hover { transform: translateY(-3px); box-shadow: 0 12px 30px rgba(27, 7, 61, 0.10); }
+.perks .tick { transition: transform 150ms; }
+.perks li:hover .tick { transform: scale(1.12) rotate(-6deg); }
+.tab { transition: background 150ms, color 150ms, border-color 150ms; }
+.tab:hover { background: var(--mbp-soft); border-color: var(--mbp); color: var(--mbp); }
+.tab[aria-selected="true"]:hover { background: var(--yellow); border-color: var(--yellow); color: var(--dark); }
+.faq details { transition: background 150ms; }
+.faq summary { transition: color 150ms, padding-left 150ms; }
+.faq summary:hover { padding-left: 8px; }
+.faq summary::after { transition: transform 150ms, color 150ms; }
+.faq summary:hover::after { transform: scale(1.15); }
+
+
+.hero-logo { height: 124px; width: auto; display: block; margin-bottom: 26px; }
+.head-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 40px; }
+.head-row img { width: 190px; height: auto; flex: none; margin-top: 6px; }
+
+/* ---- responsive ---- */
+@media (max-width: 900px) {
+  .hero-grid, .split, .panel-grid { grid-template-columns: 1fr; gap: 36px; }
+  .facts, .steps, .pair-grid { grid-template-columns: 1fr 1fr; }
+  .perks { grid-template-columns: 1fr 1fr; }
+  .tab { width: 100%; }
+  .head-row { flex-direction: column; gap: 16px; }
+  .head-row img { width: 150px; }
+  .hero-logo { height: 84px; }
+  .band, section.principle, section.closing { padding: 48px 0; }
+  .inner { padding: 0 20px; }
+}
+@media (max-width: 520px) {
+  .facts, .steps, .pair-grid, .perks { grid-template-columns: 1fr; }
+}
+
+</style>
+<div class="stx-doc">
+<section class="hero-band">
+  <div class="inner hero-grid">
+    <div>
+      <img class="hero-logo" src="__ASSETS__/mbp-01-459267c3.png" alt="Master Balloon Professional">
+      <h1>Become a <span class="hl">Master</span> Balloon Professional</h1>
+      <p class="lede">Anyone can call themselves a balloon professional. MBP is how you prove it.</p>
+      <div class="btn-row">
+        <a class="btn" href="https://www.sempertexeurope.com/events">See exam dates</a>
+        <a class="btn btn-ghost" href="#exam">How the exam works</a>
+      </div>
+      <div class="trust">Internationally recognised &middot; Exams across Europe</div>
+    </div>
+    <figure class="figure">
+      <img src="__ASSETS__/mbp-02-d36f86a5.jpg" alt="New Master Balloon Professionals on stage with their diplomas">
+      <figcaption>New MBPs with their diploma</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="band band-tight band-mbp">
+  <div class="inner">
+    <div class="facts">
+      <div class="fact is-mbp"><div class="num">100</div><div class="lbl">Points total</div></div>
+      <div class="fact is-key"><div class="num">85</div><div class="lbl">Needed to pass</div></div>
+      <div class="fact"><div class="num">2</div><div class="lbl">Exam parts</div></div>
+      <div class="fact"><div class="num">3<span class="unit">h</span></div><div class="lbl">On the day</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="band band-paper" id="what">
+  <div class="inner split">
+    <div>
+      <div class="sec-head">
+        <h2>What is an <span class="hl">MBP</span>?</h2>
+      </div>
+      <p>MBP stands for Master Balloon Professional. It is the internationally recognised Sempertex certification for professional balloon decorators, awarded after you pass a practical exam assessed against the official Sempertex decoration standards.</p>
+      <p>It covers three things at once: creativity, technical execution, and the business knowledge behind a professional job. You do not submit a portfolio. You build, in the room, in front of a jury, within the time given.</p>
+      <p class="pull">The one credential in this industry that is earned with balloons in your hands.</p>
+    </div>
+    <figure class="figure">
+      <img src="__ASSETS__/mbp-03-f1c9d7bc.jpg" alt="A Sempertex jury member discussing a design with a candidate">
+      <figcaption>Scored against fixed criteria, explained face to face</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="band band-wash" id="why">
+  <div class="inner">
+    <div class="sec-head">
+      <h2>Why certification is <span class="hl">worth it</span></h2>
+      <p class="lead narrow">Certification is not a badge for your website. It changes what you can charge, who you can work with, and how clients decide.</p>
+    </div>
+    <div class="pair-grid">
+      <div class="pair">
+        <div class="plus">TRUST</div>
+        <h4>Proof a client can check</h4>
+        <p>Most clients cannot judge a tapered garland from a photo. They can check whether Sempertex has certified you. That shifts the conversation from price to standard.</p>
+      </div>
+      <div class="pair">
+        <div class="plus">PRICING</div>
+        <h4>A reason for your rate</h4>
+        <p>A certified decorator is not selling balloons, but a guaranteed level of work. That is the difference between quoting a price and defending one.</p>
+      </div>
+      <div class="pair">
+        <div class="plus">BUSINESS</div>
+        <h4>The numbers, not just the design</h4>
+        <p>The exam asks for a marketing proposal and a cost calculation alongside your designs. Building an organic arch and knowing what it should cost are two different skills.</p>
+      </div>
+      <div class="pair">
+        <div class="plus">LEVEL</div>
+        <h4>An honest benchmark</h4>
+        <p>Working alone makes it hard to measure yourself. A jury scoring against a fixed standard gives you a straight answer and a clear list of what to improve.</p>
+      </div>
+      <div class="pair">
+        <div class="plus">ACCESS</div>
+        <h4>A door into the brand</h4>
+        <p>MBP is where collaborations with Sempertex Europe start. Certified artists work with us on projects and content, and receive PR boxes with new colours and launches.</p>
+      </div>
+      <div class="pair">
+        <div class="plus">VISIBILITY</div>
+        <h4>Found, not just followed</h4>
+        <p>Certified artists are recognised through the Sempertex channels, in front of the clients, wholesalers and partners who go looking for professionals.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="principle">
+  <div class="inner">
+    <div class="label">The short version</div>
+    <div class="statement">Certification is the only proof of your skill a client can check <span class="hl">before</span> they book you.</div>
+  </div>
+</section>
+
+<section class="band band-paper" id="benefits">
+  <div class="inner">
+    <div class="head-row">
+      <div class="sec-head">
+        <h2>What you <span class="hl">get</span></h2>
+        <p class="lead narrow">Pass the exam and you join the MBP community, with everything that comes with it.</p>
+      </div>
+      <img src="__ASSETS__/mbp-04-5e4b1f90.png" alt="Master Balloon Professional, certified by Sempertex">
+    </div>
+    <ul class="perks">
+      <li><span class="tick"><svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true"><path d="M2 8.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><h4>MBP diploma</h4><p>Officially recognised by Sempertex, worldwide.</p></li>
+      <li><span class="tick"><svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true"><path d="M2 8.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><h4>Welcome kit</h4><p>Exclusive MBP merchandise, yours on the day.</p></li>
+      <li><span class="tick"><svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true"><path d="M2 8.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><h4>E-learning access</h4><p>Including the Marketing and Costing modules.</p></li>
+      <li><span class="tick"><svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true"><path d="M2 8.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><h4>Discount</h4><p>On Sempertex Europe workshops and events.</p></li>
+      <li><span class="tick"><svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true"><path d="M2 8.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><h4>PR boxes</h4><p>New colours, finishes and launches at your door.</p></li>
+      <li><span class="tick"><svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true"><path d="M2 8.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><h4>Collaborations</h4><p>Work with Sempertex Europe on projects and content.</p></li>
+      <li><span class="tick"><svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true"><path d="M2 8.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><h4>Recognition</h4><p>Your name out through the Sempertex channels.</p></li>
+      <li><span class="tick"><svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true"><path d="M2 8.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><h4>A network</h4><p>Certified professionals across the whole of Europe.</p></li>
+    </ul>
+  </div>
+</section>
+
+<section class="band band-wash" id="exam">
+  <div class="inner">
+    <div class="sec-head">
+      <h2>Inside the <span class="hl">exam</span></h2>
+      <p class="lead narrow">A practical exam in two parts, three hours in total. Pick a part to see what the jury scores.</p>
+    </div>
+
+    <div class="tab-label">Choose a part</div>
+    <div class="tabs" role="tablist" aria-label="Exam parts">
+      <button class="tab" id="tab1" role="tab" aria-selected="true" aria-controls="p1">Part 1: Free Creativity</button>
+      <button class="tab" id="tab2" role="tab" aria-selected="false" aria-controls="p2">Part 2: Jury assignments</button>
+    </div>
+
+    <div class="panel" id="p1" role="tabpanel" aria-labelledby="tab1">
+      <div class="panel-grid">
+        <div>
+          <h3>Free Creativity, 30 points</h3>
+          <p>Your own designs, your own balloons. Creativity carries this part.</p>
+          <table class="score">
+            <thead><tr><th>Assignment</th><th class="n">Points</th></tr></thead>
+            <tbody>
+              <tr><td>Centerpiece</td><td class="n">10</td></tr>
+              <tr><td>Personal design</td><td class="n">10</td></tr>
+              <tr><td>Marketing proposal</td><td class="n">5</td></tr>
+              <tr><td>Cost calculation</td><td class="n">5</td></tr>
+              <tr class="sum"><td>1 hour 30 minutes</td><td class="n">30</td></tr>
+            </tbody>
+          </table>
+          <ul class="clean">
+            <li>Use your own Sempertex balloons.</li>
+            <li>Every design includes at least three different balloon sizes.</li>
+            <li>The marketing proposal and cost calculation are prepared in advance with the e-learning modules.</li>
+          </ul>
+        </div>
+        <figure class="figure">
+          <img src="__ASSETS__/mbp-05-6ec04fde.jpg" alt="A candidate building a balloon design during the MBP exam">
+          <figcaption>Your design, your balloons, 60 minutes</figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <div class="panel" id="p2" role="tabpanel" aria-labelledby="tab2" hidden>
+      <div class="panel-grid">
+        <div>
+          <h3>Decoration at the jury's request, 70 points</h3>
+          <p>Technical skill and execution, under instruction, with balloons provided by Sempertex.</p>
+          <table class="score">
+            <thead><tr><th>Assignment</th><th class="n">Points</th></tr></thead>
+            <tbody>
+              <tr><td>Round balloon techniques</td><td class="n">20</td></tr>
+              <tr><td>Link-O-Loon&reg; design</td><td class="n">20</td></tr>
+              <tr><td>Organic design</td><td class="n">20</td></tr>
+              <tr><td>Use of basic tools</td><td class="n">10</td></tr>
+              <tr class="sum"><td>1 hour 30 minutes</td><td class="n">70</td></tr>
+            </tbody>
+          </table>
+          <ul class="clean">
+            <li>Balloons for this part are provided by Sempertex.</li>
+            <li>Assignments are carried out to the jury's instructions.</li>
+            <li>You apply different sizes and techniques across the assignments.</li>
+          </ul>
+        </div>
+        <figure class="figure">
+          <img src="__ASSETS__/mbp-06-a62e4bb8.jpg" alt="A Sempertex jury member assessing a balloon centerpiece with a scoring sheet">
+          <figcaption>Every assignment scored against the official criteria</figcaption>
+        </figure>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section class="band band-mbp" id="register">
+  <div class="inner">
+    <div class="sec-head">
+      <h2>How to <span class="hl">register</span></h2>
+    </div>
+    <div class="steps">
+      <div class="step"><p>Choose an available exam date from the events calendar.</p></div>
+      <div class="step"><p>Add the MBP exam to your cart and complete your order.</p></div>
+      <div class="step"><p>Once your payment is received, we register you officially with Sempertex.</p></div>
+      <div class="step"><p>You receive a confirmation email with the location, the schedule and your e-learning access.</p></div>
+    </div>
+    <div class="two-col">
+      <div class="role-card role-frame">
+        <div class="role-label">Prepare</div>
+        <h4>Before the day</h4>
+        <ul>
+          <li>Work through the Marketing and Costing modules on the e-learning platform.</li>
+          <li>Design your centerpiece and personal design, with three balloon sizes in each.</li>
+          <li>Print your marketing proposal and your cost calculation.</li>
+        </ul>
+      </div>
+      <div class="role-card role-fill">
+        <div class="role-label">Bring</div>
+        <h4>On the day</h4>
+        <ul>
+          <li>Your own Sempertex balloons for the Free Creativity part.</li>
+          <li>Both printed documents.</li>
+          <li>Yourself, 30 minutes before the start.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="band band-wash" id="faq">
+  <div class="inner">
+    <div class="sec-head">
+      <h2>Questions, <span class="hl">answered</span></h2>
+    </div>
+    <div class="faq">
+      <details open>
+        <summary>Who is the MBP exam for?</summary>
+        <div class="answer">Working balloon decorators and artists. It is a professional certification, not an introduction. You are expected to arrive with the technique already in your hands.</div>
+      </details>
+      <details>
+        <summary>Do I need to take a course first?</summary>
+        <div class="answer">No course is required. Registration gives you access to the Marketing and Costing modules on the e-learning platform, and those cover exam components you cannot prepare any other way.</div>
+      </details>
+      <details>
+        <summary>What happens if I do not reach 85 points?</summary>
+        <div class="answer">You can sit the exam again on a future date. The scoring tells you exactly which components to work on.</div>
+      </details>
+      <details>
+        <summary>Which balloons do I use?</summary>
+        <div class="answer">Your own Sempertex balloons for Free Creativity. Sempertex provides the balloons for the jury assignments.</div>
+      </details>
+      <details>
+        <summary>How long does the exam take?</summary>
+        <div class="answer">Three hours in total, split into two parts of 1 hour 30 minutes each.</div>
+      </details>
+      <details>
+        <summary>Where do the exams take place?</summary>
+        <div class="answer">Exam dates are organised at locations across Europe throughout the year. The events calendar shows the next available date and venue.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section class="closing">
+  <div class="inner">
+    <h2>Ready to get <span class="hl">certified</span>?</h2>
+    <p>Exam dates are scheduled across Europe throughout the year. Pick your date, bring your balloons, and show the jury what you can do.</p>
+    <div class="btn-row">
+      <a class="btn btn-ghost" href="https://www.sempertexeurope.com/events">See the exam dates and register</a>
+    </div>
+  </div>
+</section>
+
+<footer class="site-foot">
+  <div class="inner">
+    <span>Sempertex Europe</span>
+    <span>MBP certification</span>
+  </div>
+</footer>
+</div>
+</template>
+
+<script>
+(function () {
+  'use strict';
+  if (window.__stx_mbp) { return; }
+  window.__stx_mbp = true;
+  if (document.body.classList.contains('editor_enable') || document.querySelector('.odoo-editor-editable') || document.querySelector('#wrap.o_editable')) { return; }
+  var tpl = document.getElementById('stx-mbp-tpl');
+  var target = document.getElementById('wrap') || document.querySelector('main');
+  if (!tpl || !target) { return; }
+
+  /* Rethink Sans in het document zelf: @font-face werkt niet binnen een shadow root. */
+  if (!document.querySelector('link[data-stx-rethink]')) {
+    var fl = document.createElement('link');
+    fl.rel = 'stylesheet';
+    fl.href = 'https://fonts.googleapis.com/css2?family=Rethink+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,700&display=swap';
+    fl.setAttribute('data-stx-rethink', '1');
+    document.head.appendChild(fl);
+  }
+
+  var base = (window.STX_SECTIONS_BASE || '').replace(/sections\/?$/, '');
+  var seg = (window.location.pathname.split('/')[1] || '');
+  var prefix = /^(en_gb|fr|de)$/i.test(seg) ? '/' + seg : '';
+
+  var host = document.createElement('div');
+  host.id = 'stx-mbp-host';
+  var root = host.attachShadow({ mode: 'open' });
+  root.appendChild(tpl.content.cloneNode(true));
+  Array.prototype.forEach.call(root.querySelectorAll('img[src^="__ASSETS__/"]'), function (img) {
+    img.src = base + 'assets/mbp/' + img.getAttribute('src').slice(11);
+  });
+  Array.prototype.forEach.call(root.querySelectorAll('a[href^="https://www.sempertexeurope.com/"]'), function (a) {
+    a.href = prefix + a.getAttribute('href').slice(31);
+  });
+
+  Array.prototype.forEach.call(target.children, function (el) { el.style.display = 'none'; });
+  target.appendChild(host);
+
+  /* Hoogte van een vaste Odoo-header, zodat sticky balken en ankers eronder blijven. */
+  function headerOffset() {
+    var h = document.querySelector('header#top');
+    if (!h) { return 0; }
+    var pos = window.getComputedStyle(h).position;
+    if (pos !== 'fixed' && pos !== 'sticky') { return 0; }
+    return Math.max(0, Math.round(h.getBoundingClientRect().bottom));
+  }
+  var ticking = false;
+  function syncTop() {
+    ticking = false;
+    host.style.setProperty('--stx-top', headerOffset() + 'px');
+  }
+  window.addEventListener('scroll', function () { if (!ticking) { ticking = true; requestAnimationFrame(syncTop); } }, { passive: true });
+  window.addEventListener('resize', syncTop);
+  syncTop();
+
+  /* Ankerlinks (#ceo, #exam): de browser vindt ids in een shadow root niet zelf. */
+  root.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('a[href^="#"]');
+    if (!a) { return; }
+    var el = root.getElementById(a.getAttribute('href').slice(1));
+    if (!el) { return; }
+    e.preventDefault();
+    var nav = root.querySelector('.dept-nav');
+    var extra = nav ? nav.offsetHeight : 16;
+    var y = el.getBoundingClientRect().top + window.pageYOffset - headerOffset() - extra - 8;
+    window.scrollTo({ top: y, behavior: 'smooth' });
+  });
+
+  /* Tabs van het examen (deel 1 / deel 2). */
+  var tabs = root.querySelectorAll('.tab');
+  Array.prototype.forEach.call(tabs, function (t) {
+    t.addEventListener('click', function () {
+      Array.prototype.forEach.call(tabs, function (o) {
+        var open = o === t;
+        o.setAttribute('aria-selected', open ? 'true' : 'false');
+        root.getElementById(o.getAttribute('aria-controls')).hidden = !open;
+      });
+    });
+  });
+
+})();
+</script>

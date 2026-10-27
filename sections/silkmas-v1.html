@@ -21,12 +21,13 @@
      5. Winkelmand: balk 'nog EUR x tot je volgende gratis Silk zakje'.
         Staat UIT (FREE_BAGS = false) tot het Odoo-programma bestaat.
 
-     BETA (nu AAN): met BETA = true toont alles alleen in een browser
-     waar je ooit een pagina opende met #stxsilkmas achter de URL
+     BETA (nu UIT, 27/10/2026): met BETA = true toont alles alleen in een
+     browser waar je ooit een pagina opende met #stxsilkmas achter de URL
      (onthouden in localStorage), ongeacht de datum. #stxsilkmas-uit
      zet het weer uit. Met BETA = false toont het voor iedereen, maar
-     enkel tussen START en END (Brusselse datum). Na END doet het
-     bestand niets meer, je hoeft het dus niet weg te halen.
+     enkel tussen START en END (Brusselse datum); #stxsilkmas werkt dan
+     nog als voorvertoning voor die datum. Na END doet het bestand
+     niets meer, je hoeft het dus niet weg te halen.
 
      Beelden: assets/silkmas/ (achtergronden) en assets/balloons/
      (Silk ballonnen), gepind op een commit hash.
@@ -163,7 +164,7 @@
 <script>
 (function () {
   'use strict';
-  var BETA = true; // true = alleen zichtbaar na #stxsilkmas (testmodus, elke datum), false = live voor iedereen tussen START en END
+  var BETA = false; // true = alleen zichtbaar na #stxsilkmas (testmodus, elke datum), false = live voor iedereen tussen START en END (#stxsilkmas blijft dan een voorvertoning)
   var BETA_KEY = 'stx_silkmas_beta';
   var START = '2026-11-01'; // eerste campagnedag (Brusselse datum)
   var END = '2026-12-31';   // laatste campagnedag
@@ -202,7 +203,7 @@
   var beta = betaOn();
   var today = brusselsToday();
   var live = today >= START && today <= END;
-  if (BETA ? !beta : !live) { return; }
+  if (!beta && (BETA || !live)) { return; }
   if (document.body.classList.contains('editor_enable') || document.querySelector('.odoo-editor-editable') || document.querySelector('#wrap.o_editable')) { return; }
 
   /* ---- TAAL + LINKPREFIX ---- */

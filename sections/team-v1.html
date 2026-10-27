@@ -1,0 +1,787 @@
+<!-- ============================================================
+     STX EU / TEAM PAGINA v1
+     Bestand hoort in de repo onder /sections/ en wordt door de
+     stx-loader geladen op /team (alle talen). NIET los in Odoo plakken.
+
+     GEBOUWD met code/build-shadow-section.py uit Robins losse pagina
+     (sempertex-team-pagina.html). Niet met de hand aanpassen: pas de losse pagina aan
+     en bouw opnieuw, anders ben je de wijziging bij de volgende
+     build kwijt.
+
+     Werking: de pagina staat in een shadow root, in #wrap. Daardoor
+     raakt de CSS van de pagina (body, h2, section, footer, *) de rest
+     van de site niet, en de CSS van Odoo deze pagina niet. Wat Odoo
+     zelf in #wrap heeft staan, wordt verborgen (niet gewist): in de
+     editor zie je het nog en doet dit bestand niets.
+     Links naar www.sempertexeurope.com krijgen de taalprefix van de
+     pagina (/en_GB, /fr, /de). Beelden staan in assets/team/,
+     op dezelfde commit als de loader.
+     ============================================================ -->
+
+<template id="stx-team-tpl">
+<style>
+:host { all: initial; display: block; overflow-x: clip; }
+.stx-doc { display: block; }
+/* Sempertex Europe document system. Do not modify. Inlined by scripts/build_html.py */
+:host {
+  --purple: #6b3fb9;
+  --purple-light: #f1d9ff;
+  --purple-bg: #faf4ff;
+  --dark: #1b073d;
+  --yellow: #ffdb5a;
+  --yellow-soft: #fff4d6;
+  --warn: #cd0b5c;
+  --paper: #fefcfa;
+  --white: #ffffff;
+  --rule: #e8dcf5;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+:host { scroll-behavior: smooth; }
+
+.stx-doc {
+  font-family: 'Rethink Sans', sans-serif;
+  background: var(--paper);
+  color: var(--dark);
+  line-height: 1.55;
+  font-size: 17px;
+  -webkit-font-smoothing: antialiased;
+}
+
+.wrap { max-width: 880px; margin: 0 auto; padding: 80px 48px 120px; }
+
+/* HEADER */
+header.hero { padding: 20px 0 64px; border-bottom: 2px solid var(--dark); margin-bottom: 80px; }
+.eyebrow { font-size: 13px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--purple); margin-bottom: 24px; }
+h1.title { font-size: clamp(52px, 8vw, 96px); font-weight: 800; line-height: 0.95; letter-spacing: -0.03em; margin-bottom: 32px; }
+.hl { background: var(--yellow); padding: 0 0.15em; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+.dark-hl { background: var(--dark); color: var(--yellow); padding: 0 0.15em; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+.lede { font-size: 22px; line-height: 1.45; color: var(--dark); max-width: 680px; font-weight: 500; }
+.meta { margin-top: 40px; display: flex; gap: 48px; font-size: 13px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--dark); opacity: 0.6; }
+
+/* SECTIONS */
+section { margin-bottom: 88px; }
+.sec-num { font-size: 120px; font-weight: 800; line-height: 0.85; color: var(--purple-light); letter-spacing: -0.04em; margin-bottom: -40px; position: relative; z-index: 0; }
+h2 { font-size: clamp(34px, 5vw, 48px); font-weight: 800; line-height: 1.05; letter-spacing: -0.02em; margin-bottom: 28px; position: relative; z-index: 1; }
+h3 { font-size: 22px; font-weight: 700; margin: 32px 0 12px; line-height: 1.25; letter-spacing: -0.01em; }
+
+/* BODY */
+p { margin-bottom: 18px; max-width: 68ch; }
+p.lead { font-size: 20px; font-weight: 500; line-height: 1.5; margin-bottom: 24px; }
+strong { font-weight: 700; color: var(--dark); }
+em { font-style: italic; }
+a { color: var(--purple); }
+
+/* PULL QUOTE */
+.pull { font-size: 26px; font-weight: 700; line-height: 1.3; color: var(--purple); border-left: 4px solid var(--yellow); padding: 4px 0 4px 24px; margin: 32px 0; max-width: 62ch; letter-spacing: -0.01em; }
+
+/* QUOTE BOX */
+.quote-box { background: var(--purple-bg); border-left: 4px solid var(--purple); padding: 24px 28px; margin: 24px 0; border-radius: 0 8px 8px 0; }
+.quote-box p:last-of-type { margin-bottom: 0; }
+.quote-box .attr { margin-top: 12px; font-size: 13px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--purple); }
+
+/* LISTS */
+ul.clean, ol.clean { list-style: none; margin: 16px 0 24px; }
+ul.clean li, ol.clean li { position: relative; padding-left: 32px; margin-bottom: 14px; max-width: 68ch; }
+ul.clean li::before { content: ""; position: absolute; left: 0; top: 11px; width: 14px; height: 2px; background: var(--purple); }
+ol.clean { counter-reset: step; }
+ol.clean li { counter-increment: step; padding-left: 44px; }
+ol.clean li::before { content: counter(step, decimal-leading-zero); position: absolute; left: 0; top: 0; font-size: 14px; font-weight: 700; color: var(--purple); letter-spacing: 0.05em; }
+
+/* PAIR GRID */
+.pair-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin: 32px 0; }
+.pair { background: var(--paper); border: 2px solid var(--dark); padding: 24px; border-radius: 6px; position: relative; }
+.pair .plus { position: absolute; top: -16px; left: 20px; background: var(--yellow); color: var(--dark); font-weight: 800; padding: 2px 10px; font-size: 12px; letter-spacing: 0.08em; border-radius: 4px; }
+.pair h4 { font-size: 20px; font-weight: 800; margin-bottom: 8px; letter-spacing: -0.01em; }
+.pair p { font-size: 15px; line-height: 1.5; color: var(--dark); opacity: 0.85; margin: 0; }
+
+/* STAT GRID (numbers, KPIs) */
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin: 32px 0; }
+.stat { background: var(--purple-bg); border-radius: 8px; padding: 24px; }
+.stat .num { font-size: 44px; font-weight: 800; line-height: 1; letter-spacing: -0.03em; color: var(--dark); }
+.stat .num .unit { font-size: 20px; font-weight: 700; color: var(--purple); margin-left: 2px; }
+.stat .lbl { margin-top: 10px; font-size: 12px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--purple); }
+.stat .note { margin-top: 6px; font-size: 14px; line-height: 1.4; opacity: 0.8; }
+.stat.is-key { background: var(--yellow); }
+.stat.is-key .lbl, .stat.is-key .num .unit { color: var(--dark); }
+
+/* DATA TABLE */
+.table-scroll { overflow-x: auto; margin: 24px 0 32px; break-inside: avoid; }
+table.data { width: 100%; border-collapse: collapse; font-size: 15px; }
+table.data th { text-align: left; font-size: 12px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--purple); padding: 10px 14px; border-bottom: 2px solid var(--dark); white-space: nowrap; }
+table.data td { padding: 12px 14px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+table.data tr:nth-child(even) td { background: var(--purple-bg); }
+table.data td.num, table.data th.num { text-align: right; font-variant-numeric: tabular-nums; }
+table.data tr.total td { font-weight: 800; background: var(--yellow-soft); border-top: 2px solid var(--dark); border-bottom: none; }
+table.data td.neg { color: var(--warn); font-weight: 700; }
+
+/* FORBIDDEN GRID */
+.forbidden-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin: 24px 0 0; }
+.forbidden { background: var(--white); border: 2px solid var(--warn); padding: 14px 18px; border-radius: 6px; font-weight: 600; font-size: 15px; position: relative; }
+.forbidden::before { content: "×"; color: var(--warn); font-weight: 800; margin-right: 8px; font-size: 18px; }
+
+/* SLIDE / CASE STUDY */
+.case-intro { background: var(--purple-bg); padding: 32px 36px; border-radius: 8px; margin: 24px 0 40px; }
+.case-intro p { margin-bottom: 10px; }
+.case-intro p:last-child { margin-bottom: 0; }
+.slide-block { display: grid; grid-template-columns: 320px 1fr; gap: 40px; margin: 48px 0; align-items: start; }
+.slide-block img { width: 100%; border-radius: 8px; box-shadow: 0 12px 40px rgba(27, 7, 61, 0.12); display: block; }
+.img-placeholder { width: 100%; aspect-ratio: 4 / 3; border-radius: 8px; background: var(--purple-light); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--purple); text-align: center; padding: 16px; }
+.slide-num { font-size: 13px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--purple); margin-bottom: 8px; }
+.slide-verdict { display: inline-block; padding: 4px 12px; border-radius: 4px; font-size: 12px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 14px; }
+.verdict-strong { background: var(--dark); color: var(--yellow); }
+.verdict-ok { background: var(--purple-light); color: var(--dark); }
+.verdict-weak { background: var(--yellow-soft); color: var(--dark); border: 1px solid var(--yellow); }
+.slide-block h3 { margin-top: 0; font-size: 24px; line-height: 1.2; }
+.slide-block p { font-size: 16px; margin-bottom: 12px; }
+
+/* PRINCIPLE BANNER */
+.principle { background: var(--dark); color: var(--paper); padding: 48px 40px; border-radius: 8px; margin: 48px 0; position: relative; overflow: hidden; }
+.principle .label { font-size: 12px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--yellow); margin-bottom: 16px; }
+.principle .statement { font-size: clamp(28px, 4vw, 40px); font-weight: 800; line-height: 1.1; letter-spacing: -0.02em; }
+.principle .statement .hl { background: var(--yellow); color: var(--dark); }
+
+/* TWO COL */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin: 32px 0; }
+.role-card { padding: 28px; border-radius: 8px; }
+.role-frame { background: var(--purple-bg); border: 2px solid var(--purple); }
+.role-fill { background: var(--white); border: 2px solid var(--dark); }
+.role-card .role-label { font-size: 12px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--purple); margin-bottom: 10px; }
+.role-fill .role-label { color: var(--dark); }
+.role-card h4 { font-size: 22px; font-weight: 800; margin-bottom: 12px; letter-spacing: -0.01em; }
+.role-card ul { list-style: none; font-size: 15px; }
+.role-card ul li { padding: 4px 0 4px 16px; position: relative; }
+.role-card ul li::before { content: ""; position: absolute; left: 0; top: 15px; width: 8px; height: 2px; background: var(--purple); }
+
+/* CLOSING */
+.closing { background: var(--yellow); padding: 56px 48px; border-radius: 8px; margin: 64px 0 0; }
+.closing h2 { font-size: clamp(36px, 5vw, 52px); margin-bottom: 24px; }
+.closing p { font-size: 19px; font-weight: 500; margin-bottom: 16px; max-width: 68ch; }
+.closing .pull { border-left-color: var(--dark); color: var(--dark); }
+.closing ul.clean li::before { background: var(--dark); }
+
+/* TOC */
+.toc { background: var(--purple-bg); padding: 32px 36px; border-radius: 8px; margin-bottom: 80px; }
+.toc .toc-label { font-size: 12px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--purple); margin-bottom: 16px; }
+.toc ol { list-style: none; counter-reset: toc; }
+.toc ol li { counter-increment: toc; padding: 8px 0; border-bottom: 1px solid var(--rule); font-size: 16px; font-weight: 600; display: flex; gap: 20px; }
+.toc ol li:last-child { border-bottom: none; }
+.toc ol li::before { content: counter(toc, decimal-leading-zero); color: var(--purple); font-weight: 800; min-width: 28px; }
+.toc a { color: var(--dark); text-decoration: none; }
+.toc a:hover { color: var(--purple); }
+
+/* FOOTER */
+footer { margin-top: 120px; padding-top: 32px; border-top: 2px solid var(--dark); font-size: 13px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--dark); opacity: 0.6; display: flex; justify-content: space-between; }
+
+/* RESPONSIVE */
+@media screen and (max-width: 720px) {
+  .wrap { padding: 48px 24px 80px; }
+  .slide-block { grid-template-columns: 1fr; gap: 20px; }
+  .slide-block img { max-width: 320px; }
+  .two-col { grid-template-columns: 1fr; }
+  .sec-num { font-size: 80px; margin-bottom: -28px; }
+  .meta { flex-direction: column; gap: 12px; }
+  .closing { padding: 40px 28px; }
+}
+
+/* PRINT / PDF (A4). Margins come from @page, so .wrap loses its padding. */
+@page { size: A4; margin: 18mm 17mm 20mm; }
+@media print {
+  :host { --paper: #ffffff; } /* page margins print white, so paper surfaces match them */
+  :host, .stx-doc { background: var(--paper); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .stx-doc { font-size: 14.5px; }
+  .wrap { max-width: none; padding: 0; }
+  header.hero { padding: 0 0 40px; margin-bottom: 48px; }
+  h1.title { font-size: 60px; margin-bottom: 24px; }
+  .lede { font-size: 18px; }
+  .meta { margin-top: 28px; font-size: 11px; }
+  section { margin-bottom: 56px; }
+  .sec-num { font-size: 92px; margin-bottom: -30px; }
+  h2 { font-size: 34px; margin-bottom: 20px; break-after: avoid; }
+  h3 { font-size: 19px; break-after: avoid; }
+  .sec-num { break-after: avoid; }
+  p.lead { font-size: 17px; }
+  .pull { font-size: 21px; margin: 24px 0; }
+  .principle { padding: 36px 32px; margin: 32px 0; }
+  .principle .statement { font-size: 30px; }
+  .closing { padding: 40px 36px; margin-top: 40px; }
+  .closing h2 { font-size: 36px; }
+  .closing p { font-size: 16px; }
+  .toc { margin-bottom: 48px; padding: 24px 28px; }
+  .toc ol li { font-size: 14px; padding: 6px 0; }
+  .pair h4, .role-card h4 { font-size: 18px; }
+  .stat .num { font-size: 36px; }
+  table.data { font-size: 13px; }
+  .pair, .stat, .forbidden, .role-card, .quote-box, .pull, .principle, .closing, .slide-block, .case-intro, .toc, table.data tr, li { break-inside: avoid; }
+  .pair-grid { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; }
+  .pair { padding: 20px; }
+  .two-col { gap: 20px; }
+  .role-card { padding: 22px; }
+  .slide-block { grid-template-columns: 250px 1fr; gap: 28px; margin: 32px 0; }
+  .page-break { break-before: page; }
+  footer { display: none; } /* page footer comes from html_to_pdf.py */
+  a { text-decoration: none; }
+}
+
+/* STX:END */
+
+/* ---- TEAM PAGE ---- */
+.wrap.team { max-width: 1240px; padding-top: 0; }
+.stx-doc { overflow-x: hidden; }
+
+/* volle banden over de hele schermbreedte */
+.full { margin-left: calc(50% - 50vw); margin-right: calc(50% - 50vw);
+  padding-left: calc(50vw - 50%); padding-right: calc(50vw - 50%); }
+.band-soft { background: var(--purple-bg); }
+
+.principle.full { border-radius: 0; padding-top: 64px; padding-bottom: 64px;
+  margin-top: 24px; margin-bottom: 0; }
+section.full { padding-top: 72px; padding-bottom: 72px; margin-bottom: 0; }
+section.closing.full { border-radius: 0; padding-top: 72px; padding-bottom: 80px;
+  margin-top: 0; margin-bottom: 0; }
+footer { margin-top: 72px; }
+header.hero { padding: 48px 0 30px; margin-bottom: 0; }
+h1.title { font-size: clamp(34px, 4.6vw, 62px); max-width: none; margin-bottom: 0; }
+h1.title .hl, h2 .hl, .principle .statement .hl { white-space: nowrap; background: none;
+  padding: 0 0.15em; position: relative; z-index: 0; }
+h1.title .hl::before, h2 .hl::before, .principle .statement .hl::before { content: "";
+  position: absolute; left: 0; right: 0; top: 0.14em; bottom: 0.02em;
+  background: var(--yellow); z-index: -1; }
+
+.dept-nav { position: sticky; top: 0; z-index: 30; display: flex; flex-wrap: wrap; gap: 10px;
+  align-items: center; background: var(--paper); border-bottom: 2px solid var(--dark);
+  padding: 16px 0; margin-bottom: 64px; }
+.dept-nav .nav-label { font-size: 12px; font-weight: 700; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--purple); margin-right: 8px; }
+.dept-nav a { font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+  text-decoration: none; color: var(--dark); border: 2px solid var(--dark); border-radius: 6px;
+  padding: 9px 14px; transition: background 0.18s ease, color 0.18s ease, transform 0.18s ease; }
+.dept-nav a:hover, .dept-nav a:focus-visible { background: var(--yellow); transform: translateY(-2px); }
+
+section h2 { margin-bottom: 16px; }
+.sec-num { display: block; font-size: clamp(74px, 10.8vw, 104px); margin-bottom: -0.29em; }
+section .lead { max-width: 60ch; margin-bottom: 8px; }
+
+.team-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 24px; margin-top: 32px; }
+.member { position: relative; background: var(--paper); border-radius: 10px; overflow: hidden;
+  outline: none; box-shadow: 0 6px 18px rgba(27, 7, 61, 0.07);
+  transition: transform 0.22s ease, box-shadow 0.22s ease; }
+.member::after { content: ""; position: absolute; inset: 0; border: 2px solid var(--dark);
+  border-radius: 10px; pointer-events: none; transition: border-color 0.22s ease; }
+.member:hover, .member:focus-visible { transform: translateY(-8px);
+  box-shadow: 0 22px 52px rgba(27, 7, 61, 0.2); }
+.member:hover::after, .member:focus-visible::after { border-color: var(--purple); }
+
+.portrait { position: relative; aspect-ratio: 3 / 4; background: var(--paper);
+  overflow: hidden; }
+.portrait .initials { position: absolute; inset: 0; display: flex; align-items: center;
+  justify-content: center; font-size: 52px; font-weight: 800; letter-spacing: -0.04em;
+  color: var(--purple); opacity: 0.55; }
+.portrait img { position: relative; width: 100%; height: 100%; object-fit: cover;
+  object-position: center 18%; display: block; }
+.portrait img.is-missing { display: none; }
+
+.plate { position: absolute; left: 0; right: 0; bottom: 0; height: 46%;
+  display: flex; flex-direction: column; justify-content: flex-end; padding: 16px 18px 18px;
+  color: var(--paper);
+  background: linear-gradient(to top, rgba(107, 63, 185, 0.96) 0%, rgba(107, 63, 185, 0.92) 38%,
+    rgba(107, 63, 185, 0.55) 70%, rgba(107, 63, 185, 0) 100%);
+  transition: height 0.3s ease, background 0.3s ease; }
+.plate h3 { font-size: 18px; font-weight: 800; line-height: 1.2; letter-spacing: -0.01em;
+  margin: 0 0 4px; }
+.plate .role { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+  opacity: 0.85; }
+.plate .bio { font-size: 14px; line-height: 1.45; margin: 0; max-width: none; max-height: 0;
+  opacity: 0; overflow: hidden;
+  transition: max-height 0.3s ease, opacity 0.25s ease, margin 0.3s ease; }
+.member:hover .plate, .member:focus-visible .plate { height: 100%;
+  background: linear-gradient(to top, rgba(107, 63, 185, 0.97) 0%, rgba(107, 63, 185, 0.95) 100%); }
+.member:hover .plate .bio, .member:focus-visible .plate .bio { max-height: 280px; opacity: 1;
+  margin-top: 12px; }
+.touch-bio { display: none; }
+
+.ceo-card { position: relative; display: grid; grid-template-columns: 230px 1fr;
+  background: var(--paper); border-radius: 10px; overflow: hidden; margin-top: 32px;
+  max-width: 740px; box-shadow: 0 6px 18px rgba(27, 7, 61, 0.07); }
+.ceo-card::after { content: ""; position: absolute; inset: 0; border: 2px solid var(--dark);
+  border-radius: 10px; pointer-events: none; z-index: 3; }
+.ceo-card .portrait { aspect-ratio: 3 / 4; border-right: 2px solid var(--dark); }
+.ceo-body { padding: 28px 32px; display: flex; flex-direction: column;
+  justify-content: center; background: var(--purple-bg); }
+.ceo-body p { font-size: 16px; line-height: 1.55; margin: 0; max-width: 56ch; }
+.ceo-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--purple); margin-bottom: 14px; }
+.ceo-pull { font-size: 21px !important; font-weight: 700; line-height: 1.3; letter-spacing: -0.01em;
+  color: var(--purple); border-left: 4px solid var(--yellow); padding-left: 18px;
+  margin-bottom: 16px !important; }
+.member.amb .plate { height: 42%; }
+
+.info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 32px 0 0; }
+.info-card { border: 2px solid var(--dark); border-radius: 10px; padding: 28px;
+  background: var(--paper); transition: box-shadow 0.22s ease, transform 0.22s ease; }
+.info-card:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(27, 7, 61, 0.14); }
+.info-card.soft { background: var(--purple-bg); border-color: var(--purple); }
+.info-card h4 { font-size: 20px; font-weight: 800; letter-spacing: -0.01em; margin-bottom: 14px; }
+.info-card p { font-size: 16px; margin-bottom: 8px; max-width: none; }
+.info-card p:last-child { margin-bottom: 0; }
+.info-card .small { font-size: 14px; opacity: 0.75; }
+.info-card a { color: var(--purple); font-weight: 700; text-decoration: none;
+  border-bottom: 2px solid var(--purple-light); transition: border-color 0.18s ease; }
+.info-card a:hover { border-color: var(--purple); }
+
+.btn-row { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 28px; }
+.stx-btn { display: inline-block; font-size: 14px; font-weight: 800; letter-spacing: 0.04em;
+  text-decoration: none; padding: 14px 22px; border-radius: 6px; border: 2px solid var(--dark);
+  background: var(--paper); color: var(--dark);
+  transition: transform 0.18s ease, background 0.18s ease, color 0.18s ease; }
+.stx-btn:hover { transform: translateY(-3px); }
+.stx-btn.primary { background: var(--dark); color: var(--yellow); }
+.stx-btn.primary:hover { background: var(--purple); color: var(--paper); }
+
+@media (max-width: 720px) {
+  .wrap.team { padding-top: 40px; }
+  .dept-nav { margin-bottom: 48px; gap: 8px; padding: 12px 0; flex-wrap: nowrap;
+    overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+  .dept-nav::-webkit-scrollbar { display: none; }
+  .dept-nav a { white-space: nowrap; flex: 0 0 auto; }
+  .dept-nav .nav-label { display: none; }
+  .sec-num { margin-bottom: 0; }
+  .team-grid { grid-template-columns: 1fr; }
+  .ceo-card { grid-template-columns: 1fr; }
+  .ceo-card .portrait { border-right: none; border-bottom: 2px solid var(--dark); }
+  .ceo-body { padding: 22px 20px 26px; }
+.info-grid { grid-template-columns: 1fr; }
+}
+@media (hover: none) {
+  .touch-bio { display: block; padding: 16px 18px 20px; }
+  .touch-bio p { font-size: 15px; line-height: 1.5; margin: 0; max-width: none; }
+  .member:hover { transform: none; box-shadow: none; }
+  .member:hover::after { border-color: var(--dark); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .member, .plate, .plate .bio, .info-card, .stx-btn, .dept-nav a { transition: none !important; }
+}
+.dept-nav { top: var(--stx-top, 0px); }
+.stx-doc { overflow-x: visible; }
+</style>
+<div class="stx-doc">
+<div class="wrap team">
+
+  <header class="hero">
+    <h1 class="title">Het team achter <span class="hl">de ballon</span></h1>
+  </header>
+
+  <nav class="dept-nav" aria-label="Afdelingen">
+    <span class="nav-label">Spring naar</span>
+    <a href="#ceo">CEO</a>
+    <a href="#leiding">Leiding</a>
+    <a href="#klanten">Klantendienst</a>
+    <a href="#creatie">Creatie &amp; media</a>
+    <a href="#magazijn">Magazijn</a>
+    <a href="#ambassadors">Ambassadors</a>
+    <a href="#bezoek">Kom langs</a>
+  </nav>
+
+  <section id="ceo">
+    <div class="sec-num">01</div>
+    <h2>Onze <span class="hl">CEO</span></h2>
+    <p class="lead">Sofie stuurt Sempertex Europe aan, van markt tot magazijn.</p>
+    <div class="ceo-card">
+      <div class="portrait">
+        <span class="initials" aria-hidden="true">SV</span>
+        <img src="https://www.sempertexeurope.com/web/image/50470-6ff709dc/Sofie_2025-12-18.webp" alt="Sofie Vandewyer, CEO Sempertex Europe bij Sempertex Europe" loading="lazy">
+        <div class="plate">
+          <h3>Sofie Vandewyer</h3>
+          <div class="role">CEO Sempertex Europe</div>
+        </div>
+      </div>
+      <div class="ceo-body">
+        <div class="ceo-eyebrow">Eigenaar</div>
+        <p class="ceo-pull">Denkt in kleuren, spreekt in strategie en houdt het overzicht, ook wanneer alles tegelijk beweegt.</p>
+        <p>Bouwt markten, stuurt groei en bewaart de balans tussen cijfers en creativiteit. Niet bang voor een uitdaging maar wel voor meetings zonder einde.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="leiding">
+    <div class="sec-num">02</div>
+    <h2>Onze <span class="hl">leidinggevenden</span></h2>
+    <p class="lead">De mensen die hun team sturen, de cijfers bewaken en de lijnen uitzetten.</p>
+    <div class="team-grid">
+      <article class="member" tabindex="0">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">KD</span>
+          <img src="https://www.sempertexeurope.com/web/image/50457-8e0ead35/Koen.webp" alt="Koen Van Damme, Head of Technical &amp; Events bij Sempertex Europe" loading="lazy">
+          <div class="plate">
+            <h3>Koen Van Damme</h3>
+            <div class="role">Head of Technical &amp; Events</div>
+            <p class="bio">Zorgt dat alles technisch blijft draaien en krijgt alles voor mekaar, ook wanneer het complex wordt. Meer dan 30 jaar ervaring in het ballonvak en nog altijd even gedreven. Brengt mensen samen, is altijd aanspreekbaar en nooit verlegen om een grapje.</p>
+          </div>
+        </div>
+        <div class="touch-bio"><p>Zorgt dat alles technisch blijft draaien en krijgt alles voor mekaar, ook wanneer het complex wordt. Meer dan 30 jaar ervaring in het ballonvak en nog altijd even gedreven. Brengt mensen samen, is altijd aanspreekbaar en nooit verlegen om een grapje.</p></div>
+      </article>
+      <article class="member" tabindex="0">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">RV</span>
+          <img src="https://www.sempertexeurope.com/web/image/119751-be304dc2/Rani_2026-07-16.webp" alt="Rani Vandiest, Head of Operations &amp; Customer Experience bij Sempertex Europe" loading="lazy">
+          <div class="plate">
+            <h3>Rani Vandiest</h3>
+            <div class="role">Head of Operations &amp; Customer Experience</div>
+            <p class="bio">Houdt alles draaiende en zorgt dat niets tussen de mazen van het net valt. Altijd stipt en houdt overzicht en structuur, zelfs wanneer alles tegelijk loopt. Regelt wat geregeld moet worden, vaak nog vóór iemand het doorheeft.</p>
+          </div>
+        </div>
+        <div class="touch-bio"><p>Houdt alles draaiende en zorgt dat niets tussen de mazen van het net valt. Altijd stipt en houdt overzicht en structuur, zelfs wanneer alles tegelijk loopt. Regelt wat geregeld moet worden, vaak nog vóór iemand het doorheeft.</p></div>
+      </article>
+      <article class="member" tabindex="0">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">KC</span>
+          <img src="https://www.sempertexeurope.com/web/image/50474-01cd9902/Kim.webp" alt="Kim Cuppers, Finance &amp; Data bij Sempertex Europe" loading="lazy">
+          <div class="plate">
+            <h3>Kim Cuppers</h3>
+            <div class="role">Finance &amp; Data</div>
+            <p class="bio">Brengt cijfers tot leven en zorgt dat alles klopt, tot in de details. Combineert boekhouding met data-analyse en maakt van cijfers heldere inzichten. Haar eerste vraag? Wat kost dat?</p>
+          </div>
+        </div>
+        <div class="touch-bio"><p>Brengt cijfers tot leven en zorgt dat alles klopt, tot in de details. Combineert boekhouding met data-analyse en maakt van cijfers heldere inzichten. Haar eerste vraag? Wat kost dat?</p></div>
+      </article>
+      <article class="member" tabindex="0">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">RR</span>
+          <img src="https://www.sempertexeurope.com/web/image/50476-ebb63af8/Robin.webp" alt="Robin Rutten, Head of Marketing &amp; Sales bij Sempertex Europe" loading="lazy">
+          <div class="plate">
+            <h3>Robin Rutten</h3>
+            <div class="role">Head of Marketing &amp; Sales</div>
+            <p class="bio">Zorgt dat het merk zichtbaar is op de juiste momenten, op de juiste plaatsen. Denkt in campagnes, content en groei, en vertaalt ideeën naar sterke marketing. Jong, ambitieus en altijd op zoek naar wat beter, slimmer of sterker kan.</p>
+          </div>
+        </div>
+        <div class="touch-bio"><p>Zorgt dat het merk zichtbaar is op de juiste momenten, op de juiste plaatsen. Denkt in campagnes, content en groei, en vertaalt ideeën naar sterke marketing. Jong, ambitieus en altijd op zoek naar wat beter, slimmer of sterker kan.</p></div>
+      </article>
+    </div>
+  </section>
+
+  <section id="klanten">
+    <div class="sec-num">03</div>
+    <h2>Klantendienst &amp; <span class="hl">kantoor</span></h2>
+    <p class="lead">De stem aan de telefoon en de hand achter je bestelling. Dit is het team dat je het vaakst spreekt.</p>
+    <div class="team-grid">
+      <article class="member" tabindex="0">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">VE</span>
+          <img src="https://www.sempertexeurope.com/web/image/50472-e1700776/Vroni.webp" alt="Vroni Effner, Customer Service bij Sempertex Europe" loading="lazy">
+          <div class="plate">
+            <h3>Vroni Effner</h3>
+            <div class="role">Customer Service</div>
+            <p class="bio">Zorgt dat klanten zich gehoord en geholpen voelen, van eerste vraag tot laatste detail. Schakelt snel, denkt mee en vertaalt vragen meteen naar oplossingen. Volgt alles nauwkeurig op en maakt het verschil in de kleine dingen.</p>
+          </div>
+        </div>
+        <div class="touch-bio"><p>Zorgt dat klanten zich gehoord en geholpen voelen, van eerste vraag tot laatste detail. Schakelt snel, denkt mee en vertaalt vragen meteen naar oplossingen. Volgt alles nauwkeurig op en maakt het verschil in de kleine dingen.</p></div>
+      </article>
+      <article class="member" tabindex="0">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">GC</span>
+          <img src="https://www.sempertexeurope.com/web/image/114023-5fb9908c/Nati%20Website%20%285%29.webp" alt="Gigi Canale, Customer Service bij Sempertex Europe" loading="lazy">
+          <div class="plate">
+            <h3>Gigi Canale</h3>
+            <div class="role">Customer Service</div>
+            <p class="bio">Is het eerste aanspreekpunt en zit vol energie van het eerste tot het laatste telefoontje. Denkt mee, pakt alles meteen aan en gaat er altijd vol voor. Brengt tempo, positiviteit en zorgt voor the Italian Drama ;-).</p>
+          </div>
+        </div>
+        <div class="touch-bio"><p>Is het eerste aanspreekpunt en zit vol energie van het eerste tot het laatste telefoontje. Denkt mee, pakt alles meteen aan en gaat er altijd vol voor. Brengt tempo, positiviteit en zorgt voor the Italian Drama ;-).</p></div>
+      </article>
+      <article class="member" tabindex="0">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">JJ</span>
+          <img src="https://www.sempertexeurope.com/web/image/93877-c2b47f02/Nati%20Website%20%282%29.webp" alt="Julie Joris, Event &amp; Office Assistant bij Sempertex Europe" loading="lazy">
+          <div class="plate">
+            <h3>Julie Joris</h3>
+            <div class="role">Event &amp; Office Assistant</div>
+            <p class="bio">Springt in waar nodig en voelt zich even thuis achter een bureau, aan de kassa als op een evenement. Schakelt snel tussen taken, mensen en situaties zonder een stap te missen. Veelzijdig inzetbaar en altijd klaar voor wat er ook komt.</p>
+          </div>
+        </div>
+        <div class="touch-bio"><p>Springt in waar nodig en voelt zich even thuis achter een bureau, aan de kassa als op een evenement. Schakelt snel tussen taken, mensen en situaties zonder een stap te missen. Veelzijdig inzetbaar en altijd klaar voor wat er ook komt.</p></div>
+      </article>
+    </div>
+  </section>
+
+  <section id="creatie">
+    <div class="sec-num">04</div>
+    <h2>Creatie &amp; <span class="hl">media</span></h2>
+    <p class="lead">Kleur, beeld en verhaal. Alles wat je van ons ziet op social media, in campagnes en op events.</p>
+    <div class="team-grid">
+      <article class="member" tabindex="0">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">TC</span>
+          <img src="https://www.sempertexeurope.com/web/image/93876-f1ba3042/Tijl%20Website%20%281%29.webp" alt="Tijl Ceyssens, Media &amp; Content Creator bij Sempertex Europe" loading="lazy">
+          <div class="plate">
+            <h3>Tijl Ceyssens</h3>
+            <div class="role">Media &amp; Content Creator</div>
+            <p class="bio">Komt altijd met frisse ideeën en content die niemand zag aankomen. Houdt trends in de gaten, denkt creatief en is niet bang om buiten de lijntjes te kleuren. Brengt energie, humor en net genoeg chaos om het hele team scherp te houden.</p>
+          </div>
+        </div>
+        <div class="touch-bio"><p>Komt altijd met frisse ideeën en content die niemand zag aankomen. Houdt trends in de gaten, denkt creatief en is niet bang om buiten de lijntjes te kleuren. Brengt energie, humor en net genoeg chaos om het hele team scherp te houden.</p></div>
+      </article>
+      <article class="member" tabindex="0">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">AU</span>
+          <img src="https://www.sempertexeurope.com/web/image/93878-f92624a3/Ati%20Website%20%281%29.webp" alt="Atilla Ucum, Videographer &amp; Editor bij Sempertex Europe" loading="lazy">
+          <div class="plate">
+            <h3>Atilla Ucum</h3>
+            <div class="role">Videographer &amp; Editor</div>
+            <p class="bio">Vangt elk moment op camera en zorgt dat het er in de montage precies goed uitziet. Laat niets aan het toeval over en heeft een scherp oog voor detail. Geduldig, precies en altijd gefocust op het eindresultaat.</p>
+          </div>
+        </div>
+        <div class="touch-bio"><p>Vangt elk moment op camera en zorgt dat het er in de montage precies goed uitziet. Laat niets aan het toeval over en heeft een scherp oog voor detail. Geduldig, precies en altijd gefocust op het eindresultaat.</p></div>
+      </article>
+      <article class="member" tabindex="0">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">AM</span>
+          <img src="https://www.sempertexeurope.com/web/image/50473-79df1995/Anouk.webp" alt="Anouk Mussen, Creative &amp; Color Specialist bij Sempertex Europe" loading="lazy">
+          <div class="plate">
+            <h3>Anouk Mussen</h3>
+            <div class="role">Creative &amp; Color Specialist</div>
+            <p class="bio">Brengt kleur tot leven en creëert palettes die meteen blijven hangen. Zet ideeën om in visuals en ondersteunt het social media team waar nodig. Cameraschuw, creatief, en overal inzetbaar.</p>
+          </div>
+        </div>
+        <div class="touch-bio"><p>Brengt kleur tot leven en creëert palettes die meteen blijven hangen. Zet ideeën om in visuals en ondersteunt het social media team waar nodig. Cameraschuw, creatief, en overal inzetbaar.</p></div>
+      </article>
+    </div>
+  </section>
+
+  <section id="magazijn">
+    <div class="sec-num">05</div>
+    <h2>In het <span class="hl">magazijn</span></h2>
+    <p class="lead">Waar je bestelling echt gemaakt wordt. Picken, klaarzetten, inladen, en dat elke dag opnieuw.</p>
+    <div class="team-grid">
+      <article class="member" tabindex="0">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">JV</span>
+          <img src="https://www.sempertexeurope.com/web/image/149461-735d3cad/Jan.webp" alt="Jan Verbeek, Head of Warehouse bij Sempertex Europe" loading="lazy">
+          <div class="plate">
+            <h3>Jan Verbeek</h3>
+            <div class="role">Head of Warehouse</div>
+            <p class="bio">Leidt de flow in het magazijn met een rustige en zachte aanpak. Neemt tijd voor mensen, houdt de sfeer goed en zorgt dat iedereen mee is. Blijft kalm in de drukte of doet erg goed alsof ;-)</p>
+          </div>
+        </div>
+        <div class="touch-bio"><p>Leidt de flow in het magazijn met een rustige en zachte aanpak. Neemt tijd voor mensen, houdt de sfeer goed en zorgt dat iedereen mee is. Blijft kalm in de drukte of doet erg goed alsof ;-)</p></div>
+      </article>
+      <article class="member" tabindex="0">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">JH</span>
+          <img src="https://www.sempertexeurope.com/web/image/50479-edadc981/Jeroen.webp" alt="Jeroen Heylen, Warehouse Operator bij Sempertex Europe" loading="lazy">
+          <div class="plate">
+            <h3>Jeroen Heylen</h3>
+            <div class="role">Warehouse Operator</div>
+            <p class="bio">Zorgt dat het werk gedaan is en dat er ondertussen ook gelachen wordt. Brengt energie in het magazijn en steekt iedereen aan met zijn humeur. De lolbroek van het team maar wel eentje die altijd meedraait.</p>
+          </div>
+        </div>
+        <div class="touch-bio"><p>Zorgt dat het werk gedaan is en dat er ondertussen ook gelachen wordt. Brengt energie in het magazijn en steekt iedereen aan met zijn humeur. De lolbroek van het team maar wel eentje die altijd meedraait.</p></div>
+      </article>
+      <article class="member" tabindex="0">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">ML</span>
+          <img src="https://www.sempertexeurope.com/web/image/50480-998edc6d/Matisse.webp" alt="Matisse Lambrichts, Warehouse Operator bij Sempertex Europe" loading="lazy">
+          <div class="plate">
+            <h3>Matisse Lambrichts</h3>
+            <div class="role">Warehouse Operator</div>
+            <p class="bio">Pikt orders met precisie en zorgt dat alles netjes klaarstaat. Werkt rustig, doet gewoon zijn ding en houdt het graag simpel. Maakt in het magazijn alles klaar en thuis gewoon pizza.</p>
+          </div>
+        </div>
+        <div class="touch-bio"><p>Pikt orders met precisie en zorgt dat alles netjes klaarstaat. Werkt rustig, doet gewoon zijn ding en houdt het graag simpel. Maakt in het magazijn alles klaar en thuis gewoon pizza.</p></div>
+      </article>
+      <article class="member" tabindex="0">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">AL</span>
+          <img src="https://www.sempertexeurope.com/web/image/149453-0b1f9f5f/Nati%20Website%20%287%29.webp" alt="Aziz Lagouireh, Warehouse Operator bij Sempertex Europe" loading="lazy">
+          <div class="plate">
+            <h3>Aziz Lagouireh</h3>
+            <div class="role">Warehouse Operator</div>
+            <p class="bio">Altijd goedgezind en altijd in beweging in het magazijn. Zorgt dat elke bestelling klaarstaat voor vertrek. Na de uren vind je hem terug op het voetbalveld.</p>
+          </div>
+        </div>
+        <div class="touch-bio"><p>Altijd goedgezind en altijd in beweging in het magazijn. Zorgt dat elke bestelling klaarstaat voor vertrek. Na de uren vind je hem terug op het voetbalveld.</p></div>
+      </article>
+    </div>
+  </section>
+
+  <section id="ambassadors">
+    <div class="sec-num">06</div>
+    <h2>Onze creative <span class="hl">ambassadors</span></h2>
+    <p class="lead">Artiesten die met ons meedenken, workshops geven en het merk uitdragen in heel Europa.</p>
+    <div class="team-grid">
+      <article class="member amb">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">DD</span>
+          <div class="plate">
+            <h3>Denise Van Dooren</h3>
+            <div class="role">Creative ambassador</div>
+          </div>
+        </div>
+      </article>
+      <article class="member amb">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">AP</span>
+          <div class="plate">
+            <h3>Audrey Parsons</h3>
+            <div class="role">Creative ambassador</div>
+          </div>
+        </div>
+      </article>
+      <article class="member amb">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">MB</span>
+          <div class="plate">
+            <h3>Melissa Bellefontaine</h3>
+            <div class="role">Creative ambassador</div>
+          </div>
+        </div>
+      </article>
+      <article class="member amb">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">AF</span>
+          <div class="plate">
+            <h3>Alberto Falcone</h3>
+            <div class="role">Creative ambassador</div>
+          </div>
+        </div>
+      </article>
+      <article class="member amb">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">TT</span>
+          <div class="plate">
+            <h3>Tobi Twist</h3>
+            <div class="role">Creative ambassador</div>
+          </div>
+        </div>
+      </article>
+      <article class="member amb">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">PA</span>
+          <div class="plate">
+            <h3>Paula Ardron-Gemmell</h3>
+            <div class="role">Creative ambassador</div>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <div class="principle full">
+    <div class="label">Waar we voor staan</div>
+    <div class="statement">Achter elke bestelling, elke workshop en elke kleur staat een mens die je kan <span class="hl">bellen</span>.</div>
+  </div>
+
+  <section id="bezoek" class="full band-soft">
+    <div class="sec-num">07</div>
+    <h2>Kom gerust <span class="hl">langs</span></h2>
+    <p class="lead">Liever iemand spreken dan een formulier invullen? Dat kan. Je vindt ons in Genk.</p>
+    <div class="info-grid">
+      <div class="info-card soft">
+        <h4>Openingsuren</h4>
+        <p>Maandag tot donderdag, 10u tot 16u</p>
+        <p class="small">Lunchpauze van 12u tot 13u. Gesloten op vrijdag, in het weekend en op feestdagen.</p>
+        <p class="small">Online bestellingen afhalen kan van maandag tot donderdag tussen 10u en 12u en tussen 13u en 16u. We contacteren je zodra je bestelling klaarstaat.</p>
+      </div>
+      <div class="info-card">
+        <h4>Waar je ons vindt</h4>
+        <p>Mie&euml;nbroekstraat 43<br>3600 Genk, Belgi&euml;</p>
+        <p><a href="tel:+3289235758">+32 89 23 57 58</a></p>
+        <p class="small"><a href="https://www.sempertexeurope.com/helpdesk">Een vraag stellen via de helpdesk</a></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="closing full">
+    <h2>Zin om met dit team te <span class="hl">werken?</span></h2>
+    <p>Shop het volledige gamma, schrijf je in voor een workshop, of stel je vraag gewoon rechtstreeks aan de mensen hierboven. We antwoorden sneller dan je denkt.</p>
+    <div class="btn-row">
+      <a class="stx-btn primary" href="https://www.sempertexeurope.com/shop">Naar de shop</a>
+      <a class="stx-btn" href="https://www.sempertexeurope.com/events">Bekijk de workshops</a>
+      <a class="stx-btn" href="https://www.sempertexeurope.com/helpdesk">Contacteer ons</a>
+    </div>
+  </section>
+
+  <footer>
+    <span>Sempertex Europe, ons team</span>
+    <span>sempertexeurope.com</span>
+  </footer>
+
+</div>
+</div>
+</template>
+
+<script>
+(function () {
+  'use strict';
+  if (window.__stx_team) { return; }
+  window.__stx_team = true;
+  if (document.body.classList.contains('editor_enable') || document.querySelector('.odoo-editor-editable') || document.querySelector('#wrap.o_editable')) { return; }
+  var tpl = document.getElementById('stx-team-tpl');
+  var target = document.getElementById('wrap') || document.querySelector('main');
+  if (!tpl || !target) { return; }
+
+  /* Rethink Sans in het document zelf: @font-face werkt niet binnen een shadow root. */
+  if (!document.querySelector('link[data-stx-rethink]')) {
+    var fl = document.createElement('link');
+    fl.rel = 'stylesheet';
+    fl.href = 'https://fonts.googleapis.com/css2?family=Rethink+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,700&display=swap';
+    fl.setAttribute('data-stx-rethink', '1');
+    document.head.appendChild(fl);
+  }
+
+  var base = (window.STX_SECTIONS_BASE || '').replace(/sections\/?$/, '');
+  var seg = (window.location.pathname.split('/')[1] || '');
+  var prefix = /^(en_gb|fr|de)$/i.test(seg) ? '/' + seg : '';
+
+  var host = document.createElement('div');
+  host.id = 'stx-team-host';
+  var root = host.attachShadow({ mode: 'open' });
+  root.appendChild(tpl.content.cloneNode(true));
+  Array.prototype.forEach.call(root.querySelectorAll('img[src^="__ASSETS__/"]'), function (img) {
+    img.src = base + 'assets/team/' + img.getAttribute('src').slice(11);
+  });
+  Array.prototype.forEach.call(root.querySelectorAll('a[href^="https://www.sempertexeurope.com/"]'), function (a) {
+    a.href = prefix + a.getAttribute('href').slice(31);
+  });
+
+  Array.prototype.forEach.call(target.children, function (el) { el.style.display = 'none'; });
+  target.appendChild(host);
+
+  /* Hoogte van een vaste Odoo-header, zodat sticky balken en ankers eronder blijven. */
+  function headerOffset() {
+    var h = document.querySelector('header#top');
+    if (!h) { return 0; }
+    var pos = window.getComputedStyle(h).position;
+    if (pos !== 'fixed' && pos !== 'sticky') { return 0; }
+    return Math.max(0, Math.round(h.getBoundingClientRect().bottom));
+  }
+  var ticking = false;
+  function syncTop() {
+    ticking = false;
+    host.style.setProperty('--stx-top', headerOffset() + 'px');
+  }
+  window.addEventListener('scroll', function () { if (!ticking) { ticking = true; requestAnimationFrame(syncTop); } }, { passive: true });
+  window.addEventListener('resize', syncTop);
+  syncTop();
+
+  /* Ankerlinks (#ceo, #exam): de browser vindt ids in een shadow root niet zelf. */
+  root.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('a[href^="#"]');
+    if (!a) { return; }
+    var el = root.getElementById(a.getAttribute('href').slice(1));
+    if (!el) { return; }
+    e.preventDefault();
+    var nav = root.querySelector('.dept-nav');
+    var extra = nav ? nav.offsetHeight : 16;
+    var y = el.getBoundingClientRect().top + window.pageYOffset - headerOffset() - extra - 8;
+    window.scrollTo({ top: y, behavior: 'smooth' });
+  });
+
+  /* Ontbrekende portretfoto: dan blijven de initialen staan. */
+  Array.prototype.forEach.call(root.querySelectorAll('.portrait img'), function (img) {
+    img.addEventListener('error', function () { img.classList.add('is-missing'); });
+    if (img.complete && img.naturalWidth === 0) { img.classList.add('is-missing'); }
+  });
+
+})();
+</script>

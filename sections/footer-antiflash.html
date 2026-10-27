@@ -1,0 +1,23 @@
+<!-- ============================================================
+     STX EU / FOOTER ANTI-FLITS
+     Dit blok staat INLINE in het einde-body Custom Code veld van
+     Odoo, boven de section loader. Dit bestand is de kopie in de repo.
+     Verbergt de oude Odoo-footer meteen (visibility, de ruimte blijft),
+     zodat je hem niet ziet flitsen tot footer-v1.html (via de loader)
+     de nieuwe erin zet. Die zet html.stx-ft-on; lukt dat niet binnen
+     6 seconden, of zit je in de editor, dan komt de oude footer terug
+     (html.stx-ft-off). Sinds 27/10/2026.
+     ============================================================ -->
+<style>
+  html:not(.stx-ft-on):not(.stx-ft-off) footer#bottom > * { visibility: hidden; }
+</style>
+<script>
+(function () {
+  var h = document.documentElement;
+  function off() { if (!h.classList.contains('stx-ft-on')) { h.classList.add('stx-ft-off'); } }
+  var inFrame = false;
+  try { inFrame = !!window.frameElement; } catch (e) { inFrame = true; }
+  if (inFrame || /enable_editor/.test(window.location.search)) { off(); return; }
+  setTimeout(off, 6000);
+})();
+</script>

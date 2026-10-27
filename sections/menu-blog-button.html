@@ -12,6 +12,10 @@
        pagina (en_GB, fr, de; nl zonder).
      - Mobiel: "Blog" onderaan het uitklapmenu, zelfde link.
      - Verder niets: geen popup, geen gepind artikel, geen requests.
+     - 27/10/2026: rechts naast Blog een knop "MBP" naar /mbp (de
+       uitleg over de MBP-certificering), in MBP-paars. Mobiel staat
+       MBP onder Blog. Elke knop apart: staat er al een Blog- of
+       MBP-link in het Odoo-menu, dan komt alleen die ene er niet bij.
 
      21/09/2026: de popup met het gepinde artikel is eruit, op vraag
      van Robin, desktop en mobiel. Daarmee vervallen ook de cache
@@ -65,8 +69,50 @@
     background: rgba(241, 217, 255, 0.55);
     box-shadow: 0 0 0 2px #e1c6ff, 0 0 8px 2px rgba(107, 63, 185, 0.25);
   }
+
+  /* MBP: rechts naast Blog, in MBP-paars (#5a2482) */
+  .navbar .top_menu > li.stx-mbp-item { margin-left: auto; position: relative; }
+  .navbar .top_menu > li.stx-blog-item + li.stx-mbp-item { margin-left: 4px; }
+  .navbar .top_menu > li.stx-mbp-item > a.nav-link > span {
+    display: inline-block;
+    padding: 5px 18px;
+    margin: -5px 0;
+    border-radius: 999px;
+    font-weight: 800;
+    font-size: 1.08em;
+    letter-spacing: 0.04em;
+    color: #5a2482;
+    background: rgba(243, 237, 247, 0.9);
+    box-shadow: 0 0 0 2px #d9c7e6, 0 0 10px 3px rgba(90, 36, 130, 0.25);
+    animation: stx-mbp-glow 2.8s ease-in-out infinite;
+    animation-delay: -1.4s;
+  }
+  .navbar .top_menu > li.stx-mbp-item > a.nav-link:hover > span,
+  .navbar .top_menu > li.stx-mbp-item > a.nav-link.active > span {
+    background: #5a2482;
+    color: #fff;
+    animation: none;
+    box-shadow: 0 0 0 2px #d9c7e6, 0 0 14px 4px rgba(90, 36, 130, 0.42);
+  }
+  @keyframes stx-mbp-glow {
+    0%, 100% { box-shadow: 0 0 0 2px #d9c7e6, 0 0 8px 2px rgba(90, 36, 130, 0.2); }
+    50% { box-shadow: 0 0 0 2px #d9c7e6, 0 0 14px 4px rgba(90, 36, 130, 0.4); }
+  }
+  .o_navbar_mobile .top_menu > li.stx-mbp-item-m > a.nav-link > span {
+    display: inline-block;
+    padding: 3px 16px;
+    margin: -3px 0;
+    border-radius: 999px;
+    font-weight: 800;
+    font-size: 1.08em;
+    letter-spacing: 0.04em;
+    color: #5a2482;
+    background: rgba(243, 237, 247, 0.9);
+    box-shadow: 0 0 0 2px #d9c7e6, 0 0 8px 2px rgba(90, 36, 130, 0.22);
+  }
   @media (prefers-reduced-motion: reduce) {
-    .navbar .top_menu > li.stx-blog-item > a.nav-link > span { animation: none; }
+    .navbar .top_menu > li.stx-blog-item > a.nav-link > span,
+    .navbar .top_menu > li.stx-mbp-item > a.nav-link > span { animation: none; }
   }
 </style>
 <script>
@@ -106,33 +152,39 @@
   var m = /^\/(fr|de|en_GB)(\/|$)/i.exec(path);
   var langPrefix = m ? '/' + m[1] : '';
   var rest = langPrefix ? path.slice(langPrefix.length) : path;
-  var onBlog = rest === BLOG_ROOT || rest.indexOf(BLOG_ROOT + '/') === 0;
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
 
-  /* ---- knop in de menurij (desktop) en in het uitklapmenu (mobiel) ---- */
-  var blogHref = langPrefix + BLOG_ROOT;
+  /* ---- knoppen in de menurij (desktop) en in het uitklapmenu (mobiel) ---- */
   var deskMenu = document.querySelector('header#top nav.d-lg-block #top_menu, header#top nav.d-lg-block ul.top_menu');
   var mobMenu = document.querySelector('header#top .o_navbar_mobile ul.top_menu');
   if (!deskMenu && !mobMenu) { return; }
-  var already = document.querySelector('header#top ul.top_menu a.nav-link[href$="' + BLOG_ROOT + '"]');
-  if (already) { return; }
 
-  if (deskMenu) {
-    deskMenu.classList.add('stx-has-blog');
-    var deskLi = document.createElement('li');
-    deskLi.setAttribute('role', 'presentation');
-    deskLi.className = 'nav-item stx-blog-item';
-    deskLi.innerHTML = '<a role="menuitem" href="' + esc(blogHref) + '" class="nav-link' + (onBlog ? ' active' : '') + '"><span>Blog</span></a>';
-    deskMenu.appendChild(deskLi);
-  }
-  if (mobMenu) {
-    var last = mobMenu.querySelector(':scope > li.nav-item:last-of-type');
-    if (last) { last.classList.remove('border-bottom'); }
-    var mli = document.createElement('li');
-    mli.setAttribute('role', 'presentation');
-    mli.className = 'nav-item border-top border-bottom px-0 stx-blog-item-m';
-    mli.innerHTML = '<a role="menuitem" href="' + esc(blogHref) + '" class="nav-link p-3 text-wrap' + (onBlog ? ' active' : '') + '"><span>Blog</span></a>';
-    mobMenu.appendChild(mli);
-  }
+  /* Blog eerst, dan MBP: zo staat MBP rechts naast Blog (en onder Blog op mobiel). */
+  var ITEMS = [
+    { root: BLOG_ROOT, label: 'Blog', cls: 'stx-blog-item', menuCls: 'stx-has-blog' },
+    { root: '/mbp', label: 'MBP', cls: 'stx-mbp-item', menuCls: 'stx-has-blog' }
+  ];
+  ITEMS.forEach(function (it) {
+    if (document.querySelector('header#top ul.top_menu a.nav-link[href$="' + it.root + '"]')) { return; }
+    var href = langPrefix + it.root;
+    var on = rest === it.root || rest.indexOf(it.root + '/') === 0;
+    if (deskMenu) {
+      deskMenu.classList.add(it.menuCls);
+      var deskLi = document.createElement('li');
+      deskLi.setAttribute('role', 'presentation');
+      deskLi.className = 'nav-item ' + it.cls;
+      deskLi.innerHTML = '<a role="menuitem" href="' + esc(href) + '" class="nav-link' + (on ? ' active' : '') + '"><span>' + it.label + '</span></a>';
+      deskMenu.appendChild(deskLi);
+    }
+    if (mobMenu) {
+      var last = mobMenu.querySelector(':scope > li.nav-item:last-of-type');
+      if (last) { last.classList.remove('border-bottom'); }
+      var mli = document.createElement('li');
+      mli.setAttribute('role', 'presentation');
+      mli.className = 'nav-item border-top border-bottom px-0 ' + it.cls + '-m';
+      mli.innerHTML = '<a role="menuitem" href="' + esc(href) + '" class="nav-link p-3 text-wrap' + (on ? ' active' : '') + '"><span>' + it.label + '</span></a>';
+      mobMenu.appendChild(mli);
+    }
+  });
 })();
 </script>

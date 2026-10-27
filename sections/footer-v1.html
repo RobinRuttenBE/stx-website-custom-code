@@ -1,0 +1,261 @@
+<!-- ============================================================
+     STX EU / FOOTER v1 (sectiebestand voor de section loader)
+     Vervangt de Odoo-footer op elke pagina (loader-regel all: true,
+     brand: true, dus nooit op een partnerpagina). Ontwerp = Robins
+     stx-footer.html van 22/10/2026, in vier talen: NL (Robins tekst),
+     EN, FR en DE. De shoplinks gaan naar de categorie in de taal van
+     de pagina (zelfde categorienummers, slug per taal).
+
+     Werking:
+     - De Odoo-footer (footer#bottom) blijft bestaan, maar wat erin
+       staat (#footer en de copyrightbalk) wordt verborgen, en deze
+       footer komt erin, in een shadow root. Zo raakt de CSS van Odoo
+       (o_cc kleuren, h3, ul, address) deze footer niet, en andersom.
+     - In de Odoo editor doet dit bestand niets: daar zie en bewerk je
+       de oude footer gewoon.
+     - Taalknoppen gaan naar dezelfde pagina in de andere taal. NL gaat
+       via /nl/..., anders stuurt de taalcookie je terug naar de vorige
+       taal (Odoo zet /nl/ zelf om naar de URL zonder prefix).
+     - Het einde-body plakbestand verbergt de oude footer al voor de
+       eerste paint (html.stx-ft-on / stx-ft-off); lukt het laden niet,
+       dan komt de oude footer na 6 seconden terug.
+
+     Sluitingsdagen aanpassen: CLOSED in de vier talen hieronder.
+     Sinds 27/10/2026.
+     ============================================================ -->
+<template id="stx-footer-tpl">
+<style>
+:host { all: initial; display: block; }
+
+.stx-footer, .stx-footer * { box-sizing: border-box; }
+.stx-footer {
+  font-family: 'Rethink Sans', Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.55;
+  color: #fefcfa;
+  background: #1b073d;
+  -webkit-font-smoothing: antialiased;
+}
+.stx-footer a { color: inherit; text-decoration: none; transition: color .15s ease; }
+.stx-footer a:hover, .stx-footer a:focus { color: #ffdb5a; text-decoration: none; }
+.stx-footer p { margin: 0; }
+.stx-footer ul { list-style: none; margin: 0; padding: 0; }
+.stx-footer h2, .stx-footer h3 { margin: 0; font-family: inherit; }
+.stx-inner { max-width: 1240px; margin: 0 auto; padding: 0 40px; }
+.stx-label {
+  font-size: 12px; font-weight: 700; letter-spacing: .12em;
+  text-transform: uppercase; color: #ffdb5a;
+}
+
+/* Kolommen */
+.stx-cols { display: flex; flex-wrap: wrap; gap: 48px 40px; padding-top: 64px; }
+.stx-col-brand { flex: 1 1 260px; max-width: 320px; }
+.stx-col-nav { flex: 1 1 160px; max-width: 200px; }
+.stx-col-hours { flex: 1 1 280px; max-width: 340px; }
+.stx-wordmark { font-size: 26px; font-weight: 800; letter-spacing: -.01em; line-height: 1; }
+.stx-wordmark-sub { font-size: 12px; font-weight: 700; letter-spacing: .24em; color: #ffdb5a; margin-top: 6px; }
+.stx-col-brand p { margin: 20px 0 24px; font-size: 15px; color: #cfc4e4; max-width: 34ch; }
+.stx-footer address { font-style: normal; font-size: 15px; color: #cfc4e4; line-height: 1.7; margin: 0; }
+.stx-footer address a { color: #fefcfa; font-weight: 600; }
+.stx-col-nav h3, .stx-col-hours h3 { margin-bottom: 18px; }
+.stx-col-nav li { padding: 6px 0; font-size: 15px; color: #cfc4e4; }
+
+/* Openingsuren */
+.stx-card { background: rgba(254,252,250,.07); border-radius: 8px; padding: 26px 28px; }
+.stx-hours-row { display: flex; justify-content: space-between; gap: 16px; font-size: 16px; font-weight: 700; }
+.stx-card p { font-size: 14px; color: #cfc4e4; }
+.stx-rule { height: 1px; background: rgba(254,252,250,.16); margin: 20px 0; }
+.stx-sub { font-size: 13px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 8px; }
+.stx-chip-warn {
+  display: inline-block; border: 1px solid #ffdb5a; color: #ffdb5a;
+  border-radius: 6px; padding: 7px 12px; font-size: 13px; font-weight: 700; margin-top: 18px;
+}
+
+/* Trust + social */
+.stx-meta {
+  margin-top: 56px; padding: 26px 0; border-top: 1px solid rgba(254,252,250,.16);
+  display: flex; flex-wrap: wrap; gap: 20px 32px; align-items: center; justify-content: space-between;
+}
+.stx-trust { display: flex; flex-wrap: wrap; gap: 10px; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #cfc4e4; }
+.stx-trust li { border: 1px solid rgba(254,252,250,.26); border-radius: 999px; padding: 7px 14px; }
+.stx-social { display: flex; align-items: center; gap: 14px; }
+.stx-social span { font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: #cfc4e4; }
+.stx-social a {
+  display: flex; align-items: center; justify-content: center;
+  width: 44px; height: 44px; border-radius: 8px; background: rgba(254,252,250,.1);
+}
+.stx-social a:hover { background: rgba(255,219,90,.2); }
+
+/* Onderbalk */
+.stx-bottom { border-top: 1px solid rgba(254,252,250,.16); }
+.stx-bottom .stx-inner {
+  padding-top: 20px; padding-bottom: 20px; display: flex; flex-wrap: wrap;
+  gap: 14px 28px; align-items: center; justify-content: space-between;
+  font-size: 13px; color: #cfc4e4;
+}
+.stx-legal { display: flex; flex-wrap: wrap; gap: 8px 20px; align-items: center; }
+.stx-vat { opacity: .6; }
+.stx-lang { display: flex; gap: 6px; align-items: center; }
+.stx-lang a { padding: 6px 12px; border-radius: 999px; font-weight: 700; font-size: 12px; letter-spacing: .06em; }
+.stx-lang a.is-active { background: #ffdb5a; color: #1b073d; font-weight: 800; }
+.stx-lang a.is-active:hover { color: #1b073d; }
+
+@media (max-width: 768px) {
+  .stx-inner { padding: 0 20px; }
+  .stx-cols { gap: 32px; padding-top: 36px; }
+  .stx-col-brand, .stx-col-nav, .stx-col-hours { flex: 1 1 100%; max-width: 100%; }
+  .stx-meta { margin-top: 32px; }
+}
+</style>
+<footer class="stx-footer"></footer>
+</template>
+
+<script>
+(function () {
+  'use strict';
+  if (window.__stxFooter) { return; }
+  window.__stxFooter = true;
+  var html = document.documentElement;
+  function giveUp() { html.classList.add('stx-ft-off'); }
+  if (/^(\/(en_gb|fr|de))?\/partner(\/|$)/i.test(window.location.pathname || '') || html.classList.contains('stx-partner')) { return; }
+  try { if (window.frameElement) { giveUp(); return; } } catch (e) { giveUp(); return; }
+  if (document.body.classList.contains('editor_enable') || document.querySelector('.odoo-editor-editable') || document.querySelector('#wrap.o_editable')) { giveUp(); return; }
+  var odooFooter = document.querySelector('footer#bottom');
+  var tpl = document.getElementById('stx-footer-tpl');
+  if (!odooFooter || !tpl) { giveUp(); return; }
+
+  /* ---- taal en pad ---- */
+  var path = window.location.pathname || '/';
+  var m = /^\/(en_gb|fr|de|nl)(\/|$)/i.exec(path);
+  var seg = m ? m[1].toLowerCase() : '';
+  var lang = seg === 'en_gb' ? 'en' : (seg === 'fr' || seg === 'de') ? seg : 'nl';
+  var prefix = (lang === 'nl') ? '' : (lang === 'en' ? '/en_GB' : '/' + lang);
+  var rest = m ? path.slice(m[0].length - (m[2] ? 1 : 0)) : path;
+  if (!rest) { rest = '/'; }
+  var tail = rest + (window.location.search || '');
+
+  var CATS = {
+    nl: [['/shop', 'Alle producten'], ['nieuw-2910', 'Nieuw'], ['latex-onbedrukt-2911', 'Latex onbedrukt'], ['latex-bedrukt-2912', 'Latex bedrukt'],
+      ['modelleer-ballonnen-2913', 'Modelleer ballonnen'], ['link-o-loons-2914', 'Link-o-loons'], ['folie-ballonnen-2915', 'Folie ballonnen'],
+      ['ballon-toebehoren-2917', 'Ballon toebehoren'], ['afgeprijsd-2920', 'Afgeprijsd']],
+    en: [['/shop', 'All products'], ['new-2910', 'New'], ['latex-balloons-2911', 'Latex balloons'], ['printed-latex-2912', 'Printed latex'],
+      ['modelling-balloons-2913', 'Modelling balloons'], ['link-o-loons-2914', 'Link-o-loons'], ['foil-balloons-2915', 'Foil balloons'],
+      ['balloon-accessories-2917', 'Balloon accessories'], ['promotions-2920', 'Promotions']],
+    fr: [['/shop', 'Tous les produits'], ['nouveaute-2910', 'Nouveautés'], ['latex-non-imprime-2911', 'Latex non imprimé'], ['latex-imprime-2912', 'Latex imprimé'],
+      ['ballons-a-modeler-2913', 'Ballons à modeler'], ['link-o-loons-2914', 'Link-o-loons'], ['ballons-en-aluminium-2915', 'Ballons en aluminium'],
+      ['accessoires-de-ballons-2917', 'Accessoires de ballons'], ['promotions-2920', 'Promotions']],
+    de: [['/shop', 'Alle Produkte'], ['neu-2910', 'Neu'], ['latex-ballons-2911', 'Latex Ballons'], ['latex-bedruckt-2912', 'Latex bedruckt'],
+      ['modellierballons-2913', 'Modellierballons'], ['link-o-loons-2914', 'Link-o-loons'], ['folienballons-2915', 'Folienballons'],
+      ['ballonzubehor-2917', 'Ballonzubehör'], ['angebote-2920', 'Angebote']]
+  };
+  var LINKS = ['/events', '/why-sempertex', '/become-a-distributor', '/stx-family-tree', '/sempertex-certificaten', '/inspiration', '/team', '/faq', '/helpdesk'];
+  var T = {
+    nl: { intro: 'Groothandel in professionele latexballonnen en toebehoren. Verkoop uitsluitend aan bedrijven met btw-nummer.',
+      country: 'België', shop: 'Shop', useful: 'Handige links',
+      links: ['Workshops', 'Why Sempertex?', 'Word wholesaler', 'Partners', 'Certificaten', 'Digitale catalogus', 'Meet our team', 'FAQ', 'Contact'],
+      hours: 'Openingsuren', days: 'Maandag tot donderdag',
+      lunch: 'Lunchpauze van 12:00 tot 13:00. Gesloten op vrijdag, in het weekend en op feestdagen.',
+      pickup: 'Afhalen', pickupTxt: 'Maandag tot donderdag, 10:00 tot 12:00 en 13:00 tot 16:00. Je krijgt bericht zodra je bestelling klaarstaat.',
+      CLOSED: 'Gesloten: 11 nov, en 23 dec t.e.m. 1 jan',
+      trust: ['ISO &amp; TUV gecertificeerd', 'FSC Chain of Custody', '100% natuurlijk latex', 'EU 2009/48/EC'],
+      follow: 'Volg ons', vat: 'BTW BE 0833747266', terms: 'Algemene voorwaarden', cookies: 'Cookiebeleid' },
+    en: { intro: 'Wholesaler of professional latex balloons and accessories. We only sell to businesses with a VAT number.',
+      country: 'Belgium', shop: 'Shop', useful: 'Useful links',
+      links: ['Workshops', 'Why Sempertex?', 'Become a wholesaler', 'Partners', 'Certificates', 'Digital catalogue', 'Meet our team', 'FAQ', 'Contact'],
+      hours: 'Opening hours', days: 'Monday to Thursday',
+      lunch: 'Lunch break from 12:00 to 13:00. Closed on Fridays, at weekends and on public holidays.',
+      pickup: 'Collection', pickupTxt: 'Monday to Thursday, 10:00 to 12:00 and 13:00 to 16:00. We let you know as soon as your order is ready.',
+      CLOSED: 'Closed: 11 Nov, and 23 Dec to 1 Jan',
+      trust: ['ISO &amp; TUV certified', 'FSC Chain of Custody', '100% natural latex', 'EU 2009/48/EC'],
+      follow: 'Follow us', vat: 'VAT BE 0833747266', terms: 'Terms and conditions', cookies: 'Cookie policy' },
+    fr: { intro: 'Grossiste en ballons en latex professionnels et accessoires. Vente uniquement aux entreprises disposant d’un numéro de TVA.',
+      country: 'Belgique', shop: 'Boutique', useful: 'Liens utiles',
+      links: ['Ateliers', 'Pourquoi Sempertex ?', 'Devenir grossiste', 'Partenaires', 'Certificats', 'Catalogue numérique', 'Notre équipe', 'FAQ', 'Contact'],
+      hours: 'Heures d’ouverture', days: 'Du lundi au jeudi',
+      lunch: 'Pause déjeuner de 12:00 à 13:00. Fermé le vendredi, le week-end et les jours fériés.',
+      pickup: 'Retrait', pickupTxt: 'Du lundi au jeudi, de 10:00 à 12:00 et de 13:00 à 16:00. Nous vous prévenons dès que votre commande est prête.',
+      CLOSED: 'Fermé : 11 nov., et du 23 déc. au 1er janv.',
+      trust: ['Certifié ISO &amp; TUV', 'FSC Chain of Custody', 'Latex 100 % naturel', 'UE 2009/48/CE'],
+      follow: 'Suivez-nous', vat: 'TVA BE 0833747266', terms: 'Conditions générales', cookies: 'Politique de cookies' },
+    de: { intro: 'Großhandel für professionelle Latexballons und Zubehör. Verkauf nur an Unternehmen mit USt-IdNr.',
+      country: 'Belgien', shop: 'Shop', useful: 'Nützliche Links',
+      links: ['Workshops', 'Warum Sempertex?', 'Großhändler werden', 'Partner', 'Zertifikate', 'Digitaler Katalog', 'Unser Team', 'FAQ', 'Kontakt'],
+      hours: 'Öffnungszeiten', days: 'Montag bis Donnerstag',
+      lunch: 'Mittagspause von 12:00 bis 13:00. Freitags, am Wochenende und an Feiertagen geschlossen.',
+      pickup: 'Abholung', pickupTxt: 'Montag bis Donnerstag, 10:00 bis 12:00 und 13:00 bis 16:00. Wir melden uns, sobald deine Bestellung bereitliegt.',
+      CLOSED: 'Geschlossen: 11. Nov. und 23. Dez. bis 1. Jan.',
+      trust: ['ISO &amp; TUV zertifiziert', 'FSC Chain of Custody', '100 % Naturlatex', 'EU 2009/48/EG'],
+      follow: 'Folge uns', vat: 'USt-IdNr. BE 0833747266', terms: 'AGB', cookies: 'Cookie-Richtlinie' }
+  };
+  var S = T[lang];
+
+  function li(href, label) { return '<li><a href="' + href + '">' + label + '</a></li>'; }
+  var shopList = CATS[lang].map(function (c) {
+    return li(prefix + (c[0].charAt(0) === '/' ? c[0] : '/shop/category/' + c[0]), c[1]);
+  }).join('');
+  var linkList = LINKS.map(function (h, i) { return li(prefix + h, S.links[i]); }).join('');
+  var LANGS = [['nl', 'NL', '/nl'], ['en', 'EN', '/en_GB'], ['fr', 'FR', '/fr'], ['de', 'DE', '/de']];
+  var langBtns = LANGS.map(function (l) {
+    return '<a' + (l[0] === lang ? ' class="is-active" aria-current="true"' : '') + ' href="' + l[2] + (tail === '/' ? '' : tail) + '" hreflang="' + l[0] + '">' + l[1] + '</a>';
+  }).join('');
+  var year = new Date().getFullYear();
+
+  var markup =
+    '<div class="stx-inner"><div class="stx-cols">' +
+      '<div class="stx-col-brand">' +
+        '<div class="stx-wordmark">SEMPERTEX</div><div class="stx-wordmark-sub">EUROPE</div>' +
+        '<p>' + S.intro + '</p>' +
+        '<address>Mieënbroekstraat 43<br>3600 Genk, ' + S.country + '<br>' +
+          '<a href="tel:+3289235758">+32 89 23 57 58</a><br>' +
+          '<a href="mailto:info@sempertexeurope.com">info@sempertexeurope.com</a></address>' +
+      '</div>' +
+      '<nav class="stx-col-nav"><h3 class="stx-label">' + S.shop + '</h3><ul>' + shopList + '</ul></nav>' +
+      '<nav class="stx-col-nav"><h3 class="stx-label">' + S.useful + '</h3><ul>' + linkList + '</ul></nav>' +
+      '<div class="stx-col-hours"><div class="stx-card">' +
+        '<h3 class="stx-label">' + S.hours + '</h3>' +
+        '<div class="stx-hours-row"><span>' + S.days + '</span><span>10:00 - 16:00</span></div>' +
+        '<p style="margin-top:8px">' + S.lunch + '</p>' +
+        '<div class="stx-rule"></div>' +
+        '<div class="stx-sub">' + S.pickup + '</div><p>' + S.pickupTxt + '</p>' +
+        (S.CLOSED ? '<div class="stx-chip-warn">' + S.CLOSED + '</div>' : '') +
+      '</div></div>' +
+    '</div>' +
+    '<div class="stx-meta">' +
+      '<ul class="stx-trust">' + S.trust.map(function (t) { return '<li>' + t + '</li>'; }).join('') + '</ul>' +
+      '<div class="stx-social"><span>' + S.follow + '</span>' +
+        '<a href="/website/social/instagram" aria-label="Instagram"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" stroke="none"></circle></svg></a>' +
+        '<a href="/website/social/facebook" aria-label="Facebook"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h-2.5A4.5 4.5 0 0 0 8 7.5V10H5.5v4H8v7h4v-7h3l.5-4H12V7.5a1 1 0 0 1 1-1h2z"></path></svg></a>' +
+        '<a href="/website/social/youtube" aria-label="YouTube"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="5.5" width="19" height="13" rx="4"></rect><path d="M10.5 9.5l5 2.5-5 2.5z" fill="currentColor" stroke="none"></path></svg></a>' +
+      '</div>' +
+    '</div></div>' +
+    '<div class="stx-bottom"><div class="stx-inner">' +
+      '<div class="stx-legal"><span>&copy; ' + year + ' Sempertex Europe</span><span class="stx-vat">' + S.vat + '</span>' +
+        '<a href="' + prefix + '/algemene-voorwaarden">' + S.terms + '</a><a href="' + prefix + '/cookie-policy">' + S.cookies + '</a></div>' +
+      '<div class="stx-lang">' + langBtns + '</div>' +
+    '</div></div>';
+
+  /* Rethink Sans in het document zelf: @font-face werkt niet binnen een shadow root. */
+  if (!document.querySelector('link[data-stx-rethink]')) {
+    var fl = document.createElement('link');
+    fl.rel = 'stylesheet';
+    fl.href = 'https://fonts.googleapis.com/css2?family=Rethink+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,700&display=swap';
+    fl.setAttribute('data-stx-rethink', '1');
+    document.head.appendChild(fl);
+  }
+
+  var host = document.createElement('div');
+  host.className = 'stx-ft-host';
+  var root = host.attachShadow({ mode: 'open' });
+  root.appendChild(tpl.content.cloneNode(true));
+  var foot = root.querySelector('.stx-footer');
+  foot.setAttribute('lang', lang);
+  foot.innerHTML = markup;
+
+  var css = document.createElement('style');
+  css.textContent = 'html.stx-ft-on footer#bottom > :not(.stx-ft-host) { display: none !important; }'
+    + 'html.stx-ft-on footer#bottom { padding: 0 !important; border: 0 !important; background: #1b073d !important; }';
+  document.head.appendChild(css);
+  odooFooter.appendChild(host);
+  html.classList.add('stx-ft-on');
+})();
+</script>
