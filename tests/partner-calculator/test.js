@@ -172,10 +172,14 @@ const LOADER = `<script>
 function savedCopy() {
   const sec = read('inspiration-v18.html');
   const html = sec.slice(0, sec.indexOf('<script>'));
-  return html
+  // Met de skin erbij, zoals op de echte Euro Party B2B-pagina van 27/10/2026 (header dubbel).
+  return '<div class="stx-pt-bar"><div class="stx-pt-in">Header OPGESLAGEN</div></div>'
+    + '<div class="stx-pt-tabs"><div class="stx-pt-in">Tabs OPGESLAGEN</div></div>'
+    + html
     .replace('id="stx-insp-root"', 'id="stx-insp-root" data-stx-v="31" style="display: block;"')
     .replace(/(data-i18n="cost_h">)[\s\S]*?(<\/h2>)/, '$1Cost calculator OPGESLAGEN$2')
-    .replace(/(data-i18n="cc_col_item">)[^<]*/, '$1Item OPGESLAGEN');
+    .replace(/(data-i18n="cc_col_item">)[^<]*/, '$1Item OPGESLAGEN')
+    + '<div class="stx-pt-foot"><div class="stx-pt-in">Footer OPGESLAGEN</div></div>';
 }
 
 function odooPage(saved) {
@@ -590,6 +594,7 @@ function check(name, ok, extra) {
     check('kolom Artikel', (await page.textContent('[data-i18n="cc_col_item"]')) === 'Artikel');
     check('skin staat boven de tools die blijven', await page.evaluate(() => { const bar = document.querySelector('.stx-pt-bar'); const r = document.getElementById('stx-insp-root'); return !!bar && !!r && document.body.contains(bar) && !!(bar.compareDocumentPosition(r) & Node.DOCUMENT_POSITION_FOLLOWING); }));
     check('1 header en 1 rij tabbladen', (await page.$$('.stx-pt-bar')).length === 1 && (await page.$$('.stx-pt-tabs')).length === 1);
+    check('1 footer', (await page.$$('.stx-pt-foot')).length === 1);
     await ctx.close();
   }
 
@@ -664,6 +669,10 @@ function check(name, ok, extra) {
     if (N.notHost) {
       const wrong = await page.$$eval('a[href]', (els, host) => els.map((e) => e.href).filter((h) => h.includes(host)), N.notHost);
       check('geen enkele link naar ' + N.notHost, wrong.length === 0, JSON.stringify(wrong.slice(0, 3)));
+    }
+    if (/^europarty/.test(N.slug)) {
+      // Dario 27/10/2026: geen "Realizzato da Sempertex Europe per Euro Party." onder de tools.
+      check('geen creditregel onder de tools', (await page.$('.stx-pt-foot')) === null);
     }
 
     await page.click('.stx-pt-tab[data-tool="cost"]');

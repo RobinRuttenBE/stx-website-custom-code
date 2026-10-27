@@ -567,7 +567,7 @@
           skipLabel: 'Vai al contenuto',
           tabsLabel: 'Strumenti',
           backLabel: 'Torna allo shop',
-          footerText: 'Realizzato da Sempertex Europe per Euro Party.',
+          /* Geen footerText: Euro Party wil geen creditregel, Sempertex staat al in de URL (Dario, 27/10/2026). */
           order: {
             title: 'Ordina questi palloncini su Euro Party',
             lead: 'Clicca su un colore e lo vedi subito in tutte le misure nello shop di Euro Party.',
@@ -1360,6 +1360,13 @@
     var cart = root.querySelector('#calc-cart');
     if (cart && cart.parentNode) { cart.parentNode.removeChild(cart); }
     root.classList.remove('stx-shop-on');
+
+    /* -- Opgeslagen kopieën weg --
+       Wordt de pagina in de Odoo-editor bewaard terwijl de tool al getekend is, dan staan header,
+       tabbladen, bestelblok en footer als vaste HTML in de pagina en tekenen wij ze er een tweede
+       keer bij (Euro Party B2B, 27/10/2026: header dubbel). Eerst alles van een vorige keer weg. */
+    var old = document.querySelectorAll('.stx-pt-bar, .stx-pt-tabs, .stx-pt-order, .stx-pt-foot');
+    for (var o = 0; o < old.length; o++) { if (old[o].parentNode) { old[o].parentNode.removeChild(old[o]); } }
 
     /* -- Header boven de tool -- */
     var bar = document.createElement('div');
