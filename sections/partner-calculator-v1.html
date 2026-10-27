@@ -584,6 +584,136 @@
           }
         }
       }
+    },
+
+    /* Pro Balloon Shop (proballoonshop.co.uk, UK, Shopify), 27/10/2026. Engels, GBP en mijlen. */
+    'pro-balloon-shop': {
+      name: 'Pro Balloon Shop',
+      tools: ['calculator', 'cost', 'colour'],
+
+      /* -- HUISSTIJL --
+         Uit hun eigen site (Shopify-thema, kleurvariabelen) en logo:
+           teal   #196c7f  (logo, kleurblokken)
+           navy   #061c2f  (tekst, donkere blokken)
+           cyaan  #6cd2e7  (accent op donker), hier lichter als highlight
+           blauw  #0d91bd  (accent)
+         Font = Figtree, zoals op hun site. Logo = PBS-Logo.png van hun site, bijgesneden,
+         282x200; favicon = PBS_FAVICON. Kopie in "Distri  huisstijlen/Pro Balloon Shop". */
+      logo: 'data:image/png;base64,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',
+      logoHeight: 50,
+      homeUrl: 'https://proballoonshop.co.uk/',
+      shopUrl: 'https://proballoonshop.co.uk/collections/sempertex-1',
+
+      brand: '#196c7f',
+      brandDark: '#061c2f',
+      brandLight: '#eef8fa',
+      accent: '#b5e9f3',
+      chart: '#0d91bd',
+      font: "'Figtree', 'Helvetica Neue', Helvetica, Arial, sans-serif",
+      fontUrl: 'https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap',
+      favicon: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAMAAACdt4HsAAABCmlDQ1BJQ0MgUHJvZmlsZQAAeJxjYGBckZOcW8wkwMCQm1dSFOTupBARGaXAfoeBkUGSgZlBk8EyMbm4wDEgwIcBJ/h2DagaCC7rgszCrQ4r4ExJLU4G0h+AOD65oKiEgYERZBdPeUkBiB0BZIsUAR0FZOeA2OkQdgOInQRhTwGrCQlyBrJ5gGyHdCR2EhIbahcIsCYbJWciOyS5tKgMypQC4tOMJ5mTWSdxZHN/E7AXDZQ2UfyoOcFIwnqSG2tgeezb7IIq1s6Ns2rWZO6vvXz4pcH//yWpFSUgzc7OBgygMEQPG4RY/iIGBouvDAzMExBiSTMZGLa3MjBI3EKIqSxgYOBvYWDYdh4A8P1N247YzPkAAABgUExURf7+/hdrfhptgCt4iZO6w6rIznWnsoizvFiUokeKmdfl6DyDk8TY3WScqZzAyMnd4bnS1+Pt71GQnoessyZibB9wgz9zesDKyWGLkXKYnQFfdQAAAAAAAAAAAAAAAAAAAOoZoZEAAAAgdFJOU////////////////////////////////////wAAAAAAZYETDwAAAd9JREFUeNrNV4luwyAMjc0dQtNz1/9/6By69JgwmEaTZqlV1PJe7Icx9jD8Y9tbHxVZ9Hbfj56sggdTduqCz55AiD9ozE9+luMtgfJ7yVYS+lghfIzLcqTQndN2dWP5LY6i6BWtxWA1mXPpQQgEJVBiIjREgrsU7hGsDNhkGC+0zBPcP2NXhksrisX/pHXeRCwxqDo+Xd/vi+grQ6rhDS0IWh+BNwRTDQCUW95fI6gEoelv+7D1DIOuORC1U9AwVVPA6tTC8yocswKqTXBkcohi99pC27CcTbscQQBsu7BjkkgUAZ9McdmDk4CA1pXwB3I9iCQgHw6lc5yPQRIRwMRkQaI0RokIhsnjZIQEpWx2uRKJNERwDIHQ/ohA9xBoJpPFBLviNnZYaRvnHoKZqUdSK9ekIBWBKjdzJ4sJLFtQNmwClTS5BswFKRSBk0CczOVE7oqBveKFxcBXL2d4/WKSychLKHSh3h+0Xag7IDqSc6tJxVeOgTSIVgA5mxTPQP2RoNndV1o8EA0OhmFAqO9gi0GOvzbsvyhQ1qrfegUPTxTLsz90DT1G3Wad/KXM0Gsm3IeV0A/PKWHs0nZHMw6vm/2K26ZPc/7cRuDOH9vGX6XeThtH6NO0kcC8V//+BjscD+DuTX26AAAAAElFTkSuQmCC',
+
+      /* Rechtstreeks naar de productpagina per kleurcode. Hun zoekfunctie vindt geen kleurcodes,
+         maar de SKU's van hun varianten zijn onze artikelcodes (R18072 = 18", kleur 072).
+         Gekoppeld op code EN kleurnaam uit hun Shopify-catalogus (products.json, 27/10/2026):
+         alle 93 kleuren van de tools. Satin = Pearl, Navy = Navy Blue, Crystal Red = Reflex Red.
+         Nieuwe kleur bij hen = regel erbij; zonder regel valt een kleur terug op searchUrl. */
+      productUrl: 'https://proballoonshop.co.uk/products/{handle}',
+      products: {
+        '005': 'sempertex-fashion-white', '006': 'sempertex-fashion-new_1',
+        '008': 'sempertex-008-new-colour', '009': 'sempertex-fashion-pink',
+        '010': 'sempertex-fashion-rosewood', '011': 'sempertex-fashion-rose',
+        '012': 'sempertex-fashion-fuchsia', '013': 'sempertex-013-new-colour',
+        '015': 'sempertex-red', '016': 'sempertex-fashion-imperial-red',
+        '018': 'sempertex-fashion-merlot', '020': 'sempertex-fashion-yellow',
+        '021': 'sempertex-fashion-honey-yellow', '023': 'sempertex-fashion-mustard',
+        '027': 'sempertex-fashion-eucalyptus', '029': 'sempertex-fashion-shamrock-green',
+        '030': 'sempertex-fashion-green', '031': 'sempertex-fashion-lime-green',
+        '032': 'sempertex-fashion-forest-green', '035': 'sempertex-fashion-deep-teal',
+        '037': 'sempertex-fashion-aquamarine', '038': 'sempertex-fashion-caribbean-blue',
+        '040': 'sempertex-fashion-blue', '041': 'sempertex-fashion-royal-blue',
+        '042': 'sempertex-fashion-periwinkle-blue', '044': 'sempertex-fashion-navy',
+        '050': 'sempertex-fashion-lilac', '051': 'sempertex-fashion-violet',
+        '058': 'sempertex-fashion-new', '060': 'sempertex-fashion-peach-blush',
+        '061': 'sempertex-fashion-orange', '062': 'sempertex-fashion-sunset-orange',
+        '070': 'sempertex-fashion-mocha', '071': 'sempertex-fashion-white-sand',
+        '073': 'sempertex-fashion-lattee', '074': 'sempertex-fashion-coffee',
+        '076': 'sempertex-fashion-chocolate', '080': 'sempertex-fashion-black',
+        '081': 'sempertex-fashion-grey', '082': 'sempertex-fashion-new_2',
+        '107': 'sempertex-pastel-dusk-cream', '110': 'sempertex-pastel-dusk-rose',
+        '126': 'sempertex-pastel-dusk-green-tea', '140': 'sempertex-pastel-dusk-blue',
+        '150': 'sempertex-pastel-dusk-lavender', '212': 'sempertex-neon-magenta',
+        '220': 'sempertex-neon-yellow', '230': 'sempertex-neon-green',
+        '240': 'sempertex-neon-blue', '261': 'sempertex-neon-orange',
+        '390': 'sempertex-crystal-clear', '405': 'sempertex-satin-white',
+        '406': 'sempertex-satin-pearl', '409': 'sempertex-satin-pink',
+        '430': 'sempertex-satin-green', '440': 'sempertex-satin-blue',
+        '450': 'sempertex-satin-lilac', '481': 'sempertex-satin-silver',
+        '512': 'sempertex-metallic-fuchsia', '515': 'sempertex-metallic-red',
+        '530': 'sempertex-metallic-green', '540': 'sempertex-metallic-blue',
+        '568': 'sempertex-metallic-rose-gold', '570': 'sempertex-metallic-gold',
+        '580': 'sempertex-metallic-black', '609': 'sempertex-pastel-matte',
+        '620': 'sempertex-pastel-matte-yellow', '630': 'sempertex-pastel-matte-green',
+        '640': 'sempertex-pastel-matte-blue', '650': 'sempertex-pastel-matte-lilac',
+        '660': 'sempertex-pastel-matte-malibu-peach', '661': 'sempertex-pastel-matte-nude',
+        '663': 'sempertex-pastel-matte-melon', '806': 'sempertex-silk-oyster-white',
+        '809': 'sempertex-silk-pink-blossom', '826': 'sempertex-silk-cool-mint',
+        '839': 'sempertex-silk-arctic-blue', '850': 'sempertex-silk-light-amethyst',
+        '870': 'sempertex-silk-gold-dust', '873': 'sempertex-silk-cream-pearl',
+        '880': 'sempertex-silk-midnight-grey', '909': 'sempertex-reflex-pink',
+        '912': 'sempertex-reflex-fuchsia', '915': 'sempertex-reflex-red',
+        '931': 'sempertex-reflex-lime-green', '932': 'sempertex-reflex-aurora-green',
+        '940': 'sempertex-reflex-blue', '944': 'sempertex-reflex-galaxy-blue',
+        '951': 'sempertex-reflex-violet', '968': 'sempertex-reflex-rose-gold',
+        '970': 'sempertex-reflex-gold', '971': 'sempertex-reflex-champagne',
+        '981': 'sempertex-reflex-silver'
+      },
+      searchUrl: 'https://proballoonshop.co.uk/search?q=sempertex%20{name}&type=product',
+
+      /* Prijscalculator: beginwaarden voor een Britse klant (tot hij zelf iets bewaart). */
+      costDefaults: { currency: 'GBP', dist: 'mi', vat: 20 },
+
+      order: {
+        sizes: [
+          { label: 'Fashion', url: 'https://proballoonshop.co.uk/collections/sempertex-fashion' },
+          { label: 'Pastel Matte', url: 'https://proballoonshop.co.uk/collections/sempertex-pastel-matte' },
+          { label: 'Pastel Dusk', url: 'https://proballoonshop.co.uk/collections/sempertex-pastel-dusk' },
+          { label: 'Satin Pearl', url: 'https://proballoonshop.co.uk/collections/sempertex-satin' },
+          { label: 'Metallic', url: 'https://proballoonshop.co.uk/collections/sempertex-metallic' },
+          { label: 'Reflex', url: 'https://proballoonshop.co.uk/collections/sempertex-reflex' },
+          { label: 'Neon', url: 'https://proballoonshop.co.uk/collections/sempertex-neon' },
+          { label: 'Crystal', url: 'https://proballoonshop.co.uk/collections/sempertex-crystal' },
+          { label: 'Silk', url: 'https://proballoonshop.co.uk/collections/sempertex-silk' }
+        ]
+      },
+
+      langs: ['en'],
+      text: {
+        en: {
+          pageTitle: 'Balloon colour and price tools | Pro Balloon Shop',
+          langLabel: 'Language',
+          skipLabel: 'Skip to content',
+          tabsLabel: 'Tools',
+          backLabel: 'Back to the shop',
+          footerText: 'Built by Sempertex Europe for Pro Balloon Shop.',
+          order: {
+            title: 'Order these balloons from Pro Balloon Shop',
+            lead: 'Click a colour to go straight to it on the Pro Balloon Shop, in every size they stock.',
+            innerLabel: 'Inner',
+            outerLabel: 'Outer',
+            mainBtn: 'All Sempertex balloons',
+            sizesLabel: 'Or pick a range:'
+          },
+          strings: {
+            calcp_eyebrow: 'Pro Balloon Shop / Double stuffing',
+            cost_eyebrow: 'Pro Balloon Shop / Cost calculator',
+            ct_eyebrow: 'Pro Balloon Shop / Colour matching',
+            cc_q_stx: 'Small "made with the Pro Balloon Shop calculator" line',
+            cc_doc_stx: 'Made with the Pro Balloon Shop calculator',
+            ct_btn_shop: 'View at Pro Balloon Shop'
+          }
+        }
+      }
     }
 
     /* Volgende partner hier, zelfde vorm:
@@ -898,6 +1028,9 @@
   var SEARCH = P.searchUrl || (P.order && P.order.searchUrl) || '';
   var COLROOT = null;   /* root van inspiration-v18, gezet in build() */
   function partnerShopUrl(code) {
+    /* Eigen productpagina per kleurcode (products + productUrl), voor een webshop die niet op kleurcode zoekt
+       maar waarvan we de koppeling kennen (Pro Balloon Shop). Kleur zonder regel: gewoon verder hieronder. */
+    if (code && P.products && P.productUrl && P.products[code]) { return P.productUrl.replace('{handle}', P.products[code]); }
     if (!SEARCH || !code) { return P.shopUrl; }
     /* {name} = kleurnaam ("Pastel Matte Blue") voor een webshop die niet op kleurcode zoekt (Datta's). */
     if (SEARCH.indexOf('{name}') > -1) {

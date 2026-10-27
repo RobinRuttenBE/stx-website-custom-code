@@ -636,7 +636,13 @@ function check(name, ok, extra) {
       shop: /^https:\/\/b2b\.europarty\.it\/catalogsearch\/result\/\?q=Sempertex%20\d{3}$/,
       notHost: 'www.europarty.it',
       hint: /Inserisci il tuo prezzo d’acquisto al pezzo/,
-      foreign: /\b(Kleurmixer|opdracht|inkoopprijs|Bewaar|Instellingen|Materiaal|Settings|Saved quotes|Materials|Inner balloon|Upload a photo|Shop this colour)\b/ }
+      foreign: /\b(Kleurmixer|opdracht|inkoopprijs|Bewaar|Instellingen|Materiaal|Settings|Saved quotes|Materials|Inner balloon|Upload a photo|Shop this colour)\b/ },
+    // Pro Balloon Shop (27/10/2026): Shopify, every colour straight to its own product page.
+    { slug: 'pro-balloon-shop', name: 'Pro Balloon Shop', brand: '#196c7f', font: 'Figtree',
+      tabs: ['Double Stuffing Calculator', 'Cost Calculator', 'Colour Matching Tool'],
+      title: 'Balloon colour and price tools | Pro Balloon Shop', cur: '£', curCode: 'GBP', dist: 'mi', vat: 20,
+      shop: /^https:\/\/proballoonshop\.co\.uk\/products\/sempertex-[a-z0-9-]+$/,
+      hint: /Enter your own purchase price per piece/, foreign: /\b(Kleurmixer|opdracht|inkoopprijs|Bewaar|Instellingen|Materiaal)\b/ }
   ];
   for (const N of NEW_PARTNERS) {
     console.log(`\n/partner/${N.slug}/tools (vaste taal, ${N.curCode})`);

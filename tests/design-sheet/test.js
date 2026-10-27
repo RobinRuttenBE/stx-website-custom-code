@@ -21,6 +21,8 @@ let xNameRefused = 0;         // calls the fake Odoo refused because they used x
 let nextId = 1;
 let aiRequests = 0;
 let loggedIn = true;
+let labelled = true;        // contact carries the 'AI Beta' label (answer of the fake /api/access)
+let accessCalls = 0;
 
 function readBody(req) { return new Promise(r => { let b = ''; req.on('data', c => b += c); req.on('end', () => r(b)); }); }
 function json(res, obj, status) { res.writeHead(status || 200, { 'Content-Type': 'application/json' }); res.end(JSON.stringify(obj)); }
@@ -51,6 +53,7 @@ const server = http.createServer(async (req, res) => {
   if (url === '/sections/design-sheet-v1.html') {
     let s = fs.readFileSync(path.join(REPO, 'sections/design-sheet-v1.html'), 'utf8');
     s = s.replace(/var AI_ENDPOINT = '[^']*';/, "var AI_ENDPOINT = '/fake-ai';");
+    s = s.replace(/var ACCESS_ENDPOINT = '[^']*';/, "var ACCESS_ENDPOINT = '/fake-access';");
     res.writeHead(200, { 'Content-Type': 'text/html' }); res.end(s); return;
   }
   if (url.indexOf('/sections/') === 0) { const f = path.join(REPO, decodeURIComponent(url)); if (fs.existsSync(f)) { res.writeHead(200, { 'Content-Type': f.endsWith('.json') ? 'application/json' : 'text/html' }); fs.createReadStream(f).pipe(res); return; } }
@@ -73,6 +76,11 @@ const server = http.createServer(async (req, res) => {
     if (p.model === 'x_stx_ai_request' && p.method === 'create') { rpcOk(res, [900 + (++aiRequests)]); return; }
     rpcErr(res, 'Object ' + p.model + " doesn't exist"); return;
   }
+  if (url === '/fake-access') {
+    const b = JSON.parse(body); accessCalls++;
+    assert.ok(b.request_id > 900, 'access check sends the id of a record made as this account');
+    json(res, { access: labelled }); return;
+  }
   if (url === '/fake-ai') {
     const b = JSON.parse(body);
     assert.ok(b.request_id > 900 && b.image.indexOf('data:image/jpeg') === 0 && b.prompt.length > 50);
@@ -91,21 +99,44 @@ const server = http.createServer(async (req, res) => {
   page.on('console', m => { if (m.type() === 'error' && !/favicon|404|Failed to load resource/.test(m.text())) errors.push(m.text()); });
   const ok = (msg) => console.log('ok  ' + msg);
 
-  // 1. without the beta switch: the coming soon card, no tool
+  // 1. access (27/10/2026): coming soon for everyone, the tool only for accounts with the 'AI Beta' label
+  loggedIn = false;
   await page.goto(base + '/design-sheet');
   await page.waitForSelector('#stx-ds-soon');
   assert.strictEqual(await page.$('#stx-ds-frame'), null);
-  ok('without #stxdesign the page shows the coming-soon card');
+  const loginHref = await page.getAttribute('#stx-ds-soon p.in a', 'href');
+  assert.ok(/\/web\/login\?redirect=%2Fdesign-sheet$/.test(loginHref), loginHref);
+  assert.strictEqual(accessCalls, 0);
+  ok('logged out: coming soon with a log in link back to this page, no access check');
+  loggedIn = true; labelled = false;
+  await page.goto(base + '/design-sheet');
+  await page.waitForSelector('#stx-ds-soon');
+  assert.strictEqual(await page.$('#stx-ds-frame'), null);
+  assert.strictEqual(await page.$('#stx-ds-soon p.in'), null);
+  assert.strictEqual(accessCalls, 1);
+  ok('logged in without the label: coming soon, no log in link');
+  await page.goto(base + '/design-sheet');
+  await page.waitForSelector('#stx-ds-soon');
+  assert.strictEqual(await page.$('#stx-ds-frame'), null);
+  ok('the old #stxdesign switch no longer opens the tool');
+  labelled = true;
 
-  // 2. with the switch: the tool in its iframe
-  await page.goto(base + '/design-sheet#stxdesign');
+  // 2. with the label: the tool in its iframe
+  await page.goto(base + '/design-sheet');
   await page.waitForSelector('#stx-ds-frame');
   const frame = () => page.frames().find(f => f.url() === 'about:srcdoc');
   await page.waitForFunction(() => { const f = document.getElementById('stx-ds-frame'); return f && f.contentWindow && f.contentWindow.STX; }, null, { timeout: 30000 });
   let f = frame();
   assert.ok(await f.evaluate(() => !!window.STX_ENV && window.STX_ENV.shop === true));
   await page.waitForFunction(() => !document.getElementById('stx-ds-wait'));
-  ok('#stxdesign loads the tool full screen, STX_ENV says shop');
+  ok('with the label the tool loads full screen, STX_ENV says shop');
+  const calls = accessCalls;
+  await page.goto(base + '/design-sheet');
+  await page.waitForFunction(() => { const fr = document.getElementById('stx-ds-frame'); return fr && fr.contentWindow && fr.contentWindow.STX; }, null, { timeout: 30000 });
+  f = frame();
+  await page.waitForFunction(() => !document.getElementById('stx-ds-wait'));
+  assert.strictEqual(accessCalls, calls);
+  ok('a yes is remembered: the next visit opens without asking the server again');
 
   // 3. number stack: every digit becomes the real Grabo product
   await f.click('.gen-tabs button[data-gen="number"]');
@@ -169,7 +200,7 @@ const server = http.createServer(async (req, res) => {
   const ctx2 = await browser.newContext({ viewport: { width: 1280, height: 860 } });
   const p2 = await ctx2.newPage();
   p2.on('pageerror', e => errors.push('device2: ' + e.message));
-  await p2.goto(base + '/design-sheet#stxdesign');
+  await p2.goto(base + '/design-sheet');
   await p2.waitForFunction(() => { const fr = document.getElementById('stx-ds-frame'); return fr && fr.contentWindow && fr.contentWindow.STX; }, null, { timeout: 30000 });
   const f2 = p2.frames().find(x => x.url() === 'about:srcdoc');
   await f2.click('#tab-projects');
@@ -193,7 +224,7 @@ const server = http.createServer(async (req, res) => {
   ok('Make a quote: ' + mat.length + ' material lines in the Cost Calculator, import key cleared');
 
   // 8. AI: Odoo request record first, then the AI server
-  await page.goto(base + '/design-sheet#stxdesign');
+  await page.goto(base + '/design-sheet');
   await page.waitForFunction(() => { const fr = document.getElementById('stx-ds-frame'); return fr && fr.contentWindow && fr.contentWindow.STX && fr.contentWindow.STX.state.balloons.length; }, null, { timeout: 30000 });
   f = page.frames().find(x => x.url() === 'about:srcdoc');
   // location photo with the design small in it, like a far wall: the AI gets a crop, the result goes back in place
@@ -211,9 +242,10 @@ const server = http.createServer(async (req, res) => {
   const whole = await f.evaluate(() => new Promise(r => { window.STX.state.aiWhole = true; window.STX.aiJob(j => { window.STX.state.aiWhole = undefined; r(j.prompt); }); }));
   assert.ok(/^Edit this photo\./.test(whole) && /Recreate the whole photo as a sharp/.test(whole), whole.slice(0, 200));
   ok('AI prompt: crop by default for a small design, whole photo (recreated sharp) when picked');
+  const before = aiRequests;   // the access checks above made request records too
   await f.click('#ai-gen');
   await f.waitForFunction(() => window.STX.state.impression && window.STX.state.impression.img, null, { timeout: 20000 });
-  assert.strictEqual(aiRequests, 1);
+  assert.strictEqual(aiRequests - before, 1);
   const imp = await f.evaluate(() => [window.STX.state.impression.img.width, window.STX.state.loc.pw, window.STX.state.impression.img.height, window.STX.state.loc.ph]);
   // full photo with the crop pasted in, at work size (long side at least 1600 px) so the AI's detail survives
   assert.ok(Math.max(imp[0], imp[2]) >= 1600 && Math.abs(imp[0] / imp[2] - imp[1] / imp[3]) < 0.01, 'impression is the full photo with the crop pasted in, at work size: ' + imp);
@@ -289,23 +321,10 @@ const server = http.createServer(async (req, res) => {
   assert.deepStrictEqual(wall, [false, 1200, 700]);
   ok('floor mode: closer is ' + (floor.front.w / floor.back.w).toFixed(1) + 'x bigger, the design stands on the purple spot, saved and reloaded as floor, back to wall keeps 1200 x 700');
 
-  // 9. not logged in: device storage only, clear message
-  loggedIn = false;
-  await page.goto(base + '/design-sheet?reload=1#stxdesign');
-  await page.waitForFunction(() => { const fr = document.getElementById('stx-ds-frame'); return fr && fr.contentWindow && fr.contentWindow.STX; }, null, { timeout: 30000 });
-  f = page.frames().find(x => x.url() === 'about:srcdoc');
-  await page.waitForTimeout(1500);
-  const modalTxt = await f.evaluate(() => document.getElementById('modal').classList.contains('show') ? document.getElementById('modal-box').innerText.slice(0, 300) : '');
-  assert.strictEqual(modalTxt, '', 'modal open on load: ' + modalTxt);
-  await f.click('#tab-projects');
-  await f.waitForFunction(() => /Log in on the shop/.test(document.getElementById('cloud-status').textContent));
-  ok('logged out: "Saved on this device. Log in on the shop to keep your projects on your account"');
-  loggedIn = true;
-
   // 10. phone
   const ph = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
   ph.on('pageerror', e => errors.push('phone: ' + e.message));
-  await ph.goto(base + '/design-sheet#stxdesign');
+  await ph.goto(base + '/design-sheet');
   await ph.waitForFunction(() => { const fr = document.getElementById('stx-ds-frame'); return fr && fr.contentWindow && fr.contentWindow.STX; }, null, { timeout: 30000 });
   await ph.waitForTimeout(2000);
   await ph.screenshot({ path: path.join(OUT, 'phone.png') });
