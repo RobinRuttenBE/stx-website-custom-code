@@ -16,9 +16,12 @@
      Links naar www.sempertexeurope.com krijgen de taalprefix van de
      pagina (/en_GB, /fr, /de). Beelden staan in assets/team/,
      op dezelfde commit als de loader.
+     Talen: NL, EN, FR, DE, elk een eigen <template> hieronder, vertaald
+     met code/i18n/team.py (bron = NL). De pagina kiest de taal
+     van de URL (/en_GB, /fr, /de, anders NL).
      ============================================================ -->
 
-<template id="stx-team-tpl">
+<template id="stx-team-css">
 <style>
 :host { all: initial; display: block; overflow-x: clip; }
 .stx-doc { display: block; }
@@ -365,7 +368,9 @@ section .lead { max-width: 60ch; margin-bottom: 8px; }
 .dept-nav { top: var(--stx-top, 0px); }
 .stx-doc { overflow-x: visible; }
 </style>
-<div class="stx-doc">
+</template>
+<template id="stx-team-nl">
+<div class="stx-doc" lang="nl">
 <div class="wrap team">
 
   <header class="hero">
@@ -709,6 +714,1041 @@ section .lead { max-width: 60ch; margin-bottom: 8px; }
 </div>
 </div>
 </template>
+<template id="stx-team-en">
+<div class="stx-doc" lang="en">
+<div class="wrap team">
+
+  <header class="hero">
+    <h1 class="title">The team behind <span class="hl">the balloon</span></h1>
+  </header>
+
+  <nav class="dept-nav" aria-label="Departments">
+    <span class="nav-label">Jump to</span>
+    <a href="#ceo">CEO</a>
+    <a href="#leiding">Leadership</a>
+    <a href="#klanten">Customer service</a>
+    <a href="#creatie">Creative &amp; media</a>
+    <a href="#magazijn">Warehouse</a>
+    <a href="#ambassadors">Ambassadors</a>
+    <a href="#bezoek">Visit us</a>
+  </nav>
+
+  <section id="ceo">
+    <div class="sec-num">01</div>
+    <h2>Our <span class="hl">CEO</span></h2>
+    <p class="lead">Sofie runs Sempertex Europe, from market to warehouse.</p>
+    <div class="ceo-card">
+      <div class="portrait">
+        <span class="initials" aria-hidden="true">SV</span>
+        <img src="https://www.sempertexeurope.com/web/image/50470-6ff709dc/Sofie_2025-12-18.webp" alt="Sofie Vandewyer, CEO Sempertex Europe at Sempertex Europe" loading="lazy">
+        <div class="plate">
+          <h3>Sofie Vandewyer</h3>
+          <div class="role">CEO Sempertex Europe</div>
+        </div>
+      </div>
+      <div class="ceo-body">
+        <div class="ceo-eyebrow">Owner</div>
+        <p class="ceo-pull">Thinks in colours, speaks in strategy and keeps the overview, even when everything moves at once.</p>
+        <p>Builds markets, steers growth and keeps the balance between numbers and creativity. Not afraid of a challenge, but definitely afraid of meetings that never end.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="leiding">
+    <div class="sec-num">02</div>
+    <h2>Our <span class="hl">leadership</span></h2>
+    <p class="lead">The people who lead their teams, watch the numbers and set the direction.</p>
+    <div class="team-grid">
+      <article class="member" tabindex="0">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">KD</span>
+          <img src="https://www.sempertexeurope.com/web/image/50457-8e0ead35/Koen.webp" alt="Koen Van Damme, Head of Technical &amp; Events at Sempertex Europe" loading="lazy">
+          <div class="plate">
+            <h3>Koen Van Damme</h3>
+            <div class="role">Head of Technical &amp; Events</div>
+            <p class="bio">Keeps everything running on the technical side and gets things done, even when it gets complicated. More than 30 years in the balloon trade and still just as driven. Brings people together, always approachable and never short of a joke.</p>
+          </div>
+        </div>
+        <div class="touch-bio"><p>Keeps everything running on the technical side and gets things done, even when it gets complicated. More than 30 years in the balloon trade and still just as driven. Brings people together, always approachable and never short of a joke.</p></div>
+      </article>
+      <article class="member" tabindex="0">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">RV</span>
+          <img src="https://www.sempertexeurope.com/web/image/119751-be304dc2/Rani_2026-07-16.webp" alt="Rani Vandiest, Head of Operations &amp; Customer Experience at Sempertex Europe" loading="lazy">
+          <div class="plate">
+            <h3>Rani Vandiest</h3>
+            <div class="role">Head of Operations &amp; Customer Experience</div>
+            <p class="bio">Keeps everything running and makes sure nothing slips through the cracks. Always punctual, keeps the overview and the structure, even when everything happens at once. Sorts out what needs sorting, often before anyone notices.</p>
+          </div>
+        </div>
+        <div class="touch-bio"><p>Keeps everything running and makes sure nothing slips through the cracks. Always punctual, keeps the overview and the structure, even when everything happens at once. Sorts out what needs sorting, often before anyone notices.</p></div>
+      </article>
+      <article class="member" tabindex="0">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">KC</span>
+          <img src="https://www.sempertexeurope.com/web/image/50474-01cd9902/Kim.webp" alt="Kim Cuppers, Finance &amp; Data at Sempertex Europe" loading="lazy">
+          <div class="plate">
+            <h3>Kim Cuppers</h3>
+            <div class="role">Finance &amp; Data</div>
+            <p class="bio">Brings numbers to life and makes sure everything adds up, down to the details. Combines accounting with data analysis and turns figures into clear insights. Her first question? What does it cost?</p>
+          </div>
+        </div>
+        <div class="touch-bio"><p>Brings numbers to life and makes sure everything adds up, down to the details. Combines accounting with data analysis and turns figures into clear insights. Her first question? What does it cost?</p></div>
+      </article>
+      <article class="member" tabindex="0">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">RR</span>
+          <img src="https://www.sempertexeurope.com/web/image/50476-ebb63af8/Robin.webp" alt="Robin Rutten, Head of Marketing &amp; Sales at Sempertex Europe" loading="lazy">
+          <div class="plate">
+            <h3>Robin Rutten</h3>
+            <div class="role">Head of Marketing &amp; Sales</div>
+            <p class="bio">Makes sure the brand is seen at the right moments, in the right places. Thinks in campaigns, content and growth, and turns ideas into strong marketing. Young, ambitious and always looking for what can be better, smarter or stronger.</p>
+          </div>
+        </div>
+        <div class="touch-bio"><p>Makes sure the brand is seen at the right moments, in the right places. Thinks in campaigns, content and growth, and turns ideas into strong marketing. Young, ambitious and always looking for what can be better, smarter or stronger.</p></div>
+      </article>
+    </div>
+  </section>
+
+  <section id="klanten">
+    <div class="sec-num">03</div>
+    <h2>Customer service &amp; <span class="hl">office</span></h2>
+    <p class="lead">The voice on the phone and the hands behind your order. This is the team you talk to most.</p>
+    <div class="team-grid">
+      <article class="member" tabindex="0">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">VE</span>
+          <img src="https://www.sempertexeurope.com/web/image/50472-e1700776/Vroni.webp" alt="Vroni Effner, Customer Service at Sempertex Europe" loading="lazy">
+          <div class="plate">
+            <h3>Vroni Effner</h3>
+            <div class="role">Customer Service</div>
+            <p class="bio">Makes sure customers feel heard and helped, from the first question to the last detail. Quick to switch, thinks along and turns questions straight into solutions. Follows everything up carefully and makes the difference in the small things.</p>
+          </div>
+        </div>
+        <div class="touch-bio"><p>Makes sure customers feel heard and helped, from the first question to the last detail. Quick to switch, thinks along and turns questions straight into solutions. Follows everything up carefully and makes the difference in the small things.</p></div>
+      </article>
+      <article class="member" tabindex="0">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">GC</span>
+          <img src="https://www.sempertexeurope.com/web/image/114023-5fb9908c/Nati%20Website%20%285%29.webp" alt="Gigi Canale, Customer Service at Sempertex Europe" loading="lazy">
+          <div class="plate">
+            <h3>Gigi Canale</h3>
+            <div class="role">Customer Service</div>
+            <p class="bio">The first point of contact, full of energy from the first call to the last. Thinks along, tackles everything straight away and always goes all in. Brings pace, positivity and a good dose of Italian Drama ;-).</p>
+          </div>
+        </div>
+        <div class="touch-bio"><p>The first point of contact, full of energy from the first call to the last. Thinks along, tackles everything straight away and always goes all in. Brings pace, positivity and a good dose of Italian Drama ;-).</p></div>
+      </article>
+      <article class="member" tabindex="0">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">JJ</span>
+          <img src="https://www.sempertexeurope.com/web/image/93877-c2b47f02/Nati%20Website%20%282%29.webp" alt="Julie Joris, Event &amp; Office Assistant at Sempertex Europe" loading="lazy">
+          <div class="plate">
+            <h3>Julie Joris</h3>
+            <div class="role">Event &amp; Office Assistant</div>
+            <p class="bio">Steps in wherever needed and feels just as at home behind a desk or at the till as at an event. Switches quickly between tasks, people and situations without missing a beat. Versatile and always ready for whatever comes next.</p>
+          </div>
+        </div>
+        <div class="touch-bio"><p>Steps in wherever needed and feels just as at home behind a desk or at the till as at an event. Switches quickly between tasks, people and situations without missing a beat. Versatile and always ready for whatever comes next.</p></div>
+      </article>
+    </div>
+  </section>
+
+  <section id="creatie">
+    <div class="sec-num">04</div>
+    <h2>Creative &amp; <span class="hl">media</span></h2>
+    <p class="lead">Colour, image and story. Everything you see from us on social media, in campaigns and at events.</p>
+    <div class="team-grid">
+      <article class="member" tabindex="0">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">TC</span>
+          <img src="https://www.sempertexeurope.com/web/image/93876-f1ba3042/Tijl%20Website%20%281%29.webp" alt="Tijl Ceyssens, Media &amp; Content Creator at Sempertex Europe" loading="lazy">
+          <div class="plate">
+            <h3>Tijl Ceyssens</h3>
+            <div class="role">Media &amp; Content Creator</div>
+            <p class="bio">Always comes up with fresh ideas and content nobody saw coming. Keeps an eye on trends, thinks creatively and is not afraid to colour outside the lines. Brings energy, humour and just enough chaos to keep the whole team sharp.</p>
+          </div>
+        </div>
+        <div class="touch-bio"><p>Always comes up with fresh ideas and content nobody saw coming. Keeps an eye on trends, thinks creatively and is not afraid to colour outside the lines. Brings energy, humour and just enough chaos to keep the whole team sharp.</p></div>
+      </article>
+      <article class="member" tabindex="0">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">AU</span>
+          <img src="https://www.sempertexeurope.com/web/image/93878-f92624a3/Ati%20Website%20%281%29.webp" alt="Atilla Ucum, Videographer &amp; Editor at Sempertex Europe" loading="lazy">
+          <div class="plate">
+            <h3>Atilla Ucum</h3>
+            <div class="role">Videographer &amp; Editor</div>
+            <p class="bio">Captures every moment on camera and makes sure it looks exactly right in the edit. Leaves nothing to chance and has a sharp eye for detail. Patient, precise and always focused on the end result.</p>
+          </div>
+        </div>
+        <div class="touch-bio"><p>Captures every moment on camera and makes sure it looks exactly right in the edit. Leaves nothing to chance and has a sharp eye for detail. Patient, precise and always focused on the end result.</p></div>
+      </article>
+      <article class="member" tabindex="0">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">AM</span>
+          <img src="https://www.sempertexeurope.com/web/image/50473-79df1995/Anouk.webp" alt="Anouk Mussen, Creative &amp; Color Specialist at Sempertex Europe" loading="lazy">
+          <div class="plate">
+            <h3>Anouk Mussen</h3>
+            <div class="role">Creative &amp; Color Specialist</div>
+            <p class="bio">Brings colour to life and creates palettes that stick straight away. Turns ideas into visuals and supports the social media team where needed. Camera-shy, creative and ready to help anywhere.</p>
+          </div>
+        </div>
+        <div class="touch-bio"><p>Brings colour to life and creates palettes that stick straight away. Turns ideas into visuals and supports the social media team where needed. Camera-shy, creative and ready to help anywhere.</p></div>
+      </article>
+    </div>
+  </section>
+
+  <section id="magazijn">
+    <div class="sec-num">05</div>
+    <h2>In the <span class="hl">warehouse</span></h2>
+    <p class="lead">Where your order really comes together. Picking, preparing, loading, and all over again every day.</p>
+    <div class="team-grid">
+      <article class="member" tabindex="0">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">JV</span>
+          <img src="https://www.sempertexeurope.com/web/image/149461-735d3cad/Jan.webp" alt="Jan Verbeek, Head of Warehouse at Sempertex Europe" loading="lazy">
+          <div class="plate">
+            <h3>Jan Verbeek</h3>
+            <div class="role">Head of Warehouse</div>
+            <p class="bio">Leads the flow in the warehouse with a calm and gentle approach. Takes time for people, keeps the atmosphere good and makes sure everyone is on board. Stays calm when it gets busy, or is very good at pretending ;-)</p>
+          </div>
+        </div>
+        <div class="touch-bio"><p>Leads the flow in the warehouse with a calm and gentle approach. Takes time for people, keeps the atmosphere good and makes sure everyone is on board. Stays calm when it gets busy, or is very good at pretending ;-)</p></div>
+      </article>
+      <article class="member" tabindex="0">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">JH</span>
+          <img src="https://www.sempertexeurope.com/web/image/50479-edadc981/Jeroen.webp" alt="Jeroen Heylen, Warehouse Operator at Sempertex Europe" loading="lazy">
+          <div class="plate">
+            <h3>Jeroen Heylen</h3>
+            <div class="role">Warehouse Operator</div>
+            <p class="bio">Makes sure the work gets done and that there is a laugh along the way. Brings energy to the warehouse and lifts everyone with his good mood. The joker of the team, but one who always pulls his weight.</p>
+          </div>
+        </div>
+        <div class="touch-bio"><p>Makes sure the work gets done and that there is a laugh along the way. Brings energy to the warehouse and lifts everyone with his good mood. The joker of the team, but one who always pulls his weight.</p></div>
+      </article>
+      <article class="member" tabindex="0">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">ML</span>
+          <img src="https://www.sempertexeurope.com/web/image/50480-998edc6d/Matisse.webp" alt="Matisse Lambrichts, Warehouse Operator at Sempertex Europe" loading="lazy">
+          <div class="plate">
+            <h3>Matisse Lambrichts</h3>
+            <div class="role">Warehouse Operator</div>
+            <p class="bio">Picks orders with precision and makes sure everything is neatly ready. Works calmly, just does his thing and likes to keep it simple. Gets everything ready in the warehouse, and pizza at home.</p>
+          </div>
+        </div>
+        <div class="touch-bio"><p>Picks orders with precision and makes sure everything is neatly ready. Works calmly, just does his thing and likes to keep it simple. Gets everything ready in the warehouse, and pizza at home.</p></div>
+      </article>
+      <article class="member" tabindex="0">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">AL</span>
+          <img src="https://www.sempertexeurope.com/web/image/149453-0b1f9f5f/Nati%20Website%20%287%29.webp" alt="Aziz Lagouireh, Warehouse Operator at Sempertex Europe" loading="lazy">
+          <div class="plate">
+            <h3>Aziz Lagouireh</h3>
+            <div class="role">Warehouse Operator</div>
+            <p class="bio">Always cheerful and always on the move in the warehouse. Makes sure every order is ready to go. After hours you will find him on the football pitch.</p>
+          </div>
+        </div>
+        <div class="touch-bio"><p>Always cheerful and always on the move in the warehouse. Makes sure every order is ready to go. After hours you will find him on the football pitch.</p></div>
+      </article>
+    </div>
+  </section>
+
+  <section id="ambassadors">
+    <div class="sec-num">06</div>
+    <h2>Our creative <span class="hl">ambassadors</span></h2>
+    <p class="lead">Artists who think along with us, give workshops and carry the brand across Europe.</p>
+    <div class="team-grid">
+      <article class="member amb">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">DD</span>
+          <div class="plate">
+            <h3>Denise Van Dooren</h3>
+            <div class="role">Creative ambassador</div>
+          </div>
+        </div>
+      </article>
+      <article class="member amb">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">AP</span>
+          <div class="plate">
+            <h3>Audrey Parsons</h3>
+            <div class="role">Creative ambassador</div>
+          </div>
+        </div>
+      </article>
+      <article class="member amb">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">MB</span>
+          <div class="plate">
+            <h3>Melissa Bellefontaine</h3>
+            <div class="role">Creative ambassador</div>
+          </div>
+        </div>
+      </article>
+      <article class="member amb">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">AF</span>
+          <div class="plate">
+            <h3>Alberto Falcone</h3>
+            <div class="role">Creative ambassador</div>
+          </div>
+        </div>
+      </article>
+      <article class="member amb">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">TT</span>
+          <div class="plate">
+            <h3>Tobi Twist</h3>
+            <div class="role">Creative ambassador</div>
+          </div>
+        </div>
+      </article>
+      <article class="member amb">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">PA</span>
+          <div class="plate">
+            <h3>Paula Ardron-Gemmell</h3>
+            <div class="role">Creative ambassador</div>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <div class="principle full">
+    <div class="label">What we stand for</div>
+    <div class="statement">Behind every order, every workshop and every colour is a person you can <span class="hl">call</span>.</div>
+  </div>
+
+  <section id="bezoek" class="full band-soft">
+    <div class="sec-num">07</div>
+    <h2>Come and <span class="hl">visit</span></h2>
+    <p class="lead">Rather talk to someone than fill in a form? You can. You will find us in Genk.</p>
+    <div class="info-grid">
+      <div class="info-card soft">
+        <h4>Opening hours</h4>
+        <p>Monday to Thursday, 10:00 to 16:00</p>
+        <p class="small">Lunch break from 12:00 to 13:00. Closed on Fridays, at weekends and on public holidays.</p>
+        <p class="small">You can collect online orders from Monday to Thursday between 10:00 and 12:00 and between 13:00 and 16:00. We contact you as soon as your order is ready.</p>
+      </div>
+      <div class="info-card">
+        <h4>Where to find us</h4>
+        <p>Mie&euml;nbroekstraat 43<br>3600 Genk, Belgium</p>
+        <p><a href="tel:+3289235758">+32 89 23 57 58</a></p>
+        <p class="small"><a href="https://www.sempertexeurope.com/helpdesk">Ask a question through the helpdesk</a></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="closing full">
+    <h2>Want to work with <span class="hl">this team?</span></h2>
+    <p>Shop the full range, sign up for a workshop, or simply ask the people above your question directly. We answer faster than you think.</p>
+    <div class="btn-row">
+      <a class="stx-btn primary" href="https://www.sempertexeurope.com/shop">Go to the shop</a>
+      <a class="stx-btn" href="https://www.sempertexeurope.com/events">See the workshops</a>
+      <a class="stx-btn" href="https://www.sempertexeurope.com/helpdesk">Contact us</a>
+    </div>
+  </section>
+
+  <footer>
+    <span>Sempertex Europe, our team</span>
+    <span>sempertexeurope.com</span>
+  </footer>
+
+</div>
+</div>
+</template>
+<template id="stx-team-fr">
+<div class="stx-doc" lang="fr">
+<div class="wrap team">
+
+  <header class="hero">
+    <h1 class="title">L’équipe derrière <span class="hl">le ballon</span></h1>
+  </header>
+
+  <nav class="dept-nav" aria-label="Services">
+    <span class="nav-label">Aller à</span>
+    <a href="#ceo">CEO</a>
+    <a href="#leiding">Direction</a>
+    <a href="#klanten">Service client</a>
+    <a href="#creatie">Création &amp; médias</a>
+    <a href="#magazijn">Entrepôt</a>
+    <a href="#ambassadors">Ambassadeurs</a>
+    <a href="#bezoek">Nous rendre visite</a>
+  </nav>
+
+  <section id="ceo">
+    <div class="sec-num">01</div>
+    <h2>Notre <span class="hl">CEO</span></h2>
+    <p class="lead">Sofie dirige Sempertex Europe, du marché à l’entrepôt.</p>
+    <div class="ceo-card">
+      <div class="portrait">
+        <span class="initials" aria-hidden="true">SV</span>
+        <img src="https://www.sempertexeurope.com/web/image/50470-6ff709dc/Sofie_2025-12-18.webp" alt="Sofie Vandewyer, CEO Sempertex Europe chez Sempertex Europe" loading="lazy">
+        <div class="plate">
+          <h3>Sofie Vandewyer</h3>
+          <div class="role">CEO Sempertex Europe</div>
+        </div>
+      </div>
+      <div class="ceo-body">
+        <div class="ceo-eyebrow">Propriétaire</div>
+        <p class="ceo-pull">Pense en couleurs, parle en stratégie et garde la vue d’ensemble, même quand tout bouge en même temps.</p>
+        <p>Développe des marchés, pilote la croissance et garde l’équilibre entre chiffres et créativité. Pas peur d’un défi, mais bien des réunions sans fin.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="leiding">
+    <div class="sec-num">02</div>
+    <h2>Nos <span class="hl">responsables</span></h2>
+    <p class="lead">Les personnes qui pilotent leur équipe, surveillent les chiffres et fixent le cap.</p>
+    <div class="team-grid">
+      <article class="member" tabindex="0">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">KD</span>
+          <img src="https://www.sempertexeurope.com/web/image/50457-8e0ead35/Koen.webp" alt="Koen Van Damme, Head of Technical &amp; Events chez Sempertex Europe" loading="lazy">
+          <div class="plate">
+            <h3>Koen Van Damme</h3>
+            <div class="role">Head of Technical &amp; Events</div>
+            <p class="bio">Veille à ce que tout tourne sur le plan technique et trouve toujours une solution, même quand ça se complique. Plus de 30 ans d’expérience dans le métier du ballon et toujours aussi passionné. Rassemble les gens, reste toujours disponible et a toujours une blague en réserve.</p>
+          </div>
+        </div>
+        <div class="touch-bio"><p>Veille à ce que tout tourne sur le plan technique et trouve toujours une solution, même quand ça se complique. Plus de 30 ans d’expérience dans le métier du ballon et toujours aussi passionné. Rassemble les gens, reste toujours disponible et a toujours une blague en réserve.</p></div>
+      </article>
+      <article class="member" tabindex="0">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">RV</span>
+          <img src="https://www.sempertexeurope.com/web/image/119751-be304dc2/Rani_2026-07-16.webp" alt="Rani Vandiest, Head of Operations &amp; Customer Experience chez Sempertex Europe" loading="lazy">
+          <div class="plate">
+            <h3>Rani Vandiest</h3>
+            <div class="role">Head of Operations &amp; Customer Experience</div>
+            <p class="bio">Fait tourner la machine et veille à ce que rien ne passe entre les mailles du filet. Toujours ponctuelle, elle garde la vue d’ensemble et la structure, même quand tout arrive en même temps. Règle ce qui doit l’être, souvent avant que quelqu’un s’en rende compte.</p>
+          </div>
+        </div>
+        <div class="touch-bio"><p>Fait tourner la machine et veille à ce que rien ne passe entre les mailles du filet. Toujours ponctuelle, elle garde la vue d’ensemble et la structure, même quand tout arrive en même temps. Règle ce qui doit l’être, souvent avant que quelqu’un s’en rende compte.</p></div>
+      </article>
+      <article class="member" tabindex="0">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">KC</span>
+          <img src="https://www.sempertexeurope.com/web/image/50474-01cd9902/Kim.webp" alt="Kim Cuppers, Finance &amp; Data chez Sempertex Europe" loading="lazy">
+          <div class="plate">
+            <h3>Kim Cuppers</h3>
+            <div class="role">Finance &amp; Data</div>
+            <p class="bio">Donne vie aux chiffres et veille à ce que tout soit juste, jusque dans les détails. Associe comptabilité et analyse de données pour transformer les chiffres en informations claires. Sa première question ? Combien ça coûte ?</p>
+          </div>
+        </div>
+        <div class="touch-bio"><p>Donne vie aux chiffres et veille à ce que tout soit juste, jusque dans les détails. Associe comptabilité et analyse de données pour transformer les chiffres en informations claires. Sa première question ? Combien ça coûte ?</p></div>
+      </article>
+      <article class="member" tabindex="0">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">RR</span>
+          <img src="https://www.sempertexeurope.com/web/image/50476-ebb63af8/Robin.webp" alt="Robin Rutten, Head of Marketing &amp; Sales chez Sempertex Europe" loading="lazy">
+          <div class="plate">
+            <h3>Robin Rutten</h3>
+            <div class="role">Head of Marketing &amp; Sales</div>
+            <p class="bio">Veille à ce que la marque soit visible au bon moment, au bon endroit. Pense en campagnes, contenus et croissance, et transforme les idées en marketing fort. Jeune, ambitieux et toujours à la recherche de ce qui peut être mieux, plus malin ou plus fort.</p>
+          </div>
+        </div>
+        <div class="touch-bio"><p>Veille à ce que la marque soit visible au bon moment, au bon endroit. Pense en campagnes, contenus et croissance, et transforme les idées en marketing fort. Jeune, ambitieux et toujours à la recherche de ce qui peut être mieux, plus malin ou plus fort.</p></div>
+      </article>
+    </div>
+  </section>
+
+  <section id="klanten">
+    <div class="sec-num">03</div>
+    <h2>Service client &amp; <span class="hl">bureau</span></h2>
+    <p class="lead">La voix au téléphone et la main derrière votre commande. C’est l’équipe avec qui vous parlez le plus souvent.</p>
+    <div class="team-grid">
+      <article class="member" tabindex="0">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">VE</span>
+          <img src="https://www.sempertexeurope.com/web/image/50472-e1700776/Vroni.webp" alt="Vroni Effner, Customer Service chez Sempertex Europe" loading="lazy">
+          <div class="plate">
+            <h3>Vroni Effner</h3>
+            <div class="role">Customer Service</div>
+            <p class="bio">Veille à ce que chaque client se sente écouté et aidé, de la première question au dernier détail. Réagit vite, réfléchit avec vous et transforme aussitôt les questions en solutions. Assure un suivi précis et fait la différence dans les petites choses.</p>
+          </div>
+        </div>
+        <div class="touch-bio"><p>Veille à ce que chaque client se sente écouté et aidé, de la première question au dernier détail. Réagit vite, réfléchit avec vous et transforme aussitôt les questions en solutions. Assure un suivi précis et fait la différence dans les petites choses.</p></div>
+      </article>
+      <article class="member" tabindex="0">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">GC</span>
+          <img src="https://www.sempertexeurope.com/web/image/114023-5fb9908c/Nati%20Website%20%285%29.webp" alt="Gigi Canale, Customer Service chez Sempertex Europe" loading="lazy">
+          <div class="plate">
+            <h3>Gigi Canale</h3>
+            <div class="role">Customer Service</div>
+            <p class="bio">Premier point de contact, pleine d’énergie du premier au dernier appel. Réfléchit avec vous, s’attaque à tout immédiatement et se donne toujours à fond. Apporte du rythme, de la bonne humeur et une touche d’Italian Drama ;-).</p>
+          </div>
+        </div>
+        <div class="touch-bio"><p>Premier point de contact, pleine d’énergie du premier au dernier appel. Réfléchit avec vous, s’attaque à tout immédiatement et se donne toujours à fond. Apporte du rythme, de la bonne humeur et une touche d’Italian Drama ;-).</p></div>
+      </article>
+      <article class="member" tabindex="0">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">JJ</span>
+          <img src="https://www.sempertexeurope.com/web/image/93877-c2b47f02/Nati%20Website%20%282%29.webp" alt="Julie Joris, Event &amp; Office Assistant chez Sempertex Europe" loading="lazy">
+          <div class="plate">
+            <h3>Julie Joris</h3>
+            <div class="role">Event &amp; Office Assistant</div>
+            <p class="bio">Intervient là où il faut et se sent aussi à l’aise derrière un bureau qu’à la caisse ou sur un événement. Passe rapidement d’une tâche, d’une personne ou d’une situation à l’autre sans rien manquer. Polyvalente et toujours prête pour la suite.</p>
+          </div>
+        </div>
+        <div class="touch-bio"><p>Intervient là où il faut et se sent aussi à l’aise derrière un bureau qu’à la caisse ou sur un événement. Passe rapidement d’une tâche, d’une personne ou d’une situation à l’autre sans rien manquer. Polyvalente et toujours prête pour la suite.</p></div>
+      </article>
+    </div>
+  </section>
+
+  <section id="creatie">
+    <div class="sec-num">04</div>
+    <h2>Création &amp; <span class="hl">médias</span></h2>
+    <p class="lead">Couleur, image et histoire. Tout ce que vous voyez de nous sur les réseaux sociaux, dans nos campagnes et lors de nos événements.</p>
+    <div class="team-grid">
+      <article class="member" tabindex="0">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">TC</span>
+          <img src="https://www.sempertexeurope.com/web/image/93876-f1ba3042/Tijl%20Website%20%281%29.webp" alt="Tijl Ceyssens, Media &amp; Content Creator chez Sempertex Europe" loading="lazy">
+          <div class="plate">
+            <h3>Tijl Ceyssens</h3>
+            <div class="role">Media &amp; Content Creator</div>
+            <p class="bio">Arrive toujours avec des idées fraîches et des contenus que personne n’avait vus venir. Suit les tendances, pense de façon créative et n’a pas peur de sortir des cases. Apporte de l’énergie, de l’humour et juste assez de chaos pour garder toute l’équipe en alerte.</p>
+          </div>
+        </div>
+        <div class="touch-bio"><p>Arrive toujours avec des idées fraîches et des contenus que personne n’avait vus venir. Suit les tendances, pense de façon créative et n’a pas peur de sortir des cases. Apporte de l’énergie, de l’humour et juste assez de chaos pour garder toute l’équipe en alerte.</p></div>
+      </article>
+      <article class="member" tabindex="0">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">AU</span>
+          <img src="https://www.sempertexeurope.com/web/image/93878-f92624a3/Ati%20Website%20%281%29.webp" alt="Atilla Ucum, Videographer &amp; Editor chez Sempertex Europe" loading="lazy">
+          <div class="plate">
+            <h3>Atilla Ucum</h3>
+            <div class="role">Videographer &amp; Editor</div>
+            <p class="bio">Capte chaque moment à la caméra et veille à ce que tout soit parfait au montage. Ne laisse rien au hasard et a l’œil pour le détail. Patient, précis et toujours concentré sur le résultat final.</p>
+          </div>
+        </div>
+        <div class="touch-bio"><p>Capte chaque moment à la caméra et veille à ce que tout soit parfait au montage. Ne laisse rien au hasard et a l’œil pour le détail. Patient, précis et toujours concentré sur le résultat final.</p></div>
+      </article>
+      <article class="member" tabindex="0">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">AM</span>
+          <img src="https://www.sempertexeurope.com/web/image/50473-79df1995/Anouk.webp" alt="Anouk Mussen, Creative &amp; Color Specialist chez Sempertex Europe" loading="lazy">
+          <div class="plate">
+            <h3>Anouk Mussen</h3>
+            <div class="role">Creative &amp; Color Specialist</div>
+            <p class="bio">Donne vie à la couleur et crée des palettes qu’on retient tout de suite. Transforme les idées en visuels et soutient l’équipe réseaux sociaux quand il le faut. Timide devant la caméra, créative et polyvalente.</p>
+          </div>
+        </div>
+        <div class="touch-bio"><p>Donne vie à la couleur et crée des palettes qu’on retient tout de suite. Transforme les idées en visuels et soutient l’équipe réseaux sociaux quand il le faut. Timide devant la caméra, créative et polyvalente.</p></div>
+      </article>
+    </div>
+  </section>
+
+  <section id="magazijn">
+    <div class="sec-num">05</div>
+    <h2>À l’<span class="hl">entrepôt</span></h2>
+    <p class="lead">Là où votre commande prend vraiment forme. Préparer, emballer, charger, et ça recommence chaque jour.</p>
+    <div class="team-grid">
+      <article class="member" tabindex="0">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">JV</span>
+          <img src="https://www.sempertexeurope.com/web/image/149461-735d3cad/Jan.webp" alt="Jan Verbeek, Head of Warehouse chez Sempertex Europe" loading="lazy">
+          <div class="plate">
+            <h3>Jan Verbeek</h3>
+            <div class="role">Head of Warehouse</div>
+            <p class="bio">Mène le rythme de l’entrepôt avec calme et douceur. Prend le temps pour les gens, entretient la bonne ambiance et veille à ce que tout le monde suive. Reste calme dans le rush, ou fait très bien semblant ;-)</p>
+          </div>
+        </div>
+        <div class="touch-bio"><p>Mène le rythme de l’entrepôt avec calme et douceur. Prend le temps pour les gens, entretient la bonne ambiance et veille à ce que tout le monde suive. Reste calme dans le rush, ou fait très bien semblant ;-)</p></div>
+      </article>
+      <article class="member" tabindex="0">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">JH</span>
+          <img src="https://www.sempertexeurope.com/web/image/50479-edadc981/Jeroen.webp" alt="Jeroen Heylen, Warehouse Operator chez Sempertex Europe" loading="lazy">
+          <div class="plate">
+            <h3>Jeroen Heylen</h3>
+            <div class="role">Warehouse Operator</div>
+            <p class="bio">Veille à ce que le travail soit fait, et qu’on rigole un peu au passage. Met de l’énergie dans l’entrepôt et contamine tout le monde avec sa bonne humeur. Le blagueur de l’équipe, mais toujours au rendez-vous.</p>
+          </div>
+        </div>
+        <div class="touch-bio"><p>Veille à ce que le travail soit fait, et qu’on rigole un peu au passage. Met de l’énergie dans l’entrepôt et contamine tout le monde avec sa bonne humeur. Le blagueur de l’équipe, mais toujours au rendez-vous.</p></div>
+      </article>
+      <article class="member" tabindex="0">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">ML</span>
+          <img src="https://www.sempertexeurope.com/web/image/50480-998edc6d/Matisse.webp" alt="Matisse Lambrichts, Warehouse Operator chez Sempertex Europe" loading="lazy">
+          <div class="plate">
+            <h3>Matisse Lambrichts</h3>
+            <div class="role">Warehouse Operator</div>
+            <p class="bio">Prépare les commandes avec précision et veille à ce que tout soit prêt, bien rangé. Travaille calmement, fait son truc et aime que ça reste simple. Prépare tout à l’entrepôt, et des pizzas à la maison.</p>
+          </div>
+        </div>
+        <div class="touch-bio"><p>Prépare les commandes avec précision et veille à ce que tout soit prêt, bien rangé. Travaille calmement, fait son truc et aime que ça reste simple. Prépare tout à l’entrepôt, et des pizzas à la maison.</p></div>
+      </article>
+      <article class="member" tabindex="0">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">AL</span>
+          <img src="https://www.sempertexeurope.com/web/image/149453-0b1f9f5f/Nati%20Website%20%287%29.webp" alt="Aziz Lagouireh, Warehouse Operator chez Sempertex Europe" loading="lazy">
+          <div class="plate">
+            <h3>Aziz Lagouireh</h3>
+            <div class="role">Warehouse Operator</div>
+            <p class="bio">Toujours de bonne humeur et toujours en mouvement dans l’entrepôt. Veille à ce que chaque commande soit prête au départ. Après le travail, on le retrouve sur le terrain de foot.</p>
+          </div>
+        </div>
+        <div class="touch-bio"><p>Toujours de bonne humeur et toujours en mouvement dans l’entrepôt. Veille à ce que chaque commande soit prête au départ. Après le travail, on le retrouve sur le terrain de foot.</p></div>
+      </article>
+    </div>
+  </section>
+
+  <section id="ambassadors">
+    <div class="sec-num">06</div>
+    <h2>Nos <span class="hl">ambassadeurs</span> créatifs</h2>
+    <p class="lead">Des artistes qui réfléchissent avec nous, animent des ateliers et portent la marque dans toute l’Europe.</p>
+    <div class="team-grid">
+      <article class="member amb">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">DD</span>
+          <div class="plate">
+            <h3>Denise Van Dooren</h3>
+            <div class="role">Creative ambassador</div>
+          </div>
+        </div>
+      </article>
+      <article class="member amb">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">AP</span>
+          <div class="plate">
+            <h3>Audrey Parsons</h3>
+            <div class="role">Creative ambassador</div>
+          </div>
+        </div>
+      </article>
+      <article class="member amb">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">MB</span>
+          <div class="plate">
+            <h3>Melissa Bellefontaine</h3>
+            <div class="role">Creative ambassador</div>
+          </div>
+        </div>
+      </article>
+      <article class="member amb">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">AF</span>
+          <div class="plate">
+            <h3>Alberto Falcone</h3>
+            <div class="role">Creative ambassador</div>
+          </div>
+        </div>
+      </article>
+      <article class="member amb">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">TT</span>
+          <div class="plate">
+            <h3>Tobi Twist</h3>
+            <div class="role">Creative ambassador</div>
+          </div>
+        </div>
+      </article>
+      <article class="member amb">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">PA</span>
+          <div class="plate">
+            <h3>Paula Ardron-Gemmell</h3>
+            <div class="role">Creative ambassador</div>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <div class="principle full">
+    <div class="label">Ce que nous défendons</div>
+    <div class="statement">Derrière chaque commande, chaque atelier et chaque couleur, il y a une personne que vous pouvez <span class="hl">appeler</span>.</div>
+  </div>
+
+  <section id="bezoek" class="full band-soft">
+    <div class="sec-num">07</div>
+    <h2>Passez nous <span class="hl">voir</span></h2>
+    <p class="lead">Vous préférez parler à quelqu’un plutôt que remplir un formulaire ? C’est possible. Vous nous trouverez à Genk.</p>
+    <div class="info-grid">
+      <div class="info-card soft">
+        <h4>Heures d’ouverture</h4>
+        <p>Du lundi au jeudi, de 10:00 à 16:00</p>
+        <p class="small">Pause déjeuner de 12:00 à 13:00. Fermé le vendredi, le week-end et les jours fériés.</p>
+        <p class="small">Les commandes en ligne peuvent être retirées du lundi au jeudi entre 10:00 et 12:00 et entre 13:00 et 16:00. Nous vous contactons dès que votre commande est prête.</p>
+      </div>
+      <div class="info-card">
+        <h4>Où nous trouver</h4>
+        <p>Mie&euml;nbroekstraat 43<br>3600 Genk, Belgique</p>
+        <p><a href="tel:+3289235758">+32 89 23 57 58</a></p>
+        <p class="small"><a href="https://www.sempertexeurope.com/helpdesk">Poser une question via le helpdesk</a></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="closing full">
+    <h2>Envie de travailler avec <span class="hl">cette équipe ?</span></h2>
+    <p>Découvrez toute la gamme, inscrivez-vous à un atelier ou posez simplement votre question directement aux personnes ci-dessus. Nous répondons plus vite que vous ne le pensez.</p>
+    <div class="btn-row">
+      <a class="stx-btn primary" href="https://www.sempertexeurope.com/shop">Vers la boutique</a>
+      <a class="stx-btn" href="https://www.sempertexeurope.com/events">Voir les ateliers</a>
+      <a class="stx-btn" href="https://www.sempertexeurope.com/helpdesk">Nous contacter</a>
+    </div>
+  </section>
+
+  <footer>
+    <span>Sempertex Europe, notre équipe</span>
+    <span>sempertexeurope.com</span>
+  </footer>
+
+</div>
+</div>
+</template>
+<template id="stx-team-de">
+<div class="stx-doc" lang="de">
+<div class="wrap team">
+
+  <header class="hero">
+    <h1 class="title">Das Team hinter <span class="hl">dem Ballon</span></h1>
+  </header>
+
+  <nav class="dept-nav" aria-label="Abteilungen">
+    <span class="nav-label">Springe zu</span>
+    <a href="#ceo">CEO</a>
+    <a href="#leiding">Führung</a>
+    <a href="#klanten">Kundenservice</a>
+    <a href="#creatie">Kreation &amp; Medien</a>
+    <a href="#magazijn">Lager</a>
+    <a href="#ambassadors">Botschafter</a>
+    <a href="#bezoek">Besuch uns</a>
+  </nav>
+
+  <section id="ceo">
+    <div class="sec-num">01</div>
+    <h2>Unsere <span class="hl">CEO</span></h2>
+    <p class="lead">Sofie leitet Sempertex Europe, vom Markt bis ins Lager.</p>
+    <div class="ceo-card">
+      <div class="portrait">
+        <span class="initials" aria-hidden="true">SV</span>
+        <img src="https://www.sempertexeurope.com/web/image/50470-6ff709dc/Sofie_2025-12-18.webp" alt="Sofie Vandewyer, CEO Sempertex Europe bei Sempertex Europe" loading="lazy">
+        <div class="plate">
+          <h3>Sofie Vandewyer</h3>
+          <div class="role">CEO Sempertex Europe</div>
+        </div>
+      </div>
+      <div class="ceo-body">
+        <div class="ceo-eyebrow">Inhaberin</div>
+        <p class="ceo-pull">Denkt in Farben, spricht in Strategie und behält den Überblick, auch wenn sich alles gleichzeitig bewegt.</p>
+        <p>Baut Märkte auf, steuert das Wachstum und hält die Balance zwischen Zahlen und Kreativität. Keine Angst vor Herausforderungen, aber vor Meetings ohne Ende.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="leiding">
+    <div class="sec-num">02</div>
+    <h2>Unsere <span class="hl">Führung</span></h2>
+    <p class="lead">Die Menschen, die ihr Team führen, die Zahlen im Blick behalten und die Richtung vorgeben.</p>
+    <div class="team-grid">
+      <article class="member" tabindex="0">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">KD</span>
+          <img src="https://www.sempertexeurope.com/web/image/50457-8e0ead35/Koen.webp" alt="Koen Van Damme, Head of Technical &amp; Events bei Sempertex Europe" loading="lazy">
+          <div class="plate">
+            <h3>Koen Van Damme</h3>
+            <div class="role">Head of Technical &amp; Events</div>
+            <p class="bio">Sorgt dafür, dass technisch alles läuft, und bekommt alles hin, auch wenn es kompliziert wird. Mehr als 30 Jahre Erfahrung in der Ballonbranche und noch immer genauso motiviert. Bringt Menschen zusammen, ist immer ansprechbar und nie um einen Witz verlegen.</p>
+          </div>
+        </div>
+        <div class="touch-bio"><p>Sorgt dafür, dass technisch alles läuft, und bekommt alles hin, auch wenn es kompliziert wird. Mehr als 30 Jahre Erfahrung in der Ballonbranche und noch immer genauso motiviert. Bringt Menschen zusammen, ist immer ansprechbar und nie um einen Witz verlegen.</p></div>
+      </article>
+      <article class="member" tabindex="0">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">RV</span>
+          <img src="https://www.sempertexeurope.com/web/image/119751-be304dc2/Rani_2026-07-16.webp" alt="Rani Vandiest, Head of Operations &amp; Customer Experience bei Sempertex Europe" loading="lazy">
+          <div class="plate">
+            <h3>Rani Vandiest</h3>
+            <div class="role">Head of Operations &amp; Customer Experience</div>
+            <p class="bio">Hält alles am Laufen und sorgt dafür, dass nichts durchs Raster fällt. Immer pünktlich, behält Überblick und Struktur, auch wenn alles gleichzeitig passiert. Regelt, was geregelt werden muss, oft noch bevor es jemand merkt.</p>
+          </div>
+        </div>
+        <div class="touch-bio"><p>Hält alles am Laufen und sorgt dafür, dass nichts durchs Raster fällt. Immer pünktlich, behält Überblick und Struktur, auch wenn alles gleichzeitig passiert. Regelt, was geregelt werden muss, oft noch bevor es jemand merkt.</p></div>
+      </article>
+      <article class="member" tabindex="0">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">KC</span>
+          <img src="https://www.sempertexeurope.com/web/image/50474-01cd9902/Kim.webp" alt="Kim Cuppers, Finance &amp; Data bei Sempertex Europe" loading="lazy">
+          <div class="plate">
+            <h3>Kim Cuppers</h3>
+            <div class="role">Finance &amp; Data</div>
+            <p class="bio">Erweckt Zahlen zum Leben und sorgt dafür, dass alles stimmt, bis ins Detail. Verbindet Buchhaltung mit Datenanalyse und macht aus Zahlen klare Erkenntnisse. Ihre erste Frage? Was kostet das?</p>
+          </div>
+        </div>
+        <div class="touch-bio"><p>Erweckt Zahlen zum Leben und sorgt dafür, dass alles stimmt, bis ins Detail. Verbindet Buchhaltung mit Datenanalyse und macht aus Zahlen klare Erkenntnisse. Ihre erste Frage? Was kostet das?</p></div>
+      </article>
+      <article class="member" tabindex="0">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">RR</span>
+          <img src="https://www.sempertexeurope.com/web/image/50476-ebb63af8/Robin.webp" alt="Robin Rutten, Head of Marketing &amp; Sales bei Sempertex Europe" loading="lazy">
+          <div class="plate">
+            <h3>Robin Rutten</h3>
+            <div class="role">Head of Marketing &amp; Sales</div>
+            <p class="bio">Sorgt dafür, dass die Marke zur richtigen Zeit am richtigen Ort sichtbar ist. Denkt in Kampagnen, Content und Wachstum und macht aus Ideen starkes Marketing. Jung, ehrgeizig und immer auf der Suche nach dem, was besser, klüger oder stärker geht.</p>
+          </div>
+        </div>
+        <div class="touch-bio"><p>Sorgt dafür, dass die Marke zur richtigen Zeit am richtigen Ort sichtbar ist. Denkt in Kampagnen, Content und Wachstum und macht aus Ideen starkes Marketing. Jung, ehrgeizig und immer auf der Suche nach dem, was besser, klüger oder stärker geht.</p></div>
+      </article>
+    </div>
+  </section>
+
+  <section id="klanten">
+    <div class="sec-num">03</div>
+    <h2>Kundenservice &amp; <span class="hl">Büro</span></h2>
+    <p class="lead">Die Stimme am Telefon und die Hand hinter deiner Bestellung. Mit diesem Team sprichst du am häufigsten.</p>
+    <div class="team-grid">
+      <article class="member" tabindex="0">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">VE</span>
+          <img src="https://www.sempertexeurope.com/web/image/50472-e1700776/Vroni.webp" alt="Vroni Effner, Customer Service bei Sempertex Europe" loading="lazy">
+          <div class="plate">
+            <h3>Vroni Effner</h3>
+            <div class="role">Customer Service</div>
+            <p class="bio">Sorgt dafür, dass sich Kunden gehört und gut betreut fühlen, von der ersten Frage bis zum letzten Detail. Schaltet schnell, denkt mit und macht aus Fragen sofort Lösungen. Verfolgt alles genau nach und macht den Unterschied in den kleinen Dingen.</p>
+          </div>
+        </div>
+        <div class="touch-bio"><p>Sorgt dafür, dass sich Kunden gehört und gut betreut fühlen, von der ersten Frage bis zum letzten Detail. Schaltet schnell, denkt mit und macht aus Fragen sofort Lösungen. Verfolgt alles genau nach und macht den Unterschied in den kleinen Dingen.</p></div>
+      </article>
+      <article class="member" tabindex="0">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">GC</span>
+          <img src="https://www.sempertexeurope.com/web/image/114023-5fb9908c/Nati%20Website%20%285%29.webp" alt="Gigi Canale, Customer Service bei Sempertex Europe" loading="lazy">
+          <div class="plate">
+            <h3>Gigi Canale</h3>
+            <div class="role">Customer Service</div>
+            <p class="bio">Die erste Ansprechpartnerin, voller Energie vom ersten bis zum letzten Anruf. Denkt mit, packt alles sofort an und gibt immer alles. Bringt Tempo, gute Laune und sorgt für das Italian Drama ;-).</p>
+          </div>
+        </div>
+        <div class="touch-bio"><p>Die erste Ansprechpartnerin, voller Energie vom ersten bis zum letzten Anruf. Denkt mit, packt alles sofort an und gibt immer alles. Bringt Tempo, gute Laune und sorgt für das Italian Drama ;-).</p></div>
+      </article>
+      <article class="member" tabindex="0">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">JJ</span>
+          <img src="https://www.sempertexeurope.com/web/image/93877-c2b47f02/Nati%20Website%20%282%29.webp" alt="Julie Joris, Event &amp; Office Assistant bei Sempertex Europe" loading="lazy">
+          <div class="plate">
+            <h3>Julie Joris</h3>
+            <div class="role">Event &amp; Office Assistant</div>
+            <p class="bio">Springt ein, wo es nötig ist, und fühlt sich am Schreibtisch, an der Kasse und auf Events gleichermaßen zu Hause. Wechselt schnell zwischen Aufgaben, Menschen und Situationen, ohne etwas zu verpassen. Vielseitig einsetzbar und immer bereit für das, was kommt.</p>
+          </div>
+        </div>
+        <div class="touch-bio"><p>Springt ein, wo es nötig ist, und fühlt sich am Schreibtisch, an der Kasse und auf Events gleichermaßen zu Hause. Wechselt schnell zwischen Aufgaben, Menschen und Situationen, ohne etwas zu verpassen. Vielseitig einsetzbar und immer bereit für das, was kommt.</p></div>
+      </article>
+    </div>
+  </section>
+
+  <section id="creatie">
+    <div class="sec-num">04</div>
+    <h2>Kreation &amp; <span class="hl">Medien</span></h2>
+    <p class="lead">Farbe, Bild und Geschichte. Alles, was du von uns auf Social Media, in Kampagnen und auf Events siehst.</p>
+    <div class="team-grid">
+      <article class="member" tabindex="0">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">TC</span>
+          <img src="https://www.sempertexeurope.com/web/image/93876-f1ba3042/Tijl%20Website%20%281%29.webp" alt="Tijl Ceyssens, Media &amp; Content Creator bei Sempertex Europe" loading="lazy">
+          <div class="plate">
+            <h3>Tijl Ceyssens</h3>
+            <div class="role">Media &amp; Content Creator</div>
+            <p class="bio">Kommt immer mit frischen Ideen und Content, mit dem niemand gerechnet hat. Behält Trends im Blick, denkt kreativ und malt auch gern mal über den Rand. Bringt Energie, Humor und genau so viel Chaos, dass das ganze Team wach bleibt.</p>
+          </div>
+        </div>
+        <div class="touch-bio"><p>Kommt immer mit frischen Ideen und Content, mit dem niemand gerechnet hat. Behält Trends im Blick, denkt kreativ und malt auch gern mal über den Rand. Bringt Energie, Humor und genau so viel Chaos, dass das ganze Team wach bleibt.</p></div>
+      </article>
+      <article class="member" tabindex="0">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">AU</span>
+          <img src="https://www.sempertexeurope.com/web/image/93878-f92624a3/Ati%20Website%20%281%29.webp" alt="Atilla Ucum, Videographer &amp; Editor bei Sempertex Europe" loading="lazy">
+          <div class="plate">
+            <h3>Atilla Ucum</h3>
+            <div class="role">Videographer &amp; Editor</div>
+            <p class="bio">Fängt jeden Moment mit der Kamera ein und sorgt dafür, dass im Schnitt alles genau stimmt. Überlässt nichts dem Zufall und hat ein scharfes Auge für Details. Geduldig, präzise und immer auf das Endergebnis fokussiert.</p>
+          </div>
+        </div>
+        <div class="touch-bio"><p>Fängt jeden Moment mit der Kamera ein und sorgt dafür, dass im Schnitt alles genau stimmt. Überlässt nichts dem Zufall und hat ein scharfes Auge für Details. Geduldig, präzise und immer auf das Endergebnis fokussiert.</p></div>
+      </article>
+      <article class="member" tabindex="0">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">AM</span>
+          <img src="https://www.sempertexeurope.com/web/image/50473-79df1995/Anouk.webp" alt="Anouk Mussen, Creative &amp; Color Specialist bei Sempertex Europe" loading="lazy">
+          <div class="plate">
+            <h3>Anouk Mussen</h3>
+            <div class="role">Creative &amp; Color Specialist</div>
+            <p class="bio">Erweckt Farbe zum Leben und kreiert Farbpaletten, die sofort hängen bleiben. Setzt Ideen in Visuals um und unterstützt das Social-Media-Team, wo es nötig ist. Kamerascheu, kreativ und überall einsetzbar.</p>
+          </div>
+        </div>
+        <div class="touch-bio"><p>Erweckt Farbe zum Leben und kreiert Farbpaletten, die sofort hängen bleiben. Setzt Ideen in Visuals um und unterstützt das Social-Media-Team, wo es nötig ist. Kamerascheu, kreativ und überall einsetzbar.</p></div>
+      </article>
+    </div>
+  </section>
+
+  <section id="magazijn">
+    <div class="sec-num">05</div>
+    <h2>Im <span class="hl">Lager</span></h2>
+    <p class="lead">Wo deine Bestellung wirklich entsteht. Kommissionieren, bereitstellen, verladen, und das jeden Tag aufs Neue.</p>
+    <div class="team-grid">
+      <article class="member" tabindex="0">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">JV</span>
+          <img src="https://www.sempertexeurope.com/web/image/149461-735d3cad/Jan.webp" alt="Jan Verbeek, Head of Warehouse bei Sempertex Europe" loading="lazy">
+          <div class="plate">
+            <h3>Jan Verbeek</h3>
+            <div class="role">Head of Warehouse</div>
+            <p class="bio">Leitet den Ablauf im Lager mit einer ruhigen und sanften Art. Nimmt sich Zeit für Menschen, sorgt für gute Stimmung und dafür, dass alle mitkommen. Bleibt ruhig im Trubel, oder tut sehr überzeugend so ;-)</p>
+          </div>
+        </div>
+        <div class="touch-bio"><p>Leitet den Ablauf im Lager mit einer ruhigen und sanften Art. Nimmt sich Zeit für Menschen, sorgt für gute Stimmung und dafür, dass alle mitkommen. Bleibt ruhig im Trubel, oder tut sehr überzeugend so ;-)</p></div>
+      </article>
+      <article class="member" tabindex="0">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">JH</span>
+          <img src="https://www.sempertexeurope.com/web/image/50479-edadc981/Jeroen.webp" alt="Jeroen Heylen, Warehouse Operator bei Sempertex Europe" loading="lazy">
+          <div class="plate">
+            <h3>Jeroen Heylen</h3>
+            <div class="role">Warehouse Operator</div>
+            <p class="bio">Sorgt dafür, dass die Arbeit erledigt wird und dabei auch gelacht wird. Bringt Energie ins Lager und steckt alle mit seiner Laune an. Der Spaßvogel im Team, aber einer, der immer mit anpackt.</p>
+          </div>
+        </div>
+        <div class="touch-bio"><p>Sorgt dafür, dass die Arbeit erledigt wird und dabei auch gelacht wird. Bringt Energie ins Lager und steckt alle mit seiner Laune an. Der Spaßvogel im Team, aber einer, der immer mit anpackt.</p></div>
+      </article>
+      <article class="member" tabindex="0">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">ML</span>
+          <img src="https://www.sempertexeurope.com/web/image/50480-998edc6d/Matisse.webp" alt="Matisse Lambrichts, Warehouse Operator bei Sempertex Europe" loading="lazy">
+          <div class="plate">
+            <h3>Matisse Lambrichts</h3>
+            <div class="role">Warehouse Operator</div>
+            <p class="bio">Kommissioniert Bestellungen präzise und sorgt dafür, dass alles ordentlich bereitsteht. Arbeitet ruhig, macht einfach sein Ding und mag es unkompliziert. Macht im Lager alles fertig und zu Hause einfach Pizza.</p>
+          </div>
+        </div>
+        <div class="touch-bio"><p>Kommissioniert Bestellungen präzise und sorgt dafür, dass alles ordentlich bereitsteht. Arbeitet ruhig, macht einfach sein Ding und mag es unkompliziert. Macht im Lager alles fertig und zu Hause einfach Pizza.</p></div>
+      </article>
+      <article class="member" tabindex="0">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">AL</span>
+          <img src="https://www.sempertexeurope.com/web/image/149453-0b1f9f5f/Nati%20Website%20%287%29.webp" alt="Aziz Lagouireh, Warehouse Operator bei Sempertex Europe" loading="lazy">
+          <div class="plate">
+            <h3>Aziz Lagouireh</h3>
+            <div class="role">Warehouse Operator</div>
+            <p class="bio">Immer gut gelaunt und immer in Bewegung im Lager. Sorgt dafür, dass jede Bestellung versandbereit ist. Nach Feierabend findest du ihn auf dem Fußballplatz.</p>
+          </div>
+        </div>
+        <div class="touch-bio"><p>Immer gut gelaunt und immer in Bewegung im Lager. Sorgt dafür, dass jede Bestellung versandbereit ist. Nach Feierabend findest du ihn auf dem Fußballplatz.</p></div>
+      </article>
+    </div>
+  </section>
+
+  <section id="ambassadors">
+    <div class="sec-num">06</div>
+    <h2>Unsere kreativen <span class="hl">Botschafter</span></h2>
+    <p class="lead">Künstler, die mit uns mitdenken, Workshops geben und die Marke in ganz Europa vertreten.</p>
+    <div class="team-grid">
+      <article class="member amb">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">DD</span>
+          <div class="plate">
+            <h3>Denise Van Dooren</h3>
+            <div class="role">Creative ambassador</div>
+          </div>
+        </div>
+      </article>
+      <article class="member amb">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">AP</span>
+          <div class="plate">
+            <h3>Audrey Parsons</h3>
+            <div class="role">Creative ambassador</div>
+          </div>
+        </div>
+      </article>
+      <article class="member amb">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">MB</span>
+          <div class="plate">
+            <h3>Melissa Bellefontaine</h3>
+            <div class="role">Creative ambassador</div>
+          </div>
+        </div>
+      </article>
+      <article class="member amb">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">AF</span>
+          <div class="plate">
+            <h3>Alberto Falcone</h3>
+            <div class="role">Creative ambassador</div>
+          </div>
+        </div>
+      </article>
+      <article class="member amb">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">TT</span>
+          <div class="plate">
+            <h3>Tobi Twist</h3>
+            <div class="role">Creative ambassador</div>
+          </div>
+        </div>
+      </article>
+      <article class="member amb">
+        <div class="portrait">
+          <span class="initials" aria-hidden="true">PA</span>
+          <div class="plate">
+            <h3>Paula Ardron-Gemmell</h3>
+            <div class="role">Creative ambassador</div>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <div class="principle full">
+    <div class="label">Wofür wir stehen</div>
+    <div class="statement">Hinter jeder Bestellung, jedem Workshop und jeder Farbe steht ein Mensch, den du <span class="hl">anrufen</span> kannst.</div>
+  </div>
+
+  <section id="bezoek" class="full band-soft">
+    <div class="sec-num">07</div>
+    <h2>Komm gern <span class="hl">vorbei</span></h2>
+    <p class="lead">Lieber mit jemandem sprechen als ein Formular ausfüllen? Gern. Du findest uns in Genk.</p>
+    <div class="info-grid">
+      <div class="info-card soft">
+        <h4>Öffnungszeiten</h4>
+        <p>Montag bis Donnerstag, 10:00 bis 16:00</p>
+        <p class="small">Mittagspause von 12:00 bis 13:00. Freitags, am Wochenende und an Feiertagen geschlossen.</p>
+        <p class="small">Online-Bestellungen kannst du montags bis donnerstags zwischen 10:00 und 12:00 und zwischen 13:00 und 16:00 abholen. Wir melden uns, sobald deine Bestellung bereitliegt.</p>
+      </div>
+      <div class="info-card">
+        <h4>Hier findest du uns</h4>
+        <p>Mie&euml;nbroekstraat 43<br>3600 Genk, Belgien</p>
+        <p><a href="tel:+3289235758">+32 89 23 57 58</a></p>
+        <p class="small"><a href="https://www.sempertexeurope.com/helpdesk">Eine Frage über den Helpdesk stellen</a></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="closing full">
+    <h2>Lust, mit diesem Team zu <span class="hl">arbeiten?</span></h2>
+    <p>Entdecke das ganze Sortiment, melde dich für einen Workshop an oder stell deine Frage einfach direkt an die Menschen oben. Wir antworten schneller, als du denkst.</p>
+    <div class="btn-row">
+      <a class="stx-btn primary" href="https://www.sempertexeurope.com/shop">Zum Shop</a>
+      <a class="stx-btn" href="https://www.sempertexeurope.com/events">Workshops ansehen</a>
+      <a class="stx-btn" href="https://www.sempertexeurope.com/helpdesk">Kontakt</a>
+    </div>
+  </section>
+
+  <footer>
+    <span>Sempertex Europe, unser Team</span>
+    <span>sempertexeurope.com</span>
+  </footer>
+
+</div>
+</div>
+</template>
 
 <script>
 (function () {
@@ -716,9 +1756,12 @@ section .lead { max-width: 60ch; margin-bottom: 8px; }
   if (window.__stx_team) { return; }
   window.__stx_team = true;
   if (document.body.classList.contains('editor_enable') || document.querySelector('.odoo-editor-editable') || document.querySelector('#wrap.o_editable')) { return; }
-  var tpl = document.getElementById('stx-team-tpl');
+  var seg = (window.location.pathname.split('/')[1] || '');
+  var lang = /^en_gb$/i.test(seg) ? 'en' : /^(fr|de)$/i.test(seg) ? seg.toLowerCase() : 'nl';
+  var css = document.getElementById('stx-team-css');
+  var tpl = document.getElementById('stx-team-' + lang) || document.getElementById('stx-team-nl');
   var target = document.getElementById('wrap') || document.querySelector('main');
-  if (!tpl || !target) { return; }
+  if (!tpl || !css || !target) { return; }
 
   /* Rethink Sans in het document zelf: @font-face werkt niet binnen een shadow root. */
   if (!document.querySelector('link[data-stx-rethink]')) {
@@ -730,12 +1773,12 @@ section .lead { max-width: 60ch; margin-bottom: 8px; }
   }
 
   var base = (window.STX_SECTIONS_BASE || '').replace(/sections\/?$/, '');
-  var seg = (window.location.pathname.split('/')[1] || '');
   var prefix = /^(en_gb|fr|de)$/i.test(seg) ? '/' + seg : '';
 
   var host = document.createElement('div');
   host.id = 'stx-team-host';
   var root = host.attachShadow({ mode: 'open' });
+  root.appendChild(css.content.cloneNode(true));
   root.appendChild(tpl.content.cloneNode(true));
   Array.prototype.forEach.call(root.querySelectorAll('img[src^="__ASSETS__/"]'), function (img) {
     img.src = base + 'assets/team/' + img.getAttribute('src').slice(11);

@@ -14,14 +14,21 @@ What it does:
   through the loader's commit (window.STX_SECTIONS_BASE + ../assets/)
 - rewrites :root / html / body selectors to :host / .stx-doc
 - writes sections/<name>-vN.html from the template below
+- translates the page into NL, EN, FR and DE with the table in
+  code/i18n/<name>.py (one <template> per language, the page picks the
+  language of the URL); stops with a list when a text has no translation
 The page script of the source is NOT copied: each page gets its own
 shadow-aware script (PAGE_JS below).
 """
 import base64
+import runpy
 import hashlib
 import re
 import sys
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from i18n_segments import segments, translate  # noqa: E402
 
 REPO = Path(__file__).resolve().parent.parent
 
@@ -93,20 +100,21 @@ HEADER = """<!-- ============================================================
      Links naar www.sempertexeurope.com krijgen de taalprefix van de
      pagina (/en_GB, /fr, /de). Beelden staan in {assets}/,
      op dezelfde commit als de loader.
+     Talen: NL, EN, FR, DE, elk een eigen <template> hieronder, vertaald
+     met code/i18n/{name}.py (bron = {srclang}). De pagina kiest de taal
+     van de URL (/en_GB, /fr, /de, anders NL).
      ============================================================ -->
 """
 
 TEMPLATE = """{header}
-<template id="stx-{name}-tpl">
+<template id="stx-{name}-css">
 <style>
 :host {{ all: initial; display: block; overflow-x: clip; }}
 .stx-doc {{ display: block; }}
 {css}
 </style>
-<div class="stx-doc">
-{body}
-</div>
 </template>
+{bodies}
 
 <script>
 (function () {{
@@ -114,9 +122,12 @@ TEMPLATE = """{header}
   if (window.__stx_{name}) {{ return; }}
   window.__stx_{name} = true;
   if (document.body.classList.contains('editor_enable') || document.querySelector('.odoo-editor-editable') || document.querySelector('#wrap.o_editable')) {{ return; }}
-  var tpl = document.getElementById('stx-{name}-tpl');
+  var seg = (window.location.pathname.split('/')[1] || '');
+  var lang = /^en_gb$/i.test(seg) ? 'en' : /^(fr|de)$/i.test(seg) ? seg.toLowerCase() : 'nl';
+  var css = document.getElementById('stx-{name}-css');
+  var tpl = document.getElementById('stx-{name}-' + lang) || document.getElementById('stx-{name}-{srclang}');
   var target = document.getElementById('wrap') || document.querySelector('main');
-  if (!tpl || !target) {{ return; }}
+  if (!tpl || !css || !target) {{ return; }}
 
   /* Rethink Sans in het document zelf: @font-face werkt niet binnen een shadow root. */
   if (!document.querySelector('link[data-stx-rethink]')) {{
@@ -128,12 +139,12 @@ TEMPLATE = """{header}
   }}
 
   var base = (window.STX_SECTIONS_BASE || '').replace(/sections\\/?$/, '');
-  var seg = (window.location.pathname.split('/')[1] || '');
   var prefix = /^(en_gb|fr|de)$/i.test(seg) ? '/' + seg : '';
 
   var host = document.createElement('div');
   host.id = 'stx-{name}-host';
   var root = host.attachShadow({{ mode: 'open' }});
+  root.appendChild(css.content.cloneNode(true));
   root.appendChild(tpl.content.cloneNode(true));
   Array.prototype.forEach.call(root.querySelectorAll('img[src^="__ASSETS__/"]'), function (img) {{
     img.src = base + '{assets}/' + img.getAttribute('src').slice(11);
@@ -210,21 +221,76 @@ EXTRA_CSS = {
 }
 
 
+class Table(dict):
+    """Translations of one page: T, plus KEEP (same text in every language) and PATTERNS."""
+
+    def __init__(self, mod):
+        super().__init__(mod['T'])
+        langs = [mod['SOURCE']] + mod['LANGS']
+        for k in mod['KEEP']:
+            self.setdefault(k, {l: k for l in langs})
+        self.patterns = [(re.compile(p), r) for p, r in mod['PATTERNS']]
+
+    def get(self, key, default=None):
+        if key in self:
+            return dict.get(self, key)
+        for rx, repl in self.patterns:
+            if rx.match(key):
+                return {l: rx.sub(r, key) for l, r in repl.items()}
+        return default
+
+
+def translate_body(body, mod, table, lang):
+    missing = set()
+    skip = set()
+    for key, vals in mod['T'].items():
+        if '<' not in key:
+            continue
+        if key not in body:
+            raise SystemExit('kop niet gevonden in de bron: ' + key)
+        body = body.replace(key, vals[lang])
+        skip.update(segments(vals[lang]))
+    body = translate(body, table, lang, missing, skip)
+    return body, missing
+
+
 def main():
     name, source = sys.argv[1], Path(sys.argv[2])
     cfg = PAGES[name]
+    mod = runpy.run_path(str(REPO / 'code' / 'i18n' / (name + '.py')))
+    table = Table(mod)
     src = source.read_text(encoding='utf-8')
     css, body = extract(src)
+    for after, extra in mod.get('INJECT', []):
+        if after not in body:
+            raise SystemExit('INJECT-plek niet gevonden: ' + after)
+        body = body.replace(after, after + extra)
     css = fix_css(css) + '\n' + EXTRA_CSS[name]
     body, nimg = move_images(body, name, cfg['assets'])
     css, ncss = move_images(css, name + '-css', cfg['assets'])
     if 'base64,' in body or 'base64,' in css:
         raise SystemExit('base64 left over')
-    header = HEADER.format(title=cfg['title'], paths=cfg['paths'], source=source.name, assets=cfg['assets'])
-    out = TEMPLATE.format(header=header, name=name, css=css, body=body,
+    bodies, missing = [], {}
+    for lang in [mod['SOURCE']] + mod['LANGS']:
+        if lang == mod['SOURCE']:
+            b = body
+        else:
+            b, miss = translate_body(body, mod, table, lang)
+            if miss:
+                missing[lang] = sorted(miss)
+        bodies.append('<template id="stx-%s-%s">\n<div class="stx-doc" lang="%s">\n%s\n</div>\n</template>' % (name, lang, lang, b))
+    if missing:
+        for lang, miss in missing.items():
+            print('GEEN VERTALING (%s):' % lang)
+            for s in miss:
+                print('   ', s)
+        raise SystemExit(1)
+    header = HEADER.format(title=cfg['title'], paths=cfg['paths'], source=source.name, assets=cfg['assets'],
+                           name=name, srclang=mod['SOURCE'].upper())
+    out = TEMPLATE.format(header=header, name=name, css=css, bodies='\n'.join(bodies), srclang=mod['SOURCE'],
                           assets=cfg['assets'], page_js=PAGE_JS[name])
     (REPO / cfg['out']).write_text(out, encoding='utf-8', newline='\n')
-    print(cfg['out'], len(out), 'bytes,', nimg + ncss, 'images')
+    print(cfg['out'], len(out), 'bytes,', nimg + ncss, 'images, talen:', mod['SOURCE'], '+', ', '.join(mod['LANGS']))
 
 
 if __name__ == '__main__':

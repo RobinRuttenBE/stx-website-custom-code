@@ -16,9 +16,12 @@
      Links naar www.sempertexeurope.com krijgen de taalprefix van de
      pagina (/en_GB, /fr, /de). Beelden staan in assets/mbp/,
      op dezelfde commit als de loader.
+     Talen: NL, EN, FR, DE, elk een eigen <template> hieronder, vertaald
+     met code/i18n/mbp.py (bron = EN). De pagina kiest de taal
+     van de URL (/en_GB, /fr, /de, anders NL).
      ============================================================ -->
 
-<template id="stx-mbp-tpl">
+<template id="stx-mbp-css">
 <style>
 :host { all: initial; display: block; overflow-x: clip; }
 .stx-doc { display: block; }
@@ -393,7 +396,9 @@ section.closing h2 { max-width: 16ch; }
 }
 
 </style>
-<div class="stx-doc">
+</template>
+<template id="stx-mbp-en">
+<div class="stx-doc" lang="en">
 <section class="hero-band">
   <div class="inner hero-grid">
     <div>
@@ -403,6 +408,7 @@ section.closing h2 { max-width: 16ch; }
       <div class="btn-row">
         <a class="btn" href="https://www.sempertexeurope.com/events">See exam dates</a>
         <a class="btn btn-ghost" href="#exam">How the exam works</a>
+        <a class="btn btn-ghost" href="https://www.sempertexeurope.com/mbp-listing">See all MBPs</a>
       </div>
       <div class="trust">Internationally recognised &middot; Exams across Europe</div>
     </div>
@@ -657,6 +663,7 @@ section.closing h2 { max-width: 16ch; }
     <p>Exam dates are scheduled across Europe throughout the year. Pick your date, bring your balloons, and show the jury what you can do.</p>
     <div class="btn-row">
       <a class="btn btn-ghost" href="https://www.sempertexeurope.com/events">See the exam dates and register</a>
+      <a class="btn btn-ghost" href="https://www.sempertexeurope.com/mbp-listing">Find a certified MBP</a>
     </div>
   </div>
 </section>
@@ -669,6 +676,843 @@ section.closing h2 { max-width: 16ch; }
 </footer>
 </div>
 </template>
+<template id="stx-mbp-nl">
+<div class="stx-doc" lang="nl">
+<section class="hero-band">
+  <div class="inner hero-grid">
+    <div>
+      <img class="hero-logo" src="__ASSETS__/mbp-01-459267c3.png" alt="Master Balloon Professional">
+      <h1>Word een <span class="hl">Master</span> Balloon Professional</h1>
+      <p class="lede">Iedereen kan zich een ballonprofessional noemen. Met MBP bewijs je het.</p>
+      <div class="btn-row">
+        <a class="btn" href="https://www.sempertexeurope.com/events">Bekijk de examendata</a>
+        <a class="btn btn-ghost" href="#exam">Zo werkt het examen</a>
+        <a class="btn btn-ghost" href="https://www.sempertexeurope.com/mbp-listing">Bekijk alle MBP’s</a>
+      </div>
+      <div class="trust">Internationaal erkend &middot; Examens in heel Europa</div>
+    </div>
+    <figure class="figure">
+      <img src="__ASSETS__/mbp-02-d36f86a5.jpg" alt="Nieuwe Master Balloon Professionals op het podium met hun diploma">
+      <figcaption>Nieuwe MBP’s met hun diploma</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="band band-tight band-mbp">
+  <div class="inner">
+    <div class="facts">
+      <div class="fact is-mbp"><div class="num">100</div><div class="lbl">Punten in totaal</div></div>
+      <div class="fact is-key"><div class="num">85</div><div class="lbl">Nodig om te slagen</div></div>
+      <div class="fact"><div class="num">2</div><div class="lbl">Examendelen</div></div>
+      <div class="fact"><div class="num">3<span class="unit">h</span></div><div class="lbl">Op de dag zelf</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="band band-paper" id="what">
+  <div class="inner split">
+    <div>
+      <div class="sec-head">
+        <h2>Wat is een <span class="hl">MBP</span>?</h2>
+      </div>
+      <p>MBP staat voor Master Balloon Professional. Het is de internationaal erkende Sempertex-certificering voor professionele ballondecorateurs. Je krijgt ze als je slaagt voor een praktijkexamen dat beoordeeld wordt volgens de officiële decoratienormen van Sempertex.</p>
+      <p>Het examen toetst drie dingen tegelijk: creativiteit, technische uitvoering en de zakelijke kennis achter een professionele opdracht. Je stuurt geen portfolio in. Je bouwt, ter plaatse, voor een jury, binnen de gegeven tijd.</p>
+      <p class="pull">Het enige getuigschrift in deze sector dat je verdient met ballonnen in je handen.</p>
+    </div>
+    <figure class="figure">
+      <img src="__ASSETS__/mbp-03-f1c9d7bc.jpg" alt="Een Sempertex-jurylid bespreekt een ontwerp met een kandidaat">
+      <figcaption>Gescoord op vaste criteria, persoonlijk toegelicht</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="band band-wash" id="why">
+  <div class="inner">
+    <div class="sec-head">
+      <h2>Waarom certificering <span class="hl">loont</span></h2>
+      <p class="lead narrow">Certificering is geen badge voor je website. Het verandert wat je kunt vragen, met wie je kunt werken en hoe klanten beslissen.</p>
+    </div>
+    <div class="pair-grid">
+      <div class="pair">
+        <div class="plus">VERTROUWEN</div>
+        <h4>Bewijs dat een klant kan nagaan</h4>
+        <p>De meeste klanten kunnen een taps toelopende guirlande niet beoordelen op een foto. Ze kunnen wel nagaan of Sempertex je gecertificeerd heeft. Dan gaat het gesprek niet meer over prijs, maar over niveau.</p>
+      </div>
+      <div class="pair">
+        <div class="plus">PRIJS</div>
+        <h4>Een reden voor je tarief</h4>
+        <p>Een gecertificeerde decorateur verkoopt geen ballonnen, maar een gegarandeerd niveau van werk. Dat is het verschil tussen een prijs noemen en een prijs verdedigen.</p>
+      </div>
+      <div class="pair">
+        <div class="plus">BUSINESS</div>
+        <h4>De cijfers, niet alleen het ontwerp</h4>
+        <p>Naast je ontwerpen vraagt het examen een marketingvoorstel en een kostprijsberekening. Een organische boog bouwen en weten wat hij moet kosten zijn twee verschillende vaardigheden.</p>
+      </div>
+      <div class="pair">
+        <div class="plus">NIVEAU</div>
+        <h4>Een eerlijke maatstaf</h4>
+        <p>Wie alleen werkt, kan zichzelf moeilijk meten. Een jury die scoort volgens een vaste norm geeft je een eerlijk antwoord en een duidelijke lijst van wat beter kan.</p>
+      </div>
+      <div class="pair">
+        <div class="plus">TOEGANG</div>
+        <h4>Een deur naar het merk</h4>
+        <p>Met MBP beginnen samenwerkingen met Sempertex Europe. Gecertificeerde artiesten werken met ons aan projecten en content, en krijgen PR-boxen met nieuwe kleuren en lanceringen.</p>
+      </div>
+      <div class="pair">
+        <div class="plus">ZICHTBAARHEID</div>
+        <h4>Gevonden, niet alleen gevolgd</h4>
+        <p>Gecertificeerde artiesten krijgen erkenning via de kanalen van Sempertex, bij de klanten, groothandels en partners die op zoek gaan naar professionals.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="principle">
+  <div class="inner">
+    <div class="label">Kort gezegd</div>
+    <div class="statement">Certificering is het enige bewijs van je kunnen dat een klant kan nagaan <span class="hl">voor</span> hij je boekt.</div>
+  </div>
+</section>
+
+<section class="band band-paper" id="benefits">
+  <div class="inner">
+    <div class="head-row">
+      <div class="sec-head">
+        <h2>Wat je <span class="hl">krijgt</span></h2>
+        <p class="lead narrow">Slaag je voor het examen, dan hoor je bij de MBP-community, met alles wat daarbij hoort.</p>
+      </div>
+      <img src="__ASSETS__/mbp-04-5e4b1f90.png" alt="Master Balloon Professional, gecertificeerd door Sempertex">
+    </div>
+    <ul class="perks">
+      <li><span class="tick"><svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true"><path d="M2 8.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><h4>MBP-diploma</h4><p>Officieel erkend door Sempertex, wereldwijd.</p></li>
+      <li><span class="tick"><svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true"><path d="M2 8.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><h4>Welkomstpakket</h4><p>Exclusieve MBP-merchandise, voor jou op de dag zelf.</p></li>
+      <li><span class="tick"><svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true"><path d="M2 8.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><h4>Toegang tot e-learning</h4><p>Met de modules Marketing en Kostprijs.</p></li>
+      <li><span class="tick"><svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true"><path d="M2 8.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><h4>Korting</h4><p>Op workshops en events van Sempertex Europe.</p></li>
+      <li><span class="tick"><svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true"><path d="M2 8.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><h4>PR-boxen</h4><p>Nieuwe kleuren, finishes en lanceringen aan je deur.</p></li>
+      <li><span class="tick"><svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true"><path d="M2 8.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><h4>Samenwerkingen</h4><p>Werk met Sempertex Europe aan projecten en content.</p></li>
+      <li><span class="tick"><svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true"><path d="M2 8.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><h4>Erkenning</h4><p>Je naam in de kijker via de kanalen van Sempertex.</p></li>
+      <li><span class="tick"><svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true"><path d="M2 8.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><h4>Een netwerk</h4><p>Gecertificeerde professionals in heel Europa.</p></li>
+    </ul>
+  </div>
+</section>
+
+<section class="band band-wash" id="exam">
+  <div class="inner">
+    <div class="sec-head">
+      <h2>Zo werkt het <span class="hl">examen</span></h2>
+      <p class="lead narrow">Een praktijkexamen in twee delen, drie uur in totaal. Kies een deel om te zien wat de jury beoordeelt.</p>
+    </div>
+
+    <div class="tab-label">Kies een deel</div>
+    <div class="tabs" role="tablist" aria-label="Examendelen">
+      <button class="tab" id="tab1" role="tab" aria-selected="true" aria-controls="p1">Deel 1: Vrije creativiteit</button>
+      <button class="tab" id="tab2" role="tab" aria-selected="false" aria-controls="p2">Deel 2: Opdrachten van de jury</button>
+    </div>
+
+    <div class="panel" id="p1" role="tabpanel" aria-labelledby="tab1">
+      <div class="panel-grid">
+        <div>
+          <h3>Vrije creativiteit, 30 punten</h3>
+          <p>Je eigen ontwerpen, je eigen ballonnen. In dit deel draait alles om creativiteit.</p>
+          <table class="score">
+            <thead><tr><th>Opdracht</th><th class="n">Punten</th></tr></thead>
+            <tbody>
+              <tr><td>Centerpiece</td><td class="n">10</td></tr>
+              <tr><td>Persoonlijk ontwerp</td><td class="n">10</td></tr>
+              <tr><td>Marketingvoorstel</td><td class="n">5</td></tr>
+              <tr><td>Kostprijsberekening</td><td class="n">5</td></tr>
+              <tr class="sum"><td>1 uur 30 minuten</td><td class="n">30</td></tr>
+            </tbody>
+          </table>
+          <ul class="clean">
+            <li>Je gebruikt je eigen Sempertex-ballonnen.</li>
+            <li>Elk ontwerp bevat minstens drie verschillende ballonmaten.</li>
+            <li>Het marketingvoorstel en de kostprijsberekening bereid je vooraf voor met de e-learningmodules.</li>
+          </ul>
+        </div>
+        <figure class="figure">
+          <img src="__ASSETS__/mbp-05-6ec04fde.jpg" alt="Een kandidaat bouwt een ballonontwerp tijdens het MBP-examen">
+          <figcaption>Jouw ontwerp, jouw ballonnen, 60 minuten</figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <div class="panel" id="p2" role="tabpanel" aria-labelledby="tab2" hidden>
+      <div class="panel-grid">
+        <div>
+          <h3>Decoratie op vraag van de jury, 70 punten</h3>
+          <p>Techniek en uitvoering, volgens instructies, met ballonnen van Sempertex.</p>
+          <table class="score">
+            <thead><tr><th>Opdracht</th><th class="n">Punten</th></tr></thead>
+            <tbody>
+              <tr><td>Technieken met ronde ballonnen</td><td class="n">20</td></tr>
+              <tr><td>Link-O-Loon&reg; ontwerp</td><td class="n">20</td></tr>
+              <tr><td>Organisch ontwerp</td><td class="n">20</td></tr>
+              <tr><td>Gebruik van basistools</td><td class="n">10</td></tr>
+              <tr class="sum"><td>1 uur 30 minuten</td><td class="n">70</td></tr>
+            </tbody>
+          </table>
+          <ul class="clean">
+            <li>De ballonnen voor dit deel krijg je van Sempertex.</li>
+            <li>Je voert de opdrachten uit volgens de instructies van de jury.</li>
+            <li>Over de opdrachten heen gebruik je verschillende maten en technieken.</li>
+          </ul>
+        </div>
+        <figure class="figure">
+          <img src="__ASSETS__/mbp-06-a62e4bb8.jpg" alt="Een Sempertex-jurylid beoordeelt een ballon-centerpiece met een scoreformulier">
+          <figcaption>Elke opdracht gescoord op de officiële criteria</figcaption>
+        </figure>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section class="band band-mbp" id="register">
+  <div class="inner">
+    <div class="sec-head">
+      <h2>Zo schrijf je je <span class="hl">in</span></h2>
+    </div>
+    <div class="steps">
+      <div class="step"><p>Kies een beschikbare examendatum in de eventkalender.</p></div>
+      <div class="step"><p>Leg het MBP-examen in je winkelmandje en rond je bestelling af.</p></div>
+      <div class="step"><p>Zodra je betaling binnen is, schrijven we je officieel in bij Sempertex.</p></div>
+      <div class="step"><p>Je krijgt een bevestigingsmail met de locatie, de planning en je toegang tot de e-learning.</p></div>
+    </div>
+    <div class="two-col">
+      <div class="role-card role-frame">
+        <div class="role-label">Voorbereiden</div>
+        <h4>Voor de examendag</h4>
+        <ul>
+          <li>Doorloop de modules Marketing en Kostprijs op het e-learningplatform.</li>
+          <li>Ontwerp je centerpiece en je persoonlijk ontwerp, met telkens drie ballonmaten.</li>
+          <li>Print je marketingvoorstel en je kostprijsberekening af.</li>
+        </ul>
+      </div>
+      <div class="role-card role-fill">
+        <div class="role-label">Meebrengen</div>
+        <h4>Op de dag zelf</h4>
+        <ul>
+          <li>Je eigen Sempertex-ballonnen voor het deel Vrije creativiteit.</li>
+          <li>Beide geprinte documenten.</li>
+          <li>Jezelf, 30 minuten voor de start.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="band band-wash" id="faq">
+  <div class="inner">
+    <div class="sec-head">
+      <h2>Vragen, <span class="hl">beantwoord</span></h2>
+    </div>
+    <div class="faq">
+      <details open>
+        <summary>Voor wie is het MBP-examen?</summary>
+        <div class="answer">Voor ballondecorateurs en artiesten die al actief zijn. Het is een professionele certificering, geen kennismaking. We verwachten dat je de techniek al in de vingers hebt.</div>
+      </details>
+      <details>
+        <summary>Moet ik eerst een opleiding volgen?</summary>
+        <div class="answer">Nee, een opleiding is niet verplicht. Met je inschrijving krijg je toegang tot de modules Marketing en Kostprijs op het e-learningplatform. Die behandelen examenonderdelen die je op geen andere manier kunt voorbereiden.</div>
+      </details>
+      <details>
+        <summary>Wat als ik geen 85 punten haal?</summary>
+        <div class="answer">Dan kun je het examen opnieuw afleggen op een latere datum. De score toont je precies aan welke onderdelen je moet werken.</div>
+      </details>
+      <details>
+        <summary>Welke ballonnen gebruik ik?</summary>
+        <div class="answer">Je eigen Sempertex-ballonnen voor Vrije creativiteit. Voor de opdrachten van de jury zorgt Sempertex voor de ballonnen.</div>
+      </details>
+      <details>
+        <summary>Hoe lang duurt het examen?</summary>
+        <div class="answer">Drie uur in totaal, verdeeld over twee delen van elk 1 uur 30 minuten.</div>
+      </details>
+      <details>
+        <summary>Waar vinden de examens plaats?</summary>
+        <div class="answer">Het hele jaar door organiseren we examens op locaties in heel Europa. In de eventkalender zie je de eerstvolgende datum en locatie.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section class="closing">
+  <div class="inner">
+    <h2>Klaar om je te laten <span class="hl">certificeren</span>?</h2>
+    <p>Het hele jaar door staan er examendata gepland in heel Europa. Kies je datum, breng je ballonnen mee en toon de jury wat je kunt.</p>
+    <div class="btn-row">
+      <a class="btn btn-ghost" href="https://www.sempertexeurope.com/events">Bekijk de examendata en schrijf je in</a>
+      <a class="btn btn-ghost" href="https://www.sempertexeurope.com/mbp-listing">Vind een gecertificeerde MBP</a>
+    </div>
+  </div>
+</section>
+
+<footer class="site-foot">
+  <div class="inner">
+    <span>Sempertex Europe</span>
+    <span>MBP-certificering</span>
+  </div>
+</footer>
+</div>
+</template>
+<template id="stx-mbp-fr">
+<div class="stx-doc" lang="fr">
+<section class="hero-band">
+  <div class="inner hero-grid">
+    <div>
+      <img class="hero-logo" src="__ASSETS__/mbp-01-459267c3.png" alt="Master Balloon Professional">
+      <h1>Devenez <span class="hl">Master</span> Balloon Professional</h1>
+      <p class="lede">Tout le monde peut se dire professionnel du ballon. Le MBP, c’est la façon de le prouver.</p>
+      <div class="btn-row">
+        <a class="btn" href="https://www.sempertexeurope.com/events">Voir les dates d’examen</a>
+        <a class="btn btn-ghost" href="#exam">Comment se passe l’examen</a>
+        <a class="btn btn-ghost" href="https://www.sempertexeurope.com/mbp-listing">Voir tous les MBP</a>
+      </div>
+      <div class="trust">Reconnu à l’international &middot; Examens dans toute l’Europe</div>
+    </div>
+    <figure class="figure">
+      <img src="__ASSETS__/mbp-02-d36f86a5.jpg" alt="De nouveaux Master Balloon Professionals sur scène avec leur diplôme">
+      <figcaption>De nouveaux MBP avec leur diplôme</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="band band-tight band-mbp">
+  <div class="inner">
+    <div class="facts">
+      <div class="fact is-mbp"><div class="num">100</div><div class="lbl">Points au total</div></div>
+      <div class="fact is-key"><div class="num">85</div><div class="lbl">Pour réussir</div></div>
+      <div class="fact"><div class="num">2</div><div class="lbl">Parties d’examen</div></div>
+      <div class="fact"><div class="num">3<span class="unit">h</span></div><div class="lbl">Le jour J</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="band band-paper" id="what">
+  <div class="inner split">
+    <div>
+      <div class="sec-head">
+        <h2>Qu’est-ce qu’un <span class="hl">MBP</span> ?</h2>
+      </div>
+      <p>MBP signifie Master Balloon Professional. C’est la certification Sempertex reconnue à l’international pour les décorateurs ballons professionnels, délivrée après la réussite d’un examen pratique évalué selon les normes de décoration officielles de Sempertex.</p>
+      <p>Il couvre trois choses à la fois : la créativité, l’exécution technique et les connaissances commerciales derrière un travail professionnel. Vous n’envoyez pas de portfolio. Vous construisez, sur place, devant un jury, dans le temps imparti.</p>
+      <p class="pull">Le seul titre de ce secteur qui se gagne avec des ballons entre les mains.</p>
+    </div>
+    <figure class="figure">
+      <img src="__ASSETS__/mbp-03-f1c9d7bc.jpg" alt="Un membre du jury Sempertex discute d’une création avec un candidat">
+      <figcaption>Noté selon des critères fixes, expliqué en face à face</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="band band-wash" id="why">
+  <div class="inner">
+    <div class="sec-head">
+      <h2>Pourquoi la certification <span class="hl">en vaut la peine</span></h2>
+      <p class="lead narrow">La certification n’est pas un badge pour votre site web. Elle change ce que vous pouvez facturer, avec qui vous pouvez travailler et la façon dont les clients décident.</p>
+    </div>
+    <div class="pair-grid">
+      <div class="pair">
+        <div class="plus">CONFIANCE</div>
+        <h4>Une preuve que le client peut vérifier</h4>
+        <p>La plupart des clients ne savent pas juger une guirlande effilée sur une photo. Ils peuvent en revanche vérifier si Sempertex vous a certifié. La discussion passe alors du prix au niveau.</p>
+      </div>
+      <div class="pair">
+        <div class="plus">PRIX</div>
+        <h4>Une raison pour votre tarif</h4>
+        <p>Un décorateur certifié ne vend pas des ballons, mais un niveau de travail garanti. C’est la différence entre annoncer un prix et le défendre.</p>
+      </div>
+      <div class="pair">
+        <div class="plus">BUSINESS</div>
+        <h4>Les chiffres, pas seulement le design</h4>
+        <p>En plus de vos créations, l’examen demande une proposition marketing et un calcul des coûts. Construire une arche organique et savoir ce qu’elle doit coûter sont deux compétences différentes.</p>
+      </div>
+      <div class="pair">
+        <div class="plus">NIVEAU</div>
+        <h4>Une référence honnête</h4>
+        <p>Quand on travaille seul, il est difficile de se situer. Un jury qui note selon une norme fixe vous donne une réponse franche et une liste claire de ce qu’il faut améliorer.</p>
+      </div>
+      <div class="pair">
+        <div class="plus">ACCÈS</div>
+        <h4>Une porte vers la marque</h4>
+        <p>C’est avec le MBP que commencent les collaborations avec Sempertex Europe. Les artistes certifiés travaillent avec nous sur des projets et du contenu, et reçoivent des box PR avec les nouvelles couleurs et nouveautés.</p>
+      </div>
+      <div class="pair">
+        <div class="plus">VISIBILITÉ</div>
+        <h4>Trouvé, pas seulement suivi</h4>
+        <p>Les artistes certifiés sont mis en avant sur les canaux Sempertex, auprès des clients, grossistes et partenaires qui cherchent des professionnels.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="principle">
+  <div class="inner">
+    <div class="label">En bref</div>
+    <div class="statement">La certification est la seule preuve de votre savoir-faire qu’un client peut vérifier <span class="hl">avant</span> de vous réserver.</div>
+  </div>
+</section>
+
+<section class="band band-paper" id="benefits">
+  <div class="inner">
+    <div class="head-row">
+      <div class="sec-head">
+        <h2>Ce que vous <span class="hl">obtenez</span></h2>
+        <p class="lead narrow">Réussissez l’examen et vous rejoignez la communauté MBP, avec tout ce qui va avec.</p>
+      </div>
+      <img src="__ASSETS__/mbp-04-5e4b1f90.png" alt="Master Balloon Professional, certifié par Sempertex">
+    </div>
+    <ul class="perks">
+      <li><span class="tick"><svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true"><path d="M2 8.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><h4>Diplôme MBP</h4><p>Officiellement reconnu par Sempertex, dans le monde entier.</p></li>
+      <li><span class="tick"><svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true"><path d="M2 8.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><h4>Kit de bienvenue</h4><p>Des articles MBP exclusifs, remis le jour même.</p></li>
+      <li><span class="tick"><svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true"><path d="M2 8.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><h4>Accès e-learning</h4><p>Avec les modules Marketing et Calcul des coûts.</p></li>
+      <li><span class="tick"><svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true"><path d="M2 8.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><h4>Réduction</h4><p>Sur les ateliers et événements Sempertex Europe.</p></li>
+      <li><span class="tick"><svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true"><path d="M2 8.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><h4>Box PR</h4><p>Nouvelles couleurs, finitions et nouveautés livrées chez vous.</p></li>
+      <li><span class="tick"><svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true"><path d="M2 8.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><h4>Collaborations</h4><p>Travaillez avec Sempertex Europe sur des projets et du contenu.</p></li>
+      <li><span class="tick"><svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true"><path d="M2 8.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><h4>Reconnaissance</h4><p>Votre nom diffusé sur les canaux Sempertex.</p></li>
+      <li><span class="tick"><svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true"><path d="M2 8.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><h4>Un réseau</h4><p>Des professionnels certifiés dans toute l’Europe.</p></li>
+    </ul>
+  </div>
+</section>
+
+<section class="band band-wash" id="exam">
+  <div class="inner">
+    <div class="sec-head">
+      <h2>L’<span class="hl">examen</span> en détail</h2>
+      <p class="lead narrow">Un examen pratique en deux parties, trois heures au total. Choisissez une partie pour voir ce que le jury évalue.</p>
+    </div>
+
+    <div class="tab-label">Choisissez une partie</div>
+    <div class="tabs" role="tablist" aria-label="Parties d’examen">
+      <button class="tab" id="tab1" role="tab" aria-selected="true" aria-controls="p1">Partie 1 : Créativité libre</button>
+      <button class="tab" id="tab2" role="tab" aria-selected="false" aria-controls="p2">Partie 2 : Épreuves du jury</button>
+    </div>
+
+    <div class="panel" id="p1" role="tabpanel" aria-labelledby="tab1">
+      <div class="panel-grid">
+        <div>
+          <h3>Créativité libre, 30 points</h3>
+          <p>Vos propres créations, vos propres ballons. La créativité porte cette partie.</p>
+          <table class="score">
+            <thead><tr><th>Épreuve</th><th class="n">Points</th></tr></thead>
+            <tbody>
+              <tr><td>Centre de table</td><td class="n">10</td></tr>
+              <tr><td>Création personnelle</td><td class="n">10</td></tr>
+              <tr><td>Proposition marketing</td><td class="n">5</td></tr>
+              <tr><td>Calcul des coûts</td><td class="n">5</td></tr>
+              <tr class="sum"><td>1 heure 30 minutes</td><td class="n">30</td></tr>
+            </tbody>
+          </table>
+          <ul class="clean">
+            <li>Utilisez vos propres ballons Sempertex.</li>
+            <li>Chaque création comprend au moins trois tailles de ballons différentes.</li>
+            <li>La proposition marketing et le calcul des coûts se préparent à l’avance avec les modules e-learning.</li>
+          </ul>
+        </div>
+        <figure class="figure">
+          <img src="__ASSETS__/mbp-05-6ec04fde.jpg" alt="Une candidate réalise une création en ballons pendant l’examen MBP">
+          <figcaption>Votre création, vos ballons, 60 minutes</figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <div class="panel" id="p2" role="tabpanel" aria-labelledby="tab2" hidden>
+      <div class="panel-grid">
+        <div>
+          <h3>Décoration à la demande du jury, 70 points</h3>
+          <p>Technique et exécution, selon les consignes, avec des ballons fournis par Sempertex.</p>
+          <table class="score">
+            <thead><tr><th>Épreuve</th><th class="n">Points</th></tr></thead>
+            <tbody>
+              <tr><td>Techniques avec ballons ronds</td><td class="n">20</td></tr>
+              <tr><td>Création Link-O-Loon&reg;</td><td class="n">20</td></tr>
+              <tr><td>Création organique</td><td class="n">20</td></tr>
+              <tr><td>Utilisation des outils de base</td><td class="n">10</td></tr>
+              <tr class="sum"><td>1 heure 30 minutes</td><td class="n">70</td></tr>
+            </tbody>
+          </table>
+          <ul class="clean">
+            <li>Les ballons de cette partie sont fournis par Sempertex.</li>
+            <li>Les épreuves se font selon les consignes du jury.</li>
+            <li>Vous utilisez différentes tailles et techniques au fil des épreuves.</li>
+          </ul>
+        </div>
+        <figure class="figure">
+          <img src="__ASSETS__/mbp-06-a62e4bb8.jpg" alt="Un membre du jury Sempertex évalue un centre de table en ballons avec une grille de notation">
+          <figcaption>Chaque épreuve notée selon les critères officiels</figcaption>
+        </figure>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section class="band band-mbp" id="register">
+  <div class="inner">
+    <div class="sec-head">
+      <h2>Comment <span class="hl">s’inscrire</span></h2>
+    </div>
+    <div class="steps">
+      <div class="step"><p>Choisissez une date d’examen disponible dans le calendrier des événements.</p></div>
+      <div class="step"><p>Ajoutez l’examen MBP à votre panier et finalisez votre commande.</p></div>
+      <div class="step"><p>Dès réception de votre paiement, nous vous inscrivons officiellement auprès de Sempertex.</p></div>
+      <div class="step"><p>Vous recevez un e-mail de confirmation avec le lieu, le programme et votre accès e-learning.</p></div>
+    </div>
+    <div class="two-col">
+      <div class="role-card role-frame">
+        <div class="role-label">Préparer</div>
+        <h4>Avant le jour J</h4>
+        <ul>
+          <li>Suivez les modules Marketing et Calcul des coûts sur la plateforme e-learning.</li>
+          <li>Concevez votre centre de table et votre création personnelle, avec trois tailles de ballons dans chacun.</li>
+          <li>Imprimez votre proposition marketing et votre calcul des coûts.</li>
+        </ul>
+      </div>
+      <div class="role-card role-fill">
+        <div class="role-label">À apporter</div>
+        <h4>Le jour J</h4>
+        <ul>
+          <li>Vos propres ballons Sempertex pour la partie Créativité libre.</li>
+          <li>Les deux documents imprimés.</li>
+          <li>Vous-même, 30 minutes avant le début.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="band band-wash" id="faq">
+  <div class="inner">
+    <div class="sec-head">
+      <h2>Vos questions, <span class="hl">nos réponses</span></h2>
+    </div>
+    <div class="faq">
+      <details open>
+        <summary>À qui s’adresse l’examen MBP ?</summary>
+        <div class="answer">Aux décorateurs et artistes ballons en activité. C’est une certification professionnelle, pas une initiation. Vous êtes censé maîtriser déjà la technique.</div>
+      </details>
+      <details>
+        <summary>Dois-je d’abord suivre une formation ?</summary>
+        <div class="answer">Aucune formation n’est obligatoire. L’inscription vous donne accès aux modules Marketing et Calcul des coûts sur la plateforme e-learning, qui couvrent des parties de l’examen impossibles à préparer autrement.</div>
+      </details>
+      <details>
+        <summary>Que se passe-t-il si je n’atteins pas 85 points ?</summary>
+        <div class="answer">Vous pouvez repasser l’examen à une date ultérieure. La notation vous indique précisément les points à travailler.</div>
+      </details>
+      <details>
+        <summary>Quels ballons dois-je utiliser ?</summary>
+        <div class="answer">Vos propres ballons Sempertex pour la Créativité libre. Sempertex fournit les ballons pour les épreuves du jury.</div>
+      </details>
+      <details>
+        <summary>Combien de temps dure l’examen ?</summary>
+        <div class="answer">Trois heures au total, en deux parties de 1 heure 30 minutes chacune.</div>
+      </details>
+      <details>
+        <summary>Où se déroulent les examens ?</summary>
+        <div class="answer">Des examens sont organisés tout au long de l’année dans toute l’Europe. Le calendrier des événements indique la prochaine date et le lieu.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section class="closing">
+  <div class="inner">
+    <h2>Prêt à vous faire <span class="hl">certifier</span> ?</h2>
+    <p>Des dates d’examen sont prévues dans toute l’Europe tout au long de l’année. Choisissez votre date, apportez vos ballons et montrez au jury ce que vous savez faire.</p>
+    <div class="btn-row">
+      <a class="btn btn-ghost" href="https://www.sempertexeurope.com/events">Voir les dates et s’inscrire</a>
+      <a class="btn btn-ghost" href="https://www.sempertexeurope.com/mbp-listing">Trouver un MBP certifié</a>
+    </div>
+  </div>
+</section>
+
+<footer class="site-foot">
+  <div class="inner">
+    <span>Sempertex Europe</span>
+    <span>Certification MBP</span>
+  </div>
+</footer>
+</div>
+</template>
+<template id="stx-mbp-de">
+<div class="stx-doc" lang="de">
+<section class="hero-band">
+  <div class="inner hero-grid">
+    <div>
+      <img class="hero-logo" src="__ASSETS__/mbp-01-459267c3.png" alt="Master Balloon Professional">
+      <h1>Werde <span class="hl">Master</span> Balloon Professional</h1>
+      <p class="lede">Jeder kann sich Ballonprofi nennen. Mit MBP beweist du es.</p>
+      <div class="btn-row">
+        <a class="btn" href="https://www.sempertexeurope.com/events">Prüfungstermine ansehen</a>
+        <a class="btn btn-ghost" href="#exam">So läuft die Prüfung</a>
+        <a class="btn btn-ghost" href="https://www.sempertexeurope.com/mbp-listing">Alle MBPs ansehen</a>
+      </div>
+      <div class="trust">International anerkannt &middot; Prüfungen in ganz Europa</div>
+    </div>
+    <figure class="figure">
+      <img src="__ASSETS__/mbp-02-d36f86a5.jpg" alt="Neue Master Balloon Professionals mit ihrem Diplom auf der Bühne">
+      <figcaption>Neue MBPs mit ihrem Diplom</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="band band-tight band-mbp">
+  <div class="inner">
+    <div class="facts">
+      <div class="fact is-mbp"><div class="num">100</div><div class="lbl">Punkte insgesamt</div></div>
+      <div class="fact is-key"><div class="num">85</div><div class="lbl">Zum Bestehen</div></div>
+      <div class="fact"><div class="num">2</div><div class="lbl">Prüfungsteile</div></div>
+      <div class="fact"><div class="num">3<span class="unit">h</span></div><div class="lbl">Am Prüfungstag</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="band band-paper" id="what">
+  <div class="inner split">
+    <div>
+      <div class="sec-head">
+        <h2>Was ist ein <span class="hl">MBP</span>?</h2>
+      </div>
+      <p>MBP steht für Master Balloon Professional. Es ist die international anerkannte Sempertex-Zertifizierung für professionelle Ballondekorateure. Du erhältst sie, wenn du eine praktische Prüfung bestehst, die nach den offiziellen Dekorationsstandards von Sempertex bewertet wird.</p>
+      <p>Sie deckt drei Dinge auf einmal ab: Kreativität, technische Ausführung und das betriebswirtschaftliche Wissen hinter einem professionellen Auftrag. Du reichst kein Portfolio ein. Du baust, vor Ort, vor einer Jury, in der vorgegebenen Zeit.</p>
+      <p class="pull">Der einzige Nachweis in dieser Branche, den du dir mit Ballons in den Händen verdienst.</p>
+    </div>
+    <figure class="figure">
+      <img src="__ASSETS__/mbp-03-f1c9d7bc.jpg" alt="Ein Sempertex-Jurymitglied bespricht einen Entwurf mit einer Kandidatin">
+      <figcaption>Nach festen Kriterien bewertet, persönlich erklärt</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="band band-wash" id="why">
+  <div class="inner">
+    <div class="sec-head">
+      <h2>Warum sich die Zertifizierung <span class="hl">lohnt</span></h2>
+      <p class="lead narrow">Die Zertifizierung ist kein Abzeichen für deine Website. Sie verändert, was du verlangen kannst, mit wem du arbeiten kannst und wie Kunden entscheiden.</p>
+    </div>
+    <div class="pair-grid">
+      <div class="pair">
+        <div class="plus">VERTRAUEN</div>
+        <h4>Ein Nachweis, den Kunden prüfen können</h4>
+        <p>Die meisten Kunden können eine sich verjüngende Girlande auf einem Foto nicht beurteilen. Sie können aber prüfen, ob Sempertex dich zertifiziert hat. Damit geht es im Gespräch nicht mehr um den Preis, sondern um den Standard.</p>
+      </div>
+      <div class="pair">
+        <div class="plus">PREIS</div>
+        <h4>Ein Grund für deinen Preis</h4>
+        <p>Ein zertifizierter Dekorateur verkauft keine Ballons, sondern ein garantiertes Arbeitsniveau. Das ist der Unterschied zwischen einen Preis nennen und einen Preis verteidigen.</p>
+      </div>
+      <div class="pair">
+        <div class="plus">BUSINESS</div>
+        <h4>Die Zahlen, nicht nur das Design</h4>
+        <p>Neben deinen Entwürfen verlangt die Prüfung einen Marketingvorschlag und eine Kostenkalkulation. Einen organischen Bogen bauen und wissen, was er kosten muss, sind zwei verschiedene Fähigkeiten.</p>
+      </div>
+      <div class="pair">
+        <div class="plus">NIVEAU</div>
+        <h4>Ein ehrlicher Maßstab</h4>
+        <p>Wer allein arbeitet, kann sich schwer einschätzen. Eine Jury, die nach einem festen Standard bewertet, gibt dir eine klare Antwort und eine klare Liste, was du verbessern kannst.</p>
+      </div>
+      <div class="pair">
+        <div class="plus">ZUGANG</div>
+        <h4>Eine Tür zur Marke</h4>
+        <p>Mit MBP beginnen Kooperationen mit Sempertex Europe. Zertifizierte Künstler arbeiten mit uns an Projekten und Content und bekommen PR-Boxen mit neuen Farben und Neuheiten.</p>
+      </div>
+      <div class="pair">
+        <div class="plus">SICHTBARKEIT</div>
+        <h4>Gefunden, nicht nur gefolgt</h4>
+        <p>Zertifizierte Künstler werden über die Sempertex-Kanäle sichtbar, bei den Kunden, Großhändlern und Partnern, die nach Profis suchen.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="principle">
+  <div class="inner">
+    <div class="label">Kurz gesagt</div>
+    <div class="statement">Die Zertifizierung ist der einzige Nachweis deines Könnens, den ein Kunde prüfen kann, <span class="hl">bevor</span> er dich bucht.</div>
+  </div>
+</section>
+
+<section class="band band-paper" id="benefits">
+  <div class="inner">
+    <div class="head-row">
+      <div class="sec-head">
+        <h2>Was du <span class="hl">bekommst</span></h2>
+        <p class="lead narrow">Bestehst du die Prüfung, gehörst du zur MBP-Community, mit allem, was dazugehört.</p>
+      </div>
+      <img src="__ASSETS__/mbp-04-5e4b1f90.png" alt="Master Balloon Professional, zertifiziert von Sempertex">
+    </div>
+    <ul class="perks">
+      <li><span class="tick"><svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true"><path d="M2 8.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><h4>MBP-Diplom</h4><p>Offiziell von Sempertex anerkannt, weltweit.</p></li>
+      <li><span class="tick"><svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true"><path d="M2 8.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><h4>Willkommenspaket</h4><p>Exklusives MBP-Merchandise, für dich am Prüfungstag.</p></li>
+      <li><span class="tick"><svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true"><path d="M2 8.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><h4>E-Learning-Zugang</h4><p>Mit den Modulen Marketing und Kalkulation.</p></li>
+      <li><span class="tick"><svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true"><path d="M2 8.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><h4>Rabatt</h4><p>Auf Workshops und Events von Sempertex Europe.</p></li>
+      <li><span class="tick"><svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true"><path d="M2 8.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><h4>PR-Boxen</h4><p>Neue Farben, Finishes und Neuheiten direkt vor deiner Tür.</p></li>
+      <li><span class="tick"><svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true"><path d="M2 8.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><h4>Kooperationen</h4><p>Arbeite mit Sempertex Europe an Projekten und Content.</p></li>
+      <li><span class="tick"><svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true"><path d="M2 8.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><h4>Anerkennung</h4><p>Dein Name in den Sempertex-Kanälen.</p></li>
+      <li><span class="tick"><svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true"><path d="M2 8.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><h4>Ein Netzwerk</h4><p>Zertifizierte Profis in ganz Europa.</p></li>
+    </ul>
+  </div>
+</section>
+
+<section class="band band-wash" id="exam">
+  <div class="inner">
+    <div class="sec-head">
+      <h2>Die <span class="hl">Prüfung</span> im Detail</h2>
+      <p class="lead narrow">Eine praktische Prüfung in zwei Teilen, insgesamt drei Stunden. Wähle einen Teil, um zu sehen, was die Jury bewertet.</p>
+    </div>
+
+    <div class="tab-label">Wähle einen Teil</div>
+    <div class="tabs" role="tablist" aria-label="Prüfungsteile">
+      <button class="tab" id="tab1" role="tab" aria-selected="true" aria-controls="p1">Teil 1: Freie Kreativität</button>
+      <button class="tab" id="tab2" role="tab" aria-selected="false" aria-controls="p2">Teil 2: Aufgaben der Jury</button>
+    </div>
+
+    <div class="panel" id="p1" role="tabpanel" aria-labelledby="tab1">
+      <div class="panel-grid">
+        <div>
+          <h3>Freie Kreativität, 30 Punkte</h3>
+          <p>Deine eigenen Entwürfe, deine eigenen Ballons. In diesem Teil zählt die Kreativität.</p>
+          <table class="score">
+            <thead><tr><th>Aufgabe</th><th class="n">Punkte</th></tr></thead>
+            <tbody>
+              <tr><td>Tischdeko</td><td class="n">10</td></tr>
+              <tr><td>Eigener Entwurf</td><td class="n">10</td></tr>
+              <tr><td>Marketingvorschlag</td><td class="n">5</td></tr>
+              <tr><td>Kostenkalkulation</td><td class="n">5</td></tr>
+              <tr class="sum"><td>1 Stunde 30 Minuten</td><td class="n">30</td></tr>
+            </tbody>
+          </table>
+          <ul class="clean">
+            <li>Du verwendest deine eigenen Sempertex-Ballons.</li>
+            <li>Jeder Entwurf enthält mindestens drei verschiedene Ballongrößen.</li>
+            <li>Marketingvorschlag und Kostenkalkulation bereitest du vorab mit den E-Learning-Modulen vor.</li>
+          </ul>
+        </div>
+        <figure class="figure">
+          <img src="__ASSETS__/mbp-05-6ec04fde.jpg" alt="Eine Kandidatin baut während der MBP-Prüfung einen Ballonentwurf">
+          <figcaption>Dein Entwurf, deine Ballons, 60 Minuten</figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <div class="panel" id="p2" role="tabpanel" aria-labelledby="tab2" hidden>
+      <div class="panel-grid">
+        <div>
+          <h3>Dekoration nach Vorgabe der Jury, 70 Punkte</h3>
+          <p>Technik und Ausführung nach Anweisung, mit Ballons von Sempertex.</p>
+          <table class="score">
+            <thead><tr><th>Aufgabe</th><th class="n">Punkte</th></tr></thead>
+            <tbody>
+              <tr><td>Techniken mit Rundballons</td><td class="n">20</td></tr>
+              <tr><td>Link-O-Loon&reg; Entwurf</td><td class="n">20</td></tr>
+              <tr><td>Organischer Entwurf</td><td class="n">20</td></tr>
+              <tr><td>Umgang mit Basiswerkzeugen</td><td class="n">10</td></tr>
+              <tr class="sum"><td>1 Stunde 30 Minuten</td><td class="n">70</td></tr>
+            </tbody>
+          </table>
+          <ul class="clean">
+            <li>Die Ballons für diesen Teil stellt Sempertex.</li>
+            <li>Die Aufgaben führst du nach den Anweisungen der Jury aus.</li>
+            <li>Über die Aufgaben hinweg setzt du verschiedene Größen und Techniken ein.</li>
+          </ul>
+        </div>
+        <figure class="figure">
+          <img src="__ASSETS__/mbp-06-a62e4bb8.jpg" alt="Ein Sempertex-Jurymitglied bewertet eine Ballon-Tischdeko mit einem Bewertungsbogen">
+          <figcaption>Jede Aufgabe nach den offiziellen Kriterien bewertet</figcaption>
+        </figure>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section class="band band-mbp" id="register">
+  <div class="inner">
+    <div class="sec-head">
+      <h2>So meldest du dich <span class="hl">an</span></h2>
+    </div>
+    <div class="steps">
+      <div class="step"><p>Wähle einen freien Prüfungstermin im Eventkalender.</p></div>
+      <div class="step"><p>Lege die MBP-Prüfung in deinen Warenkorb und schließe die Bestellung ab.</p></div>
+      <div class="step"><p>Sobald deine Zahlung eingegangen ist, melden wir dich offiziell bei Sempertex an.</p></div>
+      <div class="step"><p>Du bekommst eine Bestätigungsmail mit Ort, Ablauf und deinem E-Learning-Zugang.</p></div>
+    </div>
+    <div class="two-col">
+      <div class="role-card role-frame">
+        <div class="role-label">Vorbereiten</div>
+        <h4>Vor dem Prüfungstag</h4>
+        <ul>
+          <li>Arbeite die Module Marketing und Kalkulation auf der E-Learning-Plattform durch.</li>
+          <li>Entwirf deine Tischdeko und deinen eigenen Entwurf, jeweils mit drei Ballongrößen.</li>
+          <li>Drucke deinen Marketingvorschlag und deine Kostenkalkulation aus.</li>
+        </ul>
+      </div>
+      <div class="role-card role-fill">
+        <div class="role-label">Mitbringen</div>
+        <h4>Am Prüfungstag</h4>
+        <ul>
+          <li>Deine eigenen Sempertex-Ballons für den Teil Freie Kreativität.</li>
+          <li>Beide ausgedruckten Dokumente.</li>
+          <li>Dich selbst, 30 Minuten vor Beginn.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="band band-wash" id="faq">
+  <div class="inner">
+    <div class="sec-head">
+      <h2>Fragen und <span class="hl">Antworten</span></h2>
+    </div>
+    <div class="faq">
+      <details open>
+        <summary>Für wen ist die MBP-Prüfung?</summary>
+        <div class="answer">Für aktive Ballondekorateure und Künstler. Es ist eine professionelle Zertifizierung, keine Einführung. Wir erwarten, dass du die Technik schon beherrschst.</div>
+      </details>
+      <details>
+        <summary>Muss ich vorher einen Kurs machen?</summary>
+        <div class="answer">Nein, ein Kurs ist nicht nötig. Mit der Anmeldung bekommst du Zugang zu den Modulen Marketing und Kalkulation auf der E-Learning-Plattform. Sie decken Prüfungsteile ab, auf die du dich anders nicht vorbereiten kannst.</div>
+      </details>
+      <details>
+        <summary>Was passiert, wenn ich keine 85 Punkte erreiche?</summary>
+        <div class="answer">Du kannst die Prüfung an einem späteren Termin wiederholen. Die Bewertung zeigt dir genau, woran du arbeiten musst.</div>
+      </details>
+      <details>
+        <summary>Welche Ballons verwende ich?</summary>
+        <div class="answer">Deine eigenen Sempertex-Ballons für die Freie Kreativität. Für die Aufgaben der Jury stellt Sempertex die Ballons.</div>
+      </details>
+      <details>
+        <summary>Wie lange dauert die Prüfung?</summary>
+        <div class="answer">Insgesamt drei Stunden, aufgeteilt in zwei Teile von je 1 Stunde 30 Minuten.</div>
+      </details>
+      <details>
+        <summary>Wo finden die Prüfungen statt?</summary>
+        <div class="answer">Das ganze Jahr über gibt es Prüfungen an Orten in ganz Europa. Im Eventkalender siehst du den nächsten Termin und Ort.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section class="closing">
+  <div class="inner">
+    <h2>Bereit für deine <span class="hl">Zertifizierung</span>?</h2>
+    <p>Das ganze Jahr über gibt es Prüfungstermine in ganz Europa. Wähle deinen Termin, bring deine Ballons mit und zeig der Jury, was du kannst.</p>
+    <div class="btn-row">
+      <a class="btn btn-ghost" href="https://www.sempertexeurope.com/events">Termine ansehen und anmelden</a>
+      <a class="btn btn-ghost" href="https://www.sempertexeurope.com/mbp-listing">Zertifizierte MBPs finden</a>
+    </div>
+  </div>
+</section>
+
+<footer class="site-foot">
+  <div class="inner">
+    <span>Sempertex Europe</span>
+    <span>MBP-Zertifizierung</span>
+  </div>
+</footer>
+</div>
+</template>
 
 <script>
 (function () {
@@ -676,9 +1520,12 @@ section.closing h2 { max-width: 16ch; }
   if (window.__stx_mbp) { return; }
   window.__stx_mbp = true;
   if (document.body.classList.contains('editor_enable') || document.querySelector('.odoo-editor-editable') || document.querySelector('#wrap.o_editable')) { return; }
-  var tpl = document.getElementById('stx-mbp-tpl');
+  var seg = (window.location.pathname.split('/')[1] || '');
+  var lang = /^en_gb$/i.test(seg) ? 'en' : /^(fr|de)$/i.test(seg) ? seg.toLowerCase() : 'nl';
+  var css = document.getElementById('stx-mbp-css');
+  var tpl = document.getElementById('stx-mbp-' + lang) || document.getElementById('stx-mbp-en');
   var target = document.getElementById('wrap') || document.querySelector('main');
-  if (!tpl || !target) { return; }
+  if (!tpl || !css || !target) { return; }
 
   /* Rethink Sans in het document zelf: @font-face werkt niet binnen een shadow root. */
   if (!document.querySelector('link[data-stx-rethink]')) {
@@ -690,12 +1537,12 @@ section.closing h2 { max-width: 16ch; }
   }
 
   var base = (window.STX_SECTIONS_BASE || '').replace(/sections\/?$/, '');
-  var seg = (window.location.pathname.split('/')[1] || '');
   var prefix = /^(en_gb|fr|de)$/i.test(seg) ? '/' + seg : '';
 
   var host = document.createElement('div');
   host.id = 'stx-mbp-host';
   var root = host.attachShadow({ mode: 'open' });
+  root.appendChild(css.content.cloneNode(true));
   root.appendChild(tpl.content.cloneNode(true));
   Array.prototype.forEach.call(root.querySelectorAll('img[src^="__ASSETS__/"]'), function (img) {
     img.src = base + 'assets/mbp/' + img.getAttribute('src').slice(11);

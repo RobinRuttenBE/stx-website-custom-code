@@ -196,8 +196,25 @@ function check(name, ok, extra) {
     const { ctx, pg } = await open('/fr/team', 390, 844);
     const shopHref = await pg.evaluate(() => document.querySelector('#stx-team-host').shadowRoot.querySelector('.btn-row a').getAttribute('href'));
     check('shoplink krijgt /fr', shopHref === '/fr/shop', shopHref);
+    const fr = await pg.evaluate(() => { const sr = document.querySelector('#stx-team-host').shadowRoot; return [sr.querySelector('.stx-doc').getAttribute('lang'), sr.querySelector('h1').textContent, sr.querySelector('.btn-row a').textContent]; });
+    check('teampagina in het Frans', fr[0] === 'fr' && /L’équipe derrière le ballon/.test(fr[1]) && fr[2] === 'Vers la boutique', fr.join(' | '));
     check('geen horizontale scroll op mobiel', await noHScroll(pg));
     await pg.screenshot({ path: path.join(shots, 'team-mobile.png'), fullPage: true });
+    await ctx.close();
+  }
+
+  for (const [p, re] of [['/en_GB/team', /The team behind the balloon/], ['/de/team', /Das Team hinter dem Ballon/]]) {
+    const { ctx, pg } = await open(p);
+    const h1 = await pg.evaluate(() => document.querySelector('#stx-team-host').shadowRoot.querySelector('h1').textContent);
+    check(p + ': titel in de juiste taal', re.test(h1), h1);
+    await ctx.close();
+  }
+  for (const [p, re, lst] of [['/fr/mbp', /Devenez Master Balloon Professional/, '/fr/mbp-listing'], ['/de/mbp', /Werde Master Balloon Professional/, '/de/mbp-listing']]) {
+    const { ctx, pg } = await open(p);
+    const r = await pg.evaluate(() => { const sr = document.querySelector('#stx-mbp-host').shadowRoot; return [sr.querySelector('h1').textContent, sr.querySelector('a[href$="/mbp-listing"]').getAttribute('href')]; });
+    check(p + ': titel in de juiste taal', re.test(r[0].replace(/\s+/g, ' ')), r[0]);
+    check(p + ': listing-knop met taalprefix', r[1] === lst, r[1]);
+    if (p === '/de/mbp') { await pg.screenshot({ path: path.join(shots, 'mbp-de.png'), fullPage: true }); }
     await ctx.close();
   }
 
@@ -221,8 +238,10 @@ function check(name, ok, extra) {
     });
     check('6 beelden geladen uit assets/mbp', r.imgs === 6 && r.loaded === 6, r.loaded + '/' + r.imgs + ' ' + r.src0);
     check('beelden via de loader-commit', /\/assets\/mbp\/mbp-01-/.test(r.src0), r.src0);
-    check('titel', /Become a Master Balloon Professional/.test(r.h1.replace(/\s+/g, ' ')), r.h1);
+    check('titel in het Nederlands op /mbp', /Word een Master Balloon Professional/.test(r.h1.replace(/\s+/g, ' ')), r.h1);
     check('examendata-knop naar /events', r.events === '/events', r.events);
+    const listing = await pg.evaluate(() => Array.from(document.querySelector('#stx-mbp-host').shadowRoot.querySelectorAll('a[href$="/mbp-listing"]')).map((a) => a.getAttribute('href') + ' ' + a.textContent.trim()));
+    check('twee knoppen naar /mbp-listing (hero + afsluiter)', listing.length === 2 && listing.every((l) => l.startsWith('/mbp-listing ')), listing.join(' | '));
     check('deel 2 eerst verborgen', r.p2hidden === true);
     await pg.evaluate(() => document.querySelector('#stx-mbp-host').shadowRoot.getElementById('tab2').click());
     const after = await pg.evaluate(() => { const sr = document.querySelector('#stx-mbp-host').shadowRoot; return [sr.getElementById('p1').hidden, sr.getElementById('p2').hidden, sr.getElementById('tab2').getAttribute('aria-selected')]; });
