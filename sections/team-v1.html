@@ -1817,8 +1817,18 @@ section .lead { max-width: 60ch; margin-bottom: 8px; }
   var root = host.attachShadow({ mode: 'open' });
   root.appendChild(css.content.cloneNode(true));
   root.appendChild(tpl.content.cloneNode(true));
+  /* jsDelivr weigert soms een koud bestand (repo > 50 MB, 403): dan dezelfde commit via GitHub zelf. */
+  var raw = base.replace(/^https:\/\/cdn\.jsdelivr\.net\/gh\/([^\/]+)\/([^@\/]+)@([^\/]+)\/$/, 'https://raw.githubusercontent.com/$1/$2/$3/');
   Array.prototype.forEach.call(root.querySelectorAll('img[src^="__ASSETS__/"]'), function (img) {
-    img.src = base + 'assets/team/' + img.getAttribute('src').slice(11);
+    var file = 'assets/team/' + img.getAttribute('src').slice(11);
+    if (raw !== base) {
+      img.addEventListener('error', function onErr() {
+        if (img.src !== base + file) { return; }
+        img.removeEventListener('error', onErr);
+        img.src = raw + file;
+      });
+    }
+    img.src = base + file;
   });
   Array.prototype.forEach.call(root.querySelectorAll('a[href^="https://www.sempertexeurope.com/"]'), function (a) {
     a.href = prefix + a.getAttribute('href').slice(31);
