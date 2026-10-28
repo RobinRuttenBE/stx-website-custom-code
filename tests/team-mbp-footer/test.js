@@ -287,6 +287,12 @@ function check(name, ok, extra) {
     check(p + ': categorie in de juiste taal', r.cat === cat, r.cat);
     check(p + ': NL-knop via /nl', r.nl === nl, r.nl);
     check(p + ': footer-titels geel, niet Odoo-rood', r.h3 === 'rgb(255, 219, 90)', r.h3);
+    const logo = await pg.evaluate(() => new Promise((res) => {
+      const img = document.querySelector('footer#bottom > .stx-ft-host').shadowRoot.querySelector('.stx-logo');
+      const done = () => res(img.naturalWidth);
+      if (img.complete) { done(); } else { img.addEventListener('load', done); img.addEventListener('error', done); }
+    }));
+    check(p + ': logo laadt in de footer', logo === 640, logo);
     check(p + ': menu eindigt op Blog, MBP', r.menu.slice(-2).join() === 'Blog,MBP', r.menu.join(' | '));
     const pre = lang === 'nl' ? '' : lang === 'en' ? '/en_GB' : '/' + lang;
     check(p + ': MBP-knop naar ' + pre + '/mbp', r.mbp === pre + '/mbp', r.mbp);

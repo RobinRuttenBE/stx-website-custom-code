@@ -52,6 +52,7 @@
 .stx-col-brand { flex: 1 1 260px; max-width: 320px; }
 .stx-col-nav { flex: 1 1 160px; max-width: 200px; }
 .stx-col-hours { flex: 1 1 280px; max-width: 340px; }
+.stx-logo { display: block; width: 200px; max-width: 100%; height: auto; }
 .stx-wordmark { font-size: 26px; font-weight: 800; letter-spacing: -.01em; line-height: 1; }
 .stx-wordmark-sub { font-size: 12px; font-weight: 700; letter-spacing: .24em; color: #ffdb5a; margin-top: 6px; }
 .stx-col-brand p { margin: 20px 0 24px; font-size: 15px; color: #cfc4e4; max-width: 34ch; }
@@ -199,11 +200,13 @@
     return '<a' + (l[0] === lang ? ' class="is-active" aria-current="true"' : '') + ' href="' + l[2] + (tail === '/' ? '' : tail) + '" hreflang="' + l[0] + '">' + l[1] + '</a>';
   }).join('');
   var year = new Date().getFullYear();
+  var base = (window.STX_SECTIONS_BASE || '').replace(/sections\/?$/, '');
 
   var markup =
     '<div class="stx-inner"><div class="stx-cols">' +
       '<div class="stx-col-brand">' +
-        '<div class="stx-wordmark">SEMPERTEX</div><div class="stx-wordmark-sub">EUROPE</div>' +
+        '<a href="' + (prefix || '/') + '" aria-label="Sempertex Europe">' +
+          '<img class="stx-logo" src="' + base + 'assets/logos/sempertex-europe-logo-white-640.png" width="640" height="209" alt="Sempertex Europe"></a>' +
         '<p>' + S.intro + '</p>' +
         '<address>Mieënbroekstraat 43<br>3600 Genk, ' + S.country + '<br>' +
           '<a href="tel:+3289235758">+32 89 23 57 58</a><br>' +
@@ -250,6 +253,13 @@
   var foot = root.querySelector('.stx-footer');
   foot.setAttribute('lang', lang);
   foot.innerHTML = markup;
+  /* Laadt het logo niet, dan het oude woordmerk in tekst. */
+  var logo = root.querySelector('.stx-logo');
+  logo.addEventListener('error', function () {
+    var w = document.createElement('div');
+    w.innerHTML = '<div class="stx-wordmark">SEMPERTEX</div><div class="stx-wordmark-sub">EUROPE</div>';
+    logo.parentNode.replaceWith(w);
+  });
 
   var css = document.createElement('style');
   css.textContent = 'html.stx-ft-on footer#bottom > :not(.stx-ft-host) { display: none !important; }'
