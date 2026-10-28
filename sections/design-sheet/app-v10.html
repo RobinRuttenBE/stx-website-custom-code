@@ -833,7 +833,27 @@ function toast(msg) {
   var t = $('toast'); t.textContent = msg; t.classList.add('show');
   clearTimeout(toast._t); toast._t = setTimeout(function () { t.classList.remove('show'); }, 2200);
 }
-function track(ev, props) { try { var ph = window.posthog || HOST_WIN.posthog; if (ph && ph.capture) ph.capture('stx_tool_' + ev, props || {}); } catch (e) {} }
+function track(ev, props, opts) {
+  try {
+    var ph = window.posthog || HOST_WIN.posthog; if (!ph || !ph.capture) return;
+    var p = props || {};
+    // elk event zegt van welke tool en welk ontwerp het komt (dashboard 'Design Sheet' in PostHog)
+    p.tool = 'design_sheet'; p.balloons = state.balloons.length; p.foils = state.foils.length;
+    try { p.design = ($('design-name').value || '').slice(0, 80); } catch (e) {}
+    if (ev !== 'design_sheet_session') TIME.actions++;
+    ph.capture('stx_tool_' + ev, p, opts);
+  } catch (e) {}
+}
+// tijd in de tool: alleen de tijd dat het tabblad zichtbaar is; bij verbergen of sluiten 1 event
+var TIME = { start: Date.now(), shown: Date.now(), active: 0, actions: 0, sent: false };
+function sendSession() {
+  if (TIME.shown) { TIME.active += Date.now() - TIME.shown; TIME.shown = 0; }
+  if (TIME.active < 1000) return;
+  track('design_sheet_session', { active_s: Math.round(TIME.active / 1000), actions: TIME.actions }, { transport: 'sendBeacon' });
+  TIME.active = 0; TIME.actions = 0;
+}
+HOST_WIN.document.addEventListener('visibilitychange', function () { if (HOST_WIN.document.visibilityState === 'hidden') sendSession(); else TIME.shown = Date.now(); });
+HOST_WIN.addEventListener('pagehide', sendSession);
 function colourName(c) { return c.name; }
 function available(code, size) { return !!(SKUS[code] && SKUS[code][size] && SKUS[code][size].length); }
 function sizesFor(code) { return SIZES.filter(function (s) { return available(code, s); }); }
@@ -3921,7 +3941,7 @@ $('btn-save').addEventListener('click', function () {
   $('design-name').value = v.trim() || 'Untitled design'; persistDraft(); toast('Saved as "' + $('design-name').value + '"'); track('save', { count: state.balloons.length });
 });
 $('design-name').addEventListener('input', persistDraft);
-$('btn-new').addEventListener('click', function () { clearTimeout(autosaveT); persistDraftNow(); state.pid = null; load({ name: 'Untitled design', balloons: [] }); try { localStorage.removeItem(LS_KEY + ':last'); } catch (e) {} renderSaved(); showPane('build'); toast('New design'); });
+$('btn-new').addEventListener('click', function () { track('new', {}); clearTimeout(autosaveT); persistDraftNow(); state.pid = null; load({ name: 'Untitled design', balloons: [] }); try { localStorage.removeItem(LS_KEY + ':last'); } catch (e) {} renderSaved(); showPane('build'); toast('New design'); });
 function persistDraftNow() { if (!state.pid || (!state.balloons.length && !state.foils.length && !state.options.length)) return; var obj = serialize(); obj.pid = state.pid; obj.thumb = thumb(); var list = projects(), idx = -1; list.forEach(function (d, i) { if (d.pid === state.pid) idx = i; }); if (idx >= 0) list[idx] = obj; else list.unshift(obj); saveProjects(list.slice(0, 60)); clearTimeout(CLOUD.t); cloudSave(obj); }
 window.addEventListener('beforeunload', function () { clearTimeout(autosaveT); persistDraftNow(); });
 /* =====================================================================
