@@ -206,11 +206,16 @@ const server = http.createServer(async (req, res) => {
   await p2.goto(base + '/design-sheet');
   await p2.waitForFunction(() => { const fr = document.getElementById('stx-ds-frame'); return fr && fr.contentWindow && fr.contentWindow.STX; }, null, { timeout: 30000 });
   const f2 = p2.frames().find(x => x.url() === 'about:srcdoc');
+  Object.values(designs)[0].x_thumb = 'data:image/jpeg;base64,' + 'A'.repeat(3000);   // like the previews from before 28/10
   await f2.click('#tab-projects');
   await f2.waitForSelector('[data-cload]', { timeout: 10000 });
   await f2.click('[data-cload]');
   await f2.waitForFunction(() => window.STX.state.balloons.length > 50 && window.STX.state.foils.length >= 3, null, { timeout: 15000 });
   ok('second device: project listed "on your account" and opened from Odoo');
+  // an old small preview on the account is replaced by the sharp one when the project is opened
+  for (let i = 0; i < 40 && Object.values(designs)[0].x_thumb.length < 15000; i++) await new Promise(r => setTimeout(r, 250));
+  assert.ok(Object.values(designs)[0].x_thumb.length >= 15000, 'old preview upgraded, ' + Object.values(designs)[0].x_thumb.length);
+  ok('opening a project with an old small preview saves the sharp one to the account');
   assert.ok(xNameRefused > 0, 'fake Odoo never refused x_name, the test checks nothing');
   ok('models without x_name (like live): ' + xNameRefused + ' call(s) refused once, retried without; project list still works');
 

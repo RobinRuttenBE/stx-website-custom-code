@@ -3921,6 +3921,9 @@ function openProject(d, fromCloud) {
   if (fromCloud) { var l = projects().filter(function (x) { return x.pid !== d.pid; }); d.thumb = d.thumb || ''; l.unshift(d); saveProjects(l.slice(0, 60)); }
   try { localStorage.setItem(LS_KEY + ':last', d.pid); } catch (e) {}
   renderSaved(); showPane('build'); toast('Opened ' + (d.name || 'design'));
+  // oud klein voorbeeld (168 x 126, van voor 28/10) op het account: na het laden (AI-beeld incl.) opnieuw opslaan met het scherpe voorbeeld
+  var rec = CLOUD.byPid[d.pid];
+  if (CLOUD.state === 'on' && rec && (rec.x_thumb || '').length < 15000) { var pid = d.pid; setTimeout(function () { if (state.pid === pid) persistDraft(); }, 1500); }
 }
 function renderSaved() {
   var list = projects(), el = $('saved-list'); if (!el) return;
