@@ -11,8 +11,8 @@ LANGS = ['en', 'fr', 'de']
 KEEP = [
     'CEO', 'SV', 'KD', 'RV', 'KC', 'RR', 'VE', 'GC', 'JJ', 'TC', 'AU', 'AM', 'JV', 'JH', 'ML', 'AL',
     'DD', 'AP', 'MB', 'AF', 'TT', 'PA',
-    'Sofie Vandewyer', 'Koen Van Damme', 'Rani Vandiest', 'Kim Cuppers', 'Robin Rutten', 'Vroni Effner',
-    'Gigi Canale', 'Julie Joris', 'Tijl Ceyssens', 'Atilla Ucum', 'Anouk Mussen', 'Jan Verbeek',
+    'Sofie Vandewyer', 'Koen Van Damme', 'Rani Vandiest', 'Kim Cuppens', 'Robin Rutten', 'Vroni Effner',
+    'Gigi Canale', 'Julie Joris', 'Tijl Ceyssens', 'Atilla Ucum', 'Anouk Mussen', 'Jan Verbeeck',
     'Jeroen Heylen', 'Matisse Lambrichts', 'Aziz Lagouireh', 'Denise Van Dooren', 'Audrey Parsons',
     'Melissa Bellefontaine', 'Alberto Falcone', 'Tobi Twist', 'Paula Ardron-Gemmell',
     'CEO Sempertex Europe', 'Head of Technical &amp; Events', 'Head of Operations &amp; Customer Experience',
