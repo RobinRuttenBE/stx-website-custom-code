@@ -3861,7 +3861,8 @@ function cloudSave(obj) {
   var pid = obj.pid; if (CLOUD.busy[pid]) { CLOUD.busy[pid] = obj; return; }
   CLOUD.busy[pid] = true;
   var data = JSON.parse(JSON.stringify(obj)); delete data.thumb;
-  var vals = { x_pid: pid, x_name: (obj.name || 'Untitled design').slice(0, 120), x_data: JSON.stringify(data), x_thumb: obj.thumb || '' };
+  // Odoo krijgt een scherper voorbeeld (met het AI-beeld ernaast) dan de lijst in de browser
+  var vals = { x_pid: pid, x_name: (obj.name || 'Untitled design').slice(0, 120), x_data: JSON.stringify(data), x_thumb: (pid === state.pid && thumbHi()) || obj.thumb || '' };
   var rec = CLOUD.byPid[pid];
   function done(ok) {
     var again = CLOUD.busy[pid]; delete CLOUD.busy[pid];
@@ -3882,6 +3883,21 @@ function cloudDelete(pid) { var rec = CLOUD.byPid[pid]; if (CLOUD.state !== 'on'
 var PK = LS_KEY + ':projects';
 function projects() { try { return JSON.parse(localStorage.getItem(PK) || '[]'); } catch (e) { return []; } }
 function saveProjects(list) { try { localStorage.setItem(PK, JSON.stringify(list)); return true; } catch (e) { toast('Could not save: storage full. Delete an old project or remove photos.'); return false; } }
+// voorbeeld voor Odoo (menu Design Sheet): ontwerp op 640 x 480, en het gekozen AI-beeld ernaast als dat er is
+function thumbHi() {
+  try {
+    if (!state.balloons.length && !state.foils.length) return '';
+    var H = 480, W = 640, imp = state.impression && state.impression.img;
+    var iw = imp ? Math.round(imp.naturalWidth * H / imp.naturalHeight) : 0;
+    var off = renderOption(state.balloons, 900, 'sheet');
+    var t = document.createElement('canvas'); t.width = W + (imp ? iw + 16 : 0); t.height = H;
+    var c = t.getContext('2d'); c.fillStyle = '#fff'; c.fillRect(0, 0, t.width, H);
+    var sc = Math.min(W / off.width, H / off.height);
+    c.drawImage(off, (W - off.width * sc) / 2, (H - off.height * sc) / 2, off.width * sc, off.height * sc);
+    if (imp) c.drawImage(imp, W + 16, 0, iw, H);
+    return t.toDataURL('image/jpeg', 0.82);
+  } catch (e) { return ''; }
+}
 function thumb() {
   try { if (!state.balloons.length && !state.foils.length) return ''; var off = renderOption(state.balloons, 240, 'sheet'); var t = document.createElement('canvas'); t.width = 168; t.height = 126; var c = t.getContext('2d'); c.fillStyle = '#fff'; c.fillRect(0, 0, 168, 126); var sc = Math.min(168 / off.width, 126 / off.height); c.drawImage(off, (168 - off.width * sc) / 2, (126 - off.height * sc) / 2, off.width * sc, off.height * sc); return t.toDataURL('image/jpeg', 0.6); } catch (e) { return ''; }
 }
@@ -3963,7 +3979,7 @@ function init() {
 init();
 
 /* test hooks */
-window.STX = { aiJob: aiJob, placeResult: placeResult, odoo: odoo, setLocKind: setLocKind, computeLoc: computeLoc, isFloor: isFloor, openLocationModal: openLocationModal, state: state, genNumber: genNumber, buildInstructions: buildInstructions, groupsOf: groupsOf, exportBuildSheet: exportBuildSheet, heliumSummary: heliumSummary, genBouquet: genBouquet, genCeiling: genCeiling, aiPrompt: aiPrompt, setImpression: setImpression, setLocation: setLocation, setView: setView, computeLoc: computeLoc, exportProposal: exportProposal, renderOption: renderOption, genColumn: genColumn, genArch: genArch, genOrganic: genOrganic, genGrid: genGrid, gridSettings: gridSettings, loadGridImage: loadGridImage, analyzeGridImage: analyzeGridImage, getGridImg: function () { return gridImg; }, fillAt: fillAt, deltaE2000: deltaE2000, rgbToLab: rgbToLab, orgSettings: orgSettings, finishStroke: finishStroke, bom: bom, place: placeGenerated, load: load, serialize: serialize, fit: fit, setMode: setMode, draw: draw, COLOURS: COLOURS, SKUS: SKUS };
+window.STX = { aiJob: aiJob, thumbHi: thumbHi, placeResult: placeResult, odoo: odoo, setLocKind: setLocKind, computeLoc: computeLoc, isFloor: isFloor, openLocationModal: openLocationModal, state: state, genNumber: genNumber, buildInstructions: buildInstructions, groupsOf: groupsOf, exportBuildSheet: exportBuildSheet, heliumSummary: heliumSummary, genBouquet: genBouquet, genCeiling: genCeiling, aiPrompt: aiPrompt, setImpression: setImpression, setLocation: setLocation, setView: setView, computeLoc: computeLoc, exportProposal: exportProposal, renderOption: renderOption, genColumn: genColumn, genArch: genArch, genOrganic: genOrganic, genGrid: genGrid, gridSettings: gridSettings, loadGridImage: loadGridImage, analyzeGridImage: analyzeGridImage, getGridImg: function () { return gridImg; }, fillAt: fillAt, deltaE2000: deltaE2000, rgbToLab: rgbToLab, orgSettings: orgSettings, finishStroke: finishStroke, bom: bom, place: placeGenerated, load: load, serialize: serialize, fit: fit, setMode: setMode, draw: draw, COLOURS: COLOURS, SKUS: SKUS };
 })();
 </script>
 </body>

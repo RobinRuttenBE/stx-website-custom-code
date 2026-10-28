@@ -195,7 +195,9 @@ const server = http.createServer(async (req, res) => {
   const rec = Object.values(designs)[0];
   assert.ok(rec && rec.x_pid && JSON.parse(rec.x_data).foils.length >= 3, 'design saved to account');
   assert.ok(rec.x_thumb.indexOf('data:image/jpeg') === 0);
-  ok('project saved on the account (x_stx_design), ' + Math.round(rec.x_data.length / 1024) + ' KB');
+  const tw = await page.evaluate((src) => new Promise((res) => { const i = new Image(); i.onload = () => res(i.naturalWidth); i.src = src; }), rec.x_thumb);
+  assert.ok(tw >= 640, 'sharp preview for Odoo, width ' + tw);
+  ok('project saved on the account (x_stx_design), ' + Math.round(rec.x_data.length / 1024) + ' KB, preview ' + tw + ' px wide');
 
   // another device: empty localStorage, the project comes from the account
   const ctx2 = await browser.newContext({ viewport: { width: 1280, height: 860 } });
@@ -259,6 +261,9 @@ const server = http.createServer(async (req, res) => {
   await f.waitForFunction(() => window.STX.state.impression !== window.__impFirst && window.STX.state.impression.img, null, { timeout: 10000 });
   ok('two AI versions: pick screen, version 2 picked and kept');
   ok('AI impression: request logged in Odoo, image back from the AI server, compare view on');
+  const hi = await f.evaluate(() => new Promise((res) => { const s = window.STX.thumbHi ? window.STX.thumbHi() : ''; if (!s) return res(0); const i = new Image(); i.onload = () => res(i.naturalWidth); i.src = s; }));
+  assert.ok(hi > 640, 'preview for Odoo has the AI image next to the design, width ' + hi);
+  ok('preview for Odoo: design with the chosen AI image next to it, ' + hi + ' px wide');
   // manual route: a crop-only result from another AI tool, uploaded, goes back into the full photo
   await f.evaluate(() => { document.getElementById('modal').classList.remove('show'); window.STX.state.aiWhole = false; });   // the crop route
   await f.click('#btn-ai');
