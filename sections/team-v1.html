@@ -272,9 +272,8 @@ section .lead { max-width: 60ch; margin-bottom: 8px; }
   transition: transform 0.22s ease, box-shadow 0.22s ease; }
 .member::after { content: ""; position: absolute; inset: 0; border: 2px solid var(--dark);
   border-radius: 10px; pointer-events: none; transition: border-color 0.22s ease; }
-.member:hover, .member:focus-visible { transform: translateY(-8px);
-  box-shadow: 0 22px 52px rgba(27, 7, 61, 0.2); }
-.member:hover::after, .member:focus-visible::after { border-color: var(--purple); }
+.member:focus-visible { transform: translateY(-8px); box-shadow: 0 22px 52px rgba(27, 7, 61, 0.2); }
+.member:focus-visible::after { border-color: var(--purple); }
 
 .portrait { position: relative; aspect-ratio: 3 / 4; background: var(--paper);
   overflow: hidden; }
@@ -298,10 +297,19 @@ section .lead { max-width: 60ch; margin-bottom: 8px; }
 .plate .bio { font-size: 14px; line-height: 1.45; margin: 0; max-width: none; max-height: 0;
   opacity: 0; overflow: hidden;
   transition: max-height 0.3s ease, opacity 0.25s ease, margin 0.3s ease; }
-.member:hover .plate, .member:focus-visible .plate { height: 100%;
-  background: linear-gradient(to top, rgba(107, 63, 185, 0.97) 0%, rgba(107, 63, 185, 0.95) 100%); }
-.member:hover .plate .bio, .member:focus-visible .plate .bio { max-height: 280px; opacity: 1;
-  margin-top: 12px; }
+.member:not(.amb).open .plate, .member:not(.amb):focus-visible .plate { height: 100%;
+  background: linear-gradient(to top, rgba(107, 63, 185, 0.93) 0%, rgba(107, 63, 185, 0.86) 100%); }
+.member:not(.amb).open .plate .bio, .member:not(.amb):focus-visible .plate .bio {
+  max-height: 280px; opacity: 1; margin-top: 12px; }
+
+/* hover enkel op toestellen met een muis, zodat een tik op telefoon niet blijft hangen */
+@media (hover: hover) {
+  .member:hover { transform: translateY(-8px); box-shadow: 0 22px 52px rgba(27, 7, 61, 0.2); }
+  .member:hover::after { border-color: var(--purple); }
+  .member:not(.amb):hover .plate { height: 100%;
+    background: linear-gradient(to top, rgba(107, 63, 185, 0.93) 0%, rgba(107, 63, 185, 0.86) 100%); }
+  .member:not(.amb):hover .plate .bio { max-height: 280px; opacity: 1; margin-top: 12px; }
+}
 .touch-bio { display: none; }
 
 .ceo-card { position: relative; display: grid; grid-template-columns: 230px 1fr;
@@ -350,17 +358,22 @@ section .lead { max-width: 60ch; margin-bottom: 8px; }
   .dept-nav a { white-space: nowrap; flex: 0 0 auto; }
   .dept-nav .nav-label { display: none; }
   .sec-num { margin-bottom: 0; }
-  .team-grid { grid-template-columns: 1fr; }
+  .team-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .plate { padding: 8px 10px 10px; }
+  .plate h3 { font-size: 13px; margin-bottom: 2px; }
+  .plate .role { font-size: 8px; letter-spacing: 0.06em; }
+  .member.open .plate .role { display: none; }
+  .plate .bio { font-size: 10px; line-height: 1.28; overflow-y: auto; }
+  .member.open .plate .bio { margin-top: 6px; }
+  .member.amb .plate { height: 46%; }
   .ceo-card { grid-template-columns: 1fr; }
   .ceo-card .portrait { border-right: none; border-bottom: 2px solid var(--dark); }
   .ceo-body { padding: 22px 20px 26px; }
 .info-grid { grid-template-columns: 1fr; }
 }
 @media (hover: none) {
-  .touch-bio { display: block; padding: 16px 18px 20px; }
-  .touch-bio p { font-size: 15px; line-height: 1.5; margin: 0; max-width: none; }
-  .member:hover { transform: none; box-shadow: none; }
-  .member:hover::after { border-color: var(--dark); }
+  .member:not(.amb).open .plate { height: 100%; }
+  .member:not(.amb).open .plate .bio { max-height: none; opacity: 1; margin-top: 8px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .member, .plate, .plate .bio, .info-card, .stx-btn, .dept-nav a { transition: none !important; }
@@ -617,6 +630,7 @@ section .lead { max-width: 60ch; margin-bottom: 8px; }
       <article class="member amb">
         <div class="portrait">
           <span class="initials" aria-hidden="true">DD</span>
+          <img src="__ASSETS__/team-01-9e648a6e.jpg" alt="Denise Van Dooren, Creative ambassador bij Sempertex Europe" loading="lazy">
           <div class="plate">
             <h3>Denise Van Dooren</h3>
             <div class="role">Creative ambassador</div>
@@ -626,6 +640,7 @@ section .lead { max-width: 60ch; margin-bottom: 8px; }
       <article class="member amb">
         <div class="portrait">
           <span class="initials" aria-hidden="true">AP</span>
+          <img src="__ASSETS__/team-02-a200de8a.jpg" alt="Audrey Parsons, Creative ambassador bij Sempertex Europe" loading="lazy">
           <div class="plate">
             <h3>Audrey Parsons</h3>
             <div class="role">Creative ambassador</div>
@@ -635,6 +650,7 @@ section .lead { max-width: 60ch; margin-bottom: 8px; }
       <article class="member amb">
         <div class="portrait">
           <span class="initials" aria-hidden="true">MB</span>
+          <img src="__ASSETS__/team-03-acde87aa.jpg" alt="Melissa Bellefontaine, Creative ambassador bij Sempertex Europe" loading="lazy">
           <div class="plate">
             <h3>Melissa Bellefontaine</h3>
             <div class="role">Creative ambassador</div>
@@ -644,6 +660,7 @@ section .lead { max-width: 60ch; margin-bottom: 8px; }
       <article class="member amb">
         <div class="portrait">
           <span class="initials" aria-hidden="true">AF</span>
+          <img src="__ASSETS__/team-04-9c4a116a.jpg" alt="Alberto Falcone, Creative ambassador bij Sempertex Europe" loading="lazy">
           <div class="plate">
             <h3>Alberto Falcone</h3>
             <div class="role">Creative ambassador</div>
@@ -653,6 +670,7 @@ section .lead { max-width: 60ch; margin-bottom: 8px; }
       <article class="member amb">
         <div class="portrait">
           <span class="initials" aria-hidden="true">TT</span>
+          <img src="__ASSETS__/team-05-9d4f18af.jpg" alt="Tobi Twist, Creative ambassador bij Sempertex Europe" loading="lazy">
           <div class="plate">
             <h3>Tobi Twist</h3>
             <div class="role">Creative ambassador</div>
@@ -662,6 +680,7 @@ section .lead { max-width: 60ch; margin-bottom: 8px; }
       <article class="member amb">
         <div class="portrait">
           <span class="initials" aria-hidden="true">PA</span>
+          <img src="__ASSETS__/team-06-e5bc542a.jpg" alt="Paula Ardron-Gemmell, Creative ambassador bij Sempertex Europe" loading="lazy">
           <div class="plate">
             <h3>Paula Ardron-Gemmell</h3>
             <div class="role">Creative ambassador</div>
@@ -962,6 +981,7 @@ section .lead { max-width: 60ch; margin-bottom: 8px; }
       <article class="member amb">
         <div class="portrait">
           <span class="initials" aria-hidden="true">DD</span>
+          <img src="__ASSETS__/team-01-9e648a6e.jpg" alt="Denise Van Dooren, Creative ambassador at Sempertex Europe" loading="lazy">
           <div class="plate">
             <h3>Denise Van Dooren</h3>
             <div class="role">Creative ambassador</div>
@@ -971,6 +991,7 @@ section .lead { max-width: 60ch; margin-bottom: 8px; }
       <article class="member amb">
         <div class="portrait">
           <span class="initials" aria-hidden="true">AP</span>
+          <img src="__ASSETS__/team-02-a200de8a.jpg" alt="Audrey Parsons, Creative ambassador at Sempertex Europe" loading="lazy">
           <div class="plate">
             <h3>Audrey Parsons</h3>
             <div class="role">Creative ambassador</div>
@@ -980,6 +1001,7 @@ section .lead { max-width: 60ch; margin-bottom: 8px; }
       <article class="member amb">
         <div class="portrait">
           <span class="initials" aria-hidden="true">MB</span>
+          <img src="__ASSETS__/team-03-acde87aa.jpg" alt="Melissa Bellefontaine, Creative ambassador at Sempertex Europe" loading="lazy">
           <div class="plate">
             <h3>Melissa Bellefontaine</h3>
             <div class="role">Creative ambassador</div>
@@ -989,6 +1011,7 @@ section .lead { max-width: 60ch; margin-bottom: 8px; }
       <article class="member amb">
         <div class="portrait">
           <span class="initials" aria-hidden="true">AF</span>
+          <img src="__ASSETS__/team-04-9c4a116a.jpg" alt="Alberto Falcone, Creative ambassador at Sempertex Europe" loading="lazy">
           <div class="plate">
             <h3>Alberto Falcone</h3>
             <div class="role">Creative ambassador</div>
@@ -998,6 +1021,7 @@ section .lead { max-width: 60ch; margin-bottom: 8px; }
       <article class="member amb">
         <div class="portrait">
           <span class="initials" aria-hidden="true">TT</span>
+          <img src="__ASSETS__/team-05-9d4f18af.jpg" alt="Tobi Twist, Creative ambassador at Sempertex Europe" loading="lazy">
           <div class="plate">
             <h3>Tobi Twist</h3>
             <div class="role">Creative ambassador</div>
@@ -1007,6 +1031,7 @@ section .lead { max-width: 60ch; margin-bottom: 8px; }
       <article class="member amb">
         <div class="portrait">
           <span class="initials" aria-hidden="true">PA</span>
+          <img src="__ASSETS__/team-06-e5bc542a.jpg" alt="Paula Ardron-Gemmell, Creative ambassador at Sempertex Europe" loading="lazy">
           <div class="plate">
             <h3>Paula Ardron-Gemmell</h3>
             <div class="role">Creative ambassador</div>
@@ -1307,6 +1332,7 @@ section .lead { max-width: 60ch; margin-bottom: 8px; }
       <article class="member amb">
         <div class="portrait">
           <span class="initials" aria-hidden="true">DD</span>
+          <img src="__ASSETS__/team-01-9e648a6e.jpg" alt="Denise Van Dooren, Creative ambassador chez Sempertex Europe" loading="lazy">
           <div class="plate">
             <h3>Denise Van Dooren</h3>
             <div class="role">Creative ambassador</div>
@@ -1316,6 +1342,7 @@ section .lead { max-width: 60ch; margin-bottom: 8px; }
       <article class="member amb">
         <div class="portrait">
           <span class="initials" aria-hidden="true">AP</span>
+          <img src="__ASSETS__/team-02-a200de8a.jpg" alt="Audrey Parsons, Creative ambassador chez Sempertex Europe" loading="lazy">
           <div class="plate">
             <h3>Audrey Parsons</h3>
             <div class="role">Creative ambassador</div>
@@ -1325,6 +1352,7 @@ section .lead { max-width: 60ch; margin-bottom: 8px; }
       <article class="member amb">
         <div class="portrait">
           <span class="initials" aria-hidden="true">MB</span>
+          <img src="__ASSETS__/team-03-acde87aa.jpg" alt="Melissa Bellefontaine, Creative ambassador chez Sempertex Europe" loading="lazy">
           <div class="plate">
             <h3>Melissa Bellefontaine</h3>
             <div class="role">Creative ambassador</div>
@@ -1334,6 +1362,7 @@ section .lead { max-width: 60ch; margin-bottom: 8px; }
       <article class="member amb">
         <div class="portrait">
           <span class="initials" aria-hidden="true">AF</span>
+          <img src="__ASSETS__/team-04-9c4a116a.jpg" alt="Alberto Falcone, Creative ambassador chez Sempertex Europe" loading="lazy">
           <div class="plate">
             <h3>Alberto Falcone</h3>
             <div class="role">Creative ambassador</div>
@@ -1343,6 +1372,7 @@ section .lead { max-width: 60ch; margin-bottom: 8px; }
       <article class="member amb">
         <div class="portrait">
           <span class="initials" aria-hidden="true">TT</span>
+          <img src="__ASSETS__/team-05-9d4f18af.jpg" alt="Tobi Twist, Creative ambassador chez Sempertex Europe" loading="lazy">
           <div class="plate">
             <h3>Tobi Twist</h3>
             <div class="role">Creative ambassador</div>
@@ -1352,6 +1382,7 @@ section .lead { max-width: 60ch; margin-bottom: 8px; }
       <article class="member amb">
         <div class="portrait">
           <span class="initials" aria-hidden="true">PA</span>
+          <img src="__ASSETS__/team-06-e5bc542a.jpg" alt="Paula Ardron-Gemmell, Creative ambassador chez Sempertex Europe" loading="lazy">
           <div class="plate">
             <h3>Paula Ardron-Gemmell</h3>
             <div class="role">Creative ambassador</div>
@@ -1652,6 +1683,7 @@ section .lead { max-width: 60ch; margin-bottom: 8px; }
       <article class="member amb">
         <div class="portrait">
           <span class="initials" aria-hidden="true">DD</span>
+          <img src="__ASSETS__/team-01-9e648a6e.jpg" alt="Denise Van Dooren, Creative ambassador bei Sempertex Europe" loading="lazy">
           <div class="plate">
             <h3>Denise Van Dooren</h3>
             <div class="role">Creative ambassador</div>
@@ -1661,6 +1693,7 @@ section .lead { max-width: 60ch; margin-bottom: 8px; }
       <article class="member amb">
         <div class="portrait">
           <span class="initials" aria-hidden="true">AP</span>
+          <img src="__ASSETS__/team-02-a200de8a.jpg" alt="Audrey Parsons, Creative ambassador bei Sempertex Europe" loading="lazy">
           <div class="plate">
             <h3>Audrey Parsons</h3>
             <div class="role">Creative ambassador</div>
@@ -1670,6 +1703,7 @@ section .lead { max-width: 60ch; margin-bottom: 8px; }
       <article class="member amb">
         <div class="portrait">
           <span class="initials" aria-hidden="true">MB</span>
+          <img src="__ASSETS__/team-03-acde87aa.jpg" alt="Melissa Bellefontaine, Creative ambassador bei Sempertex Europe" loading="lazy">
           <div class="plate">
             <h3>Melissa Bellefontaine</h3>
             <div class="role">Creative ambassador</div>
@@ -1679,6 +1713,7 @@ section .lead { max-width: 60ch; margin-bottom: 8px; }
       <article class="member amb">
         <div class="portrait">
           <span class="initials" aria-hidden="true">AF</span>
+          <img src="__ASSETS__/team-04-9c4a116a.jpg" alt="Alberto Falcone, Creative ambassador bei Sempertex Europe" loading="lazy">
           <div class="plate">
             <h3>Alberto Falcone</h3>
             <div class="role">Creative ambassador</div>
@@ -1688,6 +1723,7 @@ section .lead { max-width: 60ch; margin-bottom: 8px; }
       <article class="member amb">
         <div class="portrait">
           <span class="initials" aria-hidden="true">TT</span>
+          <img src="__ASSETS__/team-05-9d4f18af.jpg" alt="Tobi Twist, Creative ambassador bei Sempertex Europe" loading="lazy">
           <div class="plate">
             <h3>Tobi Twist</h3>
             <div class="role">Creative ambassador</div>
@@ -1697,6 +1733,7 @@ section .lead { max-width: 60ch; margin-bottom: 8px; }
       <article class="member amb">
         <div class="portrait">
           <span class="initials" aria-hidden="true">PA</span>
+          <img src="__ASSETS__/team-06-e5bc542a.jpg" alt="Paula Ardron-Gemmell, Creative ambassador bei Sempertex Europe" loading="lazy">
           <div class="plate">
             <h3>Paula Ardron-Gemmell</h3>
             <div class="role">Creative ambassador</div>
@@ -1820,6 +1857,21 @@ section .lead { max-width: 60ch; margin-bottom: 8px; }
     window.scrollTo({ top: y, behavior: 'smooth' });
   });
 
+  /* Kaart met bio: tik opent de bio (telefoon), een andere kaart sluit hem.
+     Met een muis gaat hij ook dicht bij mouseleave. */
+  var hoverCapable = !!(window.matchMedia && window.matchMedia('(hover: hover)').matches);
+  var cards = root.querySelectorAll('.member');
+  Array.prototype.forEach.call(cards, function (card) {
+    if (!card.querySelector('.bio')) { return; }
+    card.addEventListener('click', function () {
+      var wasOpen = card.classList.contains('open');
+      Array.prototype.forEach.call(cards, function (o) { o.classList.remove('open'); });
+      if (!wasOpen) { card.classList.add('open'); }
+    });
+    if (hoverCapable) {
+      card.addEventListener('mouseleave', function () { card.classList.remove('open'); });
+    }
+  });
   /* Ontbrekende portretfoto: dan blijven de initialen staan. */
   Array.prototype.forEach.call(root.querySelectorAll('.portrait img'), function (img) {
     img.addEventListener('error', function () { img.classList.add('is-missing'); });

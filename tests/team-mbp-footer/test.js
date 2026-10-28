@@ -199,6 +199,22 @@ function check(name, ok, extra) {
     const fr = await pg.evaluate(() => { const sr = document.querySelector('#stx-team-host').shadowRoot; return [sr.querySelector('.stx-doc').getAttribute('lang'), sr.querySelector('h1').textContent, sr.querySelector('.btn-row a').textContent]; });
     check('teampagina in het Frans', fr[0] === 'fr' && /L’équipe derrière le ballon/.test(fr[1]) && fr[2] === 'Vers la boutique', fr.join(' | '));
     check('geen horizontale scroll op mobiel', await noHScroll(pg));
+    const tap = await pg.evaluate(async () => {
+      const sr = document.querySelector('#stx-team-host').shadowRoot;
+      const withBio = Array.from(sr.querySelectorAll('.member')).filter((m) => m.querySelector('.bio'));
+      withBio[0].click(); const first = withBio[0].classList.contains('open');
+      withBio[1].click(); const swap = !withBio[0].classList.contains('open') && withBio[1].classList.contains('open');
+      withBio[1].click(); const closed = !withBio[1].classList.contains('open');
+      const amb = Array.from(sr.querySelectorAll('.member.amb img'));
+      amb.forEach((i) => { i.loading = 'eager'; });
+      const wait = (i) => (i.complete ? null : new Promise((r) => { i.onload = r; i.onerror = r; setTimeout(r, 8000); }));
+      await Promise.all(amb.map(wait));
+      return { first, swap, closed, cols: getComputedStyle(sr.querySelector('.team-grid')).gridTemplateColumns.split(' ').length,
+        amb: amb.length, ambOk: amb.filter((i) => i.naturalWidth > 0).length };
+    });
+    check('tik opent de bio, andere kaart sluit hem, tweede tik sluit', tap.first && tap.swap && tap.closed, JSON.stringify(tap));
+    check('2 kaarten naast elkaar op mobiel', tap.cols === 2, tap.cols);
+    check('ambassadeursfoto\'s laden (6)', tap.amb === 6 && tap.ambOk === 6, tap.ambOk + '/' + tap.amb);
     await pg.screenshot({ path: path.join(shots, 'team-mobile.png'), fullPage: true });
     await ctx.close();
   }

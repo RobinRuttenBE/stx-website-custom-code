@@ -192,6 +192,21 @@ TEMPLATE = """{header}
 
 PAGE_JS = {
     'team': """
+  /* Kaart met bio: tik opent de bio (telefoon), een andere kaart sluit hem.
+     Met een muis gaat hij ook dicht bij mouseleave. */
+  var hoverCapable = !!(window.matchMedia && window.matchMedia('(hover: hover)').matches);
+  var cards = root.querySelectorAll('.member');
+  Array.prototype.forEach.call(cards, function (card) {
+    if (!card.querySelector('.bio')) { return; }
+    card.addEventListener('click', function () {
+      var wasOpen = card.classList.contains('open');
+      Array.prototype.forEach.call(cards, function (o) { o.classList.remove('open'); });
+      if (!wasOpen) { card.classList.add('open'); }
+    });
+    if (hoverCapable) {
+      card.addEventListener('mouseleave', function () { card.classList.remove('open'); });
+    }
+  });
   /* Ontbrekende portretfoto: dan blijven de initialen staan. */
   Array.prototype.forEach.call(root.querySelectorAll('.portrait img'), function (img) {
     img.addEventListener('error', function () { img.classList.add('is-missing'); });
