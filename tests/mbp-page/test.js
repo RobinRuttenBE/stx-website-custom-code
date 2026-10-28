@@ -155,20 +155,20 @@ function check(name, ok, extra) {
     check('titel staat in het Nederlands', /MBP-lijst/.test(h1), h1);
 
     const euCards = await pg.$$eval('#mbpl-eu-grid .p', (e) => e.length);
-    check('alle 63 Europese MBPs staan er', euCards === 63, String(euCards));
+    check('alle 82 Europese MBPs staan er', euCards === 82, String(euCards));
 
     const photos = await pg.$$eval('#mbpl-eu-grid .pic img', (e) => e.length);
-    check('elke Europese MBP heeft een profielfoto', photos === 63, String(photos));
+    check('elke Europese MBP heeft een profielfoto', photos === 82, String(photos));
 
     const loaded = await pg.$$eval('#mbpl-eu-grid .pic img', (e) => e.filter((x) => x.naturalWidth > 0).length);
     check('die fotos laden ook echt van de CDN', loaded >= 55, loaded + ' van ' + photos);
 
     const euChips = await pg.$$eval('#mbpl-eu-filters button', (e) => e.length);
-    check('landenfilter voor Europa', euChips === 14, euChips + ' knoppen');
+    check('landenfilter voor Europa', euChips === 16, euChips + ' knoppen');
 
     await pg.click('#mbpl-eu-filters [data-c="Italy"]');
     await pg.waitForTimeout(200);
-    check('filteren op land werkt', (await pg.$$eval('#mbpl-eu-grid .p', (e) => e.length)) === 27);
+    check('filteren op land werkt', (await pg.$$eval('#mbpl-eu-grid .p', (e) => e.length)) === 38);
 
     await pg.click('#mbpl-eu-filters [data-c="__all__"]');
     await pg.fill('#mbpl-search', 'audrey');
@@ -182,7 +182,7 @@ function check(name, ok, extra) {
     await pg.click('#mbpl-rest-toggle');
     await pg.waitForTimeout(250);
     const restAll = await pg.$$eval('#mbpl-rest-grid .p', (e) => e.length);
-    check('rest van de wereld staat ingeklapt onder Europa', restShown === 16 && restAll === 203,
+    check('rest van de wereld staat ingeklapt onder Europa', restShown === 16 && restAll === 298,
       restShown + ' -> ' + restAll);
 
     const order = await pg.evaluate(() => {
@@ -217,7 +217,7 @@ function check(name, ok, extra) {
     check('profiel sluit met Escape', (await pg.$('.stx-mbpl-sheet')) === null);
 
     // Iemand zonder portfolio krijgt een nette lege staat, geen kapotte carrousel.
-    await pg.click('#mbpl-eu-grid .p:has-text("Bjorn de Weirdt")');
+    await pg.click('#mbpl-eu-grid .p:has-text("Björn De Weirdt")');
     await pg.waitForTimeout(350);
     const empty = await pg.evaluate(() => {
       const n = document.querySelector('.stx-mbpl-sheet .in');
