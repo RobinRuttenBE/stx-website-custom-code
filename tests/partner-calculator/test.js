@@ -654,6 +654,12 @@ function check(name, ok, extra) {
       tabs: ['Double Stuffing Calculator', 'Cost Calculator', 'Colour Matching Tool'],
       title: 'Balloon colour and price tools | Irish Party Supplies', cur: '€', curCode: 'EUR', dist: 'km', vat: 23,
       shop: /^https:\/\/www\.irishpartysupplies\.ie\/(search\?q=%22[a-z]+(%20[a-z]+)*%20\d{3}%22&type=product|collections\/sempertex)$/,
+      hint: /Enter your own purchase price per piece/, foreign: /\b(Kleurmixer|opdracht|inkoopprijs|Bewaar|Instellingen|Materiaal)\b/ },
+    // Northwest Greetings (29/10/2026): WooCommerce, every colour straight to its 12" product page.
+    { slug: 'northwest-greetings', name: 'Northwest Greetings', brand: '#6a061c', font: 'Roboto',
+      tabs: ['Double Stuffing Calculator', 'Cost Calculator', 'Colour Matching Tool'],
+      title: 'Balloon colour and price tools | Northwest Greetings', cur: '£', curCode: 'GBP', dist: 'mi', vat: 20,
+      shop: /^https:\/\/northwestgreetings\.co\.uk\/product\/[a-z0-9-]+\/$/,
       hint: /Enter your own purchase price per piece/, foreign: /\b(Kleurmixer|opdracht|inkoopprijs|Bewaar|Instellingen|Materiaal)\b/ }
   ];
   for (const N of NEW_PARTNERS) {
