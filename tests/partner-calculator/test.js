@@ -647,6 +647,13 @@ function check(name, ok, extra) {
       tabs: ['Double Stuffing Calculator', 'Cost Calculator', 'Colour Matching Tool'],
       title: 'Balloon colour and price tools | Pro Balloon Shop', cur: '£', curCode: 'GBP', dist: 'mi', vat: 20,
       shop: /^https:\/\/proballoonshop\.co\.uk\/products\/sempertex-[a-z0-9-]+$/,
+      hint: /Enter your own purchase price per piece/, foreign: /\b(Kleurmixer|opdracht|inkoopprijs|Bewaar|Instellingen|Materiaal)\b/ },
+    // Irish Party Supplies (29/10/2026): Shopify, exact phrase search per colour ("blue 040"),
+    // colours they do not stock go to their Sempertex category.
+    { slug: 'irish-party-supplies', name: 'Irish Party Supplies', brand: '#0f59a8', font: 'Montserrat',
+      tabs: ['Double Stuffing Calculator', 'Cost Calculator', 'Colour Matching Tool'],
+      title: 'Balloon colour and price tools | Irish Party Supplies', cur: '€', curCode: 'EUR', dist: 'km', vat: 23,
+      shop: /^https:\/\/www\.irishpartysupplies\.ie\/(search\?q=%22[a-z]+(%20[a-z]+)*%20\d{3}%22&type=product|collections\/sempertex)$/,
       hint: /Enter your own purchase price per piece/, foreign: /\b(Kleurmixer|opdracht|inkoopprijs|Bewaar|Instellingen|Materiaal)\b/ }
   ];
   for (const N of NEW_PARTNERS) {

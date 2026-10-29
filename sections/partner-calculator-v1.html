@@ -714,6 +714,115 @@
           }
         }
       }
+    },
+
+    'irish-party-supplies': {
+      name: 'Irish Party Supplies',
+      tools: ['calculator', 'cost', 'colour'],
+
+      /* -- HUISSTIJL --
+         Uit hun logo en site (irishpartysupplies.ie, Shopify), 29/10/2026:
+           blauw  #0f59a8  (logo, kopbalk en knoppen op hun site)
+           licht  #c9daed  (lichtste blauw uit het logo), hier de highlight
+           mid    #2769b0  (logo)
+         brandDark is een verdiept logoblauw voor koppen en tekst (hun eigen tekstgrijs #677279 is te licht).
+         Font = Montserrat, zoals op hun site. Logo = Logo.png uit "Distri  huisstijlen/Irish Party Supplies",
+         242x140; hun site heeft geen favicon, dus de ballon uit het logo op een blauw rondje. */
+      logo: 'data:image/png;base64,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',
+      logoHeight: 50,
+      homeUrl: 'https://www.irishpartysupplies.ie/',
+      shopUrl: 'https://www.irishpartysupplies.ie/collections/sempertex',
+
+      brand: '#0f59a8',
+      brandDark: '#0b3567',
+      brandLight: '#eef4fb',
+      accent: '#c9daed',
+      chart: '#2769b0',
+      font: "'Montserrat', 'Helvetica Neue', Helvetica, Arial, sans-serif",
+      fontUrl: 'https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap',
+      favicon: 'data:image/png;base64,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',
+
+      /* Elke maat van een kleur is bij hen een eigen product ("12\" SEMPERTEX BLUE 040 LATEX"), dus geen
+         productpagina per kleur. Hun zoekfunctie op een exacte zinsnede ("blue 040", met aanhalingstekens)
+         geeft precies alle maten van die kleur, zonder buren als Royal Blue 041 (gewone zoekterm wel).
+         {handle} = die zinsnede, uit hun eigen titels (collections/sempertex/products.json, 29/10/2026):
+         55 van de 93 kleuren, elke zoekopdracht live gecheckt. Hun namen wijken soms af (Pearl = Satin,
+         Brown = Chocolate), daarom kleurwoord + code. De andere 38 (Neon, Metallic, Reflex behalve goud,
+         rose gold en zilver, het meeste Pastel Matte) verkopen ze niet en gaan naar hun Sempertex-categorie. */
+      productUrl: 'https://www.irishpartysupplies.ie/search?q=%22{handle}%22&type=product',
+      products: {
+        '005': 'white%20005', '009': 'pink%20009',
+        '010': 'rosewood%20010', '012': 'fuchsia%20012',
+        '015': 'red%20015', '016': 'red%20016',
+        '018': 'merlot%20018', '020': 'yellow%20020',
+        '021': 'yellow%20021', '023': 'mustard%20023',
+        '027': 'eucalyptus%20027', '029': 'green%20029',
+        '030': 'green%20030', '031': 'green%20031',
+        '032': 'green%20032', '035': 'teal%20035',
+        '037': 'aquamarina%20037', '038': 'blue%20038',
+        '040': 'blue%20040', '041': 'blue%20041',
+        '044': 'blue%20044', '050': 'lilac%20050',
+        '051': 'violet%20051', '060': 'blush%20060',
+        '061': 'orange%20061', '062': 'orange%20062',
+        '070': 'mocha%20latex%20070', '071': 'sand%20071',
+        '073': 'latte%20073', '074': 'coffee%20074',
+        '076': 'brown%20076', '080': 'black%20080',
+        '081': 'grey%20081', '107': 'cream%20107',
+        '110': 'rose%20110', '126': 'tea%20126',
+        '140': 'blue%20140', '150': 'lavender%20150',
+        '390': 'clear%20390', '405': 'white%20405',
+        '406': 'pearl%20406', '409': 'pink%20409',
+        '430': 'green%20430', '440': 'blue%20440',
+        '450': 'lilac%20450', '481': 'silver%20481',
+        '661': 'nude%20661', '806': 'white%20806',
+        '850': 'amethyst%20850', '870': 'dust%20870',
+        '873': 'pearl%20873', '951': 'violet%20951',
+        '968': 'gold%20968', '970': 'gold%20970',
+        '981': 'silver%20981'
+      },
+
+      /* Prijscalculator: beginwaarden voor een Ierse klant (tot hij zelf iets bewaart). */
+      costDefaults: { currency: 'EUR', dist: 'km', vat: 23 },
+
+      order: {
+        sizes: [
+          { label: '5" latex', url: 'https://www.irishpartysupplies.ie/collections/sempertex-5-latex-1' },
+          { label: '12" latex', url: 'https://www.irishpartysupplies.ie/collections/sempertex-12-latex' },
+          { label: '18" latex', url: 'https://www.irishpartysupplies.ie/collections/sempertex-18-latex' },
+          { label: '24" latex', url: 'https://www.irishpartysupplies.ie/collections/sempertex-24-latex' },
+          { label: '36" latex', url: 'https://www.irishpartysupplies.ie/collections/sempertex-36-latex' },
+          { label: 'Modelling', url: 'https://www.irishpartysupplies.ie/collections/sempertex-modelling-balloons' },
+          { label: 'Link-O-Loon', url: 'https://www.irishpartysupplies.ie/collections/link-o-loons' }
+        ]
+      },
+
+      langs: ['en'],
+      text: {
+        en: {
+          pageTitle: 'Balloon colour and price tools | Irish Party Supplies',
+          langLabel: 'Language',
+          skipLabel: 'Skip to content',
+          tabsLabel: 'Tools',
+          backLabel: 'Back to the shop',
+          footerText: 'Built by Sempertex Europe for Irish Party Supplies.',
+          order: {
+            title: 'Order these balloons from Irish Party Supplies',
+            lead: 'Click a colour to see every size Irish Party Supplies stocks in that colour.',
+            innerLabel: 'Inner',
+            outerLabel: 'Outer',
+            mainBtn: 'All Sempertex balloons',
+            sizesLabel: 'Or pick a size:'
+          },
+          strings: {
+            calcp_eyebrow: 'Irish Party Supplies / Double stuffing',
+            cost_eyebrow: 'Irish Party Supplies / Cost calculator',
+            ct_eyebrow: 'Irish Party Supplies / Colour matching',
+            cc_q_stx: 'Small "made with the Irish Party Supplies calculator" line',
+            cc_doc_stx: 'Made with the Irish Party Supplies calculator',
+            ct_btn_shop: 'View at Irish Party Supplies'
+          }
+        }
+      }
     }
 
     /* Volgende partner hier, zelfde vorm:
@@ -1026,6 +1135,9 @@
      elke kleurlink naar de Sempertex categorie van de partner. order.searchUrl is
      de oude plek van dit veld en werkt nog steeds. */
   var SEARCH = P.searchUrl || (P.order && P.order.searchUrl) || '';
+  /* Kleurlinks in het bestelblok: met een zoek-URL, of met een productkoppeling (Irish Party Supplies heeft
+     geen zoek-URL: een kleur die ze niet verkopen gaat dan naar hun Sempertex-categorie). */
+  var LINKED = !!(SEARCH || (P.products && P.productUrl));
   var COLROOT = null;   /* root van inspiration-v18, gezet in build() */
   function partnerShopUrl(code) {
     /* Eigen productpagina per kleurcode (products + productUrl), voor een webshop die niet op kleurcode zoekt
@@ -1314,9 +1426,9 @@
       var inner = '<span class="stx-pt-dot" style="background:' + esc(p.hex) + '"></span>'
         + '<span><span class="stx-pt-lbl">' + esc(label) + '</span><br>'
         + '<span class="stx-pt-val">' + esc(p.text) + '</span>'
-        + (SEARCH && p.code ? '<span class="stx-pt-go" aria-hidden="true">&#8599;</span>' : '')
+        + (LINKED && p.code ? '<span class="stx-pt-go" aria-hidden="true">&#8599;</span>' : '')
         + '</span>';
-      if (SEARCH && p.code) {
+      if (LINKED && p.code) {
         return '<a class="stx-pt-pick" href="' + esc(partnerShopUrl(p.code)) + '" target="_blank" rel="noopener" data-code="' + esc(p.code) + '">' + inner + '</a>';
       }
       return '<div class="stx-pt-pick">' + inner + '</div>';
