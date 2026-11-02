@@ -1,0 +1,4 @@
+fonts/node_modules/
+out/
+deliver/
+__pycache__/
