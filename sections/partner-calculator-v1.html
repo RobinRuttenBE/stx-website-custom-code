@@ -951,11 +951,136 @@
           }
         }
       }
+    },
+
+    'ha-ha-entertainment': {
+      name: 'Ha Ha Entertainment',
+      /* Alleen de double stuffing calculator, zoals Liragram (Robin 02/11/2026). */
+
+      /* -- HUISSTIJL --
+         Uit hun logo ("Distri  huisstijlen/Ha Ha Entertainment/logo-website.png"):
+           rood   #ba0e15  (HA-HA en de stippen van het richtkruis)
+           zwart  #1d1d1b  (de balk achter "entertainment"), hier de donkere tekstkleur
+           geel   #e7e087  (de ring van het richtkruis), hier de highlight
+         Font = Poppins, zoals in hun webshop (hahaentertainment.com, Lightspeed). Logo = witte
+         achtergrond weggehaald, bijgesneden, 278x120; favicon = richtkruis met HA-HA op een wit rondje. */
+      logo: 'data:image/png;base64,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',
+      logoHeight: 60,
+      homeUrl: 'https://www.hahaentertainment.com/nl/',
+      shopUrl: 'https://www.hahaentertainment.com/nl/latex-ballonnen/sempertex/',
+
+      brand: '#ba0e15',
+      brandDark: '#1d1d1b',
+      brandLight: '#fdf1f1',
+      accent: '#e7e087',
+      font: "'Poppins', 'Helvetica Neue', Helvetica, Arial, sans-serif",
+      fontUrl: 'https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap',
+      favicon: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAMAAACdt4HsAAAAkFBMVEXgX2TXrKzbHybt4NG8FhytpKH68CTu7J/172W5DRS7EBbdPEMTGRexCg9iamV/AAC5ysrCDxa3x67kvcOWd3fffoXEDhe6t8i1uW40SEd7k2R+kZDBqnNAPjy60nr+/v4AAAC4AgjoBAvGERn/AAC3AgTv6OnP2Ne8ERjXiIvLR03HyMi6DRTuJizTlJXZ5+fvlj7kAAAAMHRSTlP+//7/5v////9ipP7/Iv8C/zL/////V////////////wD9//wBCP//9P/9/47//v9slHpbAAAEhklEQVR42q1XCZOiPBDtJARQEF1nZmf3u6KRQ0Tg//+773XwAAWsqdlUeRTQj9evr4R2TyvN8JX9+Llceke3vOXy5w93MX1+mp7MU7aG7UHub0segMIYafoKAA9lC88Ze6cTlVh0OnkOxFtk7oEZgHW6y86HAxs3Kje3lauGQQ6Hc7ZL19MAQF8cYS7LnvENpAStw3HxQIIG9qslzE/CTCxxAsRyNUDoAaS7BdjLSXMHIeHHYpeOAEDfM15fjtqpO2wJEudeNOgefNh7E68nW99JeIxwSwnqvz/KJ5gr6iHnUZ8DXfWDPU37XgwJOQ59gFf2eWGmEOiq/zR/Bni4x15cYsEA693quPdm7E3xeDP39sfVbn0ByFLkz9tc+KunK2/IKFe2dHGgNF8DQD50ThCKIzvupfkqgJH7Y4biAwBHYDZ/TT4GIFw27ChNQeBkvg5gTqCQprRiBdQLgNH7ilVY0TrzZhVQQRCEwegtufeyNe1WMwqo0Pf9kL/8YFSFFUQ8y34OFU3TpW2LT+h3764UIz1B5J487wge9CTMG0sM0IpGKdi86fwaxcAPn2X0MkIWN/dLLdkS785FTTDYlLWD050/TwgN8pmGMagi13sK4PjhJ1mpiyuDXD0hcBxoOZBAdB4UJP8JVWOlJY0osPeFJq1Yh+KuEURY0rIvQQsJ+E4l60Dp2tbWlhzGMDQV2aYNfFW55tRWTeVEWNJAQ7xZFC0kBBG4QZWElVHKBKGQ9cYY/xdZnWgtpHMVKtLRdSIi54eo65KoEWSFwn+Bx0VuKtxTXXiCX1ImcSzg298Vd6YjAFDJClSrIt+QtbaOZGQpAIGPMARAp6FiD/ADbkmckLSWXE1fAIz4yPO8AAAJDYKWtkKS9reRrBTxqKrkNTwfIGApkvUA4JYFQhkmokuwwLI12FrQgM2mKNoNSR3rWgpt5SiAZH/xMJ6BMwCgd9jDmGzEgB/sgbAifq9PNwDqAwht2tJqHdlGBFthy4YBTlpKxqPalkwgibV02gOgH0ZOwALf0RapvEEtlggChJWKJdgWm42skwR+/v6tXcJwGPuJVDQCoarqkl3laiSJ2JfQpapP/3WlpgEYRQgDXRJpkMot/22k1vUlo/kHmYWxTtucGbJ97eTVVZfKzw2tKQuBvOeMJi7NTlekKHjQXyVIJL8TqhPdFdOwnJ0jrak+XeEJoUNlPjl/kBXwQDaw1HEcJxEBoORyHjaU20LZuJLjQsJHiC1nIyXvNcUdQCy6hvLQ0m4r9G9dFcVk8k4SDQJJ8m/8jnyqzJFb2mRT9S8I6jYUgrJqnaxmU0KItmuq023dd15cGwhzurcTIW5tfWawhE7JQl1EeWzLl8EyN9pgFAaQQAXo6uHEaJsfroEbKr4/Mpuuw/XleC+Umhhsl/H+aoNRjF++bzBebHHGR/tgizO/yRoHGG6yZrd5+djlh23e7EazGtPgcaM5h1Dks/YvN9vi+fwwutme3O6TfeQ1vt2fPHAoUo/xHz9wfP/I8wcOXd8/9n3/4Pn9o+8fOHx/+fj/P0Ofv0HQN6yGAAAAAElFTkSuQmCC',
+
+      /* Rechtstreeks naar de 12" van elke kleur. Hun artikelcodes zijn de onze (R12640), gekoppeld uit
+         de JSON van hun Sempertex-categorieen (?format=json, 02/11/2026): alle 93 kleuren van de tool
+         hebben bij hen een 12" van 50 stuks. Hun zoekfunctie ("sempertex 640") werkt ook maar geeft
+         ruis (assortimenten, bedrukte ballonnen). Nieuwe kleur bij hen = regel erbij. */
+      productUrl: 'https://www.hahaentertainment.com/nl/{handle}.html',
+      products: {
+        '005': 'sem12-fsh-white-005', '006': 'r12-almond-white-006-50-stuks',
+        '008': 'r12-candy-pink-008-50-stuks', '009': 'sem12-fsh-bubble-gum-pink-009',
+        '010': 'sem12-fsh-rosewood-010', '011': 'sem12-rose-011-50-stuks',
+        '012': 'sem12-fsh-fuchsia-012', '013': 'r12-cosmo-pink-013-50-stuks',
+        '015': 'sem12-fsh-red-015', '016': 'sem12-imperial-red-016-50-stuks',
+        '018': 'sem12-merlot-018-50-stuks', '020': 'sem12-fsh-yellow-020',
+        '021': 'sem12-honey-yellow-021-50-stuks', '023': 'sem12-fsh-mustard-023',
+        '027': 'sem12-fsh-eucalyptus-027', '029': 'sem12-shamrock-green-029-50-stuks',
+        '030': 'sem12-fsh-green-030', '031': 'sem12-fsh-lime-green-031',
+        '032': 'sem12-fsh-forest-green-032', '035': 'sem12-deep-teal-035-50-stuks',
+        '037': 'sem12-fsh-aquamarine-037', '038': 'sem12-fsh-caribbean-blue-038',
+        '040': 'sem12-fsh-blue-040', '041': 'sem12-fsh-royal-blue-041',
+        '042': 'sem12-periwinkle-blue-042-50-stuks', '044': 'sem12-fsh-navy-blue-044',
+        '050': 'sem12-fsh-lilac-050', '051': 'sem12-fsh-violet-051',
+        '058': 'r12-creamy-blush-058-50-stuks', '060': 'sem12-fsh-peach-blush-060',
+        '061': 'sem12-fsh-orange-061', '062': 'sem12-sunset-orange-062-50-stuks',
+        '070': 'r12-mocha-070-50-stuks', '071': 'sem12-fsh-white-sand-071',
+        '073': 'sem12-fsh-latte-073', '074': 'sem12-fsh-coffee-074',
+        '076': 'sem12-fsh-chocolate-076', '080': 'sem12-fsh-black-080',
+        '081': 'sem12-fsh-grey-081', '082': 'r12-urban-grey-082-50-stuks',
+        '107': 'sem12-pastel-dusk-cream-107', '110': 'sem12-pastel-dusk-rose-110',
+        '126': 'sem12-pastel-dusk-green-tea-126-50-stuks', '140': 'sem12-pastel-dusk-blue-140',
+        '150': 'sem12-pastel-dusk-lavender-150', '212': 'sem12-neon-fuchsia-212',
+        '220': 'sem12-neon-yellow-220', '230': 'sem12-neon-green-230',
+        '240': 'sem12-neon-blue-240', '261': 'sem12-neon-orange-261',
+        '390': 'sem12-crl-crystal-clear-390', '405': 'sem12-prl-white-405',
+        '406': 'sem12-pearl-pearl-406-50-stuks', '409': 'sempertex-12-inch-pearl-pink-409',
+        '430': 'sem12-prl-green-430', '440': 'sem12-prl-blue-440',
+        '450': 'sem12-prl-lilac-450', '481': 'sem12-pearl-silver-481',
+        '512': 'sem12-metallic-fuchsia-512', '515': 'sem12-met-red-515',
+        '530': 'sempertex-12-inch-metallic-green-530', '540': 'sem12-met-blue-540',
+        '568': 'sem12-met-rose-gold-568', '570': 'sem12-met-gold-570',
+        '580': 'sem12-met-black-580', '609': 'sem12-matte-pink-609',
+        '620': 'sem12-matte-yellow-620', '630': 'sem12-matte-green-630',
+        '640': 'sem12-matte-blue-640', '650': 'sem12-matte-lilac-650',
+        '660': 'sem12-pastel-matte-malibu-peach-660-50-stuks', '661': 'r12-pastel-matte-nude-661-50-stuks',
+        '663': 'sem12-matte-melon-663', '806': 'sempertex-12-inch-silk-oyster-white-806-50-stuks',
+        '809': 'sem12-silk-pink-blossom-809-50-stuks', '826': 'sem12-silk-cool-mint-826-50-stuks',
+        '839': 'sem12-silk-arctic-blue-839-50-stuks', '850': 'sem12-silk-light-amethyst-850-50-stuks',
+        '870': 'sempertex-12-inch-silk-gold-dust-870-50-stuks', '873': 'sem12-silk-cream-pearl-873-50-stuks',
+        '880': 'sem12-midnight-grey', '909': 'sem12-reflex-pink-909',
+        '912': 'sem12-reflex-fuchsia-912', '915': 'sem12-reflex-red-915',
+        '931': 'sem12-reflex-lime-green-931', '932': 'sem12-reflex-aurora-green-932-50-stuks',
+        '940': 'sem12-reflex-blue-940', '944': 'r12-reflex-galaxy-blue-944-50-stuks',
+        '951': 'sem12-reflex-violet-951', '968': 'sem12-reflex-rose-gold-968',
+        '970': 'sem12-reflex-gold-970', '971': 'sem12-reflex-champagne-971',
+        '981': 'sem12-reflex-silver-981'
+      },
+
+      order: {
+        sizes: [
+          { label: 'Fashion', url: 'https://www.hahaentertainment.com/nl/latex-ballonnen/sempertex/alles-op-kleur/fashion/' },
+          { label: 'Pastel Matte', url: 'https://www.hahaentertainment.com/nl/latex-ballonnen/sempertex/alles-op-kleur/pastel-matte/' },
+          { label: 'Pastel Dusk', url: 'https://www.hahaentertainment.com/nl/latex-ballonnen/sempertex/alles-op-kleur/matte-dusk/' },
+          { label: 'Pearl', url: 'https://www.hahaentertainment.com/nl/latex-ballonnen/sempertex/alles-op-kleur/pearl/' },
+          { label: 'Metallic', url: 'https://www.hahaentertainment.com/nl/latex-ballonnen/sempertex/alles-op-kleur/metallic/' },
+          { label: 'Reflex', url: 'https://www.hahaentertainment.com/nl/latex-ballonnen/sempertex/alles-op-kleur/reflex/' },
+          { label: 'Silk', url: 'https://www.hahaentertainment.com/nl/latex-ballonnen/sempertex/alles-op-kleur/silk/' },
+          { label: 'Neon', url: 'https://www.hahaentertainment.com/nl/latex-ballonnen/sempertex/alles-op-kleur/neon/' },
+          { label: 'Crystal', url: 'https://www.hahaentertainment.com/nl/latex-ballonnen/sempertex/alles-op-kleur/crystal/' }
+        ]
+      },
+
+      /* Alleen Nederlands (Nederlands uit Nederland, Ha Ha zit in Uden), ook als Odoo de bezoeker naar
+         /en_GB/ stuurt. Kleur- en reeksnamen blijven Engels, net als in hun webshop. */
+      langs: ['nl'],
+      text: {
+        nl: {
+          pageTitle: 'Double stuffing calculator | Ha Ha Entertainment',
+          skipLabel: 'Naar de inhoud',
+          backLabel: 'Naar de webshop',
+          footerText: 'Ontwikkeld door Sempertex Europe voor Ha Ha Entertainment.',
+          order: {
+            title: 'Bestel deze ballonnen bij Ha Ha Entertainment',
+            lead: 'Klik op een kleur en je gaat meteen naar die ballon in de webshop van Ha Ha Entertainment.',
+            innerLabel: 'Binnen',
+            outerLabel: 'Buiten',
+            mainBtn: 'Alle Sempertex-ballonnen',
+            sizesLabel: 'Of kies een reeks:'
+          },
+          strings: {
+            calcp_eyebrow: 'Ha Ha Entertainment / Double stuffing',
+            calcp_h: 'Double stuffing <span class="hl">calculator</span>',
+            calcp_lede: 'Kies een binnen- en een buitenballon en zie de mengkleur voordat je ook maar één ballon opblaast.',
+            calc_note: 'Dit is een benadering. De uiteindelijke kleur hangt af van hoe ver je opblaast, het licht en de afwerking van de ballonnen.',
+            dsm_label: 'Zoek een kleur',
+            dsm_hint: 'Kies een foto en tik op de kleur die je wilt. De calculator zoekt de binnen- en buitenballon die het dichtst in de buurt komen.',
+            dsm_up: 'Foto kiezen',
+            dsm_tip: 'Tik op de kleur die je wilt maken. De foto blijft op je apparaat.',
+            dsm_best: 'De beste combinaties. Tik erop om ze in de calculator te zetten.',
+            dsm_q4: 'Komt het dichtst in de buurt',
+            dsm_single: 'Tip: {name} alleen komt al heel dichtbij, dan heb je geen double stuffing nodig.'
+          }
+        }
+      }
     }
 
-    /* Volgende partner hier, zelfde vorm:
-    hahaentertainment: { name: 'Haha Entertainment', ... }
-    */
+    /* Volgende partner hier, zelfde vorm. */
   };
   /* Euro Party B2B (b2b.europarty.it), 27/10/2026, op vraag van Euro Party: dezelfde drie tools en
      dezelfde huisstijl, maar elke link gaat naar hun B2B-shop (andere prijzen, ander publiek).
@@ -964,6 +1089,10 @@
      Opslag staat apart (slug europarty-b2b). Prijzen tonen we hier nooit, dus hun login speelt geen rol. */
   PARTNERS['europarty-b2b'] = JSON.parse(JSON.stringify(PARTNERS.europarty)
     .split('https://www.europarty.it/').join('https://b2b.europarty.it/'));
+
+  /* Ha Ha Entertainment ook zonder koppeltekens (/partner/hahaentertainment/tools), voor als de
+     Odoo-pagina zo heet. Zelfde blok, opslag apart per slug. */
+  PARTNERS.hahaentertainment = PARTNERS['ha-ha-entertainment'];
 
   /* ================= EINDE CONFIG ================= */
 

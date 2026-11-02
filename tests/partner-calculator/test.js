@@ -731,6 +731,39 @@ function check(name, ok, extra) {
     await ctx.close();
   }
 
+  // Ha Ha Entertainment (02/11/2026): alleen de calculator zoals Liragram, altijd Nederlands (ook op
+  // het Engelse Odoo-pad), elke kleur rechtstreeks naar de 12" in hun Lightspeed-shop.
+  for (const p of ['/partner/ha-ha-entertainment/tools', '/en_gb/partner/ha-ha-entertainment/tools', '/partner/hahaentertainment/tools#cost']) {
+    console.log('\n' + p);
+    const { ctx, page } = await open(p);
+    check('geen tabbladen, alleen de calculator', (await page.$$('.stx-pt-tab')).length === 0);
+    check('calculator staat open', await page.isVisible('#sw-inner'));
+    check('geen taalschakelaar', (await page.$('.stx-pt-lang')) === null);
+    check('tabtitel', (await page.title()) === 'Double stuffing calculator | Ha Ha Entertainment', await page.title());
+    const brand = await page.evaluate(() => getComputedStyle(document.querySelector('.stx-insp')).getPropertyValue('--purple').trim());
+    check('huisstijlkleur', brand.toLowerCase() === '#ba0e15', brand);
+    check('font Poppins', /Poppins/.test(await page.evaluate(() => getComputedStyle(document.querySelector('.stx-insp')).fontFamily)));
+    const logo = await page.evaluate(() => { const i = document.querySelector('.stx-pt-bar img'); return i && i.complete && i.naturalWidth > 200 && i.getBoundingClientRect().height > 30; });
+    check('logo staat in de header', logo);
+    check('Nederlandse teksten', (await page.textContent('[data-i18n="calc_inner"]')).trim() === 'Binnenballon' && (await page.textContent('[data-i18n="dsm_label"]')).trim() === 'Zoek een kleur');
+    await page.click('#sw-inner .swatch:nth-child(3)');
+    await page.click('#sw-outer .swatch:nth-child(5)');
+    await page.waitForTimeout(250);
+    const picks = await page.$$eval('a.stx-pt-pick', (els) => els.map((e) => e.getAttribute('href')));
+    check('gekozen kleuren gaan naar de 12" bij Ha Ha', picks.length === 2 && picks.every((h) => /^https:\/\/www\.hahaentertainment\.com\/nl\/[a-z0-9-]+-\d{3}(-50-stuks)?\.html$/.test(h)), JSON.stringify(picks));
+    const bad = await page.evaluate(() => { const m = /\b(Inner balloon|Outer balloon|Upload a photo|Match a colour|toestel|Shop this colour)\b/.exec(document.body.innerText); return m ? m[0] : ''; });
+    check('geen Engelse of Vlaamse woorden', !bad, bad);
+    if (p === '/partner/ha-ha-entertainment/tools') { await page.screenshot({ path: path.resolve(__dirname, 'ha-ha-entertainment-desktop.png'), fullPage: false }); }
+    await ctx.close();
+  }
+  {
+    const { ctx, page } = await open('/partner/ha-ha-entertainment/tools', 390);
+    const scroll = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+    check('Ha Ha op telefoonformaat: geen horizontale scroll', scroll <= 2, scroll + 'px');
+    await page.screenshot({ path: path.resolve(__dirname, 'ha-ha-entertainment-mobile.png'), fullPage: false });
+    await ctx.close();
+  }
+
   console.log('\n/partner/liragram/tools?livechat=force (het CSS-vangnet apart)');
   {
     // Zet Odoo de chat ooit op een andere manier neer, dan moet de CSS hem alsnog
