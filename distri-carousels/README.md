@@ -32,6 +32,7 @@ python3 deliver_all.py
 | `artist` | Hoe word je ballonartiest | topic_artist.py | `out/artist/` |
 | `helium` | Helium voor ballonnen | topic_helium.py | `out/helium/` |
 | `pricing` | Prijs voor ballondecoratie (bedragen per markt via `money()`) | topic_pricing.py | `out/pricing/` |
+| `doublestuff` | Double stuffing (gesimuleerde ballon-in-ballon via `dstuff()`) | topic_doublestuff.py | `out/doublestuff/` |
 
 ```
 python3 build.py --topic=artist --render
