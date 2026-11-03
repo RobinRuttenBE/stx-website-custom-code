@@ -33,6 +33,7 @@ python3 deliver_all.py
 | `helium` | Helium voor ballonnen | topic_helium.py | `out/helium/` |
 | `pricing` | Prijs voor ballondecoratie (bedragen per markt via `money()`) | topic_pricing.py | `out/pricing/` |
 | `doublestuff` | Double stuffing (gesimuleerde ballon-in-ballon via `dstuff()`) | topic_doublestuff.py | `out/doublestuff/` |
+| `storage` | Ballonnen bewaren | topic_storage.py | `out/storage/` |
 
 ```
 python3 build.py --topic=artist --render
