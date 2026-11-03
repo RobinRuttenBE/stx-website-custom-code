@@ -31,6 +31,7 @@ python3 deliver_all.py
 | `colours` (standaard) | Kleurencombinaties kiezen | carousel_copy.py + copy_extra.py | `out/` |
 | `artist` | Hoe word je ballonartiest | topic_artist.py | `out/artist/` |
 | `helium` | Helium voor ballonnen | topic_helium.py | `out/helium/` |
+| `pricing` | Prijs voor ballondecoratie (bedragen per markt via `money()`) | topic_pricing.py | `out/pricing/` |
 
 ```
 python3 build.py --topic=artist --render
