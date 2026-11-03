@@ -40,6 +40,7 @@ python3 deliver_all.py
 | `nozzleup` | Nozzle Up uitgelegd (eventblog: wat, in cijfers, voor wie, Enchanted-voorbeeld in het distri-palet, wachtlijst in 5 stappen) | topic_nozzleup.py | `out/nozzleup/` |
 | `tying` | Ballonnen knopen zonder pijn (tweevingerknoop in 5 stappen, waarom het pijn doet, 5 gewoontes, duplet en kwartet in het distri-palet) | topic_tying.py | `out/tying/` |
 | `spiral` | Spiraalboog bouwen (2 m, 144 R12, 36 quads, frame en 260-truc, 5 regels; `spiral_arch()` tekent de spiraal, `pair()` kiest de 2 contrastkleuren uit het palet) | topic_spiral.py | `out/spiral/` |
+| `flowers` | Ballonbloemen maken (tulp, lavendel, zesbladige bloem uit 260's, 3 regels, strik en boeket, 8 × 260 voor 3 bloemen; `tulip()`, `lavender()`, `flower6()`, `bouquet()` bouwen de bloemen uit kleine R12-packshots, `stick260()` legt de 260 plat) | topic_flowers.py | `out/flowers/` |
 
 ```
 python3 build.py --topic=artist --render
