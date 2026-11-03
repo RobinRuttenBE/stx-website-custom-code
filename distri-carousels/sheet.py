@@ -1,7 +1,7 @@
-import os
 import sys, os
 from PIL import Image
-OUT=os.path.join(os.path.dirname(os.path.abspath(__file__)),"out")
+import os
+OUT=os.environ.get("SHEET_OUT",os.path.join(os.path.dirname(os.path.abspath(__file__)),"out"))
 for name in sys.argv[1:]:
     d=f"{OUT}/{name}"
     ims=[Image.open(f"{d}/slide-{i:02d}.png") for i in range(1,8)]

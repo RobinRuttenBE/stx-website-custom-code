@@ -6,7 +6,10 @@ from carousel_copy import COPY, SX, PALETTES, MESSY, TEXTURE_DEMO
 ROOT = os.path.dirname(os.path.abspath(__file__))
 FONTS = f"{ROOT}/fonts/node_modules/@fontsource"
 ASSETS = f"{ROOT}/assets"
-OUT = f"{ROOT}/out"
+_topic_args = [a.split("=", 1)[1] for a in sys.argv if a.startswith("--topic=")]
+TOPIC = _topic_args[0] if _topic_args else "colours"
+TOPIC_TITLES = {"colours": "Kleurencombinaties kiezen", "artist": "Ballonartiest worden"}
+OUT = f"{ROOT}/out" if TOPIC == "colours" else f"{ROOT}/out/{TOPIC}"
 W, H = 1080, 1350
 
 def esc(s): return html.escape(s, quote=False)
@@ -143,12 +146,23 @@ HEX2KEY.update({"#D7262B": "red", "#F2D22E": "yellow", "#2D4FB5": "royalblue", "
                 "#E0B45C": "reflexgold", "#D4B27C": "golddust", "#C4838C": "rosewood"})
 PHOTO_RATIO = 634 / 451  # hoogte/breedte van de packshots
 
+_RATIO_CACHE = {}
+def photo_ratio(key):
+    """hoogte/breedte van een uitgeknipte productfoto (R12 ≈ 1.405, een 260 ≈ 8.7)."""
+    if key not in _RATIO_CACHE:
+        try:
+            from PIL import Image
+            w, h = Image.open(f"{BALLOONS}/{key}.png").size; _RATIO_CACHE[key] = h / w
+        except Exception:
+            _RATIO_CACHE[key] = PHOTO_RATIO
+    return _RATIO_CACHE[key]
+
 def balloon(hexc, tex="fashion", size=120, extra_style="", cls=""):
     """size = breedte in px. Gebruikt de echte productfoto als die bestaat, anders CSS-ballon."""
     key = hexc if os.path.exists(f"{BALLOONS}/{hexc}.png") else HEX2KEY.get(str(hexc).upper())
     if key and os.path.exists(f"{BALLOONS}/{key}.png"):
         return (f'<img class="bl {cls}" src="file://{BALLOONS}/{key}.png" '
-                f'style="width:{size}px;height:{int(size*PHOTO_RATIO)}px;{extra_style}">')
+                f'style="width:{size}px;height:{int(size*photo_ratio(key))}px;{extra_style}">')
     return css_balloon(hexc, tex, size, extra_style, cls)
 
 def css_balloon(hexc, tex="fashion", size=120, extra_style="", cls=""):
@@ -357,7 +371,7 @@ def css_s2(b):
 .s2 .logocard{{background:#fff;border-radius:12px;padding:12px 18px;display:inline-flex;align-items:center}}
 .s2 .conn{{position:absolute;border-left:3px solid #fff;border-bottom:3px solid #fff}}
 .s2 .step{{display:flex;gap:18px;align-items:flex-start;font-size:31px;line-height:1.32;margin-top:18px}}
-.s2 .step b{{font-family:'{b['ui']}';font-weight:{b['head_w']};min-width:44px;color:{b['c2']}}}
+.s2 .step b{{font-family:'{b['ui']}';font-weight:{b['head_w']};min-width:44px;color:{b['pill_dark_text']}}}
 .s2 .pname{{color:{b['ink']};font-weight:{b['body_b']}}}
 .s2 .pcode{{opacity:.6;font-weight:400}}
 .s2 .pcode-only{{color:{b['ink']};font-size:18px;font-weight:{b['body_b']};text-align:center;margin-top:6px}}
@@ -493,7 +507,7 @@ def css_s3(b):
 .s3 .downarrow{{position:absolute;left:50%;transform:translateX(-50%);width:70px;height:70px;border-radius:50%;background:{b['pill_dark']};color:#fff;display:flex;align-items:center;justify-content:center;font-size:40px;font-weight:900}}
 .s3 .bottom{{position:absolute;left:70px;right:70px;text-align:center;font-size:34px;font-weight:800;font-family:'{b['ui']}';line-height:1.25;white-space:pre-line}}
 .s3 .topic{{position:absolute;left:50%;transform:translateX(-50%);background:#fff;border-radius:20px;padding:8px 10px 8px 8px;display:flex;align-items:center;gap:18px;box-shadow:0 8px 0 rgba(0,0,0,.12)}}
-.s3 .topic .k{{background:{b['pill_dark']};color:{b['pill_dark_text']};border-radius:14px;padding:12px 22px;font-size:24px;font-weight:900;letter-spacing:.1em;font-family:'{b['ui']}'}}
+.s3 .topic .k{{background:{b['pill_dark']};color:{b['pill_dark_text']};border-radius:14px;padding:12px 22px;font-size:24px;font-weight:900;letter-spacing:.1em;font-family:'{b['ui']}';white-space:nowrap}}
 .s3 .topic .v{{font-size:44px;font-weight:900;font-family:'{b['ui']}';padding-right:20px;white-space:nowrap}}
 .s3 .oldlbl{{display:inline-block;background:#fff;color:{b['bright_text']};border-radius:999px;padding:8px 20px;font-size:22px;font-weight:900;font-family:'{b['ui']}';letter-spacing:.06em}}
 .s3 .newlbl{{display:inline-block;background:{b['pill_dark']};color:{b['pill_dark_text']};border-radius:999px;padding:8px 20px;font-size:22px;font-weight:900;font-family:'{b['ui']}';letter-spacing:.06em}}
@@ -659,6 +673,15 @@ def build_html(bkey, style):
 <style>{font_faces(*fams)}{BASE_CSS}{css}</style></head><body>
 {''.join(slides)}
 <script>{FIT_JS}</script></body></html>"""
+
+# ---------------------------------------------------------------- TOPIC (andere blog = andere copy + slide-templates)
+if TOPIC != "colours":
+    import importlib
+    _t = importlib.import_module(f"topic_{TOPIC}")
+    _t.setup(globals())
+    BASE_COPY = _t.BASE; VARIANTS = _t.VARIANTS; CAPTIONS_TPL = _t.CAPTIONS_TPL
+    s1_slides, s2_slides, s3_slides = _t.s1_slides, _t.s2_slides, _t.s3_slides
+    BASE_CSS = BASE_CSS + getattr(_t, "EXTRA_CSS", "")
 
 def main():
     os.makedirs(OUT, exist_ok=True)

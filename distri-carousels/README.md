@@ -4,15 +4,18 @@ Maakt van een STX EU blog per distributeur 3 Instagram-carousels (7 slides, 1080
 
 ## Inhoud
 - `build.py` : templates voor de 3 stijlen + renderer (Playwright) -> `out/<distri>_stijl<n>/slide-01..07.png` en `.html`
-- `carousel_copy.py` : basiscopy NL/EN/DE + Sempertex kleuren/paletten
-- `copy_extra.py` : copy FR/IT/PL/EL/HU/LT + varianten per taal (hooks, klantvragen, quotes, CTA) + captions
+- `carousel_copy.py` : basiscopy NL/EN/DE voor het kleurenonderwerp + Sempertex kleuren/paletten
+- `copy_extra.py` : copy FR/IT/PL/EL/HU/LT + varianten per taal (hooks, klantvragen, quotes, CTA) + captions (kleurenonderwerp)
+- `topic_<slug>.py` : een extra blogonderwerp (copy in 9 talen, varianten, captions en slide-templates), zie "Nieuw blogonderwerp"
 - `brands.json` : per distri fonts, kleuren, logo, taal, domein (gegenereerd door `brands_build.py` uit `Distri huisstijlen/`)
 - `assets/logos/` : uitgeknipte distri-logo's; `assets/stx_*` : Sempertex logo's en flor
-- `balloons/` : uitgeknipte R12 productfoto's (18 kleuren) van sempertexeurope.com
+- `balloons/` : uitgeknipte productfoto's van sempertexeurope.com (18 R12 kleuren + `red260` 260 modelleerballon + `red5` 5 inch)
 - `cut_balloons.py` : knipt nieuwe productfoto's uit Chrome-screenshots
 - `deliver_all.py` : zips per land + preview_all.html ; `sheet.py` : contactsheet voor QA
 - `fonts/package.json` : `cd fonts && npm install` (fontsource)
 - `SKILL.md` : de werkwijze (zelfde tekst als de skill in Claude)
+
+Alle paden zijn relatief aan deze map; de map mag overal staan.
 
 ## Snel starten
 ```
@@ -21,7 +24,24 @@ python3 build.py --render --brands=mooideco,gointernational,segelken
 python3 sheet.py mooideco_stijl1
 python3 deliver_all.py
 ```
-Paden staan op `/home/claude/carousels`; pas `ROOT` in build.py/deliver_all.py aan als de map ergens anders staat.
+
+## Blogonderwerpen
+| topic | blog | module | output |
+|---|---|---|---|
+| `colours` (standaard) | Kleurencombinaties kiezen | carousel_copy.py + copy_extra.py | `out/` |
+| `artist` | Hoe word je ballonartiest | topic_artist.py | `out/artist/` |
+
+```
+python3 build.py --topic=artist --render
+SHEET_OUT=out/artist python3 sheet.py mooideco_stijl1
+python3 deliver_all.py --topic=artist          # Carousels_artist_<land>.zip + preview_all_artist.html
+```
+
+## Nieuw blogonderwerp
+1. Maak `topic_<slug>.py` naar het voorbeeld van `topic_artist.py` met: `BASE` (copy per taal: nl, en, de, fr, it, pl, el, hu, lt), `VARIANTS` (per taal 3 covertitels, 2 subtitels, 3 klantvragen, 3 oude quotes, 2 klant-quotes, CTA-template), `CAPTIONS_TPL`, `setup(G)`, `s1_slides`, `s2_slides`, `s3_slides` en optioneel `EXTRA_CSS`.
+2. Voeg de titel toe aan `TOPIC_TITLES` in `build.py`.
+3. Render, check contactsheets, lever op met `--topic=<slug>`.
+De drie stijlen zelf (css_s1/s2/s3, footers, Sempertex-logo) blijven in `build.py` en veranderen niet per onderwerp.
 
 ## Skill
 De Claude-skill `stx-distri-carousels` clonet deze repo en gebruikt deze map. Nieuwe distri: map toevoegen onder `Distri huisstijlen/` (huisstijl.md + logo), dan `python3 brands_build.py`.

@@ -5,13 +5,14 @@ from PIL import Image
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import build  # laadt BRANDS + make_copy
 
-ROOT = os.path.dirname(os.path.abspath(__file__)); OUT = f"{ROOT}/out"; DEL = f"{ROOT}/deliver"
+ROOT = os.path.dirname(os.path.abspath(__file__)); OUT = build.OUT; DEL = f"{ROOT}/deliver"
+TOPIC = build.TOPIC; TITLE = build.TOPIC_TITLES.get(TOPIC, TOPIC); SUFFIX = "" if TOPIC == "colours" else f"_{TOPIC}"
 os.makedirs(DEL, exist_ok=True)
 B = build.BRANDS
 STYLES = {1: "Stijl 1 · Studio", 2: "Stijl 2 · Studio Dark", 3: "Stijl 3 · Bold"}
 LANGNAME = {"nl": "Nederlands", "en": "English (UK)", "de": "Deutsch", "fr": "Français", "it": "Italiano", "pl": "Polski", "el": "Ελληνικά", "hu": "Magyar", "lt": "Lietuvių"}
 
-README = """Carousel: "Hoe kies je kleurencombinaties voor ballondecoratie" (bron: sempertexeurope.com/blog)
+README = """Carousel: "{title}" (bron: sempertexeurope.com/blog)
 Distributeur: {name} ({country}, taal: {lang})
 
 Inhoud
@@ -21,7 +22,7 @@ Inhoud
 Opmerkingen
 - Fonts, kleuren en logo komen uit de huisstijl van {name} (map "Distri huisstijlen"). Sempertex staat op elke slide (naam in titel + logo).
 - De ballonnen zijn de echte R12 productfoto's van sempertexeurope.com.
-- Paletten (Meadow Glow, Sage Whisper, Spring Daisies, Kickoff Communion) komen van sempertexeurope.com/inspiration.
+- Kleurnamen en codes komen van sempertexeurope.com (webshop en inspiration).
 """
 
 def thumb_b64(path, w=240, q=66):
@@ -43,7 +44,7 @@ for k in keys:
     groups.setdefault(c, []).append(k)
 zips = []
 for country, ks in sorted(groups.items()):
-    zpath = f"{DEL}/Carousels_{country.replace(' ', '_')}.zip"
+    zpath = f"{DEL}/Carousels{SUFFIX}_{country.replace(' ', '_')}.zip"
     with zipfile.ZipFile(zpath, "w", zipfile.ZIP_DEFLATED) as z:
         for k in ks:
             b = B[k]; c = build.make_copy(k); folder = b["name"].replace(" ", "_").replace("/", "-")
@@ -51,7 +52,7 @@ for country, ks in sorted(groups.items()):
                 for i in range(1, 8):
                     z.write(f"{OUT}/{k}_stijl{s}/slide-{i:02d}.png", f"{folder}/stijl{s}/slide-{i:02d}.png")
             z.writestr(f"{folder}/caption.txt", c["caption"])
-            z.writestr(f"{folder}/README.txt", README.format(name=b["name"], country=b["country"], lang=LANGNAME[b["lang"]]))
+            z.writestr(f"{folder}/README.txt", README.format(title=TITLE, name=b["name"], country=b["country"], lang=LANGNAME[b["lang"]]))
     zips.append((zpath, round(os.path.getsize(zpath)/1e6, 1), [B[k]["name"] for k in ks]))
     print(zpath, round(os.path.getsize(zpath)/1e6, 1), "MB", len(ks))
 
@@ -76,7 +77,7 @@ for l, ks in by_lang.items():
     <details class="caption"><summary>Caption</summary><p>{cap}</p></details>
   </section>"""
 
-html = f"""<title>Distri Carousels Kleurencombinaties</title>
+html = f"""<title>Distri Carousels {TITLE}</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <style>
 :root{{--bg:#F3F1EE;--fg:#1B1A17;--muted:#6E6A62;--line:#DAD6CF;--card:#FFFFFF;--accent:#6B3FB9;--chip:#EEE8F7}}
@@ -111,14 +112,14 @@ h3{{font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--mut
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Rethink+Sans:wght@600;800&display=swap">
 <div class="wrap">
   <header class="top">
-    <div><h1>Distri carousels: kleurencombinaties kiezen</h1>
+    <div><h1>Distri carousels: {TITLE.lower()}</h1>
     <p class="sub">Eén blog, {len(keys)} distributeurs, 3 stijlen per distri, 7 slides per carousel (1080 × 1350). Gegroepeerd per taal. Scroll elke strip horizontaal.</p></div>
     <nav>{nav}</nav>
   </header>
   {sections}
-  <p class="note">Ballonnen zijn de echte R12 productfoto's uit de webshop. Distri's met dezelfde taal krijgen een andere hook, klantvraag, tweede palet en gespiegelde lay-out, zodat geen twee posts identiek zijn. Sempertex staat op elke slide in de titel en als logo.</p>
+  <p class="note">Ballonnen zijn de echte productfoto's uit de webshop. Distri's met dezelfde taal krijgen een andere hook, voorbeeldzin en gespiegelde lay-out, zodat geen twee posts identiek zijn. Sempertex staat op elke slide in de titel en als logo.</p>
 </div>
 """
-with open(f"{DEL}/preview_all.html", "w", encoding="utf-8") as f: f.write(html)
-print("preview_all.html", round(os.path.getsize(f"{DEL}/preview_all.html")/1e6, 1), "MB")
+with open(f"{DEL}/preview_all{SUFFIX}.html", "w", encoding="utf-8") as f: f.write(html)
+print(f"preview_all{SUFFIX}.html", round(os.path.getsize(f"{DEL}/preview_all{SUFFIX}.html")/1e6, 1), "MB")
 json.dump({"zips": zips}, open(f"{DEL}/zips.json", "w"), indent=1)
