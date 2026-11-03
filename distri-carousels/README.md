@@ -35,6 +35,7 @@ python3 deliver_all.py
 | `doublestuff` | Double stuffing (gesimuleerde ballon-in-ballon via `dstuff()`) | topic_doublestuff.py | `out/doublestuff/` |
 | `storage` | Ballonnen bewaren | topic_storage.py | `out/storage/` |
 | `releases` | Geen ballonoplatingen (standpunt + 4 alternatieven) | topic_releases.py | `out/releases/` |
+| `buyuk` | Waar koop je Sempertex in de UK (alleen EN, alleen de 14 UK-distri's; regiokaart markeert de distri zelf, B2B/B2C per distri) | topic_buyuk.py | `out/buyuk/` |
 
 ```
 python3 build.py --topic=artist --render
@@ -49,6 +50,7 @@ python3 deliver_all.py --topic=artist          # Carousels_artist_<land>.zip + p
 1. Maak `topic_<slug>.py` naar het voorbeeld van `topic_helium.py` (of `topic_artist.py`) met: `BASE` (copy per taal: nl, en, de, fr, it, pl, el, hu, lt), `VARIANTS` (per taal 3 covertitels, 2 subtitels, 3 klantvragen, 3 oude quotes, 2 klant-quotes, CTA-template), `CAPTIONS_TPL`, `setup(G)`, `s1_slides`, `s2_slides`, `s3_slides` en optioneel `EXTRA_CSS`.
 2. Voeg de titel toe aan `TOPIC_TITLES` in `build.py`.
 3. Render, check contactsheets, lever op met `--topic=<slug>`.
+4. Blog voor één markt (bv. alleen UK): `BASE`/`VARIANTS`/`CAPTIONS_TPL` alleen in die taal, renderen met `--brands=<keys>`; `deliver_all.py` pakt automatisch alleen de gerenderde distri's.
 De drie stijlen zelf (css_s1/s2/s3, footers, Sempertex-logo) blijven in `build.py` en veranderen niet per onderwerp.
 
 ## Skill
