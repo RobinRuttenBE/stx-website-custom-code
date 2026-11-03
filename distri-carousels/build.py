@@ -8,7 +8,7 @@ FONTS = f"{ROOT}/fonts/node_modules/@fontsource"
 ASSETS = f"{ROOT}/assets"
 _topic_args = [a.split("=", 1)[1] for a in sys.argv if a.startswith("--topic=")]
 TOPIC = _topic_args[0] if _topic_args else "colours"
-TOPIC_TITLES = {"colours": "Kleurencombinaties kiezen", "artist": "Ballonartiest worden", "helium": "Helium voor ballonnen", "pricing": "Prijs voor ballondecoratie", "doublestuff": "Double stuffing", "storage": "Ballonnen bewaren", "releases": "Geen ballonoplatingen", "buyuk": "Waar koop je Sempertex in de UK", "startbiz": "Een ballonbusiness starten", "nozzleup": "Nozzle Up uitgelegd", "tying": "Ballonnen knopen zonder pijn", "spiral": "Spiraalboog bouwen", "flowers": "Ballonbloemen maken"}
+TOPIC_TITLES = {"colours": "Kleurencombinaties kiezen", "artist": "Ballonartiest worden", "helium": "Helium voor ballonnen", "pricing": "Prijs voor ballondecoratie", "doublestuff": "Double stuffing", "storage": "Ballonnen bewaren", "releases": "Geen ballonoplatingen", "buyuk": "Waar koop je Sempertex in de UK", "startbiz": "Een ballonbusiness starten", "nozzleup": "Nozzle Up uitgelegd", "tying": "Ballonnen knopen zonder pijn", "spiral": "Spiraalboog bouwen", "flowers": "Ballonbloemen maken", "garland": "Ballonslinger maken"}
 OUT = f"{ROOT}/out" if TOPIC == "colours" else f"{ROOT}/out/{TOPIC}"
 W, H = 1080, 1350
 

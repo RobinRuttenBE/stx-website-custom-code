@@ -41,6 +41,7 @@ python3 deliver_all.py
 | `tying` | Ballonnen knopen zonder pijn (tweevingerknoop in 5 stappen, waarom het pijn doet, 5 gewoontes, duplet en kwartet in het distri-palet) | topic_tying.py | `out/tying/` |
 | `spiral` | Spiraalboog bouwen (2 m, 144 R12, 36 quads, frame en 260-truc, 5 regels; `spiral_arch()` tekent de spiraal, `pair()` kiest de 2 contrastkleuren uit het palet) | topic_spiral.py | `out/spiral/` |
 | `flowers` | Ballonbloemen maken (tulp, lavendel, zesbladige bloem uit 260's, 3 regels, strik en boeket, 8 × 260 voor 3 bloemen; `tulip()`, `lavender()`, `flower6()`, `bouquet()` bouwen de bloemen uit kleine R12-packshots, `stick260()` legt de 260 plat) | topic_flowers.py | `out/flowers/` |
+| `garland` | Ballonslinger maken (R12 basis, R5 gaten, R18 accent, duplets om een touw, kwartslag, 6 stappen, 3 beginnersfouten, geen helium; `rope_garland()` bouwt de slinger langs een doorhangend touw, `loose=True` voor de 'op gevoel'-versie, `sizes_row()` toont R12/R5/R18) | topic_garland.py | `out/garland/` |
 
 ```
 python3 build.py --topic=artist --render
