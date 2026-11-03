@@ -1179,12 +1179,12 @@
                   <p class="ct-hint" data-i18n="ct_pick_hint">Pick any RGB colour, type a PMS code, tap it in a photo, or start from a Sempertex colour you already know.</p>
                   <div class="ct-sheet">
                     <div class="ct-tabs" role="tablist">
-                      <button class="ct-tab on" type="button" data-pane="pick" data-i18n="ct_tab_pick">Pick an RGB or PMS colour</button>
-                      <button class="ct-tab" type="button" data-pane="photo" data-i18n="ct_tab_photo">From a photo</button>
+                      <button class="ct-tab on" type="button" data-pane="photo" data-i18n="ct_tab_photo">From a photo</button>
+                      <button class="ct-tab" type="button" data-pane="pick" data-i18n="ct_tab_pick">Pick an RGB or PMS colour</button>
                       <button class="ct-tab" type="button" data-pane="chart" data-i18n="ct_tab_chart">From the colour chart</button>
                     </div>
 
-                    <div class="ct-pane on" id="ct-pane-pick">
+                    <div class="ct-pane" id="ct-pane-pick">
                       <div class="ct-picker">
                         <div>
                           <div class="ct-sv" id="ct-sv"><canvas id="ct-sv-cv" width="300" height="225"></canvas><div class="ct-cur" id="ct-sv-cur"></div></div>
@@ -1207,7 +1207,7 @@
                       </div>
                     </div>
 
-                    <div class="ct-pane" id="ct-pane-photo">
+                    <div class="ct-pane on" id="ct-pane-photo">
                       <div class="ct-drop" id="ct-drop">
                         <strong data-i18n="ct_drop_h">Drop a photo here or tap to choose</strong>
                         <span data-i18n="ct_drop_s">Mood board, dress, venue, logo. The photo stays on your device.</span>
