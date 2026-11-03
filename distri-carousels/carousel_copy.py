@@ -235,6 +235,15 @@ SX = {
     "pinkblossom":{"name": "Silk Pink Blossom",       "code": "809", "hex": "#E9B8C8", "tex": "silk"},
     "deepteal":   {"name": "Fashion Deep Teal",       "code": "035", "hex": "#2E6F74", "tex": "fashion"},
     "reflexrose": {"name": "Reflex Rose Gold",        "code": "960", "hex": "#D9A08E", "tex": "reflex"},
+    # Fashion Solid (namen en codes van sempertexeurope.com/shop/category/latex-onbedrukt-fashion-solid-3025)
+    "red":        {"name": "Fashion Red",             "code": "015", "hex": "#D7262B", "tex": "fashion"},
+    "yellow":     {"name": "Fashion Yellow",          "code": "020", "hex": "#F2D22E", "tex": "fashion"},
+    "royalblue":  {"name": "Fashion Royal Blue",      "code": "041", "hex": "#2D4FB5", "tex": "fashion"},
+    "limegreen":  {"name": "Fashion Lime Green",      "code": "031", "hex": "#A9D83C", "tex": "fashion"},
+    "fuchsia":    {"name": "Fashion Fuchsia",         "code": "012", "hex": "#D63384", "tex": "fashion"},
+    "orange":     {"name": "Fashion Orange",          "code": "061", "hex": "#F07E22", "tex": "fashion"},
+    "violet":     {"name": "Fashion Violet",          "code": "051", "hex": "#6B3FB9", "tex": "fashion"},
+    "caribbean":  {"name": "Fashion Caribbean Blue",  "code": "038", "hex": "#3CB7D9", "tex": "fashion"},
 }
 
 PALETTES = {

@@ -19,7 +19,7 @@ BASE = {
     "rule2_body": "Gewicht, spanning, bevestigingspunten en ondergrond werken op elkaar in, zeker bij grote installaties. Let daarnaast op kleurcombinaties, verhouding en balans. Voelt het niet goed, dan is het niet af.",
     "rule2_tags": ["groot", "klein", "groot", "klein", "groot"],
     "example_label": "Oefenset", "example_title": "Je eerste oefenweek",
-    "example_body": "Duplet: R12 Rosewood 010 + R12 Eucalyptus 027. Cluster: voeg Green Tea 126 en Silk Gold Dust 870 toe. Ballonhond: een 260 in Red 015. Elke kleur heeft een vaste naam en code, dus je bestelt exact wat je oefende.",
+    "example_body": "Duplet: R12 {p0} + R12 {p1}. Cluster: voeg {p2} en {p3} toe. Ballonhond: een 260 in Red 015. Elke kleur heeft een vaste naam en code, dus je bestelt exact wat je oefende.",
     "roles": ["duplet", "duplet", "cluster", "cluster"], "dog_label": "260 Red 015",
     "client_label": "Je ideale klant", "client_title": "Schrijf in één zin wie je ideale klant is",
     "client_body": "Die ene zin bepaalt wat je oefent en aan wie je je werk toont. Begin met een echte basiscursus, kijk gratis tutorials in je vrije tijd en oefen duplets en clusters tot je ze blind kunt. Sempertex Europe geeft de 2-daagse workshop Start Your Balloon Business.",
@@ -36,7 +36,7 @@ BASE = {
     "s3_rule1_quote": "“Losjes knopen is de meest gemaakte fout. Een strakke duplet maakt alles erop stabiel.”",
     "s3_rule2_topic": "Bouwen", "s3_rule2_old": "Als het mooi is, is het af",
     "s3_rule2_quote": "“Gewicht, spanning, bevestiging en ondergrond werken op elkaar in. Voelt het niet goed, dan is het niet af.”",
-    "s3_example_lbl": "OEFENSET", "s3_example_quote": "“Duplet met Rosewood 010 en Eucalyptus 027, cluster met Green Tea 126 en Silk Gold Dust 870, ballonhond met een 260 Red 015.”",
+    "s3_example_lbl": "OEFENSET", "s3_example_quote": "“Duplet met {p0} en {p1}, cluster met {p2} en {p3}, ballonhond met een 260 Red 015.”",
     "s3_client_lbl": "KLANT", "s3_client_topic": "Je ideale klant",
     "s3_client_quote": "“Eén zin over je ideale klant bepaalt wat je oefent en aan wie je je werk toont.”",
     "s3_cta_kicker": "Je startset voor deze week",
@@ -53,7 +53,7 @@ BASE = {
     "rule2_body": "Weight, tension, attachment points and substrate all interact, especially on larger installations. Then look at colour combinations, proportion and balance. If it doesn't feel right, it isn't finished.",
     "rule2_tags": ["large", "small", "large", "small", "large"],
     "example_label": "Practice kit", "example_title": "Your first practice week",
-    "example_body": "Duplet: R12 Rosewood 010 + R12 Eucalyptus 027. Cluster: add Green Tea 126 and Silk Gold Dust 870. Balloon dog: a 260 in Red 015. Every colour has a fixed name and code, so you order exactly what you practised.",
+    "example_body": "Duplet: R12 {p0} + R12 {p1}. Cluster: add {p2} and {p3}. Balloon dog: a 260 in Red 015. Every colour has a fixed name and code, so you order exactly what you practised.",
     "roles": ["duplet", "duplet", "cluster", "cluster"], "dog_label": "260 Red 015",
     "client_label": "Your ideal client", "client_title": "Write one sentence about who your ideal client is",
     "client_body": "That one sentence decides what you practise and who you show your work to. Book a real basics course, watch free tutorials in your spare time and practise duplets and clusters until you can do them with your eyes closed. Sempertex Europe runs the 2-day workshop Start Your Balloon Business.",
@@ -70,7 +70,7 @@ BASE = {
     "s3_rule1_quote": "“Loose tying is the most common mistake. A tight duplet keeps everything on it stable.”",
     "s3_rule2_topic": "Building", "s3_rule2_old": "If it looks nice, it's done",
     "s3_rule2_quote": "“Weight, tension, attachment and substrate interact. If it doesn't feel right, it isn't finished.”",
-    "s3_example_lbl": "PRACTICE KIT", "s3_example_quote": "“Duplet with Rosewood 010 and Eucalyptus 027, cluster with Green Tea 126 and Silk Gold Dust 870, balloon dog with a 260 Red 015.”",
+    "s3_example_lbl": "PRACTICE KIT", "s3_example_quote": "“Duplet with {p0} and {p1}, cluster with {p2} and {p3}, balloon dog with a 260 Red 015.”",
     "s3_client_lbl": "CLIENT", "s3_client_topic": "Your ideal client",
     "s3_client_quote": "“One sentence about your ideal client decides what you practise and who you show your work to.”",
     "s3_cta_kicker": "Your starter kit for this week",
@@ -87,7 +87,7 @@ BASE = {
     "rule2_body": "Gewicht, Spannung, Befestigungspunkte und Untergrund wirken zusammen, gerade bei großen Installationen. Dazu kommen Farbkombinationen, Proportion und Balance. Fühlt es sich nicht richtig an, ist es nicht fertig.",
     "rule2_tags": ["groß", "klein", "groß", "klein", "groß"],
     "example_label": "Übungsset", "example_title": "Deine erste Übungswoche",
-    "example_body": "Duplet: R12 Rosewood 010 + R12 Eucalyptus 027. Cluster: dazu Green Tea 126 und Silk Gold Dust 870. Ballonhund: ein 260 in Red 015. Jede Farbe hat einen festen Namen und Code, du bestellst also genau das, was du geübt hast.",
+    "example_body": "Duplet: R12 {p0} + R12 {p1}. Cluster: dazu {p2} und {p3}. Ballonhund: ein 260 in Red 015. Jede Farbe hat einen festen Namen und Code, du bestellst also genau das, was du geübt hast.",
     "roles": ["Duplet", "Duplet", "Cluster", "Cluster"], "dog_label": "260 Red 015",
     "client_label": "Dein Wunschkunde", "client_title": "Schreib in einem Satz, wer dein Wunschkunde ist",
     "client_body": "Dieser eine Satz bestimmt, was du übst und wem du deine Arbeit zeigst. Buche einen echten Grundkurs, schau in der Freizeit kostenlose Tutorials und übe Duplets und Cluster, bis du sie blind kannst. Sempertex Europe bietet den 2-tägigen Workshop Start Your Balloon Business an.",
@@ -104,7 +104,7 @@ BASE = {
     "s3_rule1_quote": "„Lockeres Knoten ist der häufigste Fehler. Ein festes Duplet hält alles darauf stabil.“",
     "s3_rule2_topic": "Bauen", "s3_rule2_old": "Wenn es schön aussieht, ist es fertig",
     "s3_rule2_quote": "„Gewicht, Spannung, Befestigung und Untergrund wirken zusammen. Fühlt es sich nicht richtig an, ist es nicht fertig.“",
-    "s3_example_lbl": "ÜBUNGSSET", "s3_example_quote": "„Duplet mit Rosewood 010 und Eucalyptus 027, Cluster mit Green Tea 126 und Silk Gold Dust 870, Ballonhund mit einem 260 Red 015.“",
+    "s3_example_lbl": "ÜBUNGSSET", "s3_example_quote": "„Duplet mit {p0} und {p1}, Cluster mit {p2} und {p3}, Ballonhund mit einem 260 Red 015.“",
     "s3_client_lbl": "KUNDE", "s3_client_topic": "Dein Wunschkunde",
     "s3_client_quote": "„Ein Satz über deinen Wunschkunden bestimmt, was du übst und wem du deine Arbeit zeigst.“",
     "s3_cta_kicker": "Dein Starterset für diese Woche",
@@ -121,7 +121,7 @@ BASE = {
     "rule2_body": "Poids, tension, points de fixation et support interagissent, surtout sur les grandes installations. Pense aussi aux combinaisons de couleurs, aux proportions et à l'équilibre. Si ça ne sonne pas juste, ce n'est pas fini.",
     "rule2_tags": ["grand", "petit", "grand", "petit", "grand"],
     "example_label": "Kit d'entraînement", "example_title": "Ta première semaine d'entraînement",
-    "example_body": "Duplet : R12 Rosewood 010 + R12 Eucalyptus 027. Cluster : ajoute Green Tea 126 et Silk Gold Dust 870. Chien en ballon : un 260 en Red 015. Chaque couleur a un nom et un code fixes, tu commandes donc exactement ce que tu as pratiqué.",
+    "example_body": "Duplet : R12 {p0} + R12 {p1}. Cluster : ajoute {p2} et {p3}. Chien en ballon : un 260 en Red 015. Chaque couleur a un nom et un code fixes, tu commandes donc exactement ce que tu as pratiqué.",
     "roles": ["duplet", "duplet", "cluster", "cluster"], "dog_label": "260 Red 015",
     "client_label": "Ton client idéal", "client_title": "Écris en une phrase qui est ton client idéal",
     "client_body": "Cette phrase décide de ce que tu pratiques et à qui tu montres ton travail. Réserve un vrai cours de base, regarde des tutoriels gratuits sur ton temps libre et entraîne-toi aux duplets et clusters jusqu'à les faire les yeux fermés. Sempertex Europe propose l'atelier de 2 jours Start Your Balloon Business.",
@@ -138,7 +138,7 @@ BASE = {
     "s3_rule1_quote": "« Nouer trop lâche est l'erreur la plus fréquente. Un duplet serré garde tout stable. »",
     "s3_rule2_topic": "Construire", "s3_rule2_old": "Si c'est joli, c'est fini",
     "s3_rule2_quote": "« Poids, tension, fixation et support interagissent. Si ça ne sonne pas juste, ce n'est pas fini. »",
-    "s3_example_lbl": "KIT", "s3_example_quote": "« Duplet avec Rosewood 010 et Eucalyptus 027, cluster avec Green Tea 126 et Silk Gold Dust 870, chien en ballon avec un 260 Red 015. »",
+    "s3_example_lbl": "KIT", "s3_example_quote": "« Duplet avec {p0} et {p1}, cluster avec {p2} et {p3}, chien en ballon avec un 260 Red 015. »",
     "s3_client_lbl": "CLIENT", "s3_client_topic": "Ton client idéal",
     "s3_client_quote": "« Une phrase sur ton client idéal décide de ce que tu pratiques et à qui tu montres ton travail. »",
     "s3_cta_kicker": "Ton kit de départ pour cette semaine",
@@ -155,7 +155,7 @@ BASE = {
     "rule2_body": "Peso, tensione, punti di fissaggio e supporto interagiscono, soprattutto nelle installazioni grandi. Poi guarda combinazioni di colori, proporzioni ed equilibrio. Se non ti convince, non è finito.",
     "rule2_tags": ["grande", "piccolo", "grande", "piccolo", "grande"],
     "example_label": "Kit di pratica", "example_title": "La tua prima settimana di pratica",
-    "example_body": "Duplet: R12 Rosewood 010 + R12 Eucalyptus 027. Cluster: aggiungi Green Tea 126 e Silk Gold Dust 870. Cagnolino: un 260 in Red 015. Ogni colore ha nome e codice fissi, quindi ordini esattamente ciò che hai provato.",
+    "example_body": "Duplet: R12 {p0} + R12 {p1}. Cluster: aggiungi {p2} e {p3}. Cagnolino: un 260 in Red 015. Ogni colore ha nome e codice fissi, quindi ordini esattamente ciò che hai provato.",
     "roles": ["duplet", "duplet", "cluster", "cluster"], "dog_label": "260 Red 015",
     "client_label": "Il tuo cliente ideale", "client_title": "Scrivi in una frase chi è il tuo cliente ideale",
     "client_body": "Quella frase decide cosa alleni e a chi mostri il tuo lavoro. Prenota un vero corso base, guarda tutorial gratuiti nel tempo libero e allena duplet e cluster finché non li fai a occhi chiusi. Sempertex Europe organizza il workshop di 2 giorni Start Your Balloon Business.",
@@ -172,7 +172,7 @@ BASE = {
     "s3_rule1_quote": "“Annodare lento è l'errore più comune. Un duplet stretto tiene stabile tutto ciò che ci sta sopra.”",
     "s3_rule2_topic": "Costruire", "s3_rule2_old": "Se è bello, è finito",
     "s3_rule2_quote": "“Peso, tensione, fissaggio e supporto interagiscono. Se non ti convince, non è finito.”",
-    "s3_example_lbl": "KIT", "s3_example_quote": "“Duplet con Rosewood 010 ed Eucalyptus 027, cluster con Green Tea 126 e Silk Gold Dust 870, cagnolino con un 260 Red 015.”",
+    "s3_example_lbl": "KIT", "s3_example_quote": "“Duplet con {p0} ed {p1}, cluster con {p2} e {p3}, cagnolino con un 260 Red 015.”",
     "s3_client_lbl": "CLIENTE", "s3_client_topic": "Il tuo cliente ideale",
     "s3_client_quote": "“Una frase sul tuo cliente ideale decide cosa alleni e a chi mostri il tuo lavoro.”",
     "s3_cta_kicker": "Il tuo kit di partenza per questa settimana",
@@ -189,7 +189,7 @@ BASE = {
     "rule2_body": "Ciężar, naprężenie, punkty mocowania i podłoże wpływają na siebie, zwłaszcza przy dużych instalacjach. Zwracaj też uwagę na zestawienia kolorów, proporcje i równowagę. Jeśli coś nie gra, projekt nie jest skończony.",
     "rule2_tags": ["duży", "mały", "duży", "mały", "duży"],
     "example_label": "Zestaw do ćwiczeń", "example_title": "Twój pierwszy tydzień ćwiczeń",
-    "example_body": "Duplet: R12 Rosewood 010 + R12 Eucalyptus 027. Klaster: dodaj Green Tea 126 i Silk Gold Dust 870. Piesek z balona: 260 w kolorze Red 015. Każdy kolor ma stałą nazwę i kod, więc zamawiasz dokładnie to, na czym ćwiczysz.",
+    "example_body": "Duplet: R12 {p0} + R12 {p1}. Klaster: dodaj {p2} i {p3}. Piesek z balona: 260 w kolorze Red 015. Każdy kolor ma stałą nazwę i kod, więc zamawiasz dokładnie to, na czym ćwiczysz.",
     "roles": ["duplet", "duplet", "klaster", "klaster"], "dog_label": "260 Red 015",
     "client_label": "Twój idealny klient", "client_title": "Napisz w jednym zdaniu, kim jest twój idealny klient",
     "client_body": "To jedno zdanie decyduje, co ćwiczysz i komu pokazujesz swoje prace. Zapisz się na prawdziwy kurs podstawowy, oglądaj darmowe tutoriale w wolnym czasie i ćwicz duplety i klastry, aż zrobisz je z zamkniętymi oczami. Sempertex Europe prowadzi 2-dniowe warsztaty Start Your Balloon Business.",
@@ -206,7 +206,7 @@ BASE = {
     "s3_rule1_quote": "„Luźne wiązanie to najczęstszy błąd. Ciasny duplet utrzymuje wszystko stabilnie.”",
     "s3_rule2_topic": "Budowanie", "s3_rule2_old": "Jak ładnie wygląda, to gotowe",
     "s3_rule2_quote": "„Ciężar, naprężenie, mocowanie i podłoże wpływają na siebie. Jeśli coś nie gra, to nie jest skończone.”",
-    "s3_example_lbl": "ZESTAW", "s3_example_quote": "„Duplet z Rosewood 010 i Eucalyptus 027, klaster z Green Tea 126 i Silk Gold Dust 870, piesek z balona 260 Red 015.”",
+    "s3_example_lbl": "ZESTAW", "s3_example_quote": "„Duplet z {p0} i {p1}, klaster z {p2} i {p3}, piesek z balona 260 Red 015.”",
     "s3_client_lbl": "KLIENT", "s3_client_topic": "Twój idealny klient",
     "s3_client_quote": "„Jedno zdanie o idealnym kliencie decyduje, co ćwiczysz i komu pokazujesz swoje prace.”",
     "s3_cta_kicker": "Twój zestaw startowy na ten tydzień",
@@ -223,7 +223,7 @@ BASE = {
     "rule2_body": "Βάρος, τάση, σημεία στήριξης και επιφάνεια αλληλεπιδρούν, ειδικά σε μεγάλες εγκαταστάσεις. Πρόσεξε και τους χρωματικούς συνδυασμούς, την αναλογία και την ισορροπία. Αν δεν σου κάθεται σωστά, δεν έχει τελειώσει.",
     "rule2_tags": ["μεγάλο", "μικρό", "μεγάλο", "μικρό", "μεγάλο"],
     "example_label": "Σετ εξάσκησης", "example_title": "Η πρώτη σου εβδομάδα εξάσκησης",
-    "example_body": "Duplet: R12 Rosewood 010 + R12 Eucalyptus 027. Cluster: πρόσθεσε Green Tea 126 και Silk Gold Dust 870. Σκυλάκι από μπαλόνι: ένα 260 σε Red 015. Κάθε χρώμα έχει σταθερό όνομα και κωδικό, άρα παραγγέλνεις ακριβώς ό,τι εξάσκησες.",
+    "example_body": "Duplet: R12 {p0} + R12 {p1}. Cluster: πρόσθεσε {p2} και {p3}. Σκυλάκι από μπαλόνι: ένα 260 σε Red 015. Κάθε χρώμα έχει σταθερό όνομα και κωδικό, άρα παραγγέλνεις ακριβώς ό,τι εξάσκησες.",
     "roles": ["duplet", "duplet", "cluster", "cluster"], "dog_label": "260 Red 015",
     "client_label": "Ο ιδανικός σου πελάτης", "client_title": "Γράψε σε μία πρόταση ποιος είναι ο ιδανικός σου πελάτης",
     "client_body": "Αυτή η μία πρόταση καθορίζει τι εξασκείς και σε ποιον δείχνεις τη δουλειά σου. Κλείσε ένα πραγματικό βασικό μάθημα, δες δωρεάν tutorials στον ελεύθερο χρόνο σου και εξασκήσου σε duplets και clusters μέχρι να τα κάνεις με κλειστά μάτια. Η Sempertex Europe διοργανώνει το διήμερο workshop Start Your Balloon Business.",
@@ -240,7 +240,7 @@ BASE = {
     "s3_rule1_quote": "«Το χαλαρό δέσιμο είναι το πιο συχνό λάθος. Ένα σφιχτό duplet κρατά τα πάντα σταθερά.»",
     "s3_rule2_topic": "Κατασκευή", "s3_rule2_old": "Αν είναι όμορφο, τελείωσε",
     "s3_rule2_quote": "«Βάρος, τάση, στήριξη και επιφάνεια αλληλεπιδρούν. Αν δεν σου κάθεται σωστά, δεν έχει τελειώσει.»",
-    "s3_example_lbl": "ΣΕΤ", "s3_example_quote": "«Duplet με Rosewood 010 και Eucalyptus 027, cluster με Green Tea 126 και Silk Gold Dust 870, σκυλάκι με ένα 260 Red 015.»",
+    "s3_example_lbl": "ΣΕΤ", "s3_example_quote": "«Duplet με {p0} και {p1}, cluster με {p2} και {p3}, σκυλάκι με ένα 260 Red 015.»",
     "s3_client_lbl": "ΠΕΛΑΤΗΣ", "s3_client_topic": "Ο ιδανικός σου πελάτης",
     "s3_client_quote": "«Μία πρόταση για τον ιδανικό σου πελάτη καθορίζει τι εξασκείς και σε ποιον δείχνεις τη δουλειά σου.»",
     "s3_cta_kicker": "Το σετ εκκίνησής σου για αυτή την εβδομάδα",
@@ -257,7 +257,7 @@ BASE = {
     "rule2_body": "A súly, a feszítés, a rögzítési pontok és az alap hatnak egymásra, főleg nagy installációknál. Figyelj a színkombinációkra, az arányokra és az egyensúlyra is. Ha nem érzed jónak, nincs kész.",
     "rule2_tags": ["nagy", "kicsi", "nagy", "kicsi", "nagy"],
     "example_label": "Gyakorlókészlet", "example_title": "Az első gyakorlóheted",
-    "example_body": "Duplet: R12 Rosewood 010 + R12 Eucalyptus 027. Klaszter: add hozzá a Green Tea 126-ot és a Silk Gold Dust 870-et. Lufikutya: egy 260-as Red 015-ben. Minden színnek fix neve és kódja van, így pontosan azt rendeled, amit gyakoroltál.",
+    "example_body": "Duplet: R12 {p0} + R12 {p1}. Klaszter: add hozzá a {p2}-ot és a {p3}-et. Lufikutya: egy 260-as Red 015-ben. Minden színnek fix neve és kódja van, így pontosan azt rendeled, amit gyakoroltál.",
     "roles": ["duplet", "duplet", "klaszter", "klaszter"], "dog_label": "260 Red 015",
     "client_label": "Az ideális ügyfeled", "client_title": "Írd le egy mondatban, ki az ideális ügyfeled",
     "client_body": "Ez az egy mondat dönti el, mit gyakorolsz és kinek mutatod meg a munkádat. Foglalj egy igazi alaptanfolyamot, nézz ingyenes oktatóvideókat szabadidődben, és gyakorold a dupleteket és klasztereket, amíg csukott szemmel is mennek. A Sempertex Europe 2 napos workshopja: Start Your Balloon Business.",
@@ -274,7 +274,7 @@ BASE = {
     "s3_rule1_quote": "„A laza kötés a leggyakoribb hiba. Egy szoros duplet mindent stabilan tart.”",
     "s3_rule2_topic": "Építés", "s3_rule2_old": "Ha szép, akkor kész",
     "s3_rule2_quote": "„Súly, feszítés, rögzítés és alap hatnak egymásra. Ha nem érzed jónak, nincs kész.”",
-    "s3_example_lbl": "KÉSZLET", "s3_example_quote": "„Duplet Rosewood 010-zel és Eucalyptus 027-tel, klaszter Green Tea 126-tal és Silk Gold Dust 870-nel, lufikutya egy 260-as Red 015-ből.”",
+    "s3_example_lbl": "KÉSZLET", "s3_example_quote": "„Duplet {p0}-zel és {p1}-tel, klaszter {p2}-tal és {p3}-nel, lufikutya egy 260-as Red 015-ből.”",
     "s3_client_lbl": "ÜGYFÉL", "s3_client_topic": "Az ideális ügyfeled",
     "s3_client_quote": "„Egy mondat az ideális ügyfeledről eldönti, mit gyakorolsz és kinek mutatod meg a munkádat.”",
     "s3_cta_kicker": "A heti kezdőkészleted",
@@ -291,7 +291,7 @@ BASE = {
     "rule2_body": "Svoris, įtempimas, tvirtinimo taškai ir pagrindas veikia vienas kitą, ypač didelėse instaliacijose. Taip pat žiūrėk į spalvų derinius, proporcijas ir balansą. Jei kažkas neatrodo gerai, darbas nebaigtas.",
     "rule2_tags": ["didelis", "mažas", "didelis", "mažas", "didelis"],
     "example_label": "Praktikos rinkinys", "example_title": "Pirmoji tavo praktikos savaitė",
-    "example_body": "Dupletas: R12 Rosewood 010 + R12 Eucalyptus 027. Klasteris: pridėk Green Tea 126 ir Silk Gold Dust 870. Balionų šuniukas: 260 Red 015 spalvos. Kiekviena spalva turi pastovų pavadinimą ir kodą, tad užsakai tiksliai tai, ką praktikavai.",
+    "example_body": "Dupletas: R12 {p0} + R12 {p1}. Klasteris: pridėk {p2} ir {p3}. Balionų šuniukas: 260 Red 015 spalvos. Kiekviena spalva turi pastovų pavadinimą ir kodą, tad užsakai tiksliai tai, ką praktikavai.",
     "roles": ["dupletas", "dupletas", "klasteris", "klasteris"], "dog_label": "260 Red 015",
     "client_label": "Tavo idealus klientas", "client_title": "Parašyk vienu sakiniu, kas yra tavo idealus klientas",
     "client_body": "Tas vienas sakinys lemia, ką praktikuoji ir kam rodai savo darbus. Užsiregistruok į tikrus pagrindų kursus, laisvalaikiu žiūrėk nemokamas pamokas ir praktikuok dupletus bei klasterius, kol darysi juos užsimerkęs. Sempertex Europe rengia 2 dienų dirbtuves Start Your Balloon Business.",
@@ -308,7 +308,7 @@ BASE = {
     "s3_rule1_quote": "„Laisvas rišimas yra dažniausia klaida. Tvirtas dupletas išlaiko viską stabiliai.“",
     "s3_rule2_topic": "Statymas", "s3_rule2_old": "Jei gražu, vadinasi baigta",
     "s3_rule2_quote": "„Svoris, įtempimas, tvirtinimas ir pagrindas veikia vienas kitą. Jei neatrodo gerai, darbas nebaigtas.“",
-    "s3_example_lbl": "RINKINYS", "s3_example_quote": "„Dupletas su Rosewood 010 ir Eucalyptus 027, klasteris su Green Tea 126 ir Silk Gold Dust 870, šuniukas iš 260 Red 015.“",
+    "s3_example_lbl": "RINKINYS", "s3_example_quote": "„Dupletas su {p0} ir {p1}, klasteris su {p2} ir {p3}, šuniukas iš 260 Red 015.“",
     "s3_client_lbl": "KLIENTAS", "s3_client_topic": "Tavo idealus klientas",
     "s3_client_quote": "„Vienas sakinys apie idealų klientą lemia, ką praktikuoji ir kam rodai savo darbus.“",
     "s3_cta_kicker": "Tavo starto rinkinys šiai savaitei",
@@ -403,10 +403,22 @@ CAPTIONS_TPL = {
 }
 
 # ---------------------------------------------------------------- VISUALS
+
+def fill_pal(b, c):
+    """Vult {p0}..{p3} in de copy met de kleurnamen + codes van het palet van deze distri."""
+    lab = {f"p{i}": G["pal_label"](k, short=False).replace("Fashion ", "").replace("Pastel ", "") for i, k in enumerate(b["pal"][:4])}
+    out = {}
+    for k, v in c.items():
+        if isinstance(v, str): out[k] = v.format(**lab) if "{p" in v else v
+        elif isinstance(v, list): out[k] = [x.format(**lab) if isinstance(x, str) and "{p" in x else x for x in v]
+        else: out[k] = v
+    return out
+CUR = {"pal": ["rosewood", "eucalyptus", "greentea", "golddust"]}  # wordt per distri gezet (b["pal"], zie build.assign_palettes)
 def _bl(key, size, cls=""):
     return G["balloon"](key, "fashion", size, cls=cls)
 
-def duplet(size=150, keys=("rosewood", "eucalyptus")):
+def duplet(size=150, keys=None):
+    keys = keys or CUR["pal"][:2]
     """Twee ballonnen met de knopen tegen elkaar (duplet). Container-breedte ~ 2.1*size."""
     h = int(size * G["PHOTO_RATIO"]); w = int(size * 2.1); ch = int(h * 1.05)
     cx = w // 2; cy = ch - 6
@@ -415,7 +427,8 @@ def duplet(size=150, keys=("rosewood", "eucalyptus")):
         out += f'<div style="position:absolute;left:{cx - size//2}px;top:{cy - h}px;transform-origin:50% 100%;transform:rotate({a}deg)">{_bl(k, size)}</div>'
     return out + '</div>'
 
-def cluster4(size=110, keys=("rosewood", "eucalyptus", "greentea", "golddust")):
+def cluster4(size=110, keys=None):
+    keys = keys or CUR["pal"][:4]
     """Vier ballonnen rond één knooppunt (cluster van bovenaf)."""
     h = int(size * G["PHOTO_RATIO"]); w = int(h * 2.05); ch = w
     cx = w // 2; cy = ch // 2
@@ -424,7 +437,8 @@ def cluster4(size=110, keys=("rosewood", "eucalyptus", "greentea", "golddust")):
         out += f'<div style="position:absolute;left:{cx - size//2}px;top:{cy - h}px;transform-origin:50% 100%;transform:rotate({a}deg)">{_bl(k, size)}</div>'
     return out + '</div>'
 
-def garland(big=120, small=78, keys=("rosewood", "eucalyptus", "greentea", "golddust", "duskrose"), labels=None):
+def garland(big=120, small=78, keys=None, labels=None):
+    keys = keys or (CUR["pal"] + CUR["pal"][:1])
     """Slinger: groot, klein, groot, klein, groot, licht gedraaid, onderkant uitgelijnd."""
     out = '<div style="display:flex;align-items:flex-end;justify-content:center;gap:0">'
     for i, k in enumerate(keys):
@@ -437,7 +451,7 @@ def garland(big=120, small=78, keys=("rosewood", "eucalyptus", "greentea", "gold
 def kit_row(c, size=140):
     """Oefenset: 4 R12 + 260 + label met codes."""
     SX = G["SX"]; esc = G["esc"]; PHOTO = G["PHOTO_RATIO"]
-    keys = ["rosewood", "eucalyptus", "greentea", "golddust"]
+    keys = CUR["pal"][:4]
     out = '<div style="display:flex;align-items:flex-end;justify-content:center;gap:22px">'
     for k, role in zip(keys, c["roles"]):
         nm = SX[k]["name"].replace("Fashion ", "").replace("Pastel Dusk ", "P. Dusk ")
@@ -455,6 +469,7 @@ def steps5_list(c, cls=""):
 
 # ---------------------------------------------------------------- STIJL 1
 def s1_slides(b, c):
+    CUR["pal"] = b["pal"]; c = fill_pal(b, c)
     esc, hl, cursor_svg, arrow_svg, balloon = G["esc"], G["hl"], G["cursor_svg"], G["arrow_svg"], G["balloon"]
     s1_footer, logo_img, rot, STX_FULL = G["s1_footer"], G["logo_img"], G["rot"], G["STX_FULL"]
     S = []
@@ -529,8 +544,10 @@ def s1_slides(b, c):
   <div class="tag" style="right:70px;top:70px"><span class="ast">✳</span>{esc(c['client_label'])}</div>
   <h2 data-fit style="position:absolute;left:80px;right:80px;top:160px;font-size:54px;max-height:140px">{esc(c['client_title'])}</h2>
   <div class="chat" style="top:320px;min-height:150px;padding-right:120px">{esc(c['client_question'])}<div class="send">↑</div></div>
-  <div class="card" style="left:90px;right:90px;top:520px;padding:30px 40px"><div style="font-size:28px;font-weight:{b['body_b']};margin-bottom:6px">{esc(c['client_answer'])}</div>{steps5_list(c)}</div>
-  <div style="position:absolute;left:80px;right:80px;top:960px;font-size:26px;line-height:1.35" class="body">{esc(c['client_body'])}</div>
+  <div style="position:absolute;left:80px;right:80px;top:510px;display:flex;flex-direction:column;gap:22px">
+    <div class="card" style="position:relative;left:auto;right:auto;padding:26px 36px"><div style="font-size:27px;font-weight:{b['body_b']};margin-bottom:4px">{esc(c['client_answer'])}</div>{steps5_list(c)}</div>
+    <div style="font-size:25px;line-height:1.35" class="body">{esc(c['client_body'])}</div>
+  </div>
   {s1_footer(b)}
 </section>""")
     S.append(f"""
@@ -545,6 +562,7 @@ def s1_slides(b, c):
 
 # ---------------------------------------------------------------- STIJL 2
 def s2_slides(b, c):
+    CUR["pal"] = b["pal"]; c = fill_pal(b, c)
     esc, hl, balloon, rot = G["esc"], G["hl"], G["balloon"], G["rot"]
     s2_footer, STX_WT = G["s2_footer"], G["STX_WT"]
     S = []
@@ -638,6 +656,7 @@ def s2_slides(b, c):
 
 # ---------------------------------------------------------------- STIJL 3
 def s3_slides(b, c):
+    CUR["pal"] = b["pal"]; c = fill_pal(b, c)
     esc, hl, balloon, rot = G["esc"], G["hl"], G["balloon"], G["rot"]
     s3_footer, messy_cluster, clean_cluster, STX_FULL = G["s3_footer"], G["messy_cluster"], G["clean_cluster"], G["STX_FULL"]
     S = []

@@ -8,7 +8,7 @@ FONTS = f"{ROOT}/fonts/node_modules/@fontsource"
 ASSETS = f"{ROOT}/assets"
 _topic_args = [a.split("=", 1)[1] for a in sys.argv if a.startswith("--topic=")]
 TOPIC = _topic_args[0] if _topic_args else "colours"
-TOPIC_TITLES = {"colours": "Kleurencombinaties kiezen", "artist": "Ballonartiest worden"}
+TOPIC_TITLES = {"colours": "Kleurencombinaties kiezen", "artist": "Ballonartiest worden", "helium": "Helium voor ballonnen"}
 OUT = f"{ROOT}/out" if TOPIC == "colours" else f"{ROOT}/out/{TOPIC}"
 W, H = 1080, 1350
 
@@ -84,6 +84,45 @@ for lang, keys in _by_lang.items():
     for i, k in enumerate(keys):
         BRANDS[k]["vi"] = i
         BRANDS[k]["flip"] = (i % 2 == 1)
+
+# ---------------------------------------------------------------- KLEURSETS
+# Productvisuals (duplet, cluster, slinger, kit, zweefvoorbeelden) tonen per distri EN per blog een andere set
+# ballonkleuren. 12 harmonieuze sets uit de 18 uitgeknipte R12-foto's; de keuze draait op vi (index in de
+# taalgroep), de taal en een vaste seed per blogonderwerp, zodat dezelfde distri bij een volgende blog andere
+# kleuren krijgt en twee distri's met dezelfde taal zelden dezelfde set hebben (EN: 18 distri's, 12 sets,
+# de herhalingen krijgen een ander kleurenduo vooraan). Blogs die zelf paletten voorschrijven (kleurencombinaties)
+# gebruiken hun eigen paletten en niet deze sets.
+PAL_SETS = [
+    ["rosewood", "duskrose", "mattepink", "whitesand"],      # blush
+    ["eucalyptus", "greentea", "golddust", "whitesand"],     # sage
+    ["royalblue", "caribbean", "matteblue", "whitesand"],    # ocean
+    ["fuchsia", "violet", "rosewood", "mattepink"],          # berry
+    ["orange", "matteyellow", "reflexgold", "whitesand"],    # sunset
+    ["red", "yellow", "royalblue", "whitesand"],             # primary
+    ["limegreen", "caribbean", "matteyellow", "whitesand"],  # fresh
+    ["violet", "matteblue", "mattepink", "whitesand"],       # lilac
+    ["golddust", "reflexgold", "eucalyptus", "rosewood"],    # autumn
+    ["caribbean", "fuchsia", "yellow", "whitesand"],         # pop
+    ["duskrose", "golddust", "greentea", "matteblue"],       # dusty
+    ["red", "whitesand", "matteblue", "royalblue"],          # nautical
+]
+_LANG_OFF = {"nl": 0, "en": 1, "de": 2, "fr": 3, "it": 4, "pl": 5, "el": 6, "hu": 7, "lt": 8}
+def topic_seed(topic):
+    return sum(ord(ch) for ch in topic) % len(PAL_SETS)
+def assign_palettes(topic):
+    """Zet b['pal'] (4 keys) per distri voor dit blogonderwerp."""
+    seed = topic_seed(topic)
+    for k, b in BRANDS.items():
+        idx = (b["vi"] * 5 + _LANG_OFF.get(b["lang"], 0) + seed) % len(PAL_SETS)
+        p = list(PAL_SETS[idx])
+        if b["vi"] >= len(PAL_SETS): p = p[2:] + p[:2]          # herhaling binnen een grote taalgroep: ander duo vooraan
+        if b.get("flip"): p = [p[1], p[0], p[3], p[2]]
+        b["pal"] = p; b["pal_idx"] = idx
+def pal_label(key, short=True):
+    """'Rosewood 010' (short) of 'Fashion Rosewood 010' voor onder een productfoto."""
+    s = SX[key]; nm = s["name"]
+    if short: nm = nm.replace("Fashion ", "").replace("Pastel Dusk ", "P. Dusk ").replace("Pastel Matte ", "Matte ")
+    return f"{nm} {s['code']}"
 
 # fonts: alle fontsource-pakketten scannen (latin, latin-ext, greek)
 _PKG = {"Montserrat": "montserrat", "Lato": "lato", "Albert Sans": "albert-sans", "Quicksand": "quicksand", "Inter": "inter",
@@ -506,9 +545,9 @@ def css_s3(b):
 .s3 .onwhite .mini-name,.s3 .onwhite .pcode-only{{color:{b['bright_text']}}}
 .s3 .downarrow{{position:absolute;left:50%;transform:translateX(-50%);width:70px;height:70px;border-radius:50%;background:{b['pill_dark']};color:#fff;display:flex;align-items:center;justify-content:center;font-size:40px;font-weight:900}}
 .s3 .bottom{{position:absolute;left:70px;right:70px;text-align:center;font-size:34px;font-weight:800;font-family:'{b['ui']}';line-height:1.25;white-space:pre-line}}
-.s3 .topic{{position:absolute;left:50%;transform:translateX(-50%);background:#fff;border-radius:20px;padding:8px 10px 8px 8px;display:flex;align-items:center;gap:18px;box-shadow:0 8px 0 rgba(0,0,0,.12)}}
+.s3 .topic{{position:absolute;left:50%;transform:translateX(-50%);max-width:960px;box-sizing:border-box;background:#fff;border-radius:20px;padding:8px 10px 8px 8px;display:flex;align-items:center;gap:18px;box-shadow:0 8px 0 rgba(0,0,0,.12)}}
 .s3 .topic .k{{background:{b['pill_dark']};color:{b['pill_dark_text']};border-radius:14px;padding:12px 22px;font-size:24px;font-weight:900;letter-spacing:.1em;font-family:'{b['ui']}';white-space:nowrap}}
-.s3 .topic .v{{font-size:44px;font-weight:900;font-family:'{b['ui']}';padding-right:20px;white-space:nowrap}}
+.s3 .topic .v{{font-size:44px;font-weight:900;font-family:'{b['ui']}';padding-right:20px;white-space:nowrap;overflow:hidden;text-overflow:clip;min-width:0}}
 .s3 .oldlbl{{display:inline-block;background:#fff;color:{b['bright_text']};border-radius:999px;padding:8px 20px;font-size:22px;font-weight:900;font-family:'{b['ui']}';letter-spacing:.06em}}
 .s3 .newlbl{{display:inline-block;background:{b['pill_dark']};color:{b['pill_dark_text']};border-radius:999px;padding:8px 20px;font-size:22px;font-weight:900;font-family:'{b['ui']}';letter-spacing:.06em}}
 .s3 img.bl{{filter:drop-shadow(3px 0 0 #fff) drop-shadow(-3px 0 0 #fff) drop-shadow(0 3px 0 #fff) drop-shadow(0 -3px 0 #fff) drop-shadow(0 10px 12px rgba(0,0,0,.18))}}
@@ -675,6 +714,7 @@ def build_html(bkey, style):
 <script>{FIT_JS}</script></body></html>"""
 
 # ---------------------------------------------------------------- TOPIC (andere blog = andere copy + slide-templates)
+assign_palettes(TOPIC)
 if TOPIC != "colours":
     import importlib
     _t = importlib.import_module(f"topic_{TOPIC}")
@@ -688,8 +728,10 @@ def main():
     jobs = []
     only = [a.split("=",1)[1] for a in sys.argv if a.startswith("--brands=")]
     keys = only[0].split(",") if only else sorted(BRANDS)
+    st = [a.split("=",1)[1] for a in sys.argv if a.startswith("--styles=")]
+    styles = tuple(int(x) for x in st[0].split(",")) if st else (1, 2, 3)
     for bkey in keys:
-        for style in (1, 2, 3):
+        for style in styles:
             path = f"{OUT}/{bkey}_stijl{style}.html"
             with open(path, "w", encoding="utf-8") as f:
                 f.write(build_html(bkey, style))
