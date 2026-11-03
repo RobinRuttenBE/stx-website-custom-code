@@ -34,6 +34,7 @@ python3 deliver_all.py
 | `pricing` | Prijs voor ballondecoratie (bedragen per markt via `money()`) | topic_pricing.py | `out/pricing/` |
 | `doublestuff` | Double stuffing (gesimuleerde ballon-in-ballon via `dstuff()`) | topic_doublestuff.py | `out/doublestuff/` |
 | `storage` | Ballonnen bewaren | topic_storage.py | `out/storage/` |
+| `releases` | Geen ballonoplatingen (standpunt + 4 alternatieven) | topic_releases.py | `out/releases/` |
 
 ```
 python3 build.py --topic=artist --render
