@@ -660,6 +660,12 @@ function check(name, ok, extra) {
       tabs: ['Double Stuffing Calculator', 'Cost Calculator', 'Colour Matching Tool'],
       title: 'Balloon colour and price tools | Northwest Greetings', cur: '£', curCode: 'GBP', dist: 'mi', vat: 20,
       shop: /^https:\/\/northwestgreetings\.co\.uk\/product\/[a-z0-9-]+\/$/,
+      hint: /Enter your own purchase price per piece/, foreign: /\b(Kleurmixer|opdracht|inkoopprijs|Bewaar|Instellingen|Materiaal)\b/ },
+    // Balloons4U (03/11/2026): WooCommerce, every colour is one product with all sizes; 660 goes to the category.
+    { slug: 'balloons4u', name: 'Balloons4U', brand: '#fd9ab6', font: 'Lato',
+      tabs: ['Double Stuffing Calculator', 'Cost Calculator', 'Colour Matching Tool'],
+      title: 'Balloon colour and price tools | Balloons4U', cur: '£', curCode: 'GBP', dist: 'mi', vat: 20,
+      shop: /^https:\/\/balloons4u\.co\.uk\/(shop\/sempertex-[a-z0-9-]+-balloons\/|product-category\/sempertex\/)$/,
       hint: /Enter your own purchase price per piece/, foreign: /\b(Kleurmixer|opdracht|inkoopprijs|Bewaar|Instellingen|Materiaal)\b/ }
   ];
   for (const N of NEW_PARTNERS) {
