@@ -36,6 +36,7 @@ python3 deliver_all.py
 | `storage` | Ballonnen bewaren | topic_storage.py | `out/storage/` |
 | `releases` | Geen ballonoplatingen (standpunt + 4 alternatieven) | topic_releases.py | `out/releases/` |
 | `buyuk` | Waar koop je Sempertex in de UK (alleen EN, alleen de 14 UK-distri's; regiokaart markeert de distri zelf, B2B/B2C per distri) | topic_buyuk.py | `out/buyuk/` |
+| `startbiz` | Een ballonbusiness starten (4 dingen eerst, bestelvolgorde, 5 fouten, 3 portfoliostukken uit 1 startersvoorraad, SYBB als voetnoot) | topic_startbiz.py | `out/startbiz/` |
 
 ```
 python3 build.py --topic=artist --render
