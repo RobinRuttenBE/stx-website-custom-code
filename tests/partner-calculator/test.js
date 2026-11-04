@@ -666,7 +666,14 @@ function check(name, ok, extra) {
       tabs: ['Double Stuffing Calculator', 'Cost Calculator', 'Colour Matching Tool'],
       title: 'Balloon colour and price tools | Balloons4U', cur: '£', curCode: 'GBP', dist: 'mi', vat: 20,
       shop: /^https:\/\/balloons4u\.co\.uk\/(shop\/sempertex-[a-z0-9-]+-balloons\/|product-category\/sempertex\/)$/,
-      hint: /Enter your own purchase price per piece/, foreign: /\b(Kleurmixer|opdracht|inkoopprijs|Bewaar|Instellingen|Materiaal)\b/ }
+      hint: /Enter your own purchase price per piece/, foreign: /\b(Kleurmixer|opdracht|inkoopprijs|Bewaar|Instellingen|Materiaal)\b/ },
+    // Balloon Service Basel (04/11/2026): own Next.js shop, one category per colour, Swiss German (no ß), CHF.
+    { slug: 'ballon-service', name: 'Balloon Service Basel', brand: '#931f81', font: 'Poppins',
+      tabs: ['Double Stuffing Rechner', 'Kostenrechner', 'Farbabgleich-Tool'],
+      title: 'Ballon-Tools für Farben und Preise | Balloon Service Basel', cur: 'CHF', curCode: 'CHF', dist: 'km', vat: 8.1,
+      shop: /^https:\/\/www\.ballon-service\.com\/shop\/categories\/\d+$/,
+      hint: /Trage deinen eigenen Einkaufspreis pro Stück ein/,
+      foreign: /ß|\b(Kleurmixer|opdracht|inkoopprijs|Bewaar|Instellingen|Materiaal|Settings|Saved quotes|Materials|Inner balloon|Upload a photo|Shop this colour)\b/ }
   ];
   for (const N of NEW_PARTNERS) {
     console.log(`\n/partner/${N.slug}/tools (vaste taal, ${N.curCode})`);
