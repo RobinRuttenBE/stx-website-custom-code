@@ -758,10 +758,34 @@
   .stx-insp .stx-ct .ct-toast { position: fixed; left: 50%; bottom: 26px; transform: translateX(-50%) translateY(20px); background: var(--dark); color: #fff; padding: 12px 18px; border-radius: 10px; font-weight: 700; font-size: 14px; opacity: 0; pointer-events: none; transition: opacity 0.2s ease, transform 0.2s ease; z-index: 1060; }
   .stx-insp .stx-ct .ct-toast.on { opacity: 1; transform: translateX(-50%) translateY(0); }
 
+  /* Bestellen vanuit de colour tool: blok in de kaart + balk onderaan op mobiel/tablet */
+  .stx-insp .stx-ct .ct-order { margin-top: 14px; display: flex; flex-direction: column; gap: 8px; }
+  .stx-insp .stx-ct .ct-order:empty { display: none; }
+  .stx-insp .stx-ct .ct-btn-p { background: var(--purple); color: #fff; cursor: pointer; font-family: inherit; }
+  .stx-insp .stx-ct .ct-btn-p:hover { color: #fff; box-shadow: var(--glow); transform: scale(1.02); }
+  .stx-insp .stx-ct .ct-btn-p[disabled] { opacity: 0.6; cursor: wait; transform: none; box-shadow: none; }
+  .stx-insp .stx-ct .ct-order .js-cart { display: none; }
+  .stx-insp.stx-shop-on .stx-ct .ct-order .js-cart { display: block; width: 100%; }
+  .stx-insp .stx-ct .ct-order-tip { font-size: 12px; color: var(--ct-ink-soft); text-align: center; margin: -2px 0 0; }
+  .stx-insp .stx-ct .ct-anon { background: #fff; border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 8px; }
+  .stx-insp .stx-ct .ct-anon strong { font-size: 16px; color: var(--dark); }
+  .stx-insp .stx-ct .ct-anon span { font-size: 14px; line-height: 1.45; color: var(--ct-ink-soft); }
+  .stx-insp .stx-ct .ct-anon .ct-login { text-align: center; font-size: 14px; font-weight: 700; color: var(--purple); text-decoration: underline; }
+  .stx-insp .stx-ct .ct-bar { display: none; }
   @media (max-width: 1100px) {
     .stx-insp .stx-ct .ct-layout { grid-template-columns: 1fr; }
     .stx-insp .stx-ct .ct-card { position: static; }
+    .stx-insp .stx-ct .ct-bar { display: flex; position: fixed; left: 12px; right: 12px; bottom: calc(12px + env(safe-area-inset-bottom, 0px)); z-index: 1050; align-items: center; gap: 12px; background: #fff; border-radius: 14px; padding: 10px 10px 10px 12px; box-shadow: 0 10px 30px rgba(27, 7, 61, 0.25); transform: translateY(160%); transition: transform 0.25s ease; }
+    .stx-insp .stx-ct .ct-bar.ct-bar-chat { right: 84px; }
+    .stx-insp .stx-ct .ct-bar.on { transform: none; }
+    .stx-insp .stx-ct .ct-bar-sw { width: 36px; height: 36px; border-radius: 50%; flex: none; box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.08); }
+    .stx-insp .stx-ct .ct-bar-t { flex: 1; min-width: 0; line-height: 1.25; }
+    .stx-insp .stx-ct .ct-bar-t strong { display: block; font-size: 14px; color: var(--dark); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .stx-insp .stx-ct .ct-bar-t small { font-size: 12px; color: var(--ct-ink-soft); }
+    .stx-insp .stx-ct .ct-bar .ct-btn { flex: none; padding: 11px 16px; font-size: 15px; }
+    .stx-insp .stx-ct.ct-bar-up .ct-toast { bottom: 96px; }
   }
+  @media (prefers-reduced-motion: reduce) { .stx-insp .stx-ct .ct-bar { transition: none; } }
   @media (max-width: 640px) {
     .stx-insp .stx-ct .ct-nb { width: 32px; height: 32px; font-size: 12px; }
     .stx-insp .stx-ct .ct-pal-balloons { gap: 6px; }
@@ -1582,6 +1606,12 @@
       ct_card_note: 'Screens show colours differently than latex does. Use this to shortlist, then check a real balloon in daylight.',
       ct_btn_shop: 'Shop this colour',
       ct_btn_copy: 'Copy the codes',
+      ct_cart_one: 'Add {c} to cart',
+      ct_order_h: 'Want to order these colours?',
+      ct_order_note: 'With a free business account you order straight from our shop and see your prices.',
+      ct_order_reg: 'Create a free account',
+      ct_order_login: 'Already a customer? Log in',
+      ct_bar_go: 'Order',
       ct_saved_h: 'Saved palettes',
       ct_saved_hint: 'Stored in this browser. Open one to see it again.',
       ct_dist_great: 'very close',
@@ -1865,6 +1895,12 @@
       ct_card_note: 'Ein Bildschirm zeigt Farben anders als Latex. Nutze das als Vorauswahl und prüfe danach einen echten Ballon bei Tageslicht.',
       ct_btn_shop: 'Diese Farbe shoppen',
       ct_btn_copy: 'Codes kopieren',
+      ct_cart_one: '{c} in den Warenkorb',
+      ct_order_h: 'Diese Farben bestellen?',
+      ct_order_note: 'Mit einem kostenlosen Geschäftskonto bestellst du direkt in unserem Shop und siehst deine Preise.',
+      ct_order_reg: 'Kostenloses Konto erstellen',
+      ct_order_login: 'Schon Kunde? Anmelden',
+      ct_bar_go: 'Bestellen',
       ct_saved_h: 'Gespeicherte Paletten',
       ct_saved_hint: 'In diesem Browser gespeichert. Öffne eine, um sie wieder zu sehen.',
       ct_dist_great: 'sehr nah',
@@ -2148,6 +2184,12 @@
       ct_card_note: 'Un écran affiche les couleurs autrement que le latex. Faites une présélection ici, puis vérifiez un vrai ballon à la lumière du jour.',
       ct_btn_shop: 'Acheter cette couleur',
       ct_btn_copy: 'Copier les codes',
+      ct_cart_one: 'Ajouter {c} au panier',
+      ct_order_h: 'Commander ces couleurs ?',
+      ct_order_note: 'Avec un compte professionnel gratuit, vous commandez directement dans notre boutique et voyez vos prix.',
+      ct_order_reg: 'Créer un compte gratuit',
+      ct_order_login: 'Déjà client ? Se connecter',
+      ct_bar_go: 'Commander',
       ct_saved_h: 'Palettes enregistrées',
       ct_saved_hint: 'Enregistrées dans ce navigateur. Ouvrez-en une pour la revoir.',
       ct_dist_great: 'très proche',
@@ -2431,6 +2473,12 @@
       ct_card_note: 'Een scherm toont kleuren anders dan latex. Gebruik dit als shortlist en check daarna een echte ballon bij daglicht.',
       ct_btn_shop: 'Shop deze kleur',
       ct_btn_copy: 'Kopieer de codes',
+      ct_cart_one: '{c} in winkelmandje',
+      ct_order_h: 'Deze kleuren bestellen?',
+      ct_order_note: 'Met een gratis zakelijk account bestel je meteen in onze shop en zie je jouw prijzen.',
+      ct_order_reg: 'Maak een gratis account',
+      ct_order_login: 'Al klant? Log in',
+      ct_bar_go: 'Bestellen',
       ct_saved_h: 'Opgeslagen palettes',
       ct_saved_hint: 'Bewaard in deze browser. Open er een om hem terug te zien.',
       ct_dist_great: 'heel dicht',
@@ -4590,6 +4638,7 @@
 
   /* ---------------- state ---------------- */
   var state = { target: '#d5a6c8', source: 'pick', base: null, count: 4, finish: 'all', matches: [] };
+  var ctBooting = true, userPicked = false; // eerste setTarget bij het laden telt niet als keuze
   function distLabel(d) { return d < 6 ? ct('dist_great') : (d < 13 ? ct('dist_ok') : ct('dist_far')); }
   function nearest(lab, opts) {
     opts = opts || {};
@@ -4620,7 +4669,8 @@
     }
     state.base = state.matches[0].c;
     renderCard(); renderPalettes();
-    track('colour_tool_pick', { source: state.source, hex: state.target, match: state.base.code });
+    if (!ctBooting) { track('colour_tool_pick', { source: state.source, hex: state.target, match: state.base.code }); userPicked = true; }
+    renderOrder();
   }
   function renderCard() {
     measureBrightness(state.base); $('target-b').innerHTML = tintBalloon(state.target, state.base);
@@ -4637,6 +4687,72 @@
     var url = shopUrl(state.base.code);
     $('shop-btn').href = url || '#'; $('shop-btn').style.display = url ? '' : 'none';
     $('shop-btn').setAttribute('data-code', state.base.code);
+    renderOrder();
+  }
+
+  /* ---------------- bestellen: blok in de kaart + balk onderaan (mobiel/tablet) ----------------
+     Ziet het account prijzen (root.stxShop.ready()): knop die de gekozen kleur in 5, 12 en 18 inch
+     in het winkelmandje legt. Niet ingelogd: account aanmaken of inloggen (terug naar #colour).
+     Ingelogd zonder prijzen: alleen de bestaande shopknop. Nooit op partnerpaginas. */
+  var loggedIn = !!document.querySelector('a[href*="/web/session/logout"], a[href*="/my/home"], a[href*="/my/account"]');
+  var regUrl = shopPrefix + '/registratie';
+  function loginUrl() { return '/web/login?redirect=' + encodeURIComponent(window.location.pathname + '#colour'); }
+  var orderHost = null, bar = null, barSeen = false, ctInView = false, cardInView = false;
+  if (!partnerTools) {
+    orderHost = document.createElement('div'); orderHost.className = 'ct-order'; orderHost.id = 'ct-order';
+    var cardActs = ctRoot.querySelector('.ct-card-actions');
+    if (cardActs) { cardActs.parentNode.insertBefore(orderHost, cardActs); } else { orderHost = null; }
+  }
+  function addBase(btn, where) {
+    if (!root.stxShop || !root.stxShop.ready() || !state.base) return;
+    root.stxShop.addSizes([state.base.code], ['R5', 'R12', 'R18'], btn, 'colour_tool_cart', { base: state.base.code, where: where });
+  }
+  function renderOrder() {
+    if (!orderHost || !state.base) return;
+    var c = state.base;
+    var h = '<button type="button" class="ct-btn ct-btn-p js-cart" data-a="cart" title="' + esc(ct('pal_cart_tip')) + '">' + esc(ct('cart_one').replace('{c}', c.name)) + '</button>' +
+      '<p class="ct-order-tip js-cart">' + esc(ct('pal_cart_tip')) + '</p>';
+    if (!loggedIn) {
+      h += '<div class="ct-anon"><strong>' + esc(ct('order_h')) + '</strong><span>' + esc(ct('order_note')) + '</span>' +
+        '<a class="ct-btn ct-btn-p" data-a="reg" href="' + esc(regUrl) + '">' + esc(ct('order_reg')) + '</a>' +
+        '<a class="ct-login" data-a="login" href="' + esc(loginUrl()) + '">' + esc(ct('order_login')) + '</a></div>';
+    }
+    orderHost.innerHTML = h;
+    updateBar();
+  }
+  if (orderHost) {
+    orderHost.addEventListener('click', function (e) {
+      var a = e.target.closest ? e.target.closest('[data-a]') : null; if (!a) return;
+      var act = a.getAttribute('data-a');
+      if (act === 'cart') { e.preventDefault(); addBase(a, 'card'); return; }
+      track('colour_tool_order_click', { action: act, where: 'card', colour: state.base ? state.base.code : '' });
+    });
+    bar = document.createElement('div'); bar.className = 'ct-bar'; bar.id = 'ct-bar';
+    bar.innerHTML = '<div class="ct-bar-sw"></div><div class="ct-bar-t"><strong></strong><small></small></div><button type="button" class="ct-btn ct-btn-p"></button>';
+    ctRoot.appendChild(bar);
+    bar.querySelector('button').addEventListener('click', function (e) {
+      if (root.stxShop && root.stxShop.ready()) { addBase(e.currentTarget, 'bar'); return; }
+      track('colour_tool_order_click', { action: 'scroll', where: 'bar', colour: state.base ? state.base.code : '' });
+      var card = ctRoot.querySelector('.ct-card'); if (card) { card.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+    });
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (en) { ctInView = en[0].isIntersecting; updateBar(); }).observe(ctRoot);
+      var cardEl = ctRoot.querySelector('.ct-card');
+      if (cardEl) { new IntersectionObserver(function (en) { cardInView = en[0].isIntersecting; updateBar(); }, { threshold: 0.2 }).observe(cardEl); }
+    }
+  }
+  function updateBar() {
+    if (!bar || !state.base) return;
+    var c = state.base;
+    bar.querySelector('.ct-bar-sw').style.background = c.hex;
+    bar.querySelector('strong').textContent = c.name;
+    bar.querySelector('small').textContent = c.code;
+    bar.querySelector('button').textContent = (root.stxShop && root.stxShop.ready()) ? ct('pal_cart') : ct('bar_go');
+    var on = userPicked && ctInView && !cardInView;
+    bar.classList.toggle('ct-bar-chat', !!document.querySelector('.o-livechat-root'));
+    bar.classList.toggle('on', on);
+    ctRoot.classList.toggle('ct-bar-up', on);
+    if (on && !barSeen) { barSeen = true; track('colour_tool_bar_view', { colour: c.code }); }
   }
   function renderFinFilter() {
     var host = $('fin-filter'); host.innerHTML = '';
@@ -4900,6 +5016,7 @@
 
   $('card-ds').innerHTML = ct('card_ds');
   setTarget(state.target, 'pick');
+  ctBooting = false;
   root.stxColour = { COLOURS: COLOURS, nearest: nearest, dE: dE, buildPalettes: buildPalettes, state: state, setTarget: setTarget };
   })();
 
