@@ -544,17 +544,17 @@
      die gewoon in de shop staan, terwijl hier alle 215 lukten. Dus: tot 3 pogingen met een pauze ertussen, en lukt het
      dan nog niet, dan cb(null, reden) en wordt de regel "niet gecontroleerd" (oranje, met een knop om opnieuw te proberen). */
   var RETRY_WAIT = [600, 1800];
-  function shopSearch(term, limit, cb, attempt) {
+  function shopSearch(term, limit, cb, attempt, withDesc) {
     attempt = attempt || 0;
     function fail(why) {
-      if (attempt < RETRY_WAIT.length) { setTimeout(function () { shopSearch(term, limit, cb, attempt + 1); }, RETRY_WAIT[attempt]); }
+      if (attempt < RETRY_WAIT.length) { setTimeout(function () { shopSearch(term, limit, cb, attempt + 1, withDesc); }, RETRY_WAIT[attempt]); }
       else { cb(null, why); }
     }
     fetch(SEARCH_URL, {
       method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ jsonrpc: '2.0', method: 'call', id: Date.now(), params: {
         search_type: 'products', term: term, order: 'name asc', limit: limit, max_nb_chars: 120,
-        options: { displayDescription: false, displayDetail: true, displayExtraLink: false, displayImage: false, allowFuzzy: false }
+        options: { displayDescription: !!withDesc, displayDetail: true, displayExtraLink: false, displayImage: false, allowFuzzy: false }
       } })
     }).then(function (r) {
       if (!r.ok) { fail('HTTP ' + r.status); return; }
@@ -602,9 +602,25 @@
          klopt dat altijd, dus dit telt als gevonden en niet meer als "controleer" (21/09/2026). */
       else if (hits.length === 1) { line.pick(hits[0]); line.status = 'ok'; }
       else { line.status = 'no'; }
+      if (line.status === 'no') { matchDesc(line, cb); return; }
       if (!line.tid) { cb(); return; }
       stockFor(line.tid, function (s) { applyStock(line, s); cb(); });
     });
+  }
+  /* Niet gevonden: nog eens zoeken MET de productomschrijving. Bij sommige producten staat een tweede
+     (oudere) SAP-code alleen in de omschrijving, bv. 20001308 bij 360 Nozzle Up Red (SAP-veld 20019513)
+     en 20009483 bij R5 Neon Assortment (SAP-veld 20008166); de zoekbalk vindt die wel (09/11/2026, Rish).
+     Alleen een product waarvan de omschrijving precies de code is telt, zodat een code die toevallig
+     ergens in een tekst staat nooit het verkeerde product kiest. */
+  function matchDesc(line, cb) {
+    shopSearch(line.code, 10, function (results) {
+      var want = String(line.code).trim().toLowerCase();
+      var same = (results || []).filter(function (r) { return strip(r.description).toLowerCase() === want; });
+      var hits = hitsFor(line.code, same);
+      if (hits.length !== 1) { cb(); return; }
+      line.pick(hits[0]); line.status = 'ok';
+      stockFor(line.tid, function (s) { applyStock(line, s); cb(); });
+    }, 0, true);
   }
   /* ---- voorraad ----
      get_combination_info geeft voor een ingelogd account free_qty (vrije voorraad in verkoopeenheden),

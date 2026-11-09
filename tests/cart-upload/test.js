@@ -291,7 +291,7 @@ function assert(c, msg) { if (!c) { console.error('FAIL', msg); process.exitCode
   await pasteLines(500);
   await page.click('#su-paste-go');
   await page.waitForSelector('#su-preview:not([hidden])', { timeout: 60000 });
-  assert((await page.$$('#su-rows tr')).length === 500 && searchCalls === 500, '500 lines accepted (' + searchCalls + ' searches)');
+  assert((await page.$$('#su-rows tr')).length === 500 && searchCalls === 1000, '500 lines accepted, unknown codes searched twice (code, then with description) (' + searchCalls + ' searches)');
   await page.click('#su-reset'); searchCalls = 0;
   await page.setInputFiles('#su-file', { name: 'huge.csv', mimeType: 'text/csv', buffer: Buffer.alloc(6 * 1024 * 1024, 'A') });
   await page.waitForTimeout(200);
