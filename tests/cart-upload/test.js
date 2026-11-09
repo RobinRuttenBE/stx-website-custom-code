@@ -14,6 +14,7 @@ let updateCalls = [];
 let comboCalls = 0;
 let searchCalls = 0;
 let flakyFails = {}, triesByTerm = {};
+let comboFails = {}, comboTries = {};
 // Stock per template id, only for the products listed here (test 10). The live shop (measured 19/10/2026) silently
 // caps /shop/cart/add and /shop/cart/update at the free stock and adds nothing when the stock is 0.
 let stock = {};
@@ -79,6 +80,12 @@ const server = http.createServer(async (req, res) => {
     if (u.pathname === '/website_sale/get_combination_info') {
       comboCalls++;
       const tid = body.params.product_template_id;
+      // Flaky stock (test 13): a product fails its first comboFails[tid] stock questions, as HTTP 429 or an RPC error.
+      comboTries[tid] = (comboTries[tid] || 0) + 1;
+      if (comboFails[tid] && comboTries[tid] <= comboFails[tid]) {
+        if (comboTries[tid] % 2) { res.statusCode = 429; return res.end('Too Many Requests'); }
+        return res.end(JSON.stringify({ jsonrpc: '2.0', id: 1, error: { message: 'Odoo Server Error', data: { message: 'busy' } } }));
+      }
       const r = { product_id: tid * 10, price: 1 };
       if (stock[tid] !== undefined) Object.assign(r, { is_storable: true, allow_out_of_stock_order: false, free_qty: stock[tid], cart_qty: cartQtyOf(tid) });
       return res.end(JSON.stringify({ jsonrpc: '2.0', id: 1, result: r }));
@@ -322,6 +329,30 @@ function assert(c, msg) { if (!c) { console.error('FAIL', msg); process.exitCode
   await page.waitForFunction(() => !document.querySelector('#su-recheck') && !document.querySelector('#su-rows tr.err'), null, { timeout: 15000 });
   const r12b = await page.$$eval('#su-rows tr', trs => trs.map(tr => tr.querySelector('.su-code').textContent + ':' + tr.className));
   assert(r12b.includes('N260080:ok') && (await page.textContent('#su-add')).trim() === '3 regels in winkelmandje', 'after "Opnieuw controleren" the code is found and can be added');
+
+  // 13. flaky STOCK question (Rish, Datta's, 07/11/2026: 5in Chocolate Brown at 0 but no red line, Odoo dropped it silently).
+  // A stock question that fails is retried; what still fails is "niet gecontroleerd" and never added without a stock check.
+  await page.goto('about:blank'); await page.goto(base + '/shop/cart'); await page.waitForSelector('#stx-upl:not([hidden])');
+  await page.click('#su-toggle'); await page.click('#su-pastebtn');
+  stock = { [T_R12005]: 0, [T_N260080]: 0, [T_LOL6015]: 50 };
+  comboTries = {}; comboFails = { [T_R12005]: 2, [T_N260080]: 99 }; // R12005 recovers after 2 failures, N260080 keeps failing
+  cartCalls = [];
+  await page.fill('#su-paste', ['R12005;3', 'LOL6015;2', 'N260080;1'].join(String.fromCharCode(10)));
+  await page.click('#su-paste-go');
+  await page.waitForSelector('#su-preview:not([hidden])', { timeout: 30000 });
+  const rows13 = await page.$$eval('#su-rows tr', trs => trs.map(tr => tr.querySelector('.su-code').textContent + ':' + tr.className + ':' + tr.querySelector('.su-st').textContent));
+  console.log('   flaky stock rows:', rows13.join(' | '));
+  assert(rows13.includes('R12005:oos:niet op voorraad'), 'stock question that failed twice: retried, and out of stock is shown in red');
+  assert(rows13.includes('N260080:err:niet gecontroleerd'), 'stock question that keeps failing: "niet gecontroleerd", not silently fine');
+  assert(rows13.includes('LOL6015:ok:gevonden'), 'normal line unaffected');
+  assert(comboTries[T_N260080] >= 6, 'failing stock question tried 3 + 3 times (' + comboTries[T_N260080] + ')');
+  assert((await page.textContent('#su-add')).trim() === '1 regel in winkelmandje' || (await page.textContent('#su-add')).trim() === '1 regels in winkelmandje', 'only the checked in-stock line can be added: ' + (await page.textContent('#su-add')).trim());
+  comboFails = {};
+  await page.click('#su-recheck');
+  await page.waitForFunction(() => !document.querySelector('#su-rows tr.err'), null, { timeout: 15000 });
+  const r13b = await page.$$eval('#su-rows tr', trs => trs.map(tr => tr.querySelector('.su-code').textContent + ':' + tr.className));
+  assert(r13b.includes('N260080:oos'), 'after "Opnieuw controleren" the stock is known: out of stock, red');
+  stock = {}; comboTries = {};
 
   // mobile screenshot
   const mp = await b.newPage({ viewport: { width: 390, height: 800 } });

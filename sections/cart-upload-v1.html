@@ -604,7 +604,7 @@
       else { line.status = 'no'; }
       if (line.status === 'no') { matchDesc(line, cb); return; }
       if (!line.tid) { cb(); return; }
-      stockFor(line.tid, function (s) { applyStock(line, s); cb(); });
+      stockInto(line, cb);
     });
   }
   /* Niet gevonden: nog eens zoeken MET de productomschrijving. Bij sommige producten staat een tweede
@@ -619,7 +619,7 @@
       var hits = hitsFor(line.code, same);
       if (hits.length !== 1) { cb(); return; }
       line.pick(hits[0]); line.status = 'ok';
-      stockFor(line.tid, function (s) { applyStock(line, s); cb(); });
+      stockInto(line, cb);
     }, 0, true);
   }
   /* ---- voorraad ----
@@ -628,14 +628,31 @@
      mag worden heeft een grens; al de rest (of een call die mislukt) = geen grens, Odoo beslist dan zelf
      bij het toevoegen. Het variant-id uit hetzelfde antwoord bewaren we voor /shop/cart/add. */
   var stockCache = {};
-  function stockFor(tid, cb) {
+  /* Mislukt de voorraadvraag, dan opnieuw proberen (zelfde wachttijden als het zoeken). Lukt het dan nog
+     niet, dan cb(null, reden): de regel wordt "niet gecontroleerd" en NIET stil toegevoegd. Vroeger telde een
+     mislukte vraag als "geen grens", waardoor een uitverkocht product zonder rode melding in de upload kwam
+     en Odoo het daarna stil op 0 zette (Rish, Datta's, 07/11/2026). */
+  function stockFor(tid, cb, attempt) {
+    attempt = attempt || 0;
     if (stockCache[tid]) { cb(stockCache[tid]); return; }
-    rpc('/website_sale/get_combination_info', { product_template_id: tid, product_id: false, combination: [], add_qty: 1, parent_combination: [] }, function (c) {
-      if (!c) { cb({ pid: null, avail: Infinity }); return; }
+    rpc('/website_sale/get_combination_info', { product_template_id: tid, product_id: false, combination: [], add_qty: 1, parent_combination: [] }, function (c, why) {
+      if (!c) {
+        if (attempt < RETRY_WAIT.length) { setTimeout(function () { stockFor(tid, cb, attempt + 1); }, RETRY_WAIT[attempt]); }
+        else { cb(null, 'stock: ' + (why || 'no answer')); }
+        return;
+      }
       var limited = c.is_storable === true && c.allow_out_of_stock_order === false && typeof c.free_qty === 'number';
       var s = { pid: c.product_id || null, avail: limited ? Math.max(0, Math.floor(c.free_qty)) : Infinity };
       stockCache[tid] = s;
       cb(s);
+    });
+  }
+  /* Voorraad ophalen voor een regel; lukt dat niet, dan wordt de regel 'err' (niet gecontroleerd, oranje,
+     met de knop Opnieuw controleren) en gaat hij niet mee naar het mandje. */
+  function stockInto(l, cb) {
+    stockFor(l.tid, function (s, why) {
+      if (!s) { l.status = 'err'; l.why = why; l.avail = Infinity; l.pid = null; cb(); return; }
+      applyStock(l, s); cb();
     });
   }
   /* want = gevraagd in het bestand, qty = wat we toevoegen. Bij te weinig voorraad staat qty op de vrije voorraad. */
@@ -743,7 +760,7 @@
         var l = state.lines[parseInt(sel.getAttribute('data-i'), 10)];
         l.opt = parseInt(sel.value, 10); l.pick(l.options[l.opt]); l.qty = l.want;
         sel.disabled = true; $('su-add').disabled = true;
-        stockFor(l.tid, function (s) { applyStock(l, s); render(); });
+        stockInto(l, render);
       });
     });
     Array.prototype.forEach.call(tb.querySelectorAll('input.su-qin'), function (inp) {
