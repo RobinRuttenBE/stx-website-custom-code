@@ -1,0 +1,158 @@
+<!-- ============================================================
+     STX EU / PRODUCTPAGINA: "Get notified when back in stock" voor
+     klanten die zonder voorraad mogen bestellen (09/11/2026)
+     Bedrijven met 'Simplified Stock Visibility' (module
+     sempertex_stock_visibility, o.a. Datta's/KENT GROUP) mogen ook
+     bestellen als iets op is. Daardoor laat Odoo de knop "Get notified
+     when back in stock" bij hen weg. Dit blok zet hem terug onder het
+     rode "Out of Stock" label en schrijft in via Odoo's eigen route
+     /shop/add/stock_notification (zelfde mail als de gewone knop).
+     Toont alleen als: label "Out of Stock" zichtbaar + winkelmandknop
+     zichtbaar + Odoo's eigen meldknop ontbreekt.
+     ============================================================ -->
+<style>
+  .stx-stock-notify { margin-top: -8px; margin-bottom: 12px; max-width: 360px; }
+  .stx-stock-notify .btn-link { font-weight: 600; text-decoration: none; }
+</style>
+<script>
+(function () {
+  'use strict';
+
+  var TXT = {
+    en: { ask: 'Get notified when back in stock', ok: "We'll notify you once the product is back in stock",
+          bad: 'Please enter a valid email address', err: 'Something went wrong, please try again', ph: 'youremail@gmail.com' },
+    nl: { ask: 'Ontvang een melding als het weer op voorraad is', ok: 'We laten je weten zodra het product weer op voorraad is',
+          bad: 'Vul een geldig e-mailadres in', err: 'Er ging iets mis, probeer het opnieuw', ph: 'jouwemail@gmail.com' },
+    fr: { ask: 'Être averti du retour en stock', ok: 'Nous vous préviendrons dès que le produit sera de nouveau en stock',
+          bad: 'Veuillez saisir une adresse e-mail valide', err: "Une erreur s'est produite, veuillez réessayer", ph: 'votreemail@gmail.com' },
+    de: { ask: 'Benachrichtigen, wenn wieder auf Lager', ok: 'Wir benachrichtigen Sie, sobald das Produkt wieder auf Lager ist',
+          bad: 'Bitte geben Sie eine gültige E-Mail-Adresse ein', err: 'Etwas ist schiefgelaufen, bitte versuchen Sie es erneut', ph: 'ihreemail@gmail.com' }
+  };
+  var KEY = 'stx_stock_notify_';
+  var state = {}; // per product id: 'open' | 'done'
+
+  function t() {
+    var l = (document.documentElement.getAttribute('lang') || '').toLowerCase().slice(0, 2);
+    return TXT[l] || TXT.en;
+  }
+  function shown(el) {
+    return !!(el && !el.classList.contains('d-none') && el.offsetParent !== null);
+  }
+  function productId(details) {
+    var inp = details.querySelector('input.product_id, input[name="product_id"]');
+    var v = inp && parseInt(inp.value, 10);
+    return v > 0 ? v : null;
+  }
+  function done(pid) {
+    if (state[pid] === 'done') { return true; }
+    try { return localStorage.getItem(KEY + pid) === '1'; } catch (e) { return false; }
+  }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+
+  function render(box, pid) {
+    var x = t();
+    if (done(pid)) {
+      box.innerHTML = '<div class="py-2 small text-muted"><i class="fa fa-bell me-2"></i>' + esc(x.ok) + '</div>';
+      return;
+    }
+    var open = state[pid] === 'open';
+    box.innerHTML =
+      '<div class="btn btn-link px-0 stx-sn-ask"' + (open ? ' style="display:none"' : '') + '>' +
+        '<i class="fa fa-envelope-o me-2"></i>' + esc(x.ask) + '</div>' +
+      '<div class="stx-sn-form"' + (open ? '' : ' style="display:none"') + '>' +
+        '<div class="input-group">' +
+          '<input class="form-control stx-sn-email" type="email" autocomplete="email" placeholder="' + esc(x.ph) + '">' +
+          '<button type="button" class="btn btn-primary stx-sn-send" aria-label="' + esc(x.ask) + '"><i class="fa fa-paper-plane"></i></button>' +
+        '</div>' +
+        '<div class="form-text text-danger stx-sn-msg" style="display:none"></div>' +
+      '</div>';
+    box.querySelector('.stx-sn-ask').addEventListener('click', function () {
+      state[pid] = 'open';
+      render(box, pid);
+      var inp = box.querySelector('.stx-sn-email');
+      if (inp) { inp.focus(); }
+    });
+    var send = box.querySelector('.stx-sn-send');
+    var inp = box.querySelector('.stx-sn-email');
+    var msg = box.querySelector('.stx-sn-msg');
+    function fail(text) { msg.textContent = text; msg.style.display = ''; send.disabled = false; }
+    function submit() {
+      var email = (inp.value || '').trim();
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { fail(x.bad); return; }
+      msg.style.display = 'none';
+      send.disabled = true;
+      fetch('/shop/add/stock_notification', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ jsonrpc: '2.0', method: 'call', params: { email: email, product_id: pid } })
+      }).then(function (r) { return r.json(); }).then(function (j) {
+        if (j && j.error) {
+          var m = (j.error.data && j.error.data.message) || '';
+          fail(/email/i.test(m) ? x.bad : x.err);
+          return;
+        }
+        state[pid] = 'done';
+        try { localStorage.setItem(KEY + pid, '1'); } catch (e) {}
+        render(box, pid);
+      }).catch(function () { fail(x.err); });
+    }
+    send.addEventListener('click', submit);
+    inp.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); submit(); } });
+  }
+
+  function place() {
+    var details = document.getElementById('product_details');
+    if (!details) { return; }
+    var mine = details.querySelectorAll('.stx-stock-notify');
+    var badge = details.querySelector('#out_of_stock_message');
+    var cart = details.querySelector('#add_to_cart');
+    var odooNotify = details.querySelector('#stock_notification_div');
+    var pid = productId(details);
+    var want = pid && shown(badge) && shown(cart) && !shown(odooNotify);
+    if (!want) {
+      for (var i = 0; i < mine.length; i++) { mine[i].parentNode.removeChild(mine[i]); }
+      return;
+    }
+    // Eén blok, direct na het label en voor het juiste product (ander verpakkingstype = ander product).
+    for (var k = 0; k < mine.length; k++) {
+      if (k > 0 || mine[k].previousElementSibling !== badge || mine[k].getAttribute('data-pid') !== String(pid)) {
+        mine[k].parentNode.removeChild(mine[k]);
+      }
+    }
+    if (details.querySelector('.stx-stock-notify')) { return; }
+    var box = document.createElement('div');
+    box.className = 'stx-stock-notify';
+    box.setAttribute('data-pid', String(pid));
+    badge.insertAdjacentElement('afterend', box);
+    render(box, pid);
+  }
+
+  var observed = false;
+  function observe() {
+    if (observed || !window.MutationObserver || !document.body) { return; }
+    observed = true;
+    var tm = null;
+    new MutationObserver(function (list) {
+      // Eigen wijzigingen negeren, anders loopt de observer rond.
+      for (var i = 0; i < list.length; i++) {
+        var n = list[i].target;
+        if (!(n.closest && n.closest('.stx-stock-notify'))) {
+          clearTimeout(tm);
+          tm = setTimeout(place, 80);
+          return;
+        }
+      }
+    }).observe(document.body, { subtree: true, childList: true, attributes: true, attributeFilter: ['class', 'style', 'value'] });
+  }
+  function run() {
+    if (!document.getElementById('product_details')) { return; }
+    place();
+    observe();
+    setTimeout(place, 600);
+    setTimeout(place, 2000);
+  }
+  if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', run); }
+  else { run(); }
+})();
+</script>
