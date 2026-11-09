@@ -7,6 +7,7 @@
      when back in stock" bij hen weg. Dit blok zet hem terug onder het
      rode "Out of Stock" label en schrijft in via Odoo's eigen route
      /shop/add/stock_notification (zelfde mail als de gewone knop).
+     09/11 (c): label van de module zelf herkennen (#product_stock_availability_simplified).
      Toont alleen als: label "Out of Stock" zichtbaar + winkelmandknop
      zichtbaar + Odoo's eigen meldknop ontbreekt.
      ============================================================ -->
@@ -105,7 +106,11 @@
     var details = document.getElementById('product_details');
     if (!details) { return; }
     var mine = details.querySelectorAll('.stx-stock-notify');
-    var badge = details.querySelector('#out_of_stock_message');
+    // Bedrijven met Simplified Stock Visibility krijgen het label van de module
+    // (#product_stock_availability_simplified, rood = op); het gewone Odoo-blok
+    // (#out_of_stock_message) staat er dan niet. Beide gevallen afvangen.
+    var simple = details.querySelector('#product_stock_availability_simplified');
+    var badge = (simple && simple.querySelector('.badge.text-bg-danger')) ? simple : details.querySelector('#out_of_stock_message');
     var cart = details.querySelector('#add_to_cart');
     var odooNotify = details.querySelector('#stock_notification_div');
     var pid = productId(details);
