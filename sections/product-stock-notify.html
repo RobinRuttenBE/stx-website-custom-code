@@ -8,6 +8,8 @@
      rode "Out of Stock" label en schrijft in via Odoo's eigen route
      /shop/add/stock_notification (zelfde mail als de gewone knop).
      09/11 (c): label van de module zelf herkennen (#product_stock_availability_simplified).
+     09/11 (d): ingelogd = e-mailadres van het account (vraag van Rish); één klik schrijft
+     meteen in, het formulier verschijnt alleen zonder account of bij een fout.
      Toont alleen als: label "Out of Stock" zichtbaar + winkelmandknop
      zichtbaar + Odoo's eigen meldknop ontbreekt.
      ============================================================ -->
@@ -31,6 +33,42 @@
   };
   var KEY = 'stx_stock_notify_';
   var state = {}; // per product id: 'open' | 'done'
+  var sentTo = {}; // per product id: e-mailadres waarmee ingeschreven
+  // E-mailadres van het ingelogde account (contact van de gebruiker, anders de login).
+  // Eén keer per sessie opgehaald; leeg voor bezoekers zonder account.
+  var acct = { email: null, asked: false };
+  var ACCT_KEY = 'stx_sn_acct_v1';
+  function rpc(url, params) {
+    return fetch(url, { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ jsonrpc: '2.0', method: 'call', params: params || {}, id: Date.now() }) })
+      .then(function (r) { return r.json(); })
+      .then(function (j) { if (j.error) { throw new Error((j.error.data && j.error.data.message) || j.error.message); } return j.result; });
+  }
+  function isEmail(s) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(s || '').trim()); }
+  function loadAccount(onReady) {
+    if (acct.asked) { return; }
+    acct.asked = true;
+    var info = null;
+    rpc('/web/session/get_session_info').then(function (si) {
+      info = si;
+      if (!si || !si.uid) { return null; }
+      try {
+        var c = JSON.parse(sessionStorage.getItem(ACCT_KEY) || 'null');
+        if (c && c.uid === si.uid && isEmail(c.email)) { return [{ email: c.email }]; }
+      } catch (e) {}
+      if (!si.partner_id) { return null; }
+      return rpc('/web/dataset/call_kw/res.partner/read', { model: 'res.partner', method: 'read',
+        args: [[si.partner_id], ['email']], kwargs: {} }).catch(function () { return null; });
+    }).then(function (rows) {
+      if (!info || !info.uid) { return; }
+      var e = rows && rows[0] && rows[0].email;
+      if (!isEmail(e) && isEmail(info.username)) { e = info.username; }
+      if (!isEmail(e)) { return; }
+      acct.email = String(e).trim();
+      try { sessionStorage.setItem(ACCT_KEY, JSON.stringify({ uid: info.uid, email: acct.email })); } catch (x) {}
+      onReady();
+    }).catch(function () {});
+  }
 
   function t() {
     var l = (document.documentElement.getAttribute('lang') || '').toLowerCase().slice(0, 2);
@@ -53,7 +91,9 @@
   function render(box, pid) {
     var x = t();
     if (done(pid)) {
-      box.innerHTML = '<div class="py-2 small text-muted"><i class="fa fa-bell me-2"></i>' + esc(x.ok) + '</div>';
+      var to = sentTo[pid] || acct.email;
+      box.innerHTML = '<div class="py-2 small text-muted"><i class="fa fa-bell me-2"></i>' + esc(x.ok) +
+        (to ? ' (' + esc(to) + ')' : '') + '</div>';
       return;
     }
     var open = state[pid] === 'open';
@@ -62,26 +102,42 @@
         '<i class="fa fa-envelope-o me-2"></i>' + esc(x.ask) + '</div>' +
       '<div class="stx-sn-form"' + (open ? '' : ' style="display:none"') + '>' +
         '<div class="input-group">' +
-          '<input class="form-control stx-sn-email" type="email" autocomplete="email" placeholder="' + esc(x.ph) + '">' +
+          '<input class="form-control stx-sn-email" type="email" autocomplete="email" placeholder="' + esc(x.ph) + '" value="' + esc(acct.email || '') + '">' +
           '<button type="button" class="btn btn-primary stx-sn-send" aria-label="' + esc(x.ask) + '"><i class="fa fa-paper-plane"></i></button>' +
         '</div>' +
         '<div class="form-text text-danger stx-sn-msg" style="display:none"></div>' +
       '</div>';
-    box.querySelector('.stx-sn-ask').addEventListener('click', function () {
-      state[pid] = 'open';
-      render(box, pid);
-      var inp = box.querySelector('.stx-sn-email');
-      if (inp) { inp.focus(); }
-    });
+    var ask = box.querySelector('.stx-sn-ask');
     var send = box.querySelector('.stx-sn-send');
     var inp = box.querySelector('.stx-sn-email');
     var msg = box.querySelector('.stx-sn-msg');
-    function fail(text) { msg.textContent = text; msg.style.display = ''; send.disabled = false; }
+    function fail(text) {
+      // Bij een fout altijd het formulier tonen (met het adres al ingevuld), zodat de klant het kan aanpassen.
+      if (state[pid] !== 'open') { state[pid] = 'open'; ask.style.display = 'none'; box.querySelector('.stx-sn-form').style.display = ''; }
+      msg.textContent = text; msg.style.display = ''; send.disabled = false;
+    }
+    ask.addEventListener('click', function () {
+      // Ingelogd met bekend e-mailadres: meteen inschrijven, zonder formulier.
+      if (acct.email) {
+        ask.style.pointerEvents = 'none';
+        ask.style.opacity = '0.6';
+        subscribe(acct.email);
+        return;
+      }
+      state[pid] = 'open';
+      render(box, pid);
+      var i2 = box.querySelector('.stx-sn-email');
+      if (i2) { i2.focus(); }
+    });
     function submit() {
       var email = (inp.value || '').trim();
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { fail(x.bad); return; }
+      subscribe(email);
+    }
+    function subscribe(email) {
       msg.style.display = 'none';
       send.disabled = true;
+      sentTo[pid] = email;
       fetch('/shop/add/stock_notification', {
         method: 'POST',
         credentials: 'same-origin',
@@ -90,13 +146,14 @@
       }).then(function (r) { return r.json(); }).then(function (j) {
         if (j && j.error) {
           var m = (j.error.data && j.error.data.message) || '';
+          ask.style.pointerEvents = ''; ask.style.opacity = '';
           fail(/email/i.test(m) ? x.bad : x.err);
           return;
         }
         state[pid] = 'done';
         try { localStorage.setItem(KEY + pid, '1'); } catch (e) {}
         render(box, pid);
-      }).catch(function () { fail(x.err); });
+      }).catch(function () { ask.style.pointerEvents = ''; ask.style.opacity = ''; fail(x.err); });
     }
     send.addEventListener('click', submit);
     inp.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); submit(); } });
@@ -119,6 +176,12 @@
       for (var i = 0; i < mine.length; i++) { mine[i].parentNode.removeChild(mine[i]); }
       return;
     }
+    // Account-e-mail pas ophalen als het blok echt nodig is; daarna het formulier opnieuw vullen.
+    loadAccount(function () {
+      var b = document.querySelector('#product_details .stx-stock-notify');
+      var p = b && parseInt(b.getAttribute('data-pid'), 10);
+      if (b && p && !done(p) && state[p] !== 'open') { render(b, p); }
+    });
     // Eén blok, direct na het label en voor het juiste product (ander verpakkingstype = ander product).
     for (var k = 0; k < mine.length; k++) {
       if (k > 0 || mine[k].previousElementSibling !== badge || mine[k].getAttribute('data-pid') !== String(pid)) {
