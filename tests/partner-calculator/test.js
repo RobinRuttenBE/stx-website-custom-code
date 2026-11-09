@@ -668,9 +668,9 @@ function check(name, ok, extra) {
       shop: /^https:\/\/balloons4u\.co\.uk\/(shop\/sempertex-[a-z0-9-]+-balloons\/|product-category\/sempertex\/)$/,
       hint: /Enter your own purchase price per piece/, foreign: /\b(Kleurmixer|opdracht|inkoopprijs|Bewaar|Instellingen|Materiaal)\b/ },
     // Balloon Service Basel (04/11/2026): own Next.js shop, one category per colour, Swiss German (no ß), CHF.
-    { slug: 'ballon-service', name: 'Balloon Service Basel', brand: '#931f81', font: 'Poppins',
+    { slug: 'ballon-service', name: 'Ballon-Service', brand: '#931f81', font: 'Poppins',
       tabs: ['Double Stuffing Rechner', 'Kostenrechner', 'Farbabgleich-Tool'],
-      title: 'Ballon-Tools für Farben und Preise | Balloon Service Basel', cur: 'CHF', curCode: 'CHF', dist: 'km', vat: 8.1,
+      title: 'Ballon-Tools für Farben und Preise | Ballon-Service', cur: 'CHF', curCode: 'CHF', dist: 'km', vat: 8.1,
       shop: /^https:\/\/www\.ballon-service\.com\/shop\/categories\/\d+$/,
       hint: /Trage deinen eigenen Einkaufspreis pro Stück ein/,
       foreign: /ß|\b(Kleurmixer|opdracht|inkoopprijs|Bewaar|Instellingen|Materiaal|Settings|Saved quotes|Materials|Inner balloon|Upload a photo|Shop this colour)\b/ }
