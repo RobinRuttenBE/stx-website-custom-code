@@ -3400,7 +3400,13 @@
       } catch (e) {}
       var calcBox = root.querySelector('#view-calculator .calc');
       var grid = calcBox ? calcBox.querySelector('.calc-grid') : null;
-      if (!on || !grid || root.querySelector('#dsm')) { return; }
+      if (!on || !grid) { return; }
+      // A copy saved in the Odoo builder (NL, FR and DE /tools, 12/11/2026) holds the #dsm markup
+      // without its listeners: upload and colour picker did nothing there. Only a box built in this
+      // page view (marker _stxLive) counts; a saved one is thrown away and built again.
+      var oldDsm = root.querySelector('#dsm');
+      if (oldDsm && oldDsm._stxLive) { return; }
+      if (oldDsm) { oldDsm.parentNode.removeChild(oldDsm); }
 
       function lin(c) { c /= 255; return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); }
       function lab(hex) {
@@ -3468,7 +3474,7 @@
       }
 
       var box = document.createElement('div');
-      box.className = 'dsm'; box.id = 'dsm';
+      box.className = 'dsm'; box.id = 'dsm'; box._stxLive = true;
       box.innerHTML =
         '<div class="dsm-head"><div><div class="picker-label" data-i18n="dsm_label">' + esc(STR.dsm_label) + '</div><p class="dsm-hint" data-i18n="dsm_hint">' + esc(STR.dsm_hint) + '</p></div>'
         + '<div class="dsm-acts"><button type="button" class="btn-cart dsm-up" data-i18n="dsm_up">' + esc(STR.dsm_up) + '</button>'
