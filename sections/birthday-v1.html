@@ -36,7 +36,7 @@
      bestellingen van het account. Staat er sinds de start van de code
      een bestelling die geen winkelmand meer is (bevestigd, verzonden
      of geannuleerd) met de cadeauregel erin (beloningsregel, of het
-     cadeauproduct REWARD_SKU aan 0 euro), dan geen popup en geen
+     cadeauproduct uit REWARD_SKUS aan 0 euro), dan geen popup en geen
      cadeau-knopje meer. Een winkelmand met de code telt nog niet.
 
      BETA (nu UIT, live sinds 06/10/2026): met BETA = true werkt het alleen in een browser
@@ -96,7 +96,7 @@
   var P_UNTIL = { name: '20079094e521a875', label: 'verjaardagscode tot' }; // datum: laatste geldige dag
   var DAYS = 30;                                // looptijd van de code
   var F_BDAY = 'x_studio_geboortedatum';        // Studio-veld op Contact: geboortedatum
-  var REWARD_SKU = 'R24850';                    // cadeauproduct in sjabloonprogramma 310 (Silk Light Amethyst 3 st.); pas aan als het cadeau wijzigt
+  var REWARD_SKUS = ['R24850', 'present'];      // cadeauproducten uit sjabloonprogramma 310, oud en nieuw (R24850 = Silk Light Amethyst 3 st., codes van voor de wissel; 'present' = nieuw cadeau sinds 16/11/2026); hoofdletters tellen niet
 
   if (window.__stxBirthday) { return; }
   window.__stxBirthday = true;
@@ -127,22 +127,22 @@
   var prefix = m ? '/' + rawPath.split('/')[1] : '';
 
   var T = {
-    nl: { hi: 'Gelukkige verjaardag', p: 'Van iedereen bij Sempertex Europe: een zakje ballonnen cadeau. Vul deze code in bij je winkelmand en het zakje komt er gratis bij.',
+    nl: { hi: 'Gelukkige verjaardag', p: 'Van iedereen bij Sempertex Europe: een mystery gift voor jou. Vul deze code in bij je winkelmand en je cadeau komt er gratis bij.',
       copy: 'Kopieer', copied: 'Gekopieerd', valid: 'Eenmalig te gebruiken, geldig tot en met {d}.', go: 'Naar mijn winkelmand', gift: 'Je verjaardagscadeau', close: 'Sluiten',
       c_t: 'Je verjaardag', c_p: 'Vul je verjaardag in en krijg elk jaar een cadeautje van ons.', c_save: 'Opslaan',
       c_saved: 'Bedankt! We slaan je verjaardag op, dat kan tot een dag duren.', c_have: 'Je verjaardag: {d}',
       c_fix: 'Klopt dit niet? Laat het ons weten via info@sempertexeurope.com.', c_err: 'Opslaan lukte niet. Probeer het later opnieuw.', c_bad: 'Vul een geldige datum in.' },
-    en: { hi: 'Happy Birthday', p: 'From all of us at Sempertex Europe: a bag of balloons on us. Enter this code in your cart and the bag is added for free.',
+    en: { hi: 'Happy Birthday', p: 'From all of us at Sempertex Europe: a mystery gift on us. Enter this code in your cart and your gift is added for free.',
       copy: 'Copy', copied: 'Copied', valid: 'Use it once, valid until {d}.', go: 'Go to my cart', gift: 'Your birthday gift', close: 'Close',
       c_t: 'Your birthday', c_p: 'Add your birthday and get a little gift from us every year.', c_save: 'Save',
       c_saved: 'Thank you! We are saving your birthday, this can take up to a day.', c_have: 'Your birthday: {d}',
       c_fix: 'Not right? Let us know at info@sempertexeurope.com.', c_err: 'Saving did not work. Please try again later.', c_bad: 'Please enter a valid date.' },
-    fr: { hi: 'Joyeux anniversaire', p: 'De la part de toute l\'équipe Sempertex Europe : un sachet de ballons offert. Entrez ce code dans votre panier et le sachet est ajouté gratuitement.',
+    fr: { hi: 'Joyeux anniversaire', p: 'De la part de toute l\'équipe Sempertex Europe : un cadeau mystère offert. Entrez ce code dans votre panier et votre cadeau est ajouté gratuitement.',
       copy: 'Copier', copied: 'Copié', valid: 'Utilisable une fois, valable jusqu\'au {d}.', go: 'Vers mon panier', gift: 'Votre cadeau d\'anniversaire', close: 'Fermer',
       c_t: 'Votre anniversaire', c_p: 'Indiquez votre date d\'anniversaire et recevez chaque année un petit cadeau de notre part.', c_save: 'Enregistrer',
       c_saved: 'Merci ! Nous enregistrons votre anniversaire, cela peut prendre jusqu\'à un jour.', c_have: 'Votre anniversaire : {d}',
       c_fix: 'Ce n\'est pas correct ? Écrivez-nous à info@sempertexeurope.com.', c_err: 'L\'enregistrement a échoué. Réessayez plus tard.', c_bad: 'Veuillez entrer une date valide.' },
-    de: { hi: 'Alles Gute zum Geburtstag', p: 'Von uns allen bei Sempertex Europe: ein Beutel Ballons als Geschenk. Gib diesen Code im Warenkorb ein und der Beutel kommt gratis dazu.',
+    de: { hi: 'Alles Gute zum Geburtstag', p: 'Von uns allen bei Sempertex Europe: ein Überraschungsgeschenk für dich. Gib diesen Code im Warenkorb ein und dein Geschenk kommt gratis dazu.',
       copy: 'Kopieren', copied: 'Kopiert', valid: 'Einmal einlösbar, gültig bis {d}.', go: 'Zum Warenkorb', gift: 'Dein Geburtstagsgeschenk', close: 'Schließen',
       c_t: 'Dein Geburtstag', c_p: 'Trag deinen Geburtstag ein und erhalte jedes Jahr ein kleines Geschenk von uns.', c_save: 'Speichern',
       c_saved: 'Danke! Wir speichern deinen Geburtstag, das kann bis zu einem Tag dauern.', c_have: 'Dein Geburtstag: {d}',
@@ -357,7 +357,7 @@
       args: [[['order_id.partner_id', '=', partnerId], ['order_id.state', '!=', 'draft'], ['order_id.date_order', '>=', start + ' 00:00:00'], ['price_total', '=', 0]]],
       kwargs: { fields: ['name', 'is_reward_line'], limit: 50 } })
       .then(function (lines) {
-        return (lines || []).some(function (l) { return l.is_reward_line || String(l.name || '').indexOf('[' + REWARD_SKU + ']') !== -1; });
+        return (lines || []).some(function (l) { return l.is_reward_line || REWARD_SKUS.some(function (k) { return String(l.name || '').toLowerCase().indexOf('[' + k.toLowerCase() + ']') !== -1; }); });
       })
       .catch(function (e) {
         if (window.console && console.info) { console.info('[STX verjaardag] bestellingen niet leesbaar:', e && e.message); }
