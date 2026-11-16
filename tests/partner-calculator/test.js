@@ -843,6 +843,36 @@ function check(name, ok, extra) {
     await ctx.close();
   }
 
+  console.log('\n/partner/sempertex-colombia/tools (alleen calculator, Spaans, Shopify)');
+  {
+    const { ctx, page } = await open('/partner/sempertex-colombia/tools');
+    check('tabtitel', (await page.title()) === 'Calculadora de double stuffing | Sempertex', await page.title());
+    const brand = await page.evaluate(() => getComputedStyle(document.querySelector('.stx-insp')).getPropertyValue('--purple').trim());
+    check('huisstijlkleur', brand.toLowerCase() === '#5a288e', brand);
+    check('font Nunito', /Nunito/.test(await page.evaluate(() => getComputedStyle(document.querySelector('.stx-insp')).fontFamily)));
+    const logo = await page.evaluate(() => { const i = document.querySelector('.stx-pt-bar img'); return i && i.complete && i.naturalWidth > 200 && i.getBoundingClientRect().height > 30; });
+    check('logo staat in de header', logo);
+    check('geen tabbladen (alleen calculator)', (await page.$('.stx-pt-tab')) === null);
+    const h = await page.textContent('#view-calculator h2');
+    check('titel in het Spaans', /Calculadora/.test(h || ''), h);
+    await page.click('#sw-inner .swatch:nth-child(3)');
+    await page.click('#sw-outer .swatch:nth-child(5)');
+    await page.waitForTimeout(250);
+    const picks = await page.$$eval('a.stx-pt-pick', (els) => els.map((e) => e.getAttribute('href')));
+    check('gekozen kleuren gaan naar hun productpagina', picks.length === 2 && picks.every((u) => /^https:\/\/sempertex\.com\/products\/globo-/.test(u)), JSON.stringify(picks));
+    const main = await page.getAttribute('#stx-pt-main', 'href');
+    check('hoofdknop naar hun ronde ballonnen', main === 'https://sempertex.com/collections/globos-fiesta-redondos', main);
+    await page.screenshot({ path: path.resolve(__dirname, 'sempertex-colombia-desktop.png'), fullPage: true });
+    await ctx.close();
+  }
+  {
+    const { ctx, page } = await open('/partner/sempertex-colombia/tools', 390);
+    const scroll = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+    check('mobiel: geen horizontale scroll', scroll <= 0, scroll);
+    await page.screenshot({ path: path.resolve(__dirname, 'sempertex-colombia-mobile.png'), fullPage: true });
+    await ctx.close();
+  }
+
   console.log('\n/partner/onbekend/tools (partner bestaat niet)');
   {
     const ctx = await browser.newContext({ viewport: { width: 1400, height: 1000 } });

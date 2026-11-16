@@ -155,6 +155,143 @@
       }
     },
 
+    'sempertex-colombia': {
+      name: 'Sempertex Colombia',
+
+      /* -- WELKE TOOLS --
+         Alleen de double stuffing calculator (geen tools-veld, zoals Liragram), 16/11/2026.
+
+         -- HUISSTIJL --
+         Uit sempertex.com (Shopify-thema, 16/11/2026): paars #5a288e op knoppen en links, font
+         Nunito. Logo = hun logosptx_1200x1200_1.png, bijgesneden, 392x100, 64 kleuren (4,3 KB);
+         favicon = de bloem rechtsboven uit dat logo (64x64). Accent = geel uit die bloem, zacht
+         gemaakt zodat het als highlight achter koppen leesbaar blijft. */
+      logo: 'data:image/png;base64,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',
+      logoHeight: 44,
+      homeUrl: 'https://sempertex.com/',
+      shopUrl: 'https://sempertex.com/collections/globos-fiesta-redondos',
+
+      brand: '#5a288e',
+      brandDark: '#2b1446',
+      brandLight: '#f4effa',
+      accent: '#ffe27a',
+      font: "'Nunito', 'Helvetica Neue', Helvetica, Arial, sans-serif",
+      fontUrl: 'https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap',
+
+      pageTitle: 'Calculadora de double stuffing | Sempertex',
+      favicon: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAYB0lEQVR42t17a5Qd1XXmt/c5VXWf/VC31HoLhMBEEmCQYlCkWMKQARPGGZNpEYOXDSQwGRtsZfzEEF81GOzEcQAjQxaJZxb43R3MeHAcx8FIsnjIoMZGWAKsB3ohqVvq931W1dl7ftRtIUAS3S05P1JrVdddt+89t/Z3vv3txzlFOIWHAgQFVq8GAcDqDigAEJLrf9pD29uNdnYaJHa/7Vi7HLZQAE9obAWpwugmeLp2uVUdPSc23qk3vrPdjL4+AGQPXZqefuCyxtP6F2F2z3xM/U37fP/IZ8cJgnaiPvaxgGWodhotnBwQNGHDC2DqgADA4MqZv59ZfMEVkTGXQeS8QF0mGikjHh7u14Gh56RcebxxMn+PHtwzcPT3Tjj2HRBoHYQzcRE4NQ/29CZQNoYb6kNl26/oPXg1YUmBgQ4lGr+r0UR9nQD9LRDM+Ov33enPO+1G29LYBBhE1RokrCmcIy5X4I0MAgcOYvhg/0vseFX++zuf1HYY6oI73qzTyuR/uhnXg1tvBM84F60zsgimAtwIRD5QpddR69mE4R99hc7r3wgwFELj1RuakPFEOvhH+Umpi97zg+CcMy91SojKlUhqVUOxI7iIEMdQJwpS0SjSTP+gLR/sr0QSX9v8nd2PjYL4Vn8nguqzaEMTPwgz6YPwZgJRC0BNEUwjYJoB08zITDLI5IGh3ggj6/4W33p8NVYXZLxM4PEKUld7O7+umjHnzP/fwZmzLq0MDse1nl7F0KBH5RKjPEJaLkErZWhphHRwyKBYtCWPY9OUTaeNfaTvmrlLCVBtf0M/VMFEUN2EM5DDzxHQB1FzgtKgQ9SrcD0e4t76edCgtE8w0BPDtnmYffVt+PCV/wDqUKBAqmOfWBqv2lNXlyvecPaN2XPmPVT1/EgqNUvqSOMY5BzEJVd1DhoLyAlUBBo7qKjLRpEpl2vdcYYuaX5o5/Cb5uolNIHw70hjEUpwIDKgBoCaAc4DNMqAJiRsaARMgyKY6ZAettj51c/Twtf+RvWLTNQhp5QBChB1dbme+ZNzksvcGotoPDhgUSmSFovQUglaKgPlCqRUhZZqQKUGqdSAcgiqhqBqZEqhxDnfLOIK/pgARZIzJBMhuAcZLEIJMQgGUECHAR0EdCi5un7A9QHxABAPAm6YUNvHCPOCxhW36rN6LtGd8kYEOVUuUEhuMljUsDSVsqfXhoeIyhWSUgVarkDLVUi5Ci3XgEoIrYTQapSctQgaOmgYA1HMkVOF6LUAgBVgIgg24wNI48MowwFH37wmxssAIEOADAJuAJD+5D03ALhBRvmwoHluI3JTb0ykpR1jcQU7XhE0BkuholKsgJwSnECdAKJQcYBTQBUQBaT+PgioRz4lkCgIivO1EwYr4HQtcgC+AIaBwIHeeuMKaOkNj5Wj3j9yEqOSA0zbZfr0wSm09NHeeo6gpwaArcmvq2CGCSNCGAtESRVA7OpGAypSv2F9swFHHQKAmFLFp05vza98rUdfwh8jjfegCAEfj7oC6AigApg6wEd+RwEVRpkVAc9DGtMA9GLB74ABIjBaC6E1SX5cBeqONm3sEYV7fVP/2i2IoW+f+WMoEUqJ8SR1EADEAFgBGwhSscEgGoHEC045AAzpddUYcFKfZJ1Q+kkEzWxyfboF5yPC7yMGjW0wBbSSgE2ujnmdBbEBuATwsZOskwNgfnJzIvRr5wRQnXAOzgSAdYi2b6+pw1XIwEcFAhqrKEsCgrgknRIFFArEjOJgBQ59Y52YsRtRL22dow2hSDTRIoIUygRAdZsqCIIl8ADQOPznCBlCQPsBHQB0WODtB+KBl5K6bGz0HPcsTpId+wn4l4zHUIydakd7sSFAa/ZFlDEdwJmoAe/s/ycCYQCQfoXdT2D9OS3GkK6FHcuIPA6/1TeKGPqnWBQEkI63+CAoMwHDthsDmA2LmahBISdR1koosH2MoeHDEDysAOEQlE45AzohCnBDHz9RcfKzrGUel/SPcpKAao/dCsV0NIFBiCfOAAgMFF7MUNxB5+FVKGi0ojwVAJDWz3qVRfTT7TXfBF+oOKlY0JhZoICSgiuRqA83hBBz6vDRhAwHYvhgWBiU8BU6F/fXiyo56WpQAVYst6NlKyVRn4F2aAGcffiVbudwd8qCaawsUMAaojDWQ65FItQwffwqUjc8DUYWFhFed2VcR+fRrYXCcrt6dQFAgZNbnkA1qKgjeNSc9kxenjONFW7d/tzw0X2+FZhjh2aZHzR6/IHBUGKmE4dVVUjaEldifZlDXp5fvf1vkcJ1KMIlxc8JZxtgMHwCAsAV8VsTaxcY99O56DlxHVNIJrrj7RUiHcv4goJvzp73Xm3yVjLzAgEaVMQwqF+g3UD8SNvrv34RAIbb503mlDyetnzhSCgxnQCEUQCqsb7EeVyau2XnfQjwZ28vgN5kuCIFAyK4MsGwPIkpWIM2PEmEIYCx7JrPNu/aZ2eKMXknsc/kR2ypl4rZffs2fqpyZLzlBYv1HfGxAKA61WUX5i5tPGva3dSaXhrkPcPOIR6sQQdCmFARqaImEhrS746wfmnO3u4dA1fPOY0981jOo3ePROrquQ4dC4CUJa46edVm3MXZT+y5BylcfQwAFApFAIZHcGW8Zlgfw3z83Sc+cXn//Q/fNDNz9valUxqH/0vseJEKzVKCTwoGiEAkqioAhojQLbCPiUQ/61nfsesou/WI4V0ArwRcz6Tzrs8tPm2NP78lU9IQrmdI5HBJcagGHYqgkQAgYoCzbBCK21+Dfr7t9U3fKl47e5rAPprzeclQKFJPd/mtIugRKBLthdoljV/cdgcsrn0TAElAZGQIrohtJqVfw1n4PpFGDUu+cn0uFV1pOL6EbdZzLgZEkiQQb5FiSv4QMchYII72RBJ9/eA6ugfokEQnOoQUBSZ0yKGW8/5b7srzH6ULpnGl57Cgd4ilrwjpLwN9IXQ4TkrdI0qkLkXGkAIx6df/ct+c/9W5tovK35z7fzxDH44EiFQdHYPahiDVKp/T8qXtt8DDX2Ik0QARCKfBccix9eUunIWvEqltXXb3bZmg9hHloA1gSBwC0BgKBikl5D1u1FUiSNrzrfV8FCulf94by/VY31FEnS7o0dapqT//kxdy7zt7WmnP604PDxrpH4H0F6GHKtC+EFqO36b1ChUCcZYNqiLri5HcMKd3086ha+eu8g2ttkyNpUgEb2aDa/DZDI7IJU1377wMFp/FCBJjssRSwas8Xa+nlp++2rqs++ZMUPkcOJMRcVDnJEmZ1ZzAaBwDcKSMkcaML16Qsfv7+/951365Fu2IGarIXHXZLQ1/dMG0SrkSI4wMXAyNHDQUaCRQp8cMdARiBXREYkkRL8/5tL5nxuI/bfzOznvLfrg0jGRtzmNOGWIFkj6QghQKis0CCIbrSuGQZ0asP+RWfS9dfM+02e/buDGTMR1OvYyLQlGJtV4s2fEYnxRfDGuZWWGaPcRnTm377zOn8F+go0N4fy43mS886wrkfUWxSnACiQSIHTR2QKxvov4xwggxiIsaOwOayeCu/pmLHxj+p7mvZ7+z831VdX9Ri3VXo8cmSIAQAVQFF4KxVwwUKQpA8o0Vt97yyUntd395ztTio0L2TBdVY6jWDSeaaKZMBBgiGMPkIDS9Ma1ntDV+AnM+OpWb/vCKs7ymzMJKuaQahwZRBIocEDlQrEm7S3UMCQWZmqoIlDJk/2d+RvmF3hmL/qr/4bbvNizfuWBYok9HojuafLaGiZSx1O1IgRkEo/8w64Y7O18dmPavjVm6IY5iVRdLvVyfsOGjxhOS+O4ZgmU2hkTnTJ38roULz17CPH/WJK8ha7VSEzgHiestbSfQ0IHCEzPgLWxgAjAksfOIT8+S9/fpme6V3tWL7yg/PPuHlcN8WcnEHy0iWk8pl402Z6+o1rzHLvrMqqpzdn3gY2FYq4TQ8fQG3rn28AzDGgYxw7cGRNBpk/I6fVLjRVaqUR7iVMMQGrmkvxe5+msdbTaMs+NDpqpOAGiKzGxj8KnarOqn3Obmp0q/op/Aytd1VnVJ3pOF9z3/we5dByafX2yo/Swf4lzfz06FKMTVoEnvSydStr/R8SEwJULoG4ZlBhtDubRP2Uwwz+pwuYThEik7IIqOMj4RwLHO/rEEEgCqWo8CCk4xLwsML/ONxeBm2r1hfsOPzm+tTH75h8WRV6aE29e0pb76WBs3BKpXZqEfMhykBELqIjcRHdBEoGCIwcxgJhhmWDbwrEXKt3mubdzcX3u915E61iiCxnEigJGARgVQTmr5mSlpWWpZXFyFoL8SHajMpL/essou23Ld3tIhXy6YE6dvu3t37Zv7nxle3N09cu/rTTpnUMPbyUV72aYMyNCRmmCs6q8JAwwDHhEsM6w18KyB71mIkwPcv+25V2u7erekajGpE0ejMx9LPQKcrAwBCnUEULPnWQ1lQznDl3/n/6WWNmWCC+JU3CRZeSRSQWjs7GIqfWvE9PyO9aU7h54a7tq7/LSzalK7nVVG2PoMVTcmVa7Dz8T1CEDwTGJ8KvClJkAs0s3zgF737I6fmD39pATVWgw4B4yCcBK7W5L4oS5LxpAhDYfdXc9cEfxp1+OpT04Kzf8oDkaqhNNLUyrPqFM4da4oFSGCnzbpm7Y1eL/cvmbrF4tPrr5rb0bfTS5axzZl6v0pHUvzlRhgwzB1/ycmzaQ8s/9QX/zirgPPsQKEHYMP9q/77b5UKbTK4jR0QKTQePz0r0umKCABEeWNNUW47sY9suzLL/KDO27m7zaKuaFcjmNVEEc8Z2ThYG/o3G6P2CDp+OuQVGJWNPnk3/pC6+deGVg3OHvP2sLFzoV/w2yJ+J1dwhBgmWCZ4BsGG0bas469NG3b2/vz7T/98YsMgCZh655wx+GPVZ/aE3lFZ1Q00kj0yMLD2AwXhcYEUEDMeWs4IuytDbkb2/ZtuvDvt6Xzsw4GTwfWXFoqRQIlK6LgmNoOXVAbhuLlgAwASJLck43gtKg1SYHf1ZtOPbm9+XNfOrC28PmiRh8i1REyluvLIsdmACfiZ5hhiOFZ1kw6xS9s3x1teHXf3wEbK5x01dvNtMHNj5d2D3yk+mJvf+OQeIiVVJIk+K2BsL4gVV8BVKdQ5xNxM3vWMKFKbpsORB+bvNed8fHBKY8+0L38vsYB/gkszamWYyEiHmWxIc789oadEQnttUndpEdFEmIQVzQSqGja+Le90vLZx/uf3PrDvQEth4u3kA0sEqWSt9b5fBQLfGvEt1Y37+3jja+8dldp411PoFBgTj7c5ToBM3Ng8/fdcHjxwN7iD3QkipvJmhQx+0RkQBg9LYgCIkoTcwNb02Q8E5LuG4zjb3uH46va9m46a/Xe7BP3dWdu/4NnhrcHvvl4LMpxzSXGv6lFTtg1+aAhoQMWDAbJsUKqQGlEK3GOgitfbjltY2n9oUP7fH2viSrfBltDbPlIOa3qmOAskfMNi8eMkVj5hd2HuHv77jsP/uKuDhQKjI7V+vaOUB3J/dMuWBQYukSULhZgPoFaoUr1rm5MSvuUaYcwXmzqoSdStcpWspt7vzC0/KK2l3SVBS5NN3gtlVIMiUVwlOFHH4Ex+L+Lfznt/uCvrmls8r522BVDgPwTRZQ8pUxRay85V/qvCwYf2D3n4sJVMeh2EL2b2BKRgSFCYBgEBycSV8Jo01CtcufIM1/5yVFxTY/ZE6z/4wgVddEir+81kw4ay+mhw+l4RltLccv5e3Rh19YQAK7U5a0Xb5U/8QfxKc8zv8cBIY4EcaQRAEsnaHn7xuCxxc9PWRPc/KGGxuC+filHALx3kJwoR75X0viZAS2//6L++4cXLbrJO9g441KoXgnFPAU8Ih1WxdZKDT8eeBYbk0aI1pczjrM2WF9po060m3Z0KQFC3d0RgAj9SJqiJQDbgS9vWNacZf6M+aV+JNPgz6gGDlEsQFml3mrwxqKeP0WxKJYyhpI1szEkHt6w1lwjpf5ANf0ACoWPvNDRESnwr0jO4zdHO97sYvZ4q0BAl3vb+oACXV3glSvh7tmwdIXn04NBxpwdhYqR4TCGkiGqa9cYK7XIufgiACBpiVUw1nSXQWZEay7N3rVb1pSeXgA8eNOim7yHctOS2Z2yQNG7hTBlgaJriwId8o5d4bGs6RNB73tm2eW+z99jj5vCiqu3pojHmx4ajyiOdG9fS3XhNYtXfCMf+B8ekmpMIDvGISQgAwEOOq794Vm9976WdMBITvk2uVHj13Qvn0fM3wZzU63sHEB23MbXRzSGIUa3X3bbOVYNZsYqoHEUPATiUJ1k4E1H7H2a3tgvg9/BPsECAYBE0pHJei1xTRwRmYmmyUpQYwnq69Zp/zLTFyNnRBDoGFd0joLBjmhNAVy3ecqquZR4Kp1SAFQLTNQhX396ydkEc7lGvho+obiPBQHxfEbcED9/WrmVAzbTI3U6WkaP05vUZ5v2Iv4oAHShnU8pAA91/9gkWNsV+WxukhFfDPlsyE5oUVcVSgRbHIrj2pTopQEUJ6fJMxMvvEkNCEr8fgWoHfNP7VbZ5p1zJdkdIr/XkG2Czxmx7MOwjwQEHmePQCVIG3Khe3lPdv8rB7ND851MvOpWKMVJ5J3+Stvn5hA6pIACnxoAFLRyZRISDXmTPTTAN3nyOQPLASz7MGTGxYS6lyszb3iIDpS1MZqpOhH/fyOgOqMgQ3kK3QwAWI2tdMo2SY1GACYrKZOHGAfVelIFgijVa2D3zk0bhbJhUy27iGN+BAAoYh5Xl3N0cy0TyKuvPQUGqMJqLfTH1zMcA1/XrV1ugfVx5Er7gyANrRhVCCBcn/nkuRYnIZzgHUBQ9TxDNRetvfm9v/glAJDDITApHZWiHpevhgCPQPUrPIYJSE1gSfpqYXwYpVMLAIB19WtVRjaVh2LN2EbrNFYC1YM2gSSJ4MoRRONkA+Vx0r84FoXijiO5N/N2Op4EMIFsva3rAeQz4DHgA+wbaMAgnxGkA7jDYT9Xwh31/TxjUpUxUW/1ivVOFdRTGnxiuNa3PZ9rRsrkNbB5BCaPwOSQaEIKlnwY8uqF81t3mapL5yxLLN/q+7dLntUCGAoEJn6lpLVdHhlWUoEhIGBQjkENBmgy4BYLavFAkz2YKT54Sgo8JQUzOQ2anAHnUqpl9+v5+EafotO8I5vGAwARtKurne+5fF//YLjnq0IR5YIWDUwOgW1EYPLwTR4+5+CPCiN74KTvkRBf1AVpYyrFaBecu7Wjo0NWLgAp2s28nq/1Avhu2vrEWeu4wYKbLKjZA7f6yTnFB7elwK1pUGsapjUNbk2Dm9PwpucQHa6RDtfuTX6wXU75TtGVK7ucqhIR/eOjvznjkvNmX3I1BijWsM+wRT0poiNrxvWt1VCNIOLEC4yJQykz63UfX/bM/kIB3LESbjXmswL0MsVrRsLKVdnmzNnlFjg2bOAzKDCAz2DfAL4BeckJn0GeBeWDuKFsbc/eff/4ruK9GxLBpjHnAeNNZXnFuhW05+kHn8z6M86d0Tb3LHKWRMQlHS6ty5yOlrUCEIIss0IOxZFec8tFG57o7IS5+eZEKddjva6G0pTy+0dusUs2xZF8INuWy8sM3yHjg3MecdYHNQQwuQCUD8DZQCmfFtOSR1O6wfSt37khfK77xjWFq2urL15B67Fef3cPTdURbu/U3LULVt0+OTdvVS7dEIRuBKVKEeVwBDU3jIhGIDSCkeoQ4jjcUCqFn/z0imd/VVBwxzG2sY1u1Nia/+QSm0k/3LSg9cx4fh6uwcbwrYKZ2PMUKQubDrxcKouor4zSL3Z93/3oVx+fTd/sV1Uaq++f3GNzR2imeOC5JQsnBQtX5YKW850LZ9VcNV+Lh+OqGzpcc8PbVN33frH3qUe6VsK1a7vpoi53/BDfaQgr3dbMqmnGs7f7s/NX5s+dOjs7qxk6KQObDWCEcKg0Etr+8PnSup0PzXnu1kdAQEEL3IEO+Y97cFKTvsmovy1fg9wl5804w2i+KTAm0tgc+Mzyza+90YwBd3S8c64/ygQA+A0+Ns/AXJh6V/NpPKehkZvSVXLYH206+Orpu+9cl3ibEggY78yfskMVtHZtwR4Ly4IWuPOoR2vH84CW4sTfIyZ0trebk71/OpVAdHW1M9oBdAFb2udrB3XIya0pFhgAo32BorNdu7q6aO4TA7xooFnQtVL+0z+V/h9x/H9+V4BQ7vyobgAAAABJRU5ErkJggg==',
+
+      /* Rechtstreeks naar de productpagina per kleurcode, in pesos en met hun eigen winkelmand.
+         sempertex.com is Shopify; hun titels hebben geen kleurcode, maar de bestandsnaam van de
+         productfoto wel (R12AzulHortensia-PeriwinkleBlue_042.jpg). Gekoppeld uit /products.json
+         (1672 producten, 16/11/2026) op die code, alleen effen ronde latex (geen print, geen
+         surtido): alle 93 kleuren van de tools. Waar een foto toevallig een tweede code-achtig
+         getal had, gekozen op kleurnaam. Let op hun namen: Pearl = SATIN, Metallic = METAL,
+         Periwinkle Blue 042 = Azul Hortensia, Rosewood 010 = Palo de Rosa, Rose 011 = Rosa,
+         Candy Pink 008 = Rosado Dulce, Sunset Orange 062 = Naranja Cobrizo, Coffee 074 = Cafe.
+         Nieuwe kleur bij hen = regel erbij; zonder regel valt een kleur terug op searchUrl. */
+      productUrl: 'https://sempertex.com/products/{handle}',
+      products: {
+        '005': 'globo-para-fiesta-latex-redondo-fashion-blanco', '006': 'globo-redondo-fashion-blanco-lino',
+        '008': 'globo-redondo-fashion-rosado-dulce', '009': 'globo-para-fiesta-latex-redondo-fashion-rosado',
+        '010': 'globo-para-fiesta-latex-redondo-fashion-palo-de-rosa', '011': 'globo-latex-redondo-fashion-rosa',
+        '012': 'globo-para-fiesta-latex-redondo-fashion-fucsia', '013': 'globo-redondo-fashion-fucsia-cosmo',
+        '015': 'globo-para-fiesta-latex-redondo-fashion-rojo', '016': 'globo-latex-redondo-fashion-rojo-imperial',
+        '018': 'globo-latex-redondo-fashion-merlot', '020': 'globo-para-fiesta-latex-redondo-fashion-amarillo',
+        '021': 'copia-de-globo-latex-redondo-fashion-amarillomiel', '023': 'globo-para-fiesta-latex-redondo-fashion-mostaza',
+        '027': 'globo-para-fiesta-latex-redondo-fashion-eucalipto', '029': 'globo-latex-redondo-fashion-verde-trebol',
+        '030': 'globo-para-fiesta-latex-redondo-fashion-verde', '031': 'globo-para-fiesta-latex-redondo-fashion-verde-lima',
+        '032': 'globo-para-fiesta-latex-redondo-fashion-verde-selva', '035': 'globo-latex-redondo-fashion-turquesa-profundo',
+        '037': 'globo-para-fiesta-latex-redondo-fashion-aguamarina', '038': 'globo-para-fiesta-latex-redondo-fashion-azul-caribe',
+        '040': 'globo-para-fiesta-latex-redondo-fashion-azul', '041': 'globo-para-fiesta-latex-redondo-fashion-azul-rey',
+        '042': 'globo-latex-redondo-fashion-hortensia', '044': 'globo-para-fiesta-latex-redondo-fashion-azul-naval',
+        '050': 'globo-para-fiesta-latex-redondo-fashion-lila', '051': 'globo-para-fiesta-latex-redondo-fashion-violeta',
+        '058': 'globo-redondo-fashion-blush-crema', '060': 'globo-para-fiesta-latex-redondo-fashion-durazno',
+        '061': 'globo-para-fiesta-latex-redondo-fashion-naranja', '062': 'globo-latex-redondo-fashion-naranja-cobrizo',
+        '070': 'globo-latex-redondo-fashion-moca', '071': 'globo-para-fiesta-latex-redondo-fashion-arena',
+        '073': 'globo-para-fiesta-latex-redondo-fashion-latte', '074': 'globo-para-fiesta-latex-redondo-fashion-cafe',
+        '076': 'globo-para-fiesta-latex-redondo-fashion-chocolate', '080': 'globo-para-fiesta-latex-redondo-fashion-negro',
+        '081': 'globo-para-fiesta-latex-redondo-fashion-gris', '082': 'globo-redondo-fashion-gris-urbano',
+        '107': 'globo-para-fiesta-latex-redondo-pastel-dusk-crema', '110': 'globo-para-fiesta-latex-redondo-pastel-dusk-rosa',
+        '126': 'globo-para-fiesta-latex-redondo-pastel-dusk-te-verde', '140': 'globo-para-fiesta-latex-redondo-pastel-dusk-azul',
+        '150': 'globo-para-fiesta-latex-redondo-pastel-dusk-lavanda', '212': 'globo-para-fiesta-latex-redondo-neon-fucsia',
+        '220': 'globo-para-fiesta-latex-redondo-neon-amarillo', '230': 'globo-para-fiesta-latex-redondo-neon-verde',
+        '240': 'globo-para-fiesta-latex-redondo-neon-azul', '261': 'globo-para-fiesta-latex-redondo-neon-naranja',
+        '390': 'globo-para-fiesta-latex-redondo-fashion-transparente', '405': 'globo-para-fiesta-latex-redondo-satin-blanco',
+        '406': 'globo-para-fiesta-latex-redondo-satin-perla', '409': 'globo-para-fiesta-latex-redondo-satin-rosado',
+        '430': 'globo-para-fiesta-latex-redondo-satin-verde', '440': 'globo-para-fiesta-latex-redondo-satin-azul',
+        '450': 'globo-para-fiesta-latex-redondo-satin-lila', '481': 'globo-para-fiesta-latex-redondo-satin-plata',
+        '512': 'globo-para-fiesta-latex-redondo-metal-fucsia', '515': 'globo-para-fiesta-latex-redondo-metal-rojo',
+        '530': 'globo-para-fiesta-latex-redondo-metal-verde', '540': 'globo-para-fiesta-latex-redondo-metal-azul',
+        '568': 'globo-para-fiesta-latex-redondo-metal-dorado-rosa', '570': 'globo-para-fiesta-latex-redondo-metal-dorado-cobre',
+        '580': 'globo-para-fiesta-latex-redondo-metal-negro', '609': 'globo-para-fiesta-latex-redondo-pastel-mate-rosado',
+        '620': 'globo-para-fiesta-latex-redondo-pastel-mate-amarillo', '630': 'globo-para-fiesta-latex-redondo-pastel-mate-verde',
+        '640': 'globo-para-fiesta-latex-redondo-pastel-mate-azul', '650': 'globo-para-fiesta-latex-redondo-pastel-mate-lila',
+        '660': 'globo-latex-redondo-pastel-mate-durazno-malibu', '661': 'globo-latex-redondo-pastel-mate-nude',
+        '663': 'globo-para-fiesta-latex-redondo-pastel-mate-melon', '806': 'globo-latex-redondo-silk-blanco-nacar',
+        '809': 'globo-latex-redondo-silk-rosa-primaveral', '826': 'globo-latex-redondo-silk-verde-menta',
+        '839': 'globo-latex-redondo-silk-azul-artico', '850': 'globo-latex-redondo-silk-amatista',
+        '870': 'globo-latex-redondo-silk-rocio-de-oro', '873': 'globo-latex-redondo-silk-perla-crema',
+        '880': 'globo-latex-redondo-silk-gris-medianoche', '909': 'globo-para-fiesta-latex-redondo-reflex-rosado',
+        '912': 'globo-para-fiesta-latex-redondo-reflex-fucsia', '915': 'globo-para-fiesta-latex-redondo-reflex-cristal-rojo',
+        '931': 'globo-para-fiesta-latex-redondo-reflex-verde-lima', '932': 'globo-para-fiesta-latex-redondo-reflex-verde-aurora',
+        '940': 'globo-para-fiesta-latex-redondo-reflex-azul', '944': 'globo-latex-redondo-reflex-azul-galaxy',
+        '951': 'globo-para-fiesta-latex-redondo-reflex-violeta', '968': 'globo-para-fiesta-latex-redondo-reflex-dorado-rosa',
+        '970': 'globo-para-fiesta-latex-redondo-reflex-dorado', '971': 'globo-para-fiesta-latex-redondo-reflex-champana',
+        '981': 'globo-para-fiesta-latex-redondo-reflex-plata'
+      },
+      searchUrl: 'https://sempertex.com/search?q={name}&type=product',
+
+      strings: {
+        calcp_eyebrow: 'Herramientas / Calculadora',
+        calcp_h: 'Calculadora de <span class="hl">double stuffing</span>',
+        calcp_lede: 'Elige un globo interior y uno exterior y mira el color resultante antes de inflar un solo globo.',
+        calc_inner: 'Globo interior',
+        calc_outer: 'Globo exterior',
+        calc_result: 'Resultado',
+        calc_lbl_inner: 'Interior',
+        calc_lbl_outer: 'Exterior',
+        calc_lbl_result: 'Resultado',
+        calc_swap: 'Intercambiar interior y exterior',
+        calc_note: 'Esta vista previa es una aproximación. El color final depende del tamaño de inflado, la luz y el acabado de los globos utilizados.',
+        dsm_label: 'Encuentra un color',
+        dsm_hint: 'Sube una foto y toca el color que quieres. La calculadora encuentra el globo interior y el exterior que más se acercan.',
+        dsm_up: 'Subir una foto',
+        dsm_other: 'Otra foto',
+        dsm_pick: 'o elige un color',
+        dsm_tip: 'Toca el color que quieres conseguir. La foto se queda en tu dispositivo.',
+        dsm_target: 'Tu color',
+        dsm_best: 'Las combinaciones más cercanas. Toca una para cargarla en la calculadora.',
+        dsm_q1: 'Muy parecido',
+        dsm_q2: 'Parecido',
+        dsm_q3: 'Cercano',
+        dsm_q4: 'La opción más cercana',
+        dsm_single: 'Consejo: {name} solo ya se acerca mucho, no necesitas double stuffing.'
+      },
+
+      backLabel: 'Volver a la tienda',
+      footerText: 'Herramienta desarrollada por Sempertex Europe.',
+
+      order: {
+        title: 'Compra estos globos en Sempertex',
+        lead: 'Toca un color y llegas directo a ese globo en la tienda de Sempertex, con todas sus medidas y precios.',
+        innerLabel: 'Interior',
+        outerLabel: 'Exterior',
+        mainBtn: 'Ver todos los globos redondos',
+        sizesLabel: 'O elige una línea:',
+        sizes: [
+          { label: 'Fashion', url: 'https://sempertex.com/collections/globos-fiesta-textura-fashion' },
+          { label: 'Pastel Mate', url: 'https://sempertex.com/collections/globos-fiesta-textura-pastel-mate' },
+          { label: 'Pastel Dusk', url: 'https://sempertex.com/collections/globo-fiesta-textura-pastel-dusk' },
+          { label: 'Satin', url: 'https://sempertex.com/collections/globos-fiesta-textura-satin' },
+          { label: 'Metal', url: 'https://sempertex.com/collections/globos-fiesta-textura-metal' },
+          { label: 'Reflex', url: 'https://sempertex.com/collections/globos-fiesta-textura-reflex' },
+          { label: 'Silk', url: 'https://sempertex.com/collections/globo-fiesta-textura-silk' },
+          { label: 'Neón', url: 'https://sempertex.com/collections/globos-fiesta-textura-neon' }
+        ]
+      }
+    },
+
     mooideco: {
       name: 'Mooideco',
 
