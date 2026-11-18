@@ -600,6 +600,13 @@ def avoid_list(c, cls=""):
     esc = G["esc"]
     return ('<div class="' + cls + '">' + "".join(f'<div class="step"><b>{i+1}.</b><span>{esc(s)}</span></div>' for i, s in enumerate(c["steps5"])) + '</div>')
 
+def portfolio_photo(c, ink="#111"):
+    """'Klant eerst': foto van een afgewerkt organic design met stempel (stijl 3 cover)."""
+    esc = G["esc"]
+    return (f'<div style="position:relative;width:330px;height:380px">'
+            f'<div style="position:absolute;left:0;top:10px;width:330px;height:350px;border-radius:18px;overflow:hidden;box-shadow:0 0 0 8px #fff,0 10px 14px rgba(0,0,0,.18)">{G["photo"]("organic_design.jpg", 330, 350, "center 45%")}</div>'
+            f'<div style="position:absolute;left:-6px;top:330px;transform:rotate(-5deg);background:#fff;color:{ink};border:3px solid {ink};border-radius:10px;padding:8px 16px;font-size:22px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;box-shadow:0 4px 0 rgba(0,0,0,.18);white-space:nowrap">✓ {esc(c["builds_lbl"])}</div></div>')
+
 # ---------------------------------------------------------------- STIJL 1
 def s1_slides(b, c):
     CUR["pal"] = b["pal"]; c = fill_pal(b, c); P = b["pal"]
@@ -621,10 +628,10 @@ def s1_slides(b, c):
     steps = "".join(f'<div class="step" style="font-size:{sfs}px"><b>{i+1}.</b><span>{esc(s)}</span></div>' for i, s in enumerate(c["steps"]))
     S.append(f"""
 <section class="slide s1">
-  <div class="box" style="left:70px;top:120px;width:790px;height:470px">
-    <h2 data-fit style="font-size:72px;max-height:380px;line-height:1.1">{esc(c['steps_title'])}</h2>
+  <div class="box" style="left:70px;top:120px;width:580px;height:470px;padding:40px 44px">
+    <h2 data-fit style="font-size:66px;max-height:380px;line-height:1.1">{esc(c['steps_title'])}</h2>
   </div>
-  <div class="bigballoon" style="left:790px;top:60px;transform:scale(.85);transform-origin:top left">{centrepiece([b['hero'], P[0], P[1], P[2]], 76, 230, 250, b['ink'])}</div>
+  <div class="box" style="left:670px;top:120px;width:340px;height:470px;padding:0;overflow:hidden;display:flex;flex-direction:column">{G['photo']('bag_red.jpg', 332, 231, 'center 52%', 0, '', '140%')}{G['photo']('bag_gold.jpg', 332, 231, 'center 52%', 0, f'border-top:4px solid {b["ink"]}', '140%')}</div>
   <div style="position:absolute;left:120px;top:600px">{arrow_svg(b['ink'], 150, 140)}</div>
   <div class="box" style="left:270px;top:610px;width:740px;height:560px;padding:28px 38px">
     <div style="font-size:27px;font-weight:{b['body_b']}">{esc(c['steps_lead'])}</div>
@@ -698,7 +705,7 @@ def s2_slides(b, c):
   <div style="position:absolute;left:300px;top:552px;width:0;height:0;border-left:22px solid #fff;border-top:14px solid transparent;border-bottom:14px solid transparent"></div>
   <h1 data-fit style="position:absolute;left:320px;right:70px;top:70px;max-height:430px;font-size:64px">{hl(c['cover_title'])}</h1>
   <div class="frame" style="left:320px;top:520px;width:690px;transform:rotate({rot(b,-2)}deg)">
-    <div class="ph" style="height:460px;padding:20px;box-sizing:border-box"><div style="transform:scale(1.1)">{portfolio(P, c, '#111')}</div></div>
+    <div class="ph" style="height:460px;padding:0;overflow:hidden">{G['photo']('organic_design.jpg', 658, 460, 'center 48%', 4)}</div>
   </div>
   <div class="tagw" style="right:70px;top:960px;white-space:nowrap"><span class="ast">✳</span>{esc(c['cover_tag'])}</div>
   <div style="position:absolute;left:70px;top:1060px;font-size:36px;line-height:1.1">{esc(c['cover_with'])}</div>
@@ -710,7 +717,7 @@ def s2_slides(b, c):
   <div class="label" style="top:70px">{esc(c['steps_label'])}</div>
   <div class="body" style="position:absolute;left:70px;right:70px;top:160px;font-size:26px"><b style="font-size:34px">{esc(c['steps_title'])}</b>{steps}</div>
   <div class="frame" style="left:80px;top:740px;width:930px;transform:rotate({rot(b,-1.5)}deg)">
-    <div class="ph" style="height:340px;padding:20px 24px;box-sizing:border-box;background:#fff;color:#111"><div style="transform:scale(.92)">{stock_row(P, c, 120, '#111')}</div></div>
+    <div class="ph" style="height:340px;padding:18px 22px;box-sizing:border-box;flex-direction:row;gap:18px;background:#fff;color:#111">{G['photo']('bag_gold.jpg', 300, 300, 'center 52%', 12, '', '150%')}<div style="flex:1;min-width:0;transform:scale(.88)">{stock_row(P, c, 110, '#111')}</div></div>
   </div>
   {s2_footer(b)}
 </section>""")
@@ -788,7 +795,7 @@ def s3_slides(b, c):
   <div class="lblw" style="left:110px;top:500px;transform:rotate({rot(b,-4)}deg)">{esc(c['s3_left'])}<br><span class="meta">● {esc(c['s3_left_meta'])}</span></div>
   <div class="lbld" style="right:110px;top:500px;transform:rotate({rot(b,4)}deg)">{esc(c['s3_right'])}<br><span class="meta" style="background:rgba(255,255,255,.18)">● {esc(c['s3_right_meta'])}</span></div>
   <div style="position:absolute;left:60px;top:680px;transform:scale(1.18);transform-origin:top left">{logo_first(loud, c, b['ink'])}</div>
-  <div style="position:absolute;right:60px;top:680px;transform:scale(1.18);transform-origin:top right">{portfolio(P, c, b['ink'])}</div>
+  <div style="position:absolute;right:60px;top:680px;transform:scale(1.18);transform-origin:top right">{portfolio_photo(c, b['ink'])}</div>
   <div class="vsbadge" style="left:485px;top:850px">vs</div>
   {s3_footer(b, stx_h=60)}
 </section>""")

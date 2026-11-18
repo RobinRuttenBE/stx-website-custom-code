@@ -487,10 +487,10 @@ def s1_slides(b, c):
     steps = "".join(f'<div class="step"><b>{i+1}.</b><span>{esc(s)}</span></div>' for i, s in enumerate(c["steps"]))
     S.append(f"""
 <section class="slide s1">
-  <div class="box" style="left:70px;top:120px;width:800px;height:560px">
-    <h2 data-fit style="font-size:84px;max-height:460px;line-height:1.1">{esc(c['steps_title'])}</h2>
+  <div class="box" style="left:70px;top:120px;width:580px;height:560px;padding:40px 44px">
+    <h2 data-fit style="font-size:74px;max-height:470px;line-height:1.1">{esc(c['steps_title'])}</h2>
   </div>
-  <div class="bigballoon" style="left:830px;top:90px;transform:rotate(14deg)">{balloon(b['hero'], 'fashion', 180)}</div>
+  <div class="box" style="left:670px;top:120px;width:340px;height:560px;padding:0;overflow:hidden">{G['photo']('organic_design.jpg', 332, 552, 'center')}</div>
   <div style="position:absolute;left:120px;top:690px">{arrow_svg(b['ink'], 150, 140)}</div>
   <div class="box" style="left:300px;top:720px;width:710px;height:440px;padding:40px 46px">
     <div style="font-size:30px;font-weight:{b['body_b']}">{esc(c['steps_lead'])}</div>
@@ -573,7 +573,7 @@ def s2_slides(b, c):
   <div style="position:absolute;left:300px;top:552px;width:0;height:0;border-left:22px solid #fff;border-top:14px solid transparent;border-bottom:14px solid transparent"></div>
   <h1 data-fit style="position:absolute;left:320px;right:70px;top:70px;max-height:430px;font-size:74px">{hl(c['cover_title'])}</h1>
   <div class="frame" style="left:320px;top:520px;width:690px;transform:rotate({rot(b,-2)}deg)">
-    <div class="ph" style="height:460px;flex-direction:row;gap:40px">{duplet(150)}{cluster4(98)}</div>
+    <div class="ph" style="height:460px;padding:0;overflow:hidden">{G['photo']('organic_design.jpg', 658, 460, 'center 48%', 4)}</div>
   </div>
   <div class="tagw" style="right:70px;top:960px;white-space:nowrap"><span class="ast">✳</span>{esc(c['cover_tag'])}</div>
   <div style="position:absolute;left:70px;top:1060px;font-size:36px;line-height:1.1">{esc(c['cover_with'])}</div>
@@ -588,7 +588,7 @@ def s2_slides(b, c):
     <div class="ph" style="height:400px">{duplet(165)}</div>
   </div>
   <div class="frame" style="left:560px;top:780px;width:430px;transform:rotate({rot(b,3)}deg)">
-    <div class="ph" style="height:300px">{balloon(b['hero'], 'fashion', 150)}</div>
+    <div class="ph" style="height:300px;padding:0;overflow:hidden">{G['photo']('bag_red.jpg', 398, 300, 'center 52%', 4, '', '135%')}</div>
   </div>
   {s2_footer(b)}
 </section>""")

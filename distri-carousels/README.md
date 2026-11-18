@@ -10,6 +10,7 @@ Maakt van een STX EU blog per distributeur 3 Instagram-carousels (7 slides, 1080
 - `brands.json` : per distri fonts, kleuren, logo, taal, domein (gegenereerd door `brands_build.py` uit `Distri huisstijlen/`)
 - `assets/logos/` : uitgeknipte distri-logo's; `assets/stx_*` : Sempertex logo's en flor
 - `balloons/` : uitgeknipte productfoto's van sempertexeurope.com (18 R12 kleuren + `red260` 260 modelleerballon + `red5` 5 inch); namen en codes in `carousel_copy.SX`
+- `photos/` : echte foto's (max 1800 px, jpg) die via `photo(name, w, h, pos, radius, extra, fit, bg)` en `photo_lbl(...)` in build.py als achtergrond in een slide gezet worden. Nu: helium (bouquet, tank, Hi-Float met/zonder, zweeftijd 0/12/24 u), double stuff (roze, blauw), magazijn Genk, gesloten zakken (rood, goud), gestrande ballon (releases), kostprijscalculator op laptop, organic design. Gebruikt in artist, helium, pricing, doublestuff, storage, releases, startbiz en garland. Nieuwe foto: in `photos/` zetten (jpg, max 1800 px) en in de topic-module oproepen; `fit='150%'` zoomt in op het onderwerp.
 - `cut_balloons.py` : knipt nieuwe productfoto's uit Chrome-screenshots
 - `deliver_all.py` : zips per land + preview_all.html ; `sheet.py` : contactsheet voor QA
 - `fonts/package.json` : `cd fonts && npm install` (fontsource)

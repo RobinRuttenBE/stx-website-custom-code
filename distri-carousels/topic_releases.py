@@ -569,6 +569,14 @@ def build_visual(keys, c, ink="#111"):
             f'<div style="position:absolute;left:-10px;top:0;width:350px;transform:scale(.9);transform-origin:top left">{garland(keys, 84, 56, 6)}</div>'
             f'<div style="position:absolute;left:40px;top:110px;transform:scale(.85);transform-origin:top left">{anchored(keys[:3], 96, 250, 290, c["weight_lbl"], ink)}</div></div>')
 
+def litter_photo(c, ink="#111"):
+    """'Oplaten': echte foto van een gestrande ballon in de haag, met afval-stempel (stijl 3 cover)."""
+    esc = G["esc"]
+    return (f'<div style="position:relative;width:330px;height:370px">'
+            f'<div style="position:absolute;left:0;top:20px;width:330px;height:330px;border-radius:18px;overflow:hidden;box-shadow:0 0 0 8px #fff,0 10px 14px rgba(0,0,0,.18)">{G["photo"]("release_litter.jpg", 330, 330, "center 40%")}</div>'
+            f'<div style="position:absolute;left:20px;top:300px;transform:rotate(-6deg);background:#fff;color:#E03131;border:3px solid {ink};'
+            f'border-radius:10px;padding:8px 16px;font-size:22px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;box-shadow:0 4px 0 rgba(0,0,0,.18);white-space:nowrap">{esc(c["litter_lbl"])} ↓</div></div>')
+
 # ---------------------------------------------------------------- STIJL 1
 def s1_slides(b, c):
     CUR["pal"] = b["pal"]; c = fill_pal(b, c); P = b["pal"]
@@ -609,7 +617,7 @@ def s1_slides(b, c):
   </div>
   <div class="stack" style="top:700px;height:410px">
     <div class="card" style="top:0;height:330px;transform:translate(40px,-50px) scale(.95);opacity:.6"></div>
-    <div class="card" style="top:0;height:380px;padding:30px 34px">{facts_grid(c['rule1_facts'])}</div>
+    <div class="card" style="top:0;height:380px;padding:26px 30px;display:flex;align-items:center;gap:22px">{G['photo_lbl']('release_litter.jpg', c['litter_lbl'], 300, 320, b['ink'], 'center 40%', 16, 14)}{facts_grid(c['rule1_facts'], 'facts', 36, 16)}</div>
   </div>
   {s1_footer(b)}
 </section>""")
@@ -681,7 +689,7 @@ def s2_slides(b, c):
   <div class="label" style="top:70px">{esc(c['steps_label'])}</div>
   <div class="body" style="position:absolute;left:70px;right:70px;top:160px;font-size:27px"><b style="font-size:36px">{esc(c['steps_title'])}</b>{steps}</div>
   <div class="frame" style="left:80px;top:700px;width:560px;transform:rotate({rot(b,-2)}deg)">
-    <div class="ph" style="height:340px;padding:10px;box-sizing:border-box"><div style="transform:scale(.8)">{release_visual(P, c, '#111')}</div></div>
+    <div class="ph" style="height:340px;padding:0;overflow:hidden">{G['photo_lbl']('release_litter.jpg', c['litter_lbl'], 528, 340, '#111', 'center 45%', 4, 15)}</div>
   </div>
   <div class="frame" style="left:600px;top:820px;width:410px;transform:rotate({rot(b,3)}deg)">
     <div class="ph" style="height:260px;padding:10px;box-sizing:border-box"><div style="transform:scale(.7)">{anchored([b['hero'], P[0], P[1]], 96, 250, 290, c['weight_lbl'], '#111')}</div></div>
@@ -693,7 +701,7 @@ def s2_slides(b, c):
   <div class="label" style="top:70px">{esc(c['rule1_label'])}</div>
   <h2 data-fit style="position:absolute;left:70px;right:70px;top:160px;font-size:58px;max-height:160px">{esc(c['rule1_title'])}</h2>
   <div class="frame" style="left:70px;top:350px;width:940px;transform:rotate({rot(b,-1.5)}deg)">
-    <div class="ph" style="height:400px;padding:26px 30px;box-sizing:border-box;align-items:stretch;background:#fff">{facts_grid(c['rule1_facts'], 'facts onwhite')}</div>
+    <div class="ph" style="height:400px;padding:22px 26px;box-sizing:border-box;flex-direction:row;align-items:center;gap:22px;background:#fff">{G['photo_lbl']('release_litter.jpg', c['litter_lbl'], 300, 350, '#111', 'center 40%', 12, 14)}{facts_grid(c['rule1_facts'], 'facts onwhite', 34, 15)}</div>
   </div>
   <div class="body" style="position:absolute;left:70px;right:70px;top:860px;font-size:25px">{esc(c['rule1_body'])}</div>
   {s2_footer(b)}
@@ -764,7 +772,7 @@ def s3_slides(b, c):
   <div class="vsmark" style="top:520px">VS</div>
   <div class="lblw" style="left:110px;top:500px;transform:rotate({rot(b,-4)}deg)">{esc(c['s3_left'])}<br><span class="meta">● {esc(c['s3_left_meta'])}</span></div>
   <div class="lbld" style="right:110px;top:500px;transform:rotate({rot(b,4)}deg)">{esc(c['s3_right'])}<br><span class="meta" style="background:rgba(255,255,255,.18)">● {esc(c['s3_right_meta'])}</span></div>
-  <div style="position:absolute;left:60px;top:680px;transform:scale(1.18);transform-origin:top left">{release_visual(loud, c, b['ink'])}</div>
+  <div style="position:absolute;left:60px;top:680px;transform:scale(1.18);transform-origin:top left">{litter_photo(c, b['ink'])}</div>
   <div style="position:absolute;right:60px;top:680px;transform:scale(1.18);transform-origin:top right">{build_visual(P, c, b['ink'])}</div>
   <div class="vsbadge" style="left:485px;top:850px">vs</div>
   {s3_footer(b, stx_h=60)}
@@ -806,7 +814,7 @@ def s3_slides(b, c):
   <div class="bottom" style="top:890px;font-size:33px;font-weight:700">{esc(quote)}</div>
   {s3_footer(b)}
 </section>"""
-    vis1 = f'<div style="width:100%">{facts_grid(c["rule1_facts"], "facts s3facts", 32, 17)}</div>'
+    vis1 = f'<div style="width:100%;display:flex;flex-direction:column;gap:12px">{G["photo_lbl"]("release_litter.jpg", c["litter_lbl"], 368, 210, "#111", "center 40%", 12, 13)}{facts_grid(c["rule1_facts"], "facts s3facts", 26, 14)}</div>'
     S.append(topic_slide(c["s3_rule1_topic"], c["s3_rule1_old"], vis1, c["s3_rule1_quote"]))
     vis2 = f'<div style="width:100%">{alt_cards(c, P, "alts s3alts", 19, 15)}</div>'
     S.append(topic_slide(c["s3_rule2_topic"], c["s3_rule2_old"], vis2, c["s3_rule2_quote"]))

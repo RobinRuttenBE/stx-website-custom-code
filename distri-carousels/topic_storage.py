@@ -48,7 +48,7 @@ BASE = {
     "s3_client_lbl": "COLLEGA", "s3_client_topic": "In de praktijk",
     "s3_client_quote": "“Correct bewaard blijven ze jaren goed. Een zomer in de bestelwagen zie je aan de kleur.”",
     "s3_cta_kicker": "Je bewaarcheck voor de volgende levering",
-    "sun_lbl": "zon", "shade_lbl": "schaduw", "van_temp": "34 °C", "shelf_temp": "18 °C", "fifo_lbl": "FIFO",
+    "bag_lbl": "zak dicht", "wh_lbl": "Sempertex Europe · Genk", "sun_lbl": "zon", "shade_lbl": "schaduw", "van_temp": "34 °C", "shelf_temp": "18 °C", "fifo_lbl": "FIFO",
 },
 "en": {
     "cover_pills": ["10 to 30 °C…", "Max 35% humidity…", "FIFO…"], "cover_with": "with", "cover_brand": "Sempertex Europe", "cover_tag": "Storage guide…",
@@ -88,7 +88,7 @@ BASE = {
     "s3_client_lbl": "COLLEAGUE", "s3_client_topic": "In practice",
     "s3_client_quote": "“Stored correctly they stay good for years. A summer in the van shows in the colour.”",
     "s3_cta_kicker": "Your storage check for the next delivery",
-    "sun_lbl": "sun", "shade_lbl": "shade", "van_temp": "34 °C", "shelf_temp": "18 °C", "fifo_lbl": "FIFO",
+    "bag_lbl": "bag closed", "wh_lbl": "Sempertex Europe · Genk", "sun_lbl": "sun", "shade_lbl": "shade", "van_temp": "34 °C", "shelf_temp": "18 °C", "fifo_lbl": "FIFO",
 },
 "de": {
     "cover_pills": ["10 bis 30 °C…", "Max. 35% Feuchte…", "FIFO…"], "cover_with": "mit", "cover_brand": "Sempertex Europe", "cover_tag": "Lager-Guide…",
@@ -128,7 +128,7 @@ BASE = {
     "s3_client_lbl": "KOLLEGIN", "s3_client_topic": "In der Praxis",
     "s3_client_quote": "“Richtig gelagert bleiben sie jahrelang gut. Einen Sommer im Transporter sieht man an der Farbe.”",
     "s3_cta_kicker": "Dein Lager-Check für die nächste Lieferung",
-    "sun_lbl": "Sonne", "shade_lbl": "Schatten", "van_temp": "34 °C", "shelf_temp": "18 °C", "fifo_lbl": "FIFO",
+    "bag_lbl": "Beutel zu", "wh_lbl": "Sempertex Europe · Genk", "sun_lbl": "Sonne", "shade_lbl": "Schatten", "van_temp": "34 °C", "shelf_temp": "18 °C", "fifo_lbl": "FIFO",
 },
 "fr": {
     "cover_pills": ["10 à 30 °C…", "Max 35 % d'humidité…", "FIFO…"], "cover_with": "avec", "cover_brand": "Sempertex Europe", "cover_tag": "Guide de stockage…",
@@ -168,7 +168,7 @@ BASE = {
     "s3_client_lbl": "COLLÈGUE", "s3_client_topic": "En pratique",
     "s3_client_quote": "“Bien stockés, ils restent bons des années. Un été dans le camion, ça se voit à la couleur.”",
     "s3_cta_kicker": "Ton check stockage pour la prochaine livraison",
-    "sun_lbl": "soleil", "shade_lbl": "ombre", "van_temp": "34 °C", "shelf_temp": "18 °C", "fifo_lbl": "FIFO",
+    "bag_lbl": "sachet fermé", "wh_lbl": "Sempertex Europe · Genk", "sun_lbl": "soleil", "shade_lbl": "ombre", "van_temp": "34 °C", "shelf_temp": "18 °C", "fifo_lbl": "FIFO",
 },
 "it": {
     "cover_pills": ["10 a 30 °C…", "Max 35% umidità…", "FIFO…"], "cover_with": "con", "cover_brand": "Sempertex Europe", "cover_tag": "Guida alla conservazione…",
@@ -208,7 +208,7 @@ BASE = {
     "s3_client_lbl": "COLLEGA", "s3_client_topic": "In pratica",
     "s3_client_quote": "“Conservati bene restano buoni per anni. Un'estate nel furgone si vede dal colore.”",
     "s3_cta_kicker": "Il tuo check di conservazione per la prossima consegna",
-    "sun_lbl": "sole", "shade_lbl": "ombra", "van_temp": "34 °C", "shelf_temp": "18 °C", "fifo_lbl": "FIFO",
+    "bag_lbl": "busta chiusa", "wh_lbl": "Sempertex Europe · Genk", "sun_lbl": "sole", "shade_lbl": "ombra", "van_temp": "34 °C", "shelf_temp": "18 °C", "fifo_lbl": "FIFO",
 },
 "pl": {
     "cover_pills": ["10 do 30 °C…", "Max 35% wilgoci…", "FIFO…"], "cover_with": "z", "cover_brand": "Sempertex Europe", "cover_tag": "Przewodnik przechowywania…",
@@ -248,7 +248,7 @@ BASE = {
     "s3_client_lbl": "KOLEŻANKA", "s3_client_topic": "W praktyce",
     "s3_client_quote": "“Dobrze przechowywane zostają dobre przez lata. Jedno lato w aucie widać po kolorze.”",
     "s3_cta_kicker": "Twój check przechowywania na następną dostawę",
-    "sun_lbl": "słońce", "shade_lbl": "cień", "van_temp": "34 °C", "shelf_temp": "18 °C", "fifo_lbl": "FIFO",
+    "bag_lbl": "zamknięta torebka", "wh_lbl": "Sempertex Europe · Genk", "sun_lbl": "słońce", "shade_lbl": "cień", "van_temp": "34 °C", "shelf_temp": "18 °C", "fifo_lbl": "FIFO",
 },
 "el": {
     "cover_pills": ["10 έως 30 °C…", "Max 35% υγρασία…", "FIFO…"], "cover_with": "με", "cover_brand": "Sempertex Europe", "cover_tag": "Οδηγός αποθήκευσης…",
@@ -288,7 +288,7 @@ BASE = {
     "s3_client_lbl": "ΣΥΝΑΔΕΛΦΟΣ", "s3_client_topic": "Στην πράξη",
     "s3_client_quote": "“Σωστά αποθηκευμένα μένουν καλά για χρόνια. Ένα καλοκαίρι στο αυτοκίνητο φαίνεται στο χρώμα.”",
     "s3_cta_kicker": "Ο έλεγχος αποθήκευσης για την επόμενη παράδοση",
-    "sun_lbl": "ήλιος", "shade_lbl": "σκιά", "van_temp": "34 °C", "shelf_temp": "18 °C", "fifo_lbl": "FIFO",
+    "bag_lbl": "κλειστή σακούλα", "wh_lbl": "Sempertex Europe · Genk", "sun_lbl": "ήλιος", "shade_lbl": "σκιά", "van_temp": "34 °C", "shelf_temp": "18 °C", "fifo_lbl": "FIFO",
 },
 "hu": {
     "cover_pills": ["10 és 30 °C között…", "Max 35% pára…", "FIFO…"], "cover_with": "partner:", "cover_brand": "Sempertex Europe", "cover_tag": "Tárolási útmutató…",
@@ -328,7 +328,7 @@ BASE = {
     "s3_client_lbl": "KOLLÉGA", "s3_client_topic": "A gyakorlatban",
     "s3_client_quote": "“Helyesen tárolva évekig jók maradnak. Egy nyár az autóban meglátszik a színen.”",
     "s3_cta_kicker": "A tárolási ellenőrzésed a következő szállításhoz",
-    "sun_lbl": "nap", "shade_lbl": "árnyék", "van_temp": "34 °C", "shelf_temp": "18 °C", "fifo_lbl": "FIFO",
+    "bag_lbl": "zárt tasak", "wh_lbl": "Sempertex Europe · Genk", "sun_lbl": "nap", "shade_lbl": "árnyék", "van_temp": "34 °C", "shelf_temp": "18 °C", "fifo_lbl": "FIFO",
 },
 "lt": {
     "cover_pills": ["10 iki 30 °C…", "Max 35% drėgmė…", "FIFO…"], "cover_with": "su", "cover_brand": "Sempertex Europe", "cover_tag": "Laikymo gidas…",
@@ -368,7 +368,7 @@ BASE = {
     "s3_client_lbl": "KOLEGA", "s3_client_topic": "Praktikoje",
     "s3_client_quote": "“Teisingai laikomi jie išlieka geri metų metus. Viena vasara automobilyje matyti iš spalvos.”",
     "s3_cta_kicker": "Tavo laikymo patikra kitam pristatymui",
-    "sun_lbl": "saulė", "shade_lbl": "pavėsis", "van_temp": "34 °C", "shelf_temp": "18 °C", "fifo_lbl": "FIFO",
+    "bag_lbl": "uždarytas maišelis", "wh_lbl": "Sempertex Europe · Genk", "sun_lbl": "saulė", "shade_lbl": "pavėsis", "van_temp": "34 °C", "shelf_temp": "18 °C", "fifo_lbl": "FIFO",
 },
 }
 
@@ -540,6 +540,14 @@ def on_the_shelf(keys, c, ink="#111"):
             f'<div style="position:absolute;left:10px;top:0;transform:rotate(-6deg);background:#fff;color:{ink};border:3px solid {ink};border-radius:10px;padding:6px 14px;font-size:26px;font-weight:900;box-shadow:0 4px 0 rgba(0,0,0,.18)">{esc(c["shelf_temp"])}</div>'
             f'<div style="position:absolute;right:10px;top:0;transform:rotate(5deg);background:{ink};color:#fff;border-radius:10px;padding:8px 14px;font-size:20px;font-weight:900;letter-spacing:.08em">{esc(c["fifo_lbl"])}</div></div>')
 
+def shelf_photo(c, ink="#111"):
+    """'Op de plank': foto van het magazijn in Genk met 18 °C-stempel en FIFO-badge (stijl 3 cover)."""
+    esc = G["esc"]
+    return (f'<div style="position:relative;width:330px;height:370px">'
+            f'<div style="position:absolute;left:0;top:50px;width:330px;height:300px;border-radius:18px;overflow:hidden;box-shadow:0 0 0 8px #fff,0 10px 14px rgba(0,0,0,.18)">{G["photo"]("stock_warehouse.jpg", 330, 300, "center")}</div>'
+            f'<div style="position:absolute;left:10px;top:0;transform:rotate(-6deg);background:#fff;color:{ink};border:3px solid {ink};border-radius:10px;padding:6px 14px;font-size:26px;font-weight:900;box-shadow:0 4px 0 rgba(0,0,0,.18)">{esc(c["shelf_temp"])}</div>'
+            f'<div style="position:absolute;right:10px;top:0;transform:rotate(5deg);background:{ink};color:#fff;border-radius:10px;padding:8px 14px;font-size:20px;font-weight:900;letter-spacing:.08em">{esc(c["fifo_lbl"])}</div></div>')
+
 # ---------------------------------------------------------------- STIJL 1
 def s1_slides(b, c):
     CUR["pal"] = b["pal"]; c = fill_pal(b, c); P = b["pal"]
@@ -560,10 +568,10 @@ def s1_slides(b, c):
     steps = "".join(f'<div class="step"><b>{i+1}.</b><span>{esc(s)}</span></div>' for i, s in enumerate(c["steps"]))
     S.append(f"""
 <section class="slide s1">
-  <div class="box" style="left:70px;top:120px;width:800px;height:500px">
-    <h2 data-fit style="font-size:78px;max-height:400px;line-height:1.1">{esc(c['steps_title'])}</h2>
+  <div class="box" style="left:70px;top:120px;width:580px;height:500px;padding:40px 44px">
+    <h2 data-fit style="font-size:70px;max-height:410px;line-height:1.1">{esc(c['steps_title'])}</h2>
   </div>
-  <div class="bigballoon" style="left:830px;top:90px;transform:rotate(14deg)">{balloon(b['hero'], 'fashion', 180)}</div>
+  <div class="box" style="left:670px;top:120px;width:340px;height:500px;padding:0;overflow:hidden">{G['photo_lbl']('stock_warehouse.jpg', c['wh_lbl'], 332, 492, b['ink'], 'center', 0, 14)}</div>
   <div style="position:absolute;left:120px;top:630px">{arrow_svg(b['ink'], 150, 140)}</div>
   <div class="box" style="left:300px;top:660px;width:710px;height:500px;padding:36px 46px">
     <div style="font-size:30px;font-weight:{b['body_b']}">{esc(c['steps_lead'])}</div>
@@ -593,7 +601,7 @@ def s1_slides(b, c):
   </div>
   <div class="stack" style="top:710px;height:400px">
     <div class="card" style="top:0;height:320px;transform:translate(40px,-50px) scale(.95);opacity:.6"></div>
-    <div class="card" style="top:0;height:360px;padding:30px 34px;display:flex;align-items:center">{rules3(c)}</div>
+    <div class="card" style="top:0;height:360px;padding:26px 30px;display:flex;align-items:center;gap:22px">{G['photo_lbl']('bag_red.jpg', c['bag_lbl'], 330, 300, b['ink'], 'center 52%', 16, 14, '#fff', '128%')}{rules3(c, 'facts three', 36, 16)}</div>
   </div>
   {s1_footer(b)}
 </section>""")
@@ -642,7 +650,7 @@ def s2_slides(b, c):
   <div style="position:absolute;left:300px;top:552px;width:0;height:0;border-left:22px solid #fff;border-top:14px solid transparent;border-bottom:14px solid transparent"></div>
   <h1 data-fit style="position:absolute;left:320px;right:70px;top:70px;max-height:430px;font-size:66px">{hl(c['cover_title'])}</h1>
   <div class="frame" style="left:320px;top:520px;width:690px;transform:rotate({rot(b,-2)}deg)">
-    <div class="ph" style="height:460px;padding:20px;box-sizing:border-box"><div style="transform:scale(1.1)">{on_the_shelf(P, c, '#111')}</div></div>
+    <div class="ph" style="height:460px;padding:0;overflow:hidden">{G['photo_lbl']('stock_warehouse.jpg', c['wh_lbl'], 658, 460, '#111', 'center', 4, 15)}</div>
   </div>
   <div class="tagw" style="right:70px;top:960px;white-space:nowrap"><span class="ast">✳</span>{esc(c['cover_tag'])}</div>
   <div style="position:absolute;left:70px;top:1060px;font-size:36px;line-height:1.1">{esc(c['cover_with'])}</div>
@@ -657,7 +665,7 @@ def s2_slides(b, c):
     <div class="ph" style="height:340px;padding:10px;box-sizing:border-box"><div style="transform:scale(.85)">{in_the_van(P, c, '#111')}</div></div>
   </div>
   <div class="frame" style="left:600px;top:820px;width:410px;transform:rotate({rot(b,3)}deg)">
-    <div class="ph" style="height:260px;padding:10px;box-sizing:border-box"><div style="transform:scale(.8)">{balloon(b['hero'], 'fashion', 150)}</div></div>
+    <div class="ph" style="height:260px;padding:0;overflow:hidden">{G['photo_lbl']('bag_red.jpg', c['bag_lbl'], 378, 260, '#111', 'center', 4, 14)}</div>
   </div>
   {s2_footer(b)}
 </section>""")
@@ -676,7 +684,7 @@ def s2_slides(b, c):
   <div class="label" style="top:70px">{esc(c['rule2_label'])}</div>
   <h2 data-fit style="position:absolute;left:70px;right:70px;top:160px;font-size:58px;max-height:170px">{esc(c['rule2_title'])}</h2>
   <div class="frame" style="left:70px;top:370px;width:940px;transform:rotate({rot(b,1.5)}deg)">
-    <div class="ph" style="height:340px;padding:26px 30px;box-sizing:border-box;align-items:center;background:#fff">{rules3(c, 'facts three onwhite')}</div>
+    <div class="ph" style="height:340px;padding:22px 26px;box-sizing:border-box;flex-direction:row;align-items:center;gap:22px;background:#fff">{G['photo_lbl']('bag_gold.jpg', c['bag_lbl'], 330, 290, '#111', 'center 52%', 12, 14, '#fff', '128%')}{rules3(c, 'facts three onwhite', 34, 15)}</div>
   </div>
   <div class="body" style="position:absolute;left:70px;right:70px;top:820px;font-size:26px">{esc(c['rule2_body'])}</div>
   {s2_footer(b)}
@@ -735,7 +743,7 @@ def s3_slides(b, c):
   <div class="lblw" style="left:110px;top:500px;transform:rotate({rot(b,-4)}deg)">{esc(c['s3_left'])}<br><span class="meta">● {esc(c['s3_left_meta'])}</span></div>
   <div class="lbld" style="right:110px;top:500px;transform:rotate({rot(b,4)}deg)">{esc(c['s3_right'])}<br><span class="meta" style="background:rgba(255,255,255,.18)">● {esc(c['s3_right_meta'])}</span></div>
   <div style="position:absolute;left:60px;top:680px;transform:scale(1.18);transform-origin:top left">{in_the_van(loud, c, b['ink'])}</div>
-  <div style="position:absolute;right:60px;top:680px;transform:scale(1.18);transform-origin:top right">{on_the_shelf(P, c, b['ink'])}</div>
+  <div style="position:absolute;right:60px;top:680px;transform:scale(1.18);transform-origin:top right">{shelf_photo(c, b['ink'])}</div>
   <div class="vsbadge" style="left:485px;top:850px">vs</div>
   {s3_footer(b, stx_h=60)}
 </section>""")
@@ -778,7 +786,7 @@ def s3_slides(b, c):
 </section>"""
     vis1 = f'<div style="width:100%">{facts_grid(c["rule1_facts"], "facts s3facts", 34, 17)}</div>'
     S.append(topic_slide(c["s3_rule1_topic"], c["s3_rule1_old"], vis1, c["s3_rule1_quote"]))
-    vis2 = f'<div style="width:100%">{rules3(c, "facts s3facts", 34, 17)}</div>'
+    vis2 = f'<div style="width:100%;display:flex;flex-direction:column;gap:12px">{G["photo_lbl"]("bag_gold.jpg", c["bag_lbl"], 368, 200, "#111", "center 52%", 12, 13, "#fff", "135%")}{rules3(c, "facts s3facts", 28, 15)}</div>'
     S.append(topic_slide(c["s3_rule2_topic"], c["s3_rule2_old"], vis2, c["s3_rule2_quote"]))
     t = c['example_title']
     S.append(f"""

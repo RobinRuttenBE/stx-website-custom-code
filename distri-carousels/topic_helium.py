@@ -48,7 +48,7 @@ BASE = {
     "s3_client_lbl": "KLANT", "s3_client_topic": "Klantgesprek",
     "s3_client_quote": "“Lucht waar het kan: minder kost, scherpere offerte, en de klant hoort dat graag.”",
     "s3_cta_kicker": "Je heliumchecklist voor de volgende job",
-    "weight_lbl": "gewicht", "air_lbl": "lucht", "helium_lbl": "helium",
+    "weight_lbl": "gewicht", "air_lbl": "lucht", "helium_lbl": "helium", "hf_with": "met Hi-Float", "hf_without": "zonder", "hours_tpl": "na {n} u", "hf_caption": "Zelfde R12, zelfde helium, zelfde dag. Links met Hi-Float, rechts zonder.", "tank_lbl": "1 m³ = 1.000 L",
 },
 "en": {
     "cover_pills": ["15 L per R12…", "Hi-Float ×20…", "Never release…"], "cover_with": "with", "cover_brand": "Sempertex Europe", "cover_tag": "Helium guide…",
@@ -88,7 +88,7 @@ BASE = {
     "s3_client_lbl": "CLIENT", "s3_client_topic": "Client chat",
     "s3_client_quote": "“Air where it works: lower cost, sharper quote, and the client likes hearing it.”",
     "s3_cta_kicker": "Your helium checklist for the next job",
-    "weight_lbl": "weight", "air_lbl": "air", "helium_lbl": "helium",
+    "weight_lbl": "weight", "air_lbl": "air", "helium_lbl": "helium", "hf_with": "with Hi-Float", "hf_without": "without", "hours_tpl": "after {n} h", "hf_caption": "Same R12, same helium, same day. Left with Hi-Float, right without.", "tank_lbl": "1 m³ = 1,000 L",
 },
 "de": {
     "cover_pills": ["15 L pro R12…", "Hi-Float ×20…", "Nie steigen lassen…"], "cover_with": "mit", "cover_brand": "Sempertex Europe", "cover_tag": "Helium-Guide…",
@@ -128,7 +128,7 @@ BASE = {
     "s3_client_lbl": "KUNDE", "s3_client_topic": "Kundengespräch",
     "s3_client_quote": "“Luft, wo es geht: weniger Kosten, schärferes Angebot, und der Kunde hört das gern.”",
     "s3_cta_kicker": "Deine Helium-Checkliste für den nächsten Job",
-    "weight_lbl": "Gewicht", "air_lbl": "Luft", "helium_lbl": "Helium",
+    "weight_lbl": "Gewicht", "air_lbl": "Luft", "helium_lbl": "Helium", "hf_with": "mit Hi-Float", "hf_without": "ohne", "hours_tpl": "nach {n} Std.", "hf_caption": "Gleicher R12, gleiches Helium, gleicher Tag. Links mit Hi-Float, rechts ohne.", "tank_lbl": "1 m³ = 1.000 L",
 },
 "fr": {
     "cover_pills": ["15 L par R12…", "Hi-Float ×20…", "Jamais de lâcher…"], "cover_with": "avec", "cover_brand": "Sempertex Europe", "cover_tag": "Guide hélium…",
@@ -168,7 +168,7 @@ BASE = {
     "s3_client_lbl": "CLIENT", "s3_client_topic": "Discussion client",
     "s3_client_quote": "“De l'air quand c'est possible : moins de coût, devis plus juste, et le client aime l'entendre.”",
     "s3_cta_kicker": "Ta checklist hélium pour la prochaine commande",
-    "weight_lbl": "poids", "air_lbl": "air", "helium_lbl": "hélium",
+    "weight_lbl": "poids", "air_lbl": "air", "helium_lbl": "hélium", "hf_with": "avec Hi-Float", "hf_without": "sans", "hours_tpl": "après {n} h", "hf_caption": "Même R12, même hélium, même jour. À gauche avec Hi-Float, à droite sans.", "tank_lbl": "1 m³ = 1 000 L",
 },
 "it": {
     "cover_pills": ["15 L per R12…", "Hi-Float ×20…", "Mai liberarli…"], "cover_with": "con", "cover_brand": "Sempertex Europe", "cover_tag": "Guida all'elio…",
@@ -208,7 +208,7 @@ BASE = {
     "s3_client_lbl": "CLIENTE", "s3_client_topic": "Dialogo con il cliente",
     "s3_client_quote": "“Aria dove si può: meno costo, preventivo più giusto, e il cliente lo apprezza.”",
     "s3_cta_kicker": "La tua checklist elio per il prossimo lavoro",
-    "weight_lbl": "peso", "air_lbl": "aria", "helium_lbl": "elio",
+    "weight_lbl": "peso", "air_lbl": "aria", "helium_lbl": "elio", "hf_with": "con Hi-Float", "hf_without": "senza", "hours_tpl": "dopo {n} h", "hf_caption": "Stesso R12, stesso elio, stesso giorno. A sinistra con Hi-Float, a destra senza.", "tank_lbl": "1 m³ = 1.000 L",
 },
 "pl": {
     "cover_pills": ["15 L na R12…", "Hi-Float ×20…", "Nigdy nie wypuszczaj…"], "cover_with": "z", "cover_brand": "Sempertex Europe", "cover_tag": "Przewodnik po helu…",
@@ -248,7 +248,7 @@ BASE = {
     "s3_client_lbl": "KLIENT", "s3_client_topic": "Rozmowa z klientem",
     "s3_client_quote": "“Powietrze gdzie się da: niższy koszt, ostrzejsza wycena, a klient chętnie to słyszy.”",
     "s3_cta_kicker": "Twoja helowa checklista na następne zlecenie",
-    "weight_lbl": "obciążnik", "air_lbl": "powietrze", "helium_lbl": "hel",
+    "weight_lbl": "obciążnik", "air_lbl": "powietrze", "helium_lbl": "hel", "hf_with": "z Hi-Float", "hf_without": "bez", "hours_tpl": "po {n} godz.", "hf_caption": "Ten sam R12, ten sam hel, ten sam dzień. Po lewej z Hi-Float, po prawej bez.", "tank_lbl": "1 m³ = 1000 L",
 },
 "el": {
     "cover_pills": ["15 L ανά R12…", "Hi-Float ×20…", "Ποτέ απελευθέρωση…"], "cover_with": "με", "cover_brand": "Sempertex Europe", "cover_tag": "Οδηγός ηλίου…",
@@ -288,7 +288,7 @@ BASE = {
     "s3_client_lbl": "ΠΕΛΑΤΗΣ", "s3_client_topic": "Συζήτηση με πελάτη",
     "s3_client_quote": "“Αέρας όπου γίνεται: λιγότερο κόστος, πιο σωστή προσφορά, και ο πελάτης χαίρεται να το ακούει.”",
     "s3_cta_kicker": "Η checklist ηλίου σου για την επόμενη δουλειά",
-    "weight_lbl": "βαρίδι", "air_lbl": "αέρας", "helium_lbl": "ήλιο",
+    "weight_lbl": "βαρίδι", "air_lbl": "αέρας", "helium_lbl": "ήλιο", "hf_with": "με Hi-Float", "hf_without": "χωρίς", "hours_tpl": "μετά από {n} ώρες", "hf_caption": "Ίδιο R12, ίδιο ήλιο, ίδια μέρα. Αριστερά με Hi-Float, δεξιά χωρίς.", "tank_lbl": "1 m³ = 1.000 L",
 },
 "hu": {
     "cover_pills": ["15 L egy R12-höz…", "Hi-Float ×20…", "Soha ne engedd el…"], "cover_with": "partner:", "cover_brand": "Sempertex Europe", "cover_tag": "Hélium kisokos…",
@@ -328,7 +328,7 @@ BASE = {
     "s3_client_lbl": "ÜGYFÉL", "s3_client_topic": "Ügyfélbeszélgetés",
     "s3_client_quote": "“Levegő, ahol lehet: kisebb költség, élesebb árajánlat, és az ügyfél ezt szívesen hallja.”",
     "s3_cta_kicker": "A hélium-checklisted a következő munkához",
-    "weight_lbl": "nehezék", "air_lbl": "levegő", "helium_lbl": "hélium",
+    "weight_lbl": "nehezék", "air_lbl": "levegő", "helium_lbl": "hélium", "hf_with": "Hi-Floattal", "hf_without": "nélküle", "hours_tpl": "{n} óra után", "hf_caption": "Ugyanaz az R12, ugyanaz a hélium, ugyanaz a nap. Balra Hi-Floattal, jobbra nélküle.", "tank_lbl": "1 m³ = 1000 L",
 },
 "lt": {
     "cover_pills": ["15 L vienam R12…", "Hi-Float ×20…", "Niekada nepaleisk…"], "cover_with": "su", "cover_brand": "Sempertex Europe", "cover_tag": "Helio gidas…",
@@ -368,7 +368,7 @@ BASE = {
     "s3_client_lbl": "KLIENTAS", "s3_client_topic": "Pokalbis su klientu",
     "s3_client_quote": "“Oras, kur įmanoma: mažesnės sąnaudos, tikslesnis pasiūlymas, ir klientas tai mielai girdi.”",
     "s3_cta_kicker": "Tavo helio kontrolinis sąrašas kitam užsakymui",
-    "weight_lbl": "svarelis", "air_lbl": "oras", "helium_lbl": "helis",
+    "weight_lbl": "svarelis", "air_lbl": "oras", "helium_lbl": "helis", "hf_with": "su Hi-Float", "hf_without": "be", "hours_tpl": "po {n} val.", "hf_caption": "Tas pats R12, tas pats helis, ta pati diena. Kairėje su Hi-Float, dešinėje be.", "tank_lbl": "1 m³ = 1000 L",
 },
 }
 
@@ -545,6 +545,23 @@ def helium_smart(keys, weight_lbl, ink="#111"):
             f'<div style="position:absolute;left:-10px;top:0;width:350px;transform:scale(.9);transform-origin:top left">{garland(keys, 84, 56, 6)}</div>'
             f'<div style="position:absolute;left:30px;top:100px;transform:scale(.78);transform-origin:top left">{bouquet(keys[:3], 110, 340, 370, weight_lbl, ink)}</div></div>')
 
+def float_series(c, w=280, h=260, ink="#111", lbl=16, gap=16, radius=16):
+    """3 foto's: dezelfde 2 R12 (links met Hi-Float, rechts zonder) na 0, 12 en 24 uur."""
+    ph = G["photo_lbl"]
+    cells = "".join(ph(f, c["hours_tpl"].format(n=n), w, h, ink, "center", radius, lbl, "#fff") for f, n in (("float_0h.jpg", 0), ("float_12h.jpg", 12), ("float_24h.jpg", 24)))
+    return f'<div style="display:flex;gap:{gap}px;justify-content:center;width:100%">{cells}</div>'
+
+def hf_pair(c, w=200, h=300, ink="#111", lbl=15, gap=14, radius=14):
+    """2 foto's: R12 met Hi-Float naast R12 zonder."""
+    ph = G["photo_lbl"]
+    return (f'<div style="display:flex;gap:{gap}px;justify-content:center">{ph("hifloat_with.jpg", c["hf_with"], w, h, ink, "center 38%", radius, lbl, "#fff", "210%")}'
+            f'{ph("hifloat_without.jpg", c["hf_without"], w, h, ink, "center 36%", radius, lbl, "#fff", "210%")}</div>')
+
+def facts_row(c, num_size=30, lab_size=14, ink="#111"):
+    esc = G["esc"]
+    cells = "".join(f'<div style="flex:1;border:2px solid {ink};border-radius:14px;padding:8px 6px;text-align:center;line-height:1.1"><b style="font-size:{num_size}px;display:block;white-space:nowrap">{esc(n)}</b><span style="font-size:{lab_size}px">{esc(l)}</span></div>' for n, l in c["rule2_facts"])
+    return f'<div style="display:flex;gap:10px;width:100%">{cells}</div>'
+
 # ---------------------------------------------------------------- STIJL 1
 def s1_slides(b, c):
     CUR["pal"] = b["pal"]; c = fill_pal(b, c); P = b["pal"]
@@ -565,10 +582,10 @@ def s1_slides(b, c):
     steps = "".join(f'<div class="step"><b>{i+1}.</b><span>{esc(s)}</span></div>' for i, s in enumerate(c["steps"]))
     S.append(f"""
 <section class="slide s1">
-  <div class="box" style="left:70px;top:120px;width:800px;height:560px">
-    <h2 data-fit style="font-size:80px;max-height:460px;line-height:1.1">{esc(c['steps_title'])}</h2>
+  <div class="box" style="left:70px;top:120px;width:580px;height:560px;padding:40px 44px">
+    <h2 data-fit style="font-size:72px;max-height:470px;line-height:1.1">{esc(c['steps_title'])}</h2>
   </div>
-  <div class="bigballoon" style="left:760px;top:70px;transform:scale(.74);transform-origin:top left">{bouquet([b['hero'], P[0], P[1]], 110, 360, 430, c['weight_lbl'], b['ink'])}</div>
+  <div class="box" style="left:670px;top:120px;width:340px;height:560px;padding:0;overflow:hidden">{G['photo']('helium_tank_bouquet.jpg', 332, 552, 'center top')}</div>
   <div style="position:absolute;left:120px;top:690px">{arrow_svg(b['ink'], 150, 140)}</div>
   <div class="box" style="left:300px;top:720px;width:710px;height:440px;padding:40px 46px">
     <div style="font-size:30px;font-weight:{b['body_b']}">{esc(c['steps_lead'])}</div>
@@ -586,8 +603,9 @@ def s1_slides(b, c):
   <div class="stack" style="top:650px;height:460px">
     <div class="card" style="top:0;height:380px;transform:translate(60px,-70px) scale(.92);opacity:.5"></div>
     <div class="card" style="top:0;height:380px;transform:translate(30px,-36px) scale(.96);opacity:.75"></div>
-    <div class="card" style="top:0;height:430px;display:flex;align-items:flex-end;justify-content:center;padding:30px 40px 36px">
-      {size_row([12, 18, 36], [P[0], P[1], P[2]], 230, labels=c['rule1_tags'], ink=b['ink'], gap=50)}
+    <div class="card" style="top:0;height:430px;display:flex;align-items:flex-end;justify-content:center;gap:40px;padding:30px 40px 36px">
+      {G['photo_lbl']('helium_tank.jpg', c['tank_lbl'], 210, 350, b['ink'], 'center', 16, 15)}
+      {size_row([12, 18, 36], [P[0], P[1], P[2]], 210, labels=c['rule1_tags'], ink=b['ink'], gap=36)}
     </div>
   </div>
   {s1_footer(b)}
@@ -595,13 +613,17 @@ def s1_slides(b, c):
     S.append(f"""
 <section class="slide s1">
   <div class="tag" style="right:70px;top:70px"><span class="ast">✳</span>{esc(c['rule2_label'])}</div>
-  <div class="box" style="left:70px;top:160px;width:940px;height:470px;padding:44px 50px">
-    <h2 data-fit style="font-size:58px;max-height:200px">{esc(c['rule2_title'])}</h2>
-    <div class="body" style="margin-top:22px;font-size:28px">{esc(c['rule2_body'])}</div>
+  <div class="box" style="left:70px;top:160px;width:940px;height:400px;padding:36px 50px">
+    <h2 data-fit style="font-size:54px;max-height:130px">{esc(c['rule2_title'])}</h2>
+    <div class="body" style="margin-top:16px;font-size:24px;line-height:1.32">{esc(c['rule2_body'])}</div>
   </div>
-  <div class="stack" style="top:700px;height:400px">
-    <div class="card" style="top:0;height:340px;transform:translate(40px,-50px) scale(.95);opacity:.6"></div>
-    <div class="card" style="top:0;height:380px;padding:30px 34px">{facts_grid(c)}</div>
+  <div class="stack" style="top:600px;height:520px">
+    <div class="card" style="top:0;height:440px;transform:translate(40px,-50px) scale(.95);opacity:.6"></div>
+    <div class="card" style="top:0;height:520px;padding:24px 28px;display:flex;flex-direction:column;gap:14px;align-items:center">
+      {float_series(c, 268, 300, b['ink'], 16, 14)}
+      <div style="font-size:18px;line-height:1.3;text-align:center">{esc(c['hf_caption'])}</div>
+      {facts_row(c, 28, 14, b['ink'])}
+    </div>
   </div>
   {s1_footer(b)}
 </section>""")
@@ -622,7 +644,7 @@ def s1_slides(b, c):
   <h2 data-fit style="position:absolute;left:80px;right:80px;top:160px;font-size:54px;max-height:140px">{esc(c['client_title'])}</h2>
   <div class="chat" style="top:320px;min-height:130px;padding-right:120px">{esc(c['client_question'])}<div class="send">↑</div></div>
   <div style="position:absolute;left:80px;right:80px;top:490px;display:flex;flex-direction:column;gap:20px">
-    <div class="card" style="position:relative;left:auto;right:auto;padding:26px 36px"><div style="font-size:28px;line-height:1.35">{esc(c['client_answer'])}</div></div>
+    <div class="card" style="position:relative;left:auto;right:auto;padding:22px 30px;display:flex;gap:22px;align-items:center"><div style="font-size:25px;line-height:1.35;flex:1;min-width:0">{esc(c['client_answer'])}</div>{hf_pair(c, 150, 210, b['ink'], 13, 10, 14)}</div>
     <div class="card" style="position:relative;left:auto;right:auto;padding:22px 36px"><div style="font-size:25px;font-weight:{b['body_b']};margin-bottom:2px">{esc(c['avoid_lead'])}</div>{avoid_list(c, 'avoid')}</div>
   </div>
   {s1_footer(b)}
@@ -650,7 +672,7 @@ def s2_slides(b, c):
   <div style="position:absolute;left:300px;top:552px;width:0;height:0;border-left:22px solid #fff;border-top:14px solid transparent;border-bottom:14px solid transparent"></div>
   <h1 data-fit style="position:absolute;left:320px;right:70px;top:70px;max-height:430px;font-size:72px">{hl(c['cover_title'])}</h1>
   <div class="frame" style="left:320px;top:520px;width:690px;transform:rotate({rot(b,-2)}deg)">
-    <div class="ph" style="height:460px;flex-direction:row;gap:30px;align-items:flex-end;padding-bottom:20px;box-sizing:border-box">{size_row([12, 18, 36], P, 200, ink="#111", gap=30)}</div>
+    <div class="ph" style="height:460px;padding:0;overflow:hidden">{G['photo']('helium_bouquet.jpg', 658, 460)}</div>
   </div>
   <div class="tagw" style="right:70px;top:960px;white-space:nowrap"><span class="ast">✳</span>{esc(c['cover_tag'])}</div>
   <div style="position:absolute;left:70px;top:1060px;font-size:36px;line-height:1.1">{esc(c['cover_with'])}</div>
@@ -661,11 +683,11 @@ def s2_slides(b, c):
 <section class="slide s2">
   <div class="label" style="top:70px">{esc(c['steps_label'])}</div>
   <div class="body" style="position:absolute;left:70px;right:70px;top:160px"><b style="font-size:38px">{esc(c['steps_title'])}</b>{steps}</div>
-  <div class="frame" style="left:80px;top:640px;width:560px;transform:rotate({rot(b,-2)}deg)">
-    <div class="ph" style="height:400px;padding:10px;box-sizing:border-box"><div style="transform:scale(.8)">{bouquet([b['hero'], P[0], P[1]], 110, 360, 430, c['weight_lbl'], '#111')}</div></div>
+  <div class="frame" style="left:80px;top:610px;width:320px;transform:rotate({rot(b,-2)}deg)">
+    <div class="ph" style="height:470px;padding:0;overflow:hidden">{G['photo_lbl']('helium_tank_bouquet.jpg', c['weight_lbl'], 288, 470, '#111', 'center top', 4, 15)}</div>
   </div>
-  <div class="frame" style="left:600px;top:800px;width:410px;transform:rotate({rot(b,3)}deg)">
-    <div class="ph" style="height:280px;padding:10px;box-sizing:border-box"><div style="transform:scale(.72)">{garland(P, 84, 56, 5)}</div><div class="pname" style="font-size:20px;margin-top:-30px">{esc(c['air_lbl'])}</div></div>
+  <div class="frame" style="left:430px;top:760px;width:580px;transform:rotate({rot(b,2)}deg)">
+    <div class="ph" style="height:330px;padding:0;overflow:hidden">{G['photo_lbl']('float_24h.jpg', c['hours_tpl'].format(n=24) + ' · Hi-Float', 548, 330, '#111', 'center', 4, 15)}</div>
   </div>
   {s2_footer(b)}
 </section>""")
@@ -674,7 +696,7 @@ def s2_slides(b, c):
   <div class="label" style="top:70px">{esc(c['rule1_label'])}</div>
   <h2 data-fit style="position:absolute;left:70px;right:70px;top:160px;font-size:64px;max-height:160px">{esc(c['rule1_title'])}</h2>
   <div class="frame" style="left:70px;top:350px;width:940px;transform:rotate({rot(b,-1.5)}deg)">
-    <div class="ph" style="height:440px;flex-direction:row;justify-content:center;align-items:flex-end;padding:0 20px 30px;box-sizing:border-box">{size_row([12, 18, 36], [P[0], P[1], P[2]], 220, labels=c['rule1_tags'], ink="#111", gap=50)}</div>
+    <div class="ph" style="height:440px;flex-direction:row;justify-content:center;align-items:flex-end;gap:36px;padding:0 20px 30px;box-sizing:border-box">{G['photo_lbl']('helium_tank.jpg', c['tank_lbl'], 200, 360, '#111', 'center', 12, 14)}{size_row([12, 18, 36], [P[0], P[1], P[2]], 200, labels=c['rule1_tags'], ink="#111", gap=34)}</div>
   </div>
   <div class="body" style="position:absolute;left:70px;right:70px;top:900px;font-size:28px">{esc(c['rule1_body'])}</div>
   {s2_footer(b)}
@@ -683,10 +705,10 @@ def s2_slides(b, c):
 <section class="slide s2">
   <div class="label" style="top:70px">{esc(c['rule2_label'])}</div>
   <h2 data-fit style="position:absolute;left:70px;right:70px;top:160px;font-size:60px;max-height:170px">{esc(c['rule2_title'])}</h2>
-  <div class="frame" style="left:70px;top:370px;width:940px;transform:rotate({rot(b,1.5)}deg)">
-    <div class="ph" style="height:380px;padding:26px 30px;box-sizing:border-box;align-items:stretch;background:#fff">{facts_grid(c, 'facts onwhite')}</div>
+  <div class="frame" style="left:70px;top:350px;width:940px;transform:rotate({rot(b,1.5)}deg)">
+    <div class="ph" style="height:auto;padding:18px 20px;box-sizing:border-box;align-items:center;gap:12px;background:#fff;color:#111">{float_series(c, 282, 290, '#111', 15, 12)}<div style="font-size:17px;line-height:1.3;text-align:center">{esc(c['hf_caption'])}</div>{facts_row(c, 26, 13, '#111')}</div>
   </div>
-  <div class="body" style="position:absolute;left:70px;right:70px;top:870px;font-size:27px">{esc(c['rule2_body'])}</div>
+  <div class="body" style="position:absolute;left:70px;right:70px;top:940px;font-size:23px;line-height:1.32">{esc(c['rule2_body'])}</div>
   {s2_footer(b)}
 </section>""")
     sizes = c["example_sizes"]
@@ -708,7 +730,7 @@ def s2_slides(b, c):
     <div class="ph" style="height:auto;padding:28px 34px;box-sizing:border-box;align-items:flex-start;background:#fff">
       <div style="font-size:30px;line-height:1.3;color:{b['ink']};font-style:italic">{esc(c['client_question'])}</div>
       <div style="width:100%;height:2px;background:{b['tint']};margin:14px 0"></div>
-      <div style="font-size:25px;line-height:1.35;color:{b['ink']}">{esc(c['client_answer'])}</div>
+      <div style="display:flex;gap:22px;align-items:center;width:100%"><div style="font-size:24px;line-height:1.35;color:{b['ink']};flex:1;min-width:0">{esc(c['client_answer'])}</div>{hf_pair(c, 140, 200, '#111', 13, 10, 12)}</div>
       <div style="width:100%;height:2px;background:{b['tint']};margin:14px 0"></div>
       <div style="font-size:22px;font-weight:{b['body_b']};color:{b['ink']}">{esc(c['avoid_lead'])}</div>
       {avoid_list(c, 'onwhite')}
@@ -787,7 +809,9 @@ def s3_slides(b, c):
 </section>"""
     vis1 = f'<div style="display:flex;flex-direction:column;align-items:center;gap:20px">{size_row([12, 18, 36], P, 156, labels=c["rule1_tags"], ink="#111", gap=12, lab_size=18)}</div>'
     S.append(topic_slide(c["s3_rule1_topic"], c["s3_rule1_old"], vis1, c["s3_rule1_quote"]))
-    vis2 = f'<div style="width:100%">{facts_grid(c, "facts s3facts", 36, 18)}</div>'
+    vis2 = (f'<div style="width:100%;display:flex;flex-direction:column;gap:10px;align-items:center">'
+            + "".join(G["photo_lbl"](f, c["hours_tpl"].format(n=n), 368, 218, "#111", pos, 12, 14) for f, n, pos in (("float_0h.jpg", 0, "center 32%"), ("float_24h.jpg", 24, "center 40%")))
+            + f'<div style="font-size:15px;line-height:1.25;text-align:center">{esc(c["hf_caption"])}</div></div>')
     S.append(topic_slide(c["s3_rule2_topic"], c["s3_rule2_old"], vis2, c["s3_rule2_quote"]))
     sizes = c["example_sizes"]
     S.append(f"""

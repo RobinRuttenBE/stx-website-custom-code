@@ -640,7 +640,7 @@ def s1_slides(b, c):
   </div>
   <div class="stack" style="top:720px;height:420px">
     <div class="card" style="top:0;height:320px;transform:translate(40px,-50px) scale(.95);opacity:.6"></div>
-    <div class="card" style="top:0;height:380px;padding:24px 30px">{facts_grid(c['rule1_facts'], 'facts', 46, 18)}</div>
+    <div class="card" style="top:0;height:380px;padding:24px 28px;display:flex;align-items:center;gap:20px">{G['photo']('bag_red.jpg', 300, 330, 'center 52%', 16, '', '135%')}{facts_grid(c['rule1_facts'], 'facts', 36, 16)}</div>
   </div>
   {s1_footer(b)}
 </section>""")
@@ -719,7 +719,7 @@ def s2_slides(b, c):
   <div class="label" style="top:70px">{esc(c['rule1_label'])}</div>
   <h2 data-fit style="position:absolute;left:70px;right:70px;top:160px;font-size:50px;max-height:150px">{esc(c['rule1_title'])}</h2>
   <div class="frame" style="left:70px;top:330px;width:940px;transform:rotate({rot(b,-1.5)}deg)">
-    <div class="ph" style="height:340px;padding:22px 28px;box-sizing:border-box;align-items:stretch;background:#fff">{facts_grid(c['rule1_facts'], 'facts onwhite', 40, 17)}</div>
+    <div class="ph" style="height:340px;padding:20px 24px;box-sizing:border-box;flex-direction:row;align-items:center;gap:20px;background:#fff">{G['photo']('bag_gold.jpg', 300, 300, 'center 52%', 12, '', '135%')}{facts_grid(c['rule1_facts'], 'facts onwhite', 34, 15)}</div>
   </div>
   <div class="body" style="position:absolute;left:70px;right:70px;top:760px;font-size:20px;line-height:1.32">{esc(c['rule1_body'])}</div>
   {s2_footer(b)}
@@ -830,7 +830,7 @@ def s3_slides(b, c):
   <div class="bottom" style="top:890px;font-size:33px;font-weight:700">{esc(quote)}</div>
   {s3_footer(b)}
 </section>"""
-    vis1 = f'<div style="width:100%">{facts_grid(c["rule1_facts"], "facts s3facts", 34, 16)}</div>'
+    vis1 = f'<div style="width:100%;display:flex;flex-direction:column;gap:12px">{G["photo"]("bag_red.jpg", 368, 118, "center 55%", 12, "", "150%")}{facts_grid(c["rule1_facts"], "facts s3facts", 22, 12)}</div>'
     S.append(topic_slide(c["s3_rule1_topic"], c["s3_rule1_old"], vis1, c["s3_rule1_quote"]))
     vis2 = f'<div style="width:100%">{rule_cards(c, "alts s3alts", 17, 13)}</div>'
     S.append(topic_slide(c["s3_rule2_topic"], c["s3_rule2_old"], vis2, c["s3_rule2_quote"]))

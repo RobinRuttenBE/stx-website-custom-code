@@ -49,7 +49,7 @@ BASE = {
     "s3_client_lbl": "KLANT", "s3_client_topic": "Klantgesprek",
     "s3_client_quote": "“Stuur me je kleurcode. Ik test 2 combinaties en je ziet de mengkleur voor ik iets opblaas.”",
     "s3_cta_kicker": "Je double stuffing recept voor de volgende job",
-    "outer_lbl": "buiten", "inner_lbl": "binnen", "result_lbl": "resultaat", "approx_lbl": "benadering", "swap_lbl": "gewisseld",
+    "ds_plain": "los", "ds_crystal": "in Crystal Clear 390", "ds_caption": "Zelfde kleur, zelfde maat, zelfde licht. Links los, rechts in Crystal Clear 390.", "outer_lbl": "buiten", "inner_lbl": "binnen", "result_lbl": "resultaat", "approx_lbl": "benadering", "swap_lbl": "gewisseld",
 },
 "en": {
     "cover_pills": ["1 in 1…", "Crystal Clear 390…", "Order matters…"], "cover_with": "with", "cover_brand": "Sempertex Europe", "cover_tag": "Double stuffing…",
@@ -87,7 +87,7 @@ BASE = {
     "s3_client_lbl": "CLIENT", "s3_client_topic": "Client chat",
     "s3_client_quote": "“Send me your colour code. I'll test 2 combinations and you'll see the blend before I inflate anything.”",
     "s3_cta_kicker": "Your double stuffing recipe for the next job",
-    "outer_lbl": "outside", "inner_lbl": "inside", "result_lbl": "result", "approx_lbl": "approximation", "swap_lbl": "swapped",
+    "ds_plain": "plain", "ds_crystal": "in Crystal Clear 390", "ds_caption": "Same colour, same size, same light. Left plain, right inside Crystal Clear 390.", "outer_lbl": "outside", "inner_lbl": "inside", "result_lbl": "result", "approx_lbl": "approximation", "swap_lbl": "swapped",
 },
 "de": {
     "cover_pills": ["1 in 1…", "Crystal Clear 390…", "Reihenfolge zählt…"], "cover_with": "mit", "cover_brand": "Sempertex Europe", "cover_tag": "Double Stuffing…",
@@ -125,7 +125,7 @@ BASE = {
     "s3_client_lbl": "KUNDE", "s3_client_topic": "Kundengespräch",
     "s3_client_quote": "“Schick mir deinen Farbcode. Ich teste 2 Kombinationen und du siehst die Mischfarbe, bevor ich etwas aufblase.”",
     "s3_cta_kicker": "Dein Double-Stuffing-Rezept für den nächsten Job",
-    "outer_lbl": "außen", "inner_lbl": "innen", "result_lbl": "Ergebnis", "approx_lbl": "Annäherung", "swap_lbl": "getauscht",
+    "ds_plain": "einzeln", "ds_crystal": "in Crystal Clear 390", "ds_caption": "Gleiche Farbe, gleiche Größe, gleiches Licht. Links einzeln, rechts in Crystal Clear 390.", "outer_lbl": "außen", "inner_lbl": "innen", "result_lbl": "Ergebnis", "approx_lbl": "Annäherung", "swap_lbl": "getauscht",
 },
 "fr": {
     "cover_pills": ["1 dans 1…", "Crystal Clear 390…", "L'ordre compte…"], "cover_with": "avec", "cover_brand": "Sempertex Europe", "cover_tag": "Double stuffing…",
@@ -163,7 +163,7 @@ BASE = {
     "s3_client_lbl": "CLIENT", "s3_client_topic": "Discussion client",
     "s3_client_quote": "“Envoie-moi ton code couleur. Je teste 2 combinaisons et tu vois le mélange avant que je gonfle quoi que ce soit.”",
     "s3_cta_kicker": "Ta recette double stuffing pour la prochaine prestation",
-    "outer_lbl": "extérieur", "inner_lbl": "intérieur", "result_lbl": "résultat", "approx_lbl": "approximation", "swap_lbl": "inversé",
+    "ds_plain": "seul", "ds_crystal": "dans Crystal Clear 390", "ds_caption": "Même couleur, même taille, même lumière. À gauche seul, à droite dans Crystal Clear 390.", "outer_lbl": "extérieur", "inner_lbl": "intérieur", "result_lbl": "résultat", "approx_lbl": "approximation", "swap_lbl": "inversé",
 },
 "it": {
     "cover_pills": ["1 in 1…", "Crystal Clear 390…", "L'ordine conta…"], "cover_with": "con", "cover_brand": "Sempertex Europe", "cover_tag": "Double stuffing…",
@@ -201,7 +201,7 @@ BASE = {
     "s3_client_lbl": "CLIENTE", "s3_client_topic": "Dialogo con il cliente",
     "s3_client_quote": "“Mandami il tuo codice colore. Provo 2 combinazioni e vedi la fusione prima che gonfi qualsiasi cosa.”",
     "s3_cta_kicker": "La tua ricetta double stuffing per il prossimo lavoro",
-    "outer_lbl": "esterno", "inner_lbl": "interno", "result_lbl": "risultato", "approx_lbl": "approssimazione", "swap_lbl": "scambiato",
+    "ds_plain": "da solo", "ds_crystal": "in Crystal Clear 390", "ds_caption": "Stesso colore, stessa misura, stessa luce. A sinistra da solo, a destra dentro Crystal Clear 390.", "outer_lbl": "esterno", "inner_lbl": "interno", "result_lbl": "risultato", "approx_lbl": "approssimazione", "swap_lbl": "scambiato",
 },
 "pl": {
     "cover_pills": ["1 w 1…", "Crystal Clear 390…", "Kolejność ma znaczenie…"], "cover_with": "z", "cover_brand": "Sempertex Europe", "cover_tag": "Double stuffing…",
@@ -239,7 +239,7 @@ BASE = {
     "s3_client_lbl": "KLIENT", "s3_client_topic": "Rozmowa z klientem",
     "s3_client_quote": "“Wyślij mi swój kod koloru. Przetestuję 2 kombinacje i zobaczysz mieszankę, zanim cokolwiek napompuję.”",
     "s3_cta_kicker": "Twój przepis double stuffing na następne zlecenie",
-    "outer_lbl": "na zewnątrz", "inner_lbl": "w środku", "result_lbl": "wynik", "approx_lbl": "przybliżenie", "swap_lbl": "zamienione",
+    "ds_plain": "sam", "ds_crystal": "w Crystal Clear 390", "ds_caption": "Ten sam kolor, ten sam rozmiar, to samo światło. Po lewej sam, po prawej w Crystal Clear 390.", "outer_lbl": "na zewnątrz", "inner_lbl": "w środku", "result_lbl": "wynik", "approx_lbl": "przybliżenie", "swap_lbl": "zamienione",
 },
 "el": {
     "cover_pills": ["1 μέσα σε 1…", "Crystal Clear 390…", "Η σειρά μετράει…"], "cover_with": "με", "cover_brand": "Sempertex Europe", "cover_tag": "Double stuffing…",
@@ -277,7 +277,7 @@ BASE = {
     "s3_client_lbl": "ΠΕΛΑΤΗΣ", "s3_client_topic": "Συζήτηση με πελάτη",
     "s3_client_quote": "“Στείλε μου τον κωδικό χρώματος. Δοκιμάζω 2 συνδυασμούς και βλέπεις τη μίξη πριν φουσκώσω οτιδήποτε.”",
     "s3_cta_kicker": "Η συνταγή double stuffing σου για την επόμενη δουλειά",
-    "outer_lbl": "έξω", "inner_lbl": "μέσα", "result_lbl": "αποτέλεσμα", "approx_lbl": "προσέγγιση", "swap_lbl": "αντίστροφα",
+    "ds_plain": "μόνο του", "ds_crystal": "μέσα σε Crystal Clear 390", "ds_caption": "Ίδιο χρώμα, ίδιο μέγεθος, ίδιο φως. Αριστερά μόνο του, δεξιά μέσα σε Crystal Clear 390.", "outer_lbl": "έξω", "inner_lbl": "μέσα", "result_lbl": "αποτέλεσμα", "approx_lbl": "προσέγγιση", "swap_lbl": "αντίστροφα",
 },
 "hu": {
     "cover_pills": ["1 az 1-ben…", "Crystal Clear 390…", "A sorrend számít…"], "cover_with": "partner:", "cover_brand": "Sempertex Europe", "cover_tag": "Double stuffing…",
@@ -315,7 +315,7 @@ BASE = {
     "s3_client_lbl": "ÜGYFÉL", "s3_client_topic": "Ügyfélbeszélgetés",
     "s3_client_quote": "“Küldd el a színkódod. Kipróbálok 2 kombinációt, és látod a keveréket, mielőtt bármit felfújok.”",
     "s3_cta_kicker": "A double stuffing recepted a következő munkához",
-    "outer_lbl": "kívül", "inner_lbl": "belül", "result_lbl": "eredmény", "approx_lbl": "közelítés", "swap_lbl": "cserélve",
+    "ds_plain": "önmagában", "ds_crystal": "Crystal Clear 390-ben", "ds_caption": "Ugyanaz a szín, ugyanaz a méret, ugyanaz a fény. Balra önmagában, jobbra Crystal Clear 390-ben.", "outer_lbl": "kívül", "inner_lbl": "belül", "result_lbl": "eredmény", "approx_lbl": "közelítés", "swap_lbl": "cserélve",
 },
 "lt": {
     "cover_pills": ["1 viename…", "Crystal Clear 390…", "Tvarka svarbi…"], "cover_with": "su", "cover_brand": "Sempertex Europe", "cover_tag": "Double stuffing…",
@@ -353,7 +353,7 @@ BASE = {
     "s3_client_lbl": "KLIENTAS", "s3_client_topic": "Pokalbis su klientu",
     "s3_client_quote": "“Atsiųsk savo spalvos kodą. Išbandysiu 2 derinius ir pamatysi mišinį prieš man ką nors pripučiant.”",
     "s3_cta_kicker": "Tavo double stuffing receptas kitam užsakymui",
-    "outer_lbl": "išorėje", "inner_lbl": "viduje", "result_lbl": "rezultatas", "approx_lbl": "apytikslis", "swap_lbl": "sukeista",
+    "ds_plain": "vienas", "ds_crystal": "Crystal Clear 390 viduje", "ds_caption": "Ta pati spalva, tas pats dydis, ta pati šviesa. Kairėje vienas, dešinėje Crystal Clear 390 viduje.", "outer_lbl": "išorėje", "inner_lbl": "viduje", "result_lbl": "rezultatas", "approx_lbl": "apytikslis", "swap_lbl": "sukeista",
 },
 }
 
@@ -529,6 +529,13 @@ def calc_card(c, P, ink="#111"):
             f'<div style="position:absolute;left:20px;top:260px;width:290px;background:#fff;color:{ink};border:3px solid {ink};border-radius:14px;padding:12px 16px;box-shadow:0 6px 0 rgba(0,0,0,.18);font-size:18px;font-weight:700;line-height:1.3">'
             f'<div><span style="opacity:.55">{esc(c["outer_lbl"])}</span> {esc(G["pal_label"](o))}</div><div><span style="opacity:.55">{esc(c["inner_lbl"])}</span> {esc(G["pal_label"](i))}</div></div></div>')
 
+def ds_photos(c, w=420, h=280, ink="#111", lbl=15, gap=20, radius=16, caption=True, cap_size=18):
+    """Echte double-stuff foto's: roze en blauw, links los, rechts in Crystal Clear 390."""
+    esc = G["esc"]; ph = G["photo_lbl"]
+    cells = ph("doublestuff_pink.jpg", c["ds_plain"] + " → " + c["ds_crystal"], w, h, ink, "64% 52%", radius, lbl, "#fff", "150%") + ph("doublestuff_blue.jpg", c["ds_plain"] + " → " + c["ds_crystal"], w, h, ink, "67% 50%", radius, lbl, "#fff", "150%")
+    cap = f'<div style="font-size:{cap_size}px;line-height:1.3;text-align:center;color:{ink}">{esc(c["ds_caption"])}</div>' if caption else ""
+    return f'<div style="display:flex;flex-direction:column;align-items:center;gap:14px;width:100%"><div style="display:flex;gap:{gap}px;justify-content:center">{cells}</div>{cap}</div>'
+
 # ---------------------------------------------------------------- STIJL 1
 def s1_slides(b, c):
     CUR["pal"] = b["pal"]; c = fill_pal(b, c); P = b["pal"]
@@ -570,7 +577,7 @@ def s1_slides(b, c):
   <div class="stack" style="top:650px;height:460px">
     <div class="card" style="top:0;height:380px;transform:translate(60px,-70px) scale(.92);opacity:.5"></div>
     <div class="card" style="top:0;height:380px;transform:translate(30px,-36px) scale(.96);opacity:.75"></div>
-    <div class="card" style="top:0;height:430px;display:flex;align-items:center;justify-content:center;padding:30px 30px 36px">{crystal_row(c, P, 136, 17, b['ink'])}</div>
+    <div class="card" style="top:0;height:430px;display:flex;align-items:center;justify-content:center;padding:26px 30px 30px">{ds_photos(c, 400, 266, b['ink'], 14, 18, 16, True, 17)}</div>
   </div>
   {s1_footer(b)}
 </section>""")
@@ -632,7 +639,7 @@ def s2_slides(b, c):
   <div style="position:absolute;left:300px;top:552px;width:0;height:0;border-left:22px solid #fff;border-top:14px solid transparent;border-bottom:14px solid transparent"></div>
   <h1 data-fit style="position:absolute;left:320px;right:70px;top:70px;max-height:430px;font-size:68px">{hl(c['cover_title'])}</h1>
   <div class="frame" style="left:320px;top:520px;width:690px;transform:rotate({rot(b,-2)}deg)">
-    <div class="ph" style="height:460px;flex-direction:row;gap:36px;align-items:center">{_bl(P[1], 130)}<div style="font-size:48px;font-weight:900;color:#111;opacity:.5">+</div>{_bl(P[2], 130)}<div style="font-size:48px;font-weight:900;color:#111;opacity:.5">=</div>{dstuff(P[1], P[2], 170)}</div>
+    <div class="ph" style="height:460px;padding:0;overflow:hidden">{G['photo_lbl']('doublestuff_pink.jpg', c['ds_plain'] + ' → ' + c['ds_crystal'], 658, 460, '#111', '64% 50%', 4, 16, '#fff', '135%')}</div>
   </div>
   <div class="tagw" style="right:70px;top:960px;white-space:nowrap"><span class="ast">✳</span>{esc(c['cover_tag'])}</div>
   <div style="position:absolute;left:70px;top:1060px;font-size:36px;line-height:1.1">{esc(c['cover_with'])}</div>
@@ -644,7 +651,7 @@ def s2_slides(b, c):
   <div class="label" style="top:70px">{esc(c['steps_label'])}</div>
   <div class="body" style="position:absolute;left:70px;right:70px;top:160px"><b style="font-size:36px">{esc(c['steps_title'])}</b>{steps}</div>
   <div class="frame" style="left:80px;top:660px;width:560px;transform:rotate({rot(b,-2)}deg)">
-    <div class="ph" style="height:380px;flex-direction:row;gap:24px;align-items:center">{_bl(P[0], 110)}<div style="font-size:40px;font-weight:900;color:#111;opacity:.5">→</div>{dstuff("crystal", P[0], 150)}</div>
+    <div class="ph" style="height:380px;padding:0;overflow:hidden">{G['photo_lbl']('doublestuff_blue.jpg', c['ds_plain'] + ' → ' + c['ds_crystal'], 528, 380, '#111', '67% 50%', 4, 15, '#fff', '150%')}</div>
   </div>
   <div class="frame" style="left:600px;top:800px;width:410px;transform:rotate({rot(b,3)}deg)">
     <div class="ph" style="height:280px">{dstuff(P[3], P[0], 140)}</div>
@@ -656,7 +663,7 @@ def s2_slides(b, c):
   <div class="label" style="top:70px">{esc(c['rule1_label'])}</div>
   <h2 data-fit style="position:absolute;left:70px;right:70px;top:160px;font-size:58px;max-height:160px">{esc(c['rule1_title'])}</h2>
   <div class="frame" style="left:70px;top:350px;width:940px;transform:rotate({rot(b,-1.5)}deg)">
-    <div class="ph" style="height:440px;padding:20px;box-sizing:border-box;background:#fff">{crystal_row(c, P, 130, 18, '#111')}</div>
+    <div class="ph" style="height:440px;padding:20px;box-sizing:border-box;background:#fff;color:#111">{ds_photos(c, 430, 300, '#111', 14, 18, 12, True, 17)}</div>
   </div>
   <div class="body" style="position:absolute;left:70px;right:70px;top:900px;font-size:27px">{esc(c['rule1_body'])}</div>
   {s2_footer(b)}
@@ -766,8 +773,8 @@ def s3_slides(b, c):
   <div class="bottom" style="top:890px;font-size:33px;font-weight:700">{esc(quote)}</div>
   {s3_footer(b)}
 </section>"""
-    vis1 = (f'<div style="display:flex;flex-direction:column;align-items:center;gap:16px"><div style="display:flex;align-items:flex-end;gap:10px">{_bl(P[0], 100)}<div style="font-size:30px;padding-bottom:50px;opacity:.5">→</div>{dstuff("crystal", P[0], 150)}</div>'
-            f'<div class="pname" style="font-size:19px;text-align:center">{esc(G["pal_label"](P[0]))} + Crystal 390</div></div>')
+    vis1 = (f'<div style="display:flex;flex-direction:column;align-items:center;gap:12px;width:100%">{G["photo_lbl"]("doublestuff_pink.jpg", c["ds_plain"] + " → " + c["ds_crystal"], 368, 230, "#111", "64% 52%", 12, 13, "#fff", "150%")}{G["photo_lbl"]("doublestuff_blue.jpg", c["ds_plain"] + " → " + c["ds_crystal"], 368, 230, "#111", "67% 50%", 12, 13, "#fff", "150%")}'
+            f'<div style="font-size:15px;line-height:1.25;text-align:center">{esc(c["ds_caption"])}</div></div>')
     S.append(topic_slide(c["s3_rule1_topic"], c["s3_rule1_old"], vis1, c["s3_rule1_quote"]))
     vis2 = f'<div style="transform:scale(.78);transform-origin:top center;margin-bottom:-60px">{swap_pair(c, P, 150, 19, "#111")}</div>'
     S.append(topic_slide(c["s3_rule2_topic"], c["s3_rule2_old"], vis2, c["s3_rule2_quote"]))

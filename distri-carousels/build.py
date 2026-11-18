@@ -178,6 +178,20 @@ def rot(b, deg):
 # ---------------------------------------------------------------- BALLOON
 # Echte productfoto's (R12 packshots van sempertexeurope.com, uitgeknipt) in /balloons/<key>.png
 BALLOONS = f"{ROOT}/balloons"
+PHOTOS = f"{ROOT}/photos"
+
+def photo(name, w=None, h=None, pos="center", radius=0, extra="", fit="cover", bg=None):
+    """Echte foto uit photos/ als achtergrond. w/h in px, None = 100%. fit=cover (bijsnijden) of contain (met bg-kleur)."""
+    st = (f"background:{bg or 'transparent'} url('file://{PHOTOS}/{name}') {pos}/{fit} no-repeat;"
+          + (f"width:{w}px;" if w else "width:100%;") + (f"height:{h}px;" if h else "height:100%;")
+          + (f"border-radius:{radius}px;" if radius else "") + "flex:none;" + extra)
+    return f'<div class="photo" style="{st}"></div>'
+
+def photo_lbl(name, label, w, h, ink="#111", pos="center", radius=16, size=17, bg="#fff", fit="cover"):
+    """Foto met een klein label onderaan (witte chip). fit = cover of een zoom zoals '150%'."""
+    return (f'<div style="position:relative;width:{w}px;height:{h}px;flex:none">{photo(name, w, h, pos, radius, "", fit)}'
+            f'<div style="position:absolute;left:12px;bottom:12px;background:{bg};color:{ink};border:2px solid {ink};border-radius:999px;'
+            f'padding:4px 12px;font-size:{size}px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap">{esc(label)}</div></div>')
 HEX2KEY = {v["hex"].upper(): k for k, v in SX.items()}
 HEX2KEY.update({"#D7262B": "red", "#F2D22E": "yellow", "#2D4FB5": "royalblue", "#A9D83C": "limegreen",
                 "#D63384": "fuchsia", "#F07E22": "orange", "#6B3FB9": "violet", "#3CB7D9": "caribbean",

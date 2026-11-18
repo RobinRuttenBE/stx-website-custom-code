@@ -550,6 +550,19 @@ def calculated(keys, c, ink="#111"):
             f'<div style="font-size:17px;font-weight:700;opacity:.7">{esc(c["price_lbl"])} {esc(c["rule2_facts"][0][0])} … {esc(c["rule2_facts"][1][0][1:])}</div>'
             f'<div style="font-size:{30 if len(rows[-1][1]) <= 14 else 24}px;font-weight:900;line-height:1.1;margin-top:4px">{esc(rows[-1][1])}</div></div></div>')
 
+def calc_photo(c, ink="#111"):
+    """'Uitgerekend': foto van de Kostprijscalculator op de laptop, met offerte-stempel (stijl 3 cover)."""
+    esc = G["esc"]
+    return (f'<div style="position:relative;width:330px;height:370px">'
+            f'<div style="position:absolute;left:0;top:20px;width:330px;height:330px;border-radius:18px;overflow:hidden;box-shadow:0 0 0 8px #fff,0 10px 14px rgba(0,0,0,.18)">{G["photo"]("calculator_laptop.jpg", 330, 330, "center 34%")}</div>'
+            f'<div style="position:absolute;left:20px;top:300px;transform:rotate(-5deg);background:#fff;color:{ink};border:3px solid {ink};'
+            f'border-radius:10px;padding:8px 16px;font-size:20px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;box-shadow:0 4px 0 rgba(0,0,0,.18);white-space:nowrap">✓ {esc(c["quote_lbl"])}</div></div>')
+
+def photo_price(c, cls, size, photo_w, photo_h, ink="#111", pos="center 55%"):
+    """Voorbeeldslide: foto van een afgewerkt organic design links, mini-offerte rechts."""
+    return (f'<div style="display:flex;gap:26px;align-items:center;width:100%">{G["photo"]("organic_design.jpg", photo_w, photo_h, pos, 18)}'
+            f'<div style="flex:1;min-width:0">{price_card(c, cls, size)}</div></div>')
+
 # ---------------------------------------------------------------- STIJL 1
 def s1_slides(b, c):
     CUR["pal"] = b["pal"]; c = fill_pal(b, c); P = b["pal"]
@@ -570,10 +583,10 @@ def s1_slides(b, c):
     steps = "".join(f'<div class="step"><b>{i+1}.</b><span>{esc(s)}</span></div>' for i, s in enumerate(c["steps"]))
     S.append(f"""
 <section class="slide s1">
-  <div class="box" style="left:70px;top:120px;width:800px;height:520px">
-    <h2 data-fit style="font-size:78px;max-height:420px;line-height:1.1">{esc(c['steps_title'])}</h2>
+  <div class="box" style="left:70px;top:120px;width:580px;height:520px;padding:40px 44px">
+    <h2 data-fit style="font-size:70px;max-height:430px;line-height:1.1">{esc(c['steps_title'])}</h2>
   </div>
-  <div class="bigballoon" style="left:830px;top:90px;transform:rotate(14deg)">{balloon(b['hero'], 'fashion', 180)}</div>
+  <div class="box" style="left:670px;top:120px;width:340px;height:520px;padding:0;overflow:hidden">{G['photo']('organic_design.jpg', 332, 512, 'center')}</div>
   <div style="position:absolute;left:120px;top:650px">{arrow_svg(b['ink'], 150, 140)}</div>
   <div class="box" style="left:300px;top:680px;width:710px;height:480px;padding:36px 46px">
     <div style="font-size:30px;font-weight:{b['body_b']}">{esc(c['steps_lead'])}</div>
@@ -616,8 +629,7 @@ def s1_slides(b, c):
   <div class="tag" style="right:70px;top:70px"><span class="ast">✳</span>{esc(c['example_label'])}</div>
   <div class="box" style="left:70px;top:160px;width:940px;height:600px;padding:36px 44px 30px">
     <h2 data-fit style="font-size:50px;margin-bottom:18px;text-align:center;max-height:120px">{esc(c['example_title'])}</h2>
-    <div style="transform:scale(.8);transform-origin:top center;height:120px">{garland(P, 96, 62, 7)}</div>
-    {price_card(c, "pcard", 27)}
+    {photo_price(c, "pcard", 22, 250, 410, b['ink'])}
   </div>
   <div class="box" style="left:70px;top:800px;width:940px;padding:32px 50px"><div class="body" style="font-size:27px">{esc(c['example_body'])}</div></div>
   {s1_footer(b)}
@@ -657,7 +669,7 @@ def s2_slides(b, c):
   <div style="position:absolute;left:300px;top:552px;width:0;height:0;border-left:22px solid #fff;border-top:14px solid transparent;border-bottom:14px solid transparent"></div>
   <h1 data-fit style="position:absolute;left:320px;right:70px;top:70px;max-height:430px;font-size:70px">{hl(c['cover_title'])}</h1>
   <div class="frame" style="left:320px;top:520px;width:690px;transform:rotate({rot(b,-2)}deg)">
-    <div class="ph" style="height:460px;padding:20px;box-sizing:border-box"><div style="transform:scale(1.15)">{calculated(P, c, '#111')}</div></div>
+    <div class="ph" style="height:460px;padding:0;overflow:hidden">{G['photo_lbl']('calculator_laptop.jpg', 'sempertexeurope.com/tools', 658, 460, '#111', 'center 36%', 4, 15)}</div>
   </div>
   <div class="tagw" style="right:70px;top:960px;white-space:nowrap"><span class="ast">✳</span>{esc(c['cover_tag'])}</div>
   <div style="position:absolute;left:70px;top:1060px;font-size:36px;line-height:1.1">{esc(c['cover_with'])}</div>
@@ -669,10 +681,10 @@ def s2_slides(b, c):
   <div class="label" style="top:70px">{esc(c['steps_label'])}</div>
   <div class="body" style="position:absolute;left:70px;right:70px;top:160px;font-size:27px"><b style="font-size:36px">{esc(c['steps_title'])}</b>{steps}</div>
   <div class="frame" style="left:80px;top:700px;width:560px;transform:rotate({rot(b,-2)}deg)">
-    <div class="ph" style="height:340px;padding:10px;box-sizing:border-box"><div style="transform:scale(.9)">{garland(P, 96, 62, 6)}</div></div>
+    <div class="ph" style="height:340px;padding:0;overflow:hidden">{G['photo']('organic_design.jpg', 528, 340, 'center 58%', 4)}</div>
   </div>
   <div class="frame" style="left:600px;top:820px;width:410px;transform:rotate({rot(b,3)}deg)">
-    <div class="ph" style="height:260px;padding:10px;box-sizing:border-box"><div style="transform:scale(.8)">{balloon(b['hero'], 'fashion', 150)}</div></div>
+    <div class="ph" style="height:260px;padding:0;overflow:hidden">{G['photo']('calculator_laptop.jpg', 378, 260, 'center 32%', 4)}</div>
   </div>
   {s2_footer(b)}
 </section>""")
@@ -702,8 +714,7 @@ def s2_slides(b, c):
   <h2 data-fit style="position:absolute;left:70px;right:70px;top:160px;font-size:56px;max-height:150px">{esc(c['example_title'])}</h2>
   <div class="frame" style="left:70px;top:330px;width:940px;transform:rotate({rot(b,-1.5)}deg)">
     <div class="ph" style="height:auto;padding:24px 30px;box-sizing:border-box;flex-direction:column;background:#fff;color:#111">
-      <div style="transform:scale(.75);transform-origin:top center;height:110px">{garland(P, 96, 62, 7)}</div>
-      {price_card(c, "pcard onwhite", 25)}
+      {photo_price(c, "pcard onwhite", 21, 250, 390, '#111')}
     </div>
   </div>
   <div class="body" style="position:absolute;left:70px;right:70px;top:930px;font-size:25px">{esc(c['example_body'])}</div>
@@ -753,7 +764,7 @@ def s3_slides(b, c):
   <div class="lblw" style="left:110px;top:500px;transform:rotate({rot(b,-4)}deg)">{esc(c['s3_left'])}<br><span class="meta">● {esc(c['s3_left_meta'])}</span></div>
   <div class="lbld" style="right:110px;top:500px;transform:rotate({rot(b,4)}deg)">{esc(c['s3_right'])}<br><span class="meta" style="background:rgba(255,255,255,.18)">● {esc(c['s3_right_meta'])}</span></div>
   <div style="position:absolute;left:60px;top:680px;transform:scale(1.18);transform-origin:top left">{gut_feel(loud, c['tag_lbl'], b['ink'])}</div>
-  <div style="position:absolute;right:60px;top:680px;transform:scale(1.18);transform-origin:top right">{calculated(P, c, b['ink'])}</div>
+  <div style="position:absolute;right:60px;top:680px;transform:scale(1.18);transform-origin:top right">{calc_photo(c, b['ink'])}</div>
   <div class="vsbadge" style="left:485px;top:850px">vs</div>
   {s3_footer(b, stx_h=60)}
 </section>""")
@@ -803,8 +814,7 @@ def s3_slides(b, c):
 <section class="slide s3">
   <div class="topic" style="top:80px"><span class="k">{esc(c['s3_example_lbl'])}</span><span class="v" style="font-size:{44 if len(t) <= 24 else (36 if len(t) <= 30 else 30)}px">{esc(t)}</span></div>
   <div class="cardw onwhite" style="left:70px;right:70px;top:230px;height:620px;padding:40px 44px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px">
-    <div style="transform:scale(.85);transform-origin:top center;height:120px">{garland(P, 96, 62, 7)}</div>
-    {price_card(c, "pcard onwhite", 26)}
+    {photo_price(c, "pcard onwhite", 21, 250, 430, '#111')}
   </div>
   <div class="bottom" style="top:910px;font-size:31px;font-weight:700">{esc(c['s3_example_quote'])}</div>
   {s3_footer(b)}
