@@ -485,6 +485,8 @@ def size_row(sizes, keys, big=210, labels=None, sub=None, ink="#111", gap=26, la
     out = f'<div style="display:flex;align-items:flex-end;justify-content:center;gap:{gap}px">'
     for i in range(n):
         w = int(big * scale[i]); k = keys[i % len(keys)]
+        sz = sizes[i] if isinstance(sizes[i], int) else int("".join(ch for ch in str(sizes[i][0]) if ch.isdigit()) or 12)
+        if "sized" in G: k = G["sized"](k, sz)   # echte R18/R36-packshot als die bestaat (R9 valt terug op R12)
         lab = f'<div class="pname" style="font-size:{lab_size}px;margin-top:10px;color:{ink};white-space:nowrap">{esc(labels[i])}</div>' if labels else ""
         sb = f'<div class="pcode-only" style="font-size:{sub_size}px;color:{ink};opacity:.75;white-space:nowrap">{esc(sub[i])}</div>' if sub else ""
         out += f'<div style="text-align:center">{_bl(k, w)}{lab}{sb}</div>'

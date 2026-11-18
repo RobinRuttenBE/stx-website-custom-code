@@ -501,6 +501,9 @@ def facts_grid(items, cls="facts", num_size=44, lab_size=20):
     cells = "".join(f'<div class="fact"><b style="font-size:{fs(n)}px">{esc(n)}</b><span style="font-size:{lab_size}px">{esc(l)}</span></div>' for n, l in items)
     return f'<div class="{cls}">{cells}</div>'
 
+def _sz(key, size):
+    return G["sized"](key, size) if "sized" in G else key
+
 def _at(key, size, angle, x, y):
     """Ballon met de nek (onderkant, midden) op punt (x,y), gedraaid rond die nek."""
     h = int(size * G["photo_ratio"](key)) if "photo_ratio" in G else int(size * G["PHOTO_RATIO"])
@@ -530,11 +533,11 @@ def rope_garland(keys, w=330, h=300, n=9, size=50, loose=False, ink="#111"):
             angles = (-60 + i * 45, 60 + i * 45, 180 + i * 45)
         big = (not loose) and i in (1, n - 3)
         for j, a in enumerate(angles):
-            kk = keys[3] if (big and j == 0) else k
+            kk = _sz(keys[3], 18) if (big and j == 0) else k
             ss = int(s * 1.45) if (big and j == 0) else s
             out += _at(kk, ss, a, x, y)
         if not loose:
-            out += _at(keys[2], int(size * .5), 20 + i * 45, x + size // 2, y + 4)
+            out += _at(_sz(keys[2], 5), int(size * .52), 20 + i * 45, x + size // 2, y + 4)
     return out + '</div>'
 
 def duplet(key, size=46, ink="#111"):
@@ -552,7 +555,7 @@ def sizes_row(keys, c, ink="#111", lbl_size=17):
                 f'<div style="height:150px;display:flex;align-items:flex-end">{v}</div>'
                 f'<div style="margin-top:8px;font-size:{lbl_size + 4}px;font-weight:900;color:{ink}">{name}</div>'
                 f'<div style="font-size:{lbl_size}px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:{ink};opacity:.6;white-space:nowrap">{esc(what)}</div></div>')
-    cols = [col(duplet(keys[0], 60, ink), "R12", c["base_lbl"]), col(_bl(keys[2], 50), "R5", c["gap_lbl"]), col(_bl(keys[3], 108), "R18", c["accent_lbl"])]
+    cols = [col(duplet(keys[0], 60, ink), "R12", c["base_lbl"]), col(_bl(_sz(keys[2], 5), 50), "R5", c["gap_lbl"]), col(_bl(_sz(keys[3], 18), 108), "R18", c["accent_lbl"])]
     return '<div style="display:flex;gap:44px;align-items:flex-end;justify-content:center">' + "".join(cols) + '</div>'
 
 def chips_row(items, ink="#111", bg="#fff", small=False):
@@ -572,13 +575,20 @@ def full_visual(keys, c, ink="#111"):
     return (f'<div style="position:relative;width:330px;height:380px"><div style="position:absolute;left:0;top:40px">{rope_garland(keys, 330, 300, 9, 50, ink=ink)}</div>'
             + _stamp("✓ " + c["full_stamp"], ink, ink, 0, 328, -4) + '</div>')
 
+def garland_photo(c, ink="#111"):
+    """'Vol': de blogfoto van de afgewerkte organische slinger met stempel (stijl 3 cover)."""
+    return (f'<div style="position:relative;width:330px;height:380px">'
+            f'<div style="position:absolute;left:0;top:50px;width:330px;height:300px;border-radius:18px;overflow:hidden;box-shadow:0 0 0 8px #fff,0 10px 14px rgba(0,0,0,.18)">{G["photo"]("garland_1.jpg", 330, 300, "center 32%")}</div>'
+            + _stamp("✓ " + c["full_stamp"], ink, ink, 10, 0, -5) + '</div>')
+
 def sizes_visual(keys, c, ink="#111"):
     return (f'<div style="position:relative;width:330px;height:380px"><div style="position:absolute;left:0;top:40px">{rope_garland(keys, 330, 300, 9, 50, ink=ink)}</div>'
             + _stamp(c["sizes_stamp"], ink, ink, 0, 328, -4) + '</div>')
 
 def two_garlands(keys, c, ink="#111", body_size=21, lbl_size=24, gap=26, vh=300, sc=1.0):
     esc = G["esc"]
-    vis = [f'<div style="height:{vh}px;display:flex;align-items:flex-end;justify-content:center;width:100%"><div style="transform:scale({sc:.2f});transform-origin:bottom center">{rope_garland(TUT, 330, 300, 9, 50, ink=ink)}</div></div>',
+    ph = vh - 16; pw = min(330, int(ph * 1.05))
+    vis = [f'<div style="height:{vh}px;display:flex;align-items:flex-end;justify-content:center;width:100%">{G["photo"]("garland_1.jpg", pw, ph, "center 40%", 16)}</div>',
            f'<div style="height:{vh}px;display:flex;align-items:flex-end;justify-content:center;width:100%"><div style="transform:scale({sc:.2f});transform-origin:bottom center">{rope_garland(keys, 330, 300, 9, 50, ink=ink)}</div></div>']
     cols = ""
     for v, (t, body) in zip(vis, c["ex_items"]):
@@ -620,10 +630,10 @@ def s1_slides(b, c):
     steps = "".join(f'<div class="step" style="font-size:{sfs}px"><b>{i+1}.</b><span>{esc(s)}</span></div>' for i, s in enumerate(c["steps"]))
     S.append(f"""
 <section class="slide s1">
-  <div class="box" style="left:70px;top:110px;width:790px;height:380px">
-    <h2 data-fit style="font-size:66px;max-height:300px;line-height:1.1">{esc(c['steps_title'])}</h2>
+  <div class="box" style="left:70px;top:110px;width:570px;height:380px">
+    <h2 data-fit style="font-size:60px;max-height:300px;line-height:1.1">{esc(c['steps_title'])}</h2>
   </div>
-  <div class="bigballoon" style="left:872px;top:130px;transform:scale(1.15);transform-origin:top left">{duplet(b['hero'] if b['hero'] in G['SX'] else P[0], 56, b['ink'])}</div>
+  <div class="box" style="left:670px;top:110px;width:340px;height:380px;padding:0;overflow:hidden">{G['photo']('garland_2.jpg', 332, 372, '52% 40%')}</div>
   <div style="position:absolute;left:110px;top:500px">{arrow_svg(b['ink'], 140, 120)}</div>
   <div class="box" style="left:230px;top:515px;width:780px;height:655px;padding:24px 34px">
     <div style="font-size:25px;font-weight:{b['body_b']}">{esc(c['steps_lead'])}</div>
@@ -697,7 +707,7 @@ def s2_slides(b, c):
   <div style="position:absolute;left:300px;top:552px;width:0;height:0;border-left:22px solid #fff;border-top:14px solid transparent;border-bottom:14px solid transparent"></div>
   <h1 data-fit style="position:absolute;left:320px;right:70px;top:70px;max-height:430px;font-size:62px">{hl(c['cover_title'])}</h1>
   <div class="frame" style="left:320px;top:520px;width:690px;transform:rotate({rot(b,-2)}deg)">
-    <div class="ph" style="height:460px;padding:20px;box-sizing:border-box"><div style="transform:scale(1.08)">{sizes_visual(P, c, '#111')}</div></div>
+    <div class="ph" style="height:460px;padding:0;overflow:hidden">{G['photo']('garland_1.jpg', 658, 460, 'center 36%', 4)}</div>
   </div>
   <div class="tagw" style="right:70px;top:960px;white-space:nowrap"><span class="ast">✳</span>{esc(c['cover_tag'])}</div>
   <div style="position:absolute;left:70px;top:1060px;font-size:36px;line-height:1.1">{esc(c['cover_with'])}</div>
@@ -710,7 +720,7 @@ def s2_slides(b, c):
   <div class="label" style="top:70px">{esc(c['steps_label'])}</div>
   <div class="body" style="position:absolute;left:70px;right:70px;top:160px;font-size:21px"><b style="font-size:31px">{esc(c['steps_title'])}</b>{steps}</div>
   <div class="frame" style="left:80px;top:790px;width:930px;transform:rotate({rot(b,-1.5)}deg)">
-    <div class="ph" style="height:300px;padding:16px 24px;box-sizing:border-box;background:#fff;color:#111;align-items:center;justify-content:flex-end"><div style="transform:scale(1.0);transform-origin:bottom center">{sizes_row(P, c, '#111')}</div></div>
+    <div class="ph" style="height:300px;padding:16px 24px;box-sizing:border-box;background:#fff;color:#111;flex-direction:row;align-items:center;justify-content:center;gap:34px">{G['photo']('garland_2.jpg', 360, 268, '52% 42%', 12)}<div style="transform:scale(.92);transform-origin:center">{sizes_row(P, c, '#111')}</div></div>
   </div>
   {s2_footer(b)}
 </section>""")
@@ -789,7 +799,7 @@ def s3_slides(b, c):
   <div class="lblw" style="left:110px;top:500px;transform:rotate({rot(b,-4)}deg)">{esc(c['s3_left'])}<br><span class="meta">● {esc(c['s3_left_meta'])}</span></div>
   <div class="lbld" style="right:110px;top:500px;transform:rotate({rot(b,4)}deg)">{esc(c['s3_right'])}<br><span class="meta" style="background:rgba(255,255,255,.18)">● {esc(c['s3_right_meta'])}</span></div>
   <div style="position:absolute;left:60px;top:680px;transform:scale(1.18);transform-origin:top left">{loose_visual(loud, c, b['ink'])}</div>
-  <div style="position:absolute;right:60px;top:680px;transform:scale(1.18);transform-origin:top right">{full_visual(P, c, b['ink'])}</div>
+  <div style="position:absolute;right:60px;top:680px;transform:scale(1.18);transform-origin:top right">{garland_photo(c, b['ink'])}</div>
   <div class="vsbadge" style="left:485px;top:850px">vs</div>
   {s3_footer(b, stx_h=60)}
 </section>""")

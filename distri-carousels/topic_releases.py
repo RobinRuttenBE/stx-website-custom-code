@@ -530,6 +530,7 @@ def garland(keys, big=84, small=56, n=6):
     out = '<div style="display:flex;align-items:flex-end;justify-content:center;gap:0">'
     for i in range(n):
         k = keys[i % len(keys)]; s = big if i % 2 == 0 else small
+        if i % 2 and "sized" in G: k = G["sized"](k, 5)   # kleine = echte R5-packshot
         rotv = (-10, 12, -6, 10, -12, 8, -9)[i % 7]
         out += f'<div style="margin:0 -8px"><div style="transform:rotate({rotv}deg)">{_bl(k, s)}</div></div>'
     return out + '</div>'

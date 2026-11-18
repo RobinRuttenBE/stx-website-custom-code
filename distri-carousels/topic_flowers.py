@@ -474,7 +474,7 @@ CAPTIONS_TPL = {
 
 # ---------------------------------------------------------------- VISUALS
 CUR = {"pal": ["rosewood", "eucalyptus", "greentea", "golddust"]}
-TUT = ["duskrose", "violet", "matteblue", "reflexgold"]   # tulp, lavendel (benadering), zesbladig, strik
+TUT = ["duskrose", "dusklavender", "duskblue", "reflexgold"]   # tulp, lavendel, zesbladig, strik (echte tutorialkleuren)
 
 def fill_pal(b, c):
     lab = {f"p{i}": G["pal_label"](k, short=False).replace("Fashion ", "").replace("Pastel ", "") for i, k in enumerate(b["pal"][:4])}
@@ -563,6 +563,32 @@ def bouquet(keys, ink="#111", w=330, h=380):
     out += f'<div style="position:absolute;left:{gx - 48}px;top:{gy - 36}px">{bow(keys[3] if len(keys) > 3 else "reflexgold", 34, ink)}</div>'
     return out + '</div>'
 
+def k260(key):
+    """260-packshot in deze kleur als die bestaat, anders de rode 260."""
+    k = G["sized"](key, 260) if "sized" in G else key
+    return k if k.endswith("_260") else "red260"
+
+def sticks_row(keys, size=18, gap=18, n=4):
+    """Rij liggende 260's in de distri-kleuren (materiaalstrook)."""
+    ks = [k260(k) for k in keys[:n]]
+    return ('<div style="display:flex;align-items:center;justify-content:center;gap:' + str(gap) + 'px">'
+            + "".join(stick260(k, size, (-2, 2, -1, 1)[i % 4]) for i, k in enumerate(ks)) + '</div>')
+
+def photo_strip(c, w=280, h=240, ink="#111", gap=21, lbl=15):
+    """Drie blogfoto's naast elkaar: tulp, lavendel, zesbladige bloem (handen in beeld)."""
+    P = G["photo_lbl"]
+    return (f'<div style="display:flex;gap:{gap}px;align-items:center;justify-content:center">'
+            f'{P("flowers_tulip2.jpg", c["tulip_lbl"], w, h, ink, "center", 14, lbl)}'
+            f'{P("flowers_lavender.jpg", c["lav_lbl"], w, h, ink, "center 55%", 14, lbl)}'
+            f'{P("flowers_six3.jpg", c["six_lbl"], w, h, ink, "58% center", 14, lbl)}</div>')
+
+def bouquet_photo(c, ink="#111"):
+    """'Lange staart': de blogfoto van het boeket (Audrey, strik in Reflex Gold) met stempel '3 bloemen' (stijl 3 cover)."""
+    esc = G["esc"]
+    return (f'<div style="position:relative;width:330px;height:380px">'
+            f'<div style="position:absolute;left:0;top:50px;width:330px;height:300px;border-radius:18px;overflow:hidden;box-shadow:0 0 0 8px #fff,0 10px 14px rgba(0,0,0,.18)">{G["photo"]("flowers_bouquet.jpg", 330, 300, "64% center")}</div>'
+            f'<div style="position:absolute;left:10px;top:0;transform:rotate(-5deg);background:#fff;color:{ink};border:3px solid {ink};border-radius:10px;padding:8px 16px;font-size:22px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;box-shadow:0 4px 0 rgba(0,0,0,.18);white-space:nowrap">✓ {esc(c["bouquet_lbl"])}</div></div>')
+
 def stick260(key="red260", size=30, rot=0):
     """Packshot van een 260 modelleerballon, liggend: doos van L x size, optioneel licht gedraaid."""
     L = int(size * G["photo_ratio"](key)) if "photo_ratio" in G else int(size * 8.7)
@@ -579,7 +605,7 @@ def noroom_visual(keys, c, ink="#111"):
     out = f'<div style="position:relative;width:{w}px;height:{h}px">'
     for i, (x, y, s, r) in enumerate([(20, 20, 70, -30), (110, 0, 78, 15), (205, 30, 72, 40), (60, 110, 66, 70), (170, 120, 74, -60)]):
         out += f'<div style="position:absolute;left:{x}px;top:{y}px;transform:rotate({r}deg)">{_bl(keys[i % len(keys)], s)}</div>'
-    out += f'<div style="position:absolute;left:10px;top:262px">{stick260("red260", 30, -7)}</div>'
+    out += f'<div style="position:absolute;left:10px;top:262px">{stick260(k260(keys[0]), 30, -7)}</div>'
     out += (f'<div style="position:absolute;left:150px;top:300px;transform:rotate(-6deg);background:#fff;color:#E03131;border:3px solid {ink};'
             f'border-radius:10px;padding:8px 16px;font-size:22px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;box-shadow:0 4px 0 rgba(0,0,0,.18);white-space:nowrap">{esc(c["noroom_lbl"])} ✕</div>')
     return out + '</div>'
@@ -603,7 +629,8 @@ def three_flowers(keys, c, ink="#111", lbl_size=17):
 def two_bouquets(keys, c, ink="#111", body_size=21, lbl_size=24, gap=26, vh=300, sc=1.0):
     """Voorbeeldslide: links het tutorial-boeket, rechts het boeket in het distri-palet."""
     esc = G["esc"]
-    vis = [f'<div style="height:{vh}px;display:flex;align-items:flex-end;justify-content:center;width:100%"><div style="transform:scale({sc:.2f});transform-origin:bottom center">{bouquet(TUT, ink, 330, 380)}</div></div>',
+    ph = vh - 16; pw = int(ph * 1.2)
+    vis = [f'<div style="height:{vh}px;display:flex;align-items:flex-end;justify-content:center;width:100%">{G["photo"]("flowers_bouquet.jpg", pw, ph, "63% center", 16)}</div>',
            f'<div style="height:{vh}px;display:flex;align-items:flex-end;justify-content:center;width:100%"><div style="transform:scale({sc:.2f});transform-origin:bottom center">{bouquet(keys, ink, 330, 380)}</div></div>']
     cols = ""
     for v, (t, body) in zip(vis, c["ex_items"]):
@@ -645,10 +672,10 @@ def s1_slides(b, c):
     steps = "".join(f'<div class="step" style="font-size:{sfs}px"><b>{i+1}.</b><span>{esc(s)}</span></div>' for i, s in enumerate(c["steps"]))
     S.append(f"""
 <section class="slide s1">
-  <div class="box" style="left:70px;top:120px;width:790px;height:440px">
-    <h2 data-fit style="font-size:70px;max-height:350px;line-height:1.1">{esc(c['steps_title'])}</h2>
+  <div class="box" style="left:70px;top:120px;width:570px;height:440px">
+    <h2 data-fit style="font-size:64px;max-height:350px;line-height:1.1">{esc(c['steps_title'])}</h2>
   </div>
-  <div class="bigballoon" style="left:905px;top:110px;transform:rotate(-16deg)">{_bl("red260", 34)}</div>
+  <div class="box" style="left:670px;top:120px;width:340px;height:440px;padding:0;overflow:hidden">{G['photo']('flowers_tulip2.jpg', 332, 432, 'center')}</div>
   <div style="position:absolute;left:110px;top:570px">{arrow_svg(b['ink'], 140, 120)}</div>
   <div class="box" style="left:250px;top:585px;width:760px;height:585px;padding:26px 36px">
     <div style="font-size:26px;font-weight:{b['body_b']}">{esc(c['steps_lead'])}</div>
@@ -665,7 +692,7 @@ def s1_slides(b, c):
   </div>
   <div class="stack" style="top:690px;height:440px">
     <div class="card" style="top:0;height:340px;transform:translate(40px,-50px) scale(.95);opacity:.6"></div>
-    <div class="card" style="top:0;height:400px;padding:26px 30px">{facts_grid(c['rule1_facts'], 'facts', 48, 19)}</div>
+    <div class="card" style="top:0;height:400px;padding:22px 26px;display:flex;flex-direction:column;gap:14px;align-items:center">{photo_strip(c, 272, 196, b['ink'], 16, 14)}{facts_grid(c['rule1_facts'], 'facts four', 34, 15)}</div>
   </div>
   {s1_footer(b)}
 </section>""")
@@ -684,7 +711,7 @@ def s1_slides(b, c):
     <h2 data-fit style="font-size:50px;margin-bottom:10px;text-align:center;max-height:120px">{esc(c['example_title'])}</h2>
     {two_bouquets(P, c, b['ink'], 20, 23, 24, 370, 1.0)}
   </div>
-  <div class="box" style="left:70px;top:905px;width:940px;padding:18px 40px"><div class="body" style="font-size:21px">{esc(c['example_body'])}</div><div style="margin-top:10px">{chips_row(c['chips'], b['ink'], 'transparent', True)}</div></div>
+  <div class="box" style="left:70px;top:905px;width:940px;padding:16px 40px"><div style="margin-bottom:12px">{sticks_row(P, 22, 14)}</div><div class="body" style="font-size:21px">{esc(c['example_body'])}</div><div style="margin-top:8px">{chips_row(c['chips'], b['ink'], 'transparent', True)}</div></div>
   {s1_footer(b)}
 </section>""")
     S.append(f"""
@@ -722,7 +749,7 @@ def s2_slides(b, c):
   <div style="position:absolute;left:300px;top:552px;width:0;height:0;border-left:22px solid #fff;border-top:14px solid transparent;border-bottom:14px solid transparent"></div>
   <h1 data-fit style="position:absolute;left:320px;right:70px;top:70px;max-height:430px;font-size:62px">{hl(c['cover_title'])}</h1>
   <div class="frame" style="left:320px;top:520px;width:690px;transform:rotate({rot(b,-2)}deg)">
-    <div class="ph" style="height:460px;padding:20px;box-sizing:border-box"><div style="transform:scale(1.08)">{bouquet_visual(P, c, '#111')}</div></div>
+    <div class="ph" style="height:460px;padding:0;overflow:hidden">{G['photo']('flowers_bouquet.jpg', 658, 460, '63% center', 4)}</div>
   </div>
   <div class="tagw" style="right:70px;top:960px;white-space:nowrap"><span class="ast">✳</span>{esc(c['cover_tag'])}</div>
   <div style="position:absolute;left:70px;top:1060px;font-size:36px;line-height:1.1">{esc(c['cover_with'])}</div>
@@ -734,7 +761,7 @@ def s2_slides(b, c):
   <div class="label" style="top:70px">{esc(c['steps_label'])}</div>
   <div class="body" style="position:absolute;left:70px;right:70px;top:160px;font-size:24px"><b style="font-size:33px">{esc(c['steps_title'])}</b>{steps}</div>
   <div class="frame" style="left:80px;top:800px;width:930px;transform:rotate({rot(b,-1.5)}deg)">
-    <div class="ph" style="height:290px;padding:16px 24px;box-sizing:border-box;background:#fff;color:#111;align-items:center;justify-content:flex-end"><div style="transform:scale(.95);transform-origin:bottom center">{three_flowers(P, c, '#111')}</div></div>
+    <div class="ph" style="height:290px;padding:16px 24px;box-sizing:border-box;background:#fff;color:#111;align-items:center;justify-content:center">{photo_strip(c, 280, 250, '#111', 21, 15)}</div>
   </div>
   {s2_footer(b)}
 </section>""")
@@ -743,7 +770,7 @@ def s2_slides(b, c):
   <div class="label" style="top:70px">{esc(c['rule1_label'])}</div>
   <h2 data-fit style="position:absolute;left:70px;right:70px;top:160px;font-size:50px;max-height:150px">{esc(c['rule1_title'])}</h2>
   <div class="frame" style="left:70px;top:330px;width:940px;transform:rotate({rot(b,-1.5)}deg)">
-    <div class="ph" style="height:360px;padding:22px 28px;box-sizing:border-box;align-items:stretch;background:#fff">{facts_grid(c['rule1_facts'], 'facts onwhite', 40, 17)}</div>
+    <div class="ph" style="height:360px;padding:20px 24px;box-sizing:border-box;flex-direction:row;align-items:center;gap:20px;background:#fff">{G['photo']('flowers_bow.jpg', 300, 320, '60% center', 12)}{facts_grid(c['rule1_facts'], 'facts onwhite', 34, 15)}</div>
   </div>
   <div class="body" style="position:absolute;left:70px;right:70px;top:790px;font-size:21px;line-height:1.32">{esc(c['rule1_body'])}</div>
   {s2_footer(b)}
@@ -813,7 +840,7 @@ def s3_slides(b, c):
   <div class="lblw" style="left:110px;top:500px;transform:rotate({rot(b,-4)}deg)">{esc(c['s3_left'])}<br><span class="meta">● {esc(c['s3_left_meta'])}</span></div>
   <div class="lbld" style="right:110px;top:500px;transform:rotate({rot(b,4)}deg)">{esc(c['s3_right'])}<br><span class="meta" style="background:rgba(255,255,255,.18)">● {esc(c['s3_right_meta'])}</span></div>
   <div style="position:absolute;left:60px;top:680px;transform:scale(1.18);transform-origin:top left">{noroom_visual(loud, c, b['ink'])}</div>
-  <div style="position:absolute;right:60px;top:680px;transform:scale(1.18);transform-origin:top right">{bouquet_visual(P, c, b['ink'])}</div>
+  <div style="position:absolute;right:60px;top:680px;transform:scale(1.18);transform-origin:top right">{bouquet_photo(c, b['ink'])}</div>
   <div class="vsbadge" style="left:485px;top:850px">vs</div>
   {s3_footer(b, stx_h=60)}
 </section>""")
@@ -854,9 +881,9 @@ def s3_slides(b, c):
   <div class="bottom" style="top:890px;font-size:33px;font-weight:700">{esc(quote)}</div>
   {s3_footer(b)}
 </section>"""
-    vis1 = f'<div style="width:100%">{facts_grid(c["rule1_facts"], "facts s3facts", 34, 16)}</div>'
+    vis1 = f'<div style="width:100%;display:flex;flex-direction:column;gap:10px">{G["photo"]("flowers_tulip2.jpg", 368, 100, "center 45%", 12)}{facts_grid(c["rule1_facts"], "facts s3facts", 26, 13)}</div>'
     S.append(topic_slide(c["s3_rule1_topic"], c["s3_rule1_old"], vis1, c["s3_rule1_quote"]))
-    vis2 = f'<div style="width:100%">{rule_cards(c, "alts s3alts", 17, 13)}</div>'
+    vis2 = f'<div style="width:100%;display:flex;flex-direction:column;gap:8px">{G["photo"]("flowers_bow.jpg", 368, 80, "center 45%", 12)}{rule_cards(c, "alts s3alts", 15, 11)}</div>'
     S.append(topic_slide(c["s3_rule2_topic"], c["s3_rule2_old"], vis2, c["s3_rule2_quote"]))
     t = c['s3_example_topic']
     S.append(f"""
@@ -895,8 +922,10 @@ EXTRA_CSS = """
 .facts .fact{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;border:3px solid #111;border-radius:18px;padding:14px 12px;gap:6px;line-height:1.15}
 .facts .fact b{letter-spacing:-.01em;line-height:1;white-space:nowrap}
 .facts.onwhite .fact{color:#111}
-.facts.s3facts{grid-template-columns:1fr;gap:12px}
-.facts.s3facts .fact{border-width:2px;padding:10px 14px;border-radius:14px;align-items:flex-start;text-align:left;gap:3px}
+.facts.four{grid-template-columns:repeat(4,1fr);gap:12px}
+.facts.four .fact{padding:10px 8px;gap:4px;border-width:2px;border-radius:14px}
+.facts.s3facts{grid-template-columns:1fr;gap:9px}
+.facts.s3facts .fact{border-width:2px;padding:8px 14px;border-radius:14px;align-items:flex-start;text-align:left;gap:3px}
 .facts.s3facts .fact b{white-space:normal}
 .alts{display:grid;grid-template-columns:1fr 1fr;gap:16px;width:100%}
 .alts .alt{display:flex;flex-direction:column;gap:6px;border:3px solid #111;border-radius:18px;padding:18px 22px;background:#fff;line-height:1.3}

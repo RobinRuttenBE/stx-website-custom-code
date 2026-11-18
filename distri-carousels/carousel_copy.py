@@ -244,6 +244,10 @@ SX = {
     "orange":     {"name": "Fashion Orange",          "code": "061", "hex": "#F07E22", "tex": "fashion"},
     "violet":     {"name": "Fashion Violet",          "code": "051", "hex": "#6B3FB9", "tex": "fashion"},
     "caribbean":  {"name": "Fashion Caribbean Blue",  "code": "038", "hex": "#3CB7D9", "tex": "fashion"},
+    "lilac":      {"name": "Fashion Lilac",           "code": "050", "hex": "#B090BB", "tex": "fashion"},
+    "dusklavender": {"name": "Pastel Dusk Lavender",  "code": "150", "hex": "#AB88A9", "tex": "matte"},
+    "duskblue":   {"name": "Pastel Dusk Blue",        "code": "140", "hex": "#779299", "tex": "matte"},
+    "crystal390": {"name": "Crystal Clear",           "code": "390", "hex": "#EAE6E3", "tex": "crystal"},
 }
 
 PALETTES = {

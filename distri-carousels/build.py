@@ -3,7 +3,7 @@
 import os, sys, json, html
 from carousel_copy import COPY, SX, PALETTES, MESSY, TEXTURE_DEMO
 
-ROOT = os.path.dirname(os.path.abspath(__file__))
+ROOT = "/home/claude/carousels"
 FONTS = f"{ROOT}/fonts/node_modules/@fontsource"
 ASSETS = f"{ROOT}/assets"
 _topic_args = [a.split("=", 1)[1] for a in sys.argv if a.startswith("--topic=")]
@@ -16,7 +16,7 @@ def esc(s): return html.escape(s, quote=False)
 def hl(s):
     """Escape + het woord Sempertex highlighten in een merkpaarse pill."""
     return esc(s).replace("Sempertex", '<span class="sx">Sempertex</span>')
-STX_WT = f"{ASSETS}/stx_full_whitetext.png"
+STX_WT = "/home/claude/carousels/assets/stx_full_whitetext.png"
 
 # ---------------------------------------------------------------- BRANDS
 import colorsys, glob
@@ -64,8 +64,6 @@ def _hue(h):
     h = h.lstrip("#"); r, g, b = (int(h[i:i+2], 16)/255 for i in (0, 2, 4)); hh, l, s = colorsys.rgb_to_hls(r, g, b); return hh*360, s, l
 for k, b in BRANDS.items():
     b.setdefault("body_w", 400); b.setdefault("body_b", 700)
-    for key in ("logo", "logo_card", "logo_white"):
-        if b.get(key) and not os.path.isabs(b[key]): b[key] = os.path.join(ROOT, b[key])
     if not b.get("hero"):
         hh, s, l = _hue(b["c1"])
         if s < 0.2: b["hero"] = "whitesand"
@@ -209,6 +207,13 @@ def photo_ratio(key):
         except Exception:
             _RATIO_CACHE[key] = PHOTO_RATIO
     return _RATIO_CACHE[key]
+
+def sized(key, size):
+    """Key van de productfoto in een andere maat: sized('rosewood', 5) -> 'rosewood_r5' als die foto bestaat,
+    anders de R12-key. Maten: 5, 9, 18, 36, 260."""
+    k = HEX2KEY.get(str(key).upper(), key)
+    cand = f"{k}_{'260' if str(size) == '260' else 'r' + str(size)}"
+    return cand if os.path.exists(f"{BALLOONS}/{cand}.png") else k
 
 def balloon(hexc, tex="fashion", size=120, extra_style="", cls=""):
     """size = breedte in px. Gebruikt de echte productfoto als die bestaat, anders CSS-ballon."""

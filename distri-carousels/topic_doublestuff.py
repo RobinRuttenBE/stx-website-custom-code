@@ -464,12 +464,14 @@ def fill_pal(b, c):
 def _bl(key, size, cls="", extra=""):
     return G["balloon"](key, "fashion", size, extra_style=extra, cls=cls)
 
+import os
+
 def dstuff(outer, inner, size=150):
     """Gesimuleerde double stuff: binnenfoto met de buitenfoto als half-transparante laag erover.
     outer='crystal' = transparante buitenlaag (lichter en zachter)."""
     ratio = G["PHOTO_RATIO"]; h = int(size * ratio)
     if outer == "crystal":
-        over = _bl("whitesand", size, extra="position:absolute;left:0;top:0;opacity:.42")
+        over = _bl("crystal390" if os.path.exists(f'{G["BALLOONS"]}/crystal390.png') else "whitesand", size, extra="position:absolute;left:0;top:0;opacity:.5")
         glass = (f'<div style="position:absolute;left:{int(size*.08)}px;top:{int(size*.04)}px;width:{int(size*.84)}px;height:{int(h*.8)}px;border-radius:50%;'
                  f'background:radial-gradient(circle at 30% 24%,rgba(255,255,255,.75) 0,rgba(255,255,255,.18) 38%,rgba(255,255,255,0) 62%)"></div>')
         return f'<div style="position:relative;width:{size}px;height:{h}px">{_bl(inner, size)}{over}{glass}</div>'

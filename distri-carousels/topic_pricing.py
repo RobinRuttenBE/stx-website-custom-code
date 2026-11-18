@@ -499,6 +499,7 @@ def garland(keys, big=96, small=62, n=7):
     out = '<div style="display:flex;align-items:flex-end;justify-content:center;gap:0">'
     for i in range(n):
         k = keys[i % len(keys)]; s = big if i % 2 == 0 else small
+        if i % 2 and "sized" in G: k = G["sized"](k, 5)   # kleine = echte R5-packshot
         rotv = (-10, 12, -6, 10, -12, 8, -9)[i % 7]
         out += f'<div style="margin:0 -9px"><div style="transform:rotate({rotv}deg)">{_bl(k, s)}</div></div>'
     return out + '</div>'
@@ -554,7 +555,7 @@ def calc_photo(c, ink="#111"):
     """'Uitgerekend': foto van de Kostprijscalculator op de laptop, met offerte-stempel (stijl 3 cover)."""
     esc = G["esc"]
     return (f'<div style="position:relative;width:330px;height:370px">'
-            f'<div style="position:absolute;left:0;top:20px;width:330px;height:330px;border-radius:18px;overflow:hidden;box-shadow:0 0 0 8px #fff,0 10px 14px rgba(0,0,0,.18)">{G["photo"]("calculator_laptop.jpg", 330, 330, "center 34%")}</div>'
+            f'<div style="position:absolute;left:0;top:20px;width:330px;height:330px;border-radius:18px;overflow:hidden;box-shadow:0 0 0 8px #fff,0 10px 14px rgba(0,0,0,.18)">{G["photo"]("calculator_laptop.jpg", 330, 330, "52% center")}</div>'
             f'<div style="position:absolute;left:20px;top:300px;transform:rotate(-5deg);background:#fff;color:{ink};border:3px solid {ink};'
             f'border-radius:10px;padding:8px 16px;font-size:20px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;box-shadow:0 4px 0 rgba(0,0,0,.18);white-space:nowrap">✓ {esc(c["quote_lbl"])}</div></div>')
 
@@ -669,7 +670,7 @@ def s2_slides(b, c):
   <div style="position:absolute;left:300px;top:552px;width:0;height:0;border-left:22px solid #fff;border-top:14px solid transparent;border-bottom:14px solid transparent"></div>
   <h1 data-fit style="position:absolute;left:320px;right:70px;top:70px;max-height:430px;font-size:70px">{hl(c['cover_title'])}</h1>
   <div class="frame" style="left:320px;top:520px;width:690px;transform:rotate({rot(b,-2)}deg)">
-    <div class="ph" style="height:460px;padding:0;overflow:hidden">{G['photo_lbl']('calculator_laptop.jpg', 'sempertexeurope.com/tools', 658, 460, '#111', 'center 36%', 4, 15)}</div>
+    <div class="ph" style="height:460px;padding:0;overflow:hidden">{G['photo_lbl']('calculator_laptop.jpg', 'sempertexeurope.com/tools', 658, 460, '#111', 'center', 4, 15)}</div>
   </div>
   <div class="tagw" style="right:70px;top:960px;white-space:nowrap"><span class="ast">✳</span>{esc(c['cover_tag'])}</div>
   <div style="position:absolute;left:70px;top:1060px;font-size:36px;line-height:1.1">{esc(c['cover_with'])}</div>
@@ -684,7 +685,7 @@ def s2_slides(b, c):
     <div class="ph" style="height:340px;padding:0;overflow:hidden">{G['photo']('organic_design.jpg', 528, 340, 'center 58%', 4)}</div>
   </div>
   <div class="frame" style="left:600px;top:820px;width:410px;transform:rotate({rot(b,3)}deg)">
-    <div class="ph" style="height:260px;padding:0;overflow:hidden">{G['photo']('calculator_laptop.jpg', 378, 260, 'center 32%', 4)}</div>
+    <div class="ph" style="height:260px;padding:0;overflow:hidden">{G['photo']('calculator_laptop.jpg', 378, 260, 'center', 4)}</div>
   </div>
   {s2_footer(b)}
 </section>""")

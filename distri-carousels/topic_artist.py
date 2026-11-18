@@ -443,6 +443,7 @@ def garland(big=120, small=78, keys=None, labels=None):
     out = '<div style="display:flex;align-items:flex-end;justify-content:center;gap:0">'
     for i, k in enumerate(keys):
         s = big if i % 2 == 0 else small
+        if i % 2 and "sized" in G: k = G["sized"](k, 5)   # kleine = echte R5-packshot
         rotv = (-10, 12, -6, 10, -12)[i % 5]
         lab = f'<div class="pname" style="font-size:22px;margin-top:12px">{G["esc"](labels[i])}</div>' if labels else ""
         out += f'<div style="text-align:center;margin:0 -10px"><div style="transform:rotate({rotv}deg)">{_bl(k, s)}</div>{lab}</div>'

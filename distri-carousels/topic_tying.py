@@ -553,6 +553,14 @@ def knot_visual(keys, c, ink="#111"):
             f'<div style="position:absolute;left:-30px;right:-30px;top:240px">{chips_row(c["chips"][:2], ink, "#fff", True)}</div>'
             f'<div style="position:absolute;left:90px;top:300px;transform:rotate(-4deg);background:#fff;color:{ink};border:3px solid {ink};border-radius:10px;padding:8px 16px;font-size:22px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;box-shadow:0 4px 0 rgba(0,0,0,.18);white-space:nowrap">✓ {esc(c["knot_lbl"])}</div></div>')
 
+def knot_photo(c, ink="#111"):
+    """'Tweevingerknoop': foto uit de blog (handen die de knoop leggen) met stempel '1 knoop' (stijl 3 cover)."""
+    esc = G["esc"]
+    return (f'<div style="position:relative;width:330px;height:380px">'
+            f'<div style="position:absolute;left:0;top:50px;width:330px;height:300px;border-radius:18px;overflow:hidden;box-shadow:0 0 0 8px #fff,0 10px 14px rgba(0,0,0,.18)">{G["photo"]("tying_1.jpg", 330, 300, "56% center")}</div>'
+            f'<div style="position:absolute;left:10px;top:0;transform:rotate(-5deg);background:#fff;color:{ink};border:3px solid {ink};border-radius:10px;padding:8px 16px;font-size:22px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;box-shadow:0 4px 0 rgba(0,0,0,.18);white-space:nowrap">✓ {esc(c["knot_lbl"])}</div>'
+            f'<div style="position:absolute;right:0;top:320px;transform:rotate(3deg)">{chips_row(c["chips"][:1], ink, "#fff", True)}</div></div>')
+
 def two_builds(keys, c, ink="#111", body_size=21, lbl_size=24, gap=26, vh=250, sc=1.0):
     """Voorbeeldslide: links duplet, rechts kwartet, elk met titel + regel."""
     esc = G["esc"]
@@ -598,10 +606,10 @@ def s1_slides(b, c):
     steps = "".join(f'<div class="step" style="font-size:{sfs}px"><b>{i+1}.</b><span>{esc(s)}</span></div>' for i, s in enumerate(c["steps"]))
     S.append(f"""
 <section class="slide s1">
-  <div class="box" style="left:70px;top:120px;width:790px;height:470px">
-    <h2 data-fit style="font-size:72px;max-height:380px;line-height:1.1">{esc(c['steps_title'])}</h2>
+  <div class="box" style="left:70px;top:120px;width:570px;height:470px">
+    <h2 data-fit style="font-size:66px;max-height:380px;line-height:1.1">{esc(c['steps_title'])}</h2>
   </div>
-  <div class="bigballoon" style="left:740px;top:20px;transform:scale(.85);transform-origin:top left">{neck_stretch(b['hero'], 110, b['ink'])}</div>
+  <div class="box" style="left:670px;top:120px;width:340px;height:470px;padding:0;overflow:hidden">{G['photo']('tying_1.jpg', 332, 462, '56% center')}</div>
   <div style="position:absolute;left:120px;top:600px">{arrow_svg(b['ink'], 150, 140)}</div>
   <div class="box" style="left:270px;top:610px;width:740px;height:560px;padding:28px 38px">
     <div style="font-size:27px;font-weight:{b['body_b']}">{esc(c['steps_lead'])}</div>
@@ -675,7 +683,7 @@ def s2_slides(b, c):
   <div style="position:absolute;left:300px;top:552px;width:0;height:0;border-left:22px solid #fff;border-top:14px solid transparent;border-bottom:14px solid transparent"></div>
   <h1 data-fit style="position:absolute;left:320px;right:70px;top:70px;max-height:430px;font-size:64px">{hl(c['cover_title'])}</h1>
   <div class="frame" style="left:320px;top:520px;width:690px;transform:rotate({rot(b,-2)}deg)">
-    <div class="ph" style="height:460px;padding:20px;box-sizing:border-box"><div style="transform:scale(1.1)">{knot_visual(P, c, '#111')}</div></div>
+    <div class="ph" style="height:460px;padding:0;overflow:hidden">{G['photo']('tying_1.jpg', 658, 460, '55% center', 4)}</div>
   </div>
   <div class="tagw" style="right:70px;top:960px;white-space:nowrap"><span class="ast">✳</span>{esc(c['cover_tag'])}</div>
   <div style="position:absolute;left:70px;top:1060px;font-size:36px;line-height:1.1">{esc(c['cover_with'])}</div>
@@ -687,7 +695,7 @@ def s2_slides(b, c):
   <div class="label" style="top:70px">{esc(c['steps_label'])}</div>
   <div class="body" style="position:absolute;left:70px;right:70px;top:160px;font-size:25px"><b style="font-size:33px">{esc(c['steps_title'])}</b>{steps}</div>
   <div class="frame" style="left:80px;top:790px;width:930px;transform:rotate({rot(b,-1.5)}deg)">
-    <div class="ph" style="height:290px;padding:20px 24px;box-sizing:border-box;background:#fff;color:#111;flex-direction:row;gap:40px;align-items:center;justify-content:center"><div style="transform:scale(.95)">{neck_stretch(P[0], 110, '#111')}</div><div style="transform:scale(.8)">{duplet(P[1:3] if len(P) > 2 else P, 120, '#111')}</div></div>
+    <div class="ph" style="height:290px;padding:16px 24px;box-sizing:border-box;background:#fff;color:#111;flex-direction:row;gap:30px;align-items:center;justify-content:center">{G['photo']('tying_2.jpg', 470, 258, 'center 42%', 12)}<div style="transform:scale(.9)">{neck_stretch(P[0], 110, '#111')}</div></div>
   </div>
   {s2_footer(b)}
 </section>""")
@@ -766,7 +774,7 @@ def s3_slides(b, c):
   <div class="lblw" style="left:110px;top:500px;transform:rotate({rot(b,-4)}deg)">{esc(c['s3_left'])}<br><span class="meta">● {esc(c['s3_left_meta'])}</span></div>
   <div class="lbld" style="right:110px;top:500px;transform:rotate({rot(b,4)}deg)">{esc(c['s3_right'])}<br><span class="meta" style="background:rgba(255,255,255,.18)">● {esc(c['s3_right_meta'])}</span></div>
   <div style="position:absolute;left:60px;top:680px;transform:scale(1.18);transform-origin:top left">{sore_visual(loud, c, b['ink'])}</div>
-  <div style="position:absolute;right:60px;top:680px;transform:scale(1.18);transform-origin:top right">{knot_visual(P, c, b['ink'])}</div>
+  <div style="position:absolute;right:60px;top:680px;transform:scale(1.18);transform-origin:top right">{knot_photo(c, b['ink'])}</div>
   <div class="vsbadge" style="left:485px;top:850px">vs</div>
   {s3_footer(b, stx_h=60)}
 </section>""")

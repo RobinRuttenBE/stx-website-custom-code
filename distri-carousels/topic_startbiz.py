@@ -495,6 +495,7 @@ def garland(keys, big=84, small=56, n=6):
     out = '<div style="display:flex;align-items:flex-end;justify-content:center;gap:0">'
     for i in range(n):
         k = keys[i % len(keys)]; s = big if i % 2 == 0 else small
+        if i % 2 and "sized" in G: k = G["sized"](k, 5)   # kleine = echte R5-packshot
         rotv = (-10, 12, -6, 10, -12, 8, -9)[i % 7]
         out += f'<div style="margin:0 -8px"><div style="transform:rotate({rotv}deg)">{_bl(k, s)}</div></div>'
     return out + '</div>'
@@ -528,9 +529,9 @@ def centrepiece(keys, size=76, w=230, h=250, ink="#111"):
     out = f'<div style="position:relative;width:{w}px;height:{h}px">{svg}'
     for (x, y), k in zip(pos, keys):
         out += f'<div style="position:absolute;left:{x}px;top:{y}px">{_bl(k, size)}</div>'
-    small = int(size * .5)
-    out += f'<div style="position:absolute;left:{bx0-small-30}px;top:{by0-int(small*ratio)-6}px;transform:rotate(-20deg)">{_bl(keys[3 % len(keys)], small)}</div>'
-    out += f'<div style="position:absolute;left:{bx0+26}px;top:{by0-int(small*ratio)-2}px;transform:rotate(18deg)">{_bl(keys[1 % len(keys)], small)}</div>'
+    small = int(size * .5); sz = (lambda k: G["sized"](k, 5)) if "sized" in G else (lambda k: k)
+    out += f'<div style="position:absolute;left:{bx0-small-30}px;top:{by0-int(small*ratio)-6}px;transform:rotate(-20deg)">{_bl(sz(keys[3 % len(keys)]), small)}</div>'
+    out += f'<div style="position:absolute;left:{bx0+26}px;top:{by0-int(small*ratio)-2}px;transform:rotate(18deg)">{_bl(sz(keys[1 % len(keys)]), small)}</div>'
     out += f'<div style="position:absolute;left:{bx0-34}px;top:{by0-2}px;width:68px;height:34px;border-radius:0 0 14px 14px;background:{ink}"></div>'
     out += f'<div style="position:absolute;left:{bx0-60}px;top:{by0+30}px;width:120px;height:8px;border-radius:4px;background:{ink};opacity:.5"></div>'
     return out + '</div>'

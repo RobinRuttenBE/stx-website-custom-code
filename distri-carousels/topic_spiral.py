@@ -572,9 +572,9 @@ def tight_visual(keys, c, ink="#111"):
             f'<div style="position:absolute;left:90px;top:332px;transform:rotate(-4deg);background:#fff;color:{ink};border:3px solid {ink};border-radius:10px;padding:8px 16px;font-size:22px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;box-shadow:0 4px 0 rgba(0,0,0,.18);white-space:nowrap">✓ {esc(c["quads_lbl"])}</div></div>')
 
 def two_pairs(keys, c, ink="#111", body_size=21, lbl_size=24, gap=26, vh=250, sc=1.0):
-    """Voorbeeldslide: links de tutorial-boog (violet + lila benaderd met violet en whitesand), rechts de boog in het distri-palet."""
+    """Voorbeeldslide: links de tutorial-boog (Violet 051 + Fashion Lilac 050, echte packshots), rechts de boog in het distri-palet."""
     esc = G["esc"]
-    tut = ["violet", "whitesand"]
+    tut = ["violet", "lilac"]
     vis = [f'<div style="height:{vh}px;display:flex;align-items:flex-end;justify-content:center;width:100%"><div style="transform:scale({sc:.2f});transform-origin:bottom center">{spiral_arch(tut, 330, 300, 13, 40, 28)}</div></div>',
            f'<div style="height:{vh}px;display:flex;align-items:flex-end;justify-content:center;width:100%"><div style="transform:scale({sc:.2f});transform-origin:bottom center">{spiral_arch(keys, 330, 300, 13, 40, 28)}</div></div>']
     cols = ""
