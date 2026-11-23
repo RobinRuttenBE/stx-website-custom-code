@@ -314,15 +314,20 @@
   host.setAttribute('data-nosnippet', '');
   host.innerHTML =
     '<section class="sh-band">' +
-      '<div class="sh-caro' + (ticketsLive ? ' is-live' : '') + '" id="sh-caro" style="--sh-forest:url(' + ASSETS + 'enchanted-forest.jpg)">' +
+      '<div class="sh-caro" id="sh-caro" style="--sh-forest:url(' + ASSETS + 'enchanted-forest.jpg)">' +
+        '<div class="sh-slide img on" data-slide="black-friday">' +
+          '<a class="sh-img-link" href="' + prefix + '/shop/category/printed-latex-2912" data-track="black-friday">' +
+            '<img src="' + BF_BANNER + '" alt="Black Friday Week - 50% OFF with code BLACKFRIDAY - 23-29 November" loading="eager">' +
+          '</a>' +
+        '</div>' +
         (ticketsLive ?
-        '<div class="sh-slide ench live on" data-slide="nozzle-up-tickets">' +
+        '<div class="sh-slide ench live" data-slide="nozzle-up-tickets">' +
           '<div><div class="sh-kicker"><span class="sh-livepill"><i></i>' + esc(S.nt_live) + '</span>' + esc(S.nu_k) + '</div><h2>' + hl(S.nt_h) + '</h2><p>' + esc(S.nt_p) + '</p>' +
           '<a class="sh-cta mega" href="' + LINKS.tickets + '" data-track="nozzle-up-tickets">' + esc(S.nt_b) + ' <span aria-hidden="true">&rarr;</span></a></div>' +
           '<div class="sh-art logo"><img src="' + ASSETS + 'nozzle-up-2027.png" alt="Nozzle Up 2027" loading="eager"></div>' +
         '</div>'
         :
-        '<div class="sh-slide ench on" data-slide="nozzle-up">' +
+        '<div class="sh-slide ench" data-slide="nozzle-up">' +
           '<div><div class="sh-kicker">' + esc(S.nu_k) + '</div><h2>' + hl(S.nu_h) + '</h2><p>' + esc(S.nu_p) + '</p>' +
           '<a class="sh-cta" href="' + LINKS.nozzle + '" target="_blank" rel="noopener" data-track="nozzle-up">' + esc(S.nu_b) + '</a></div>' +
           '<div class="sh-art logo"><img src="' + ASSETS + 'nozzle-up-2027.png" alt="Nozzle Up 2027" loading="eager"></div>' +
@@ -331,11 +336,6 @@
           '<div><div class="sh-kicker">' + esc(S.tl_k) + '</div><h2>' + hl(S.tl_h) + '</h2>' +
           '<a class="sh-cta big" href="' + LINKS.tools + '" data-track="tools">' + esc(S.tl_b) + '</a></div>' +
           '<div class="sh-art"><img class="b1" src="' + ASSETS + 'tools-1.png" alt="" loading="lazy"><img class="b2" src="' + ASSETS + 'tools-2.png" alt="" loading="lazy"><img class="b3" src="' + ASSETS + 'tools-3.png" alt="" loading="lazy"></div>' +
-        '</div>' +
-        '<div class="sh-slide img" data-slide="black-friday">' +
-          '<a class="sh-img-link" href="' + prefix + '/shop/category/printed-latex-2912" data-track="black-friday">' +
-            '<img src="' + BF_BANNER + '" alt="Black Friday Week - 50% OFF with code BLACKFRIDAY - 23-29 November" loading="eager">' +
-          '</a>' +
         '</div>' +
         '<div class="sh-slide" data-slide="workshops">' +
           '<div><div class="sh-kicker">' + esc(S.ws_k) + '</div><h2>' + hl(S.ws_h) + '</h2><p>' + esc(S.ws_p) + '</p>' +
@@ -389,7 +389,7 @@
     caro.classList.toggle('on-live', slides[i].classList.contains('live'));
     restart();
   }
-  function restart() { clearInterval(timer); if (autoplay) { timer = setInterval(function () { go(i + 1); }, 6000); } }
+  function restart() { clearTimeout(timer); if (!autoplay) { return; } var delay = (slides[i] && slides[i].classList.contains('img')) ? 10000 : 6000; timer = setTimeout(function () { go(i + 1); }, delay); }
   Array.prototype.forEach.call(caro.querySelectorAll('.sh-arrow'), function (a) {
     a.addEventListener('click', function () { go(i + parseInt(a.getAttribute('data-dir'), 10)); });
   });
