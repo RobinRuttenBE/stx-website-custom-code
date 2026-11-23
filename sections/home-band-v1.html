@@ -156,6 +156,30 @@
     .stx-home .sh-arrow { display: none; }
     .stx-home .sh-dots { left: 14px; bottom: 8px; }
   }
+
+  /* Black Friday Week slide: donkere kaart, gele 50% badge, kopieerbare code */
+  .stx-home .sh-slide.bf { background: var(--dark); }
+  .stx-home .sh-slide.bf .sh-kicker { color: var(--yellow); }
+  .stx-home .sh-slide.bf h2 { color: #fff; font-size: clamp(28px, 2.6vw, 40px); }
+  .stx-home .sh-slide.bf h2 .sh-hl { color: var(--dark); background: var(--yellow); }
+  .stx-home .sh-slide.bf p { color: rgba(255,255,255,0.88); font-weight: 600; margin-bottom: 14px; }
+  .stx-home .sh-slide.bf p strong { color: var(--yellow); font-weight: 800; letter-spacing: 0.04em; }
+  .stx-home .sh-code { display: inline-flex; align-items: center; gap: 10px; background: transparent; border: 2px dashed var(--yellow); color: #fff; padding: 10px 18px; border-radius: 8px; font-family: inherit; font-size: 13px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; margin: 0 12px 10px 0; cursor: pointer; position: relative; transition: background 0.15s ease, transform 0.15s ease; }
+  .stx-home .sh-code:hover { background: rgba(255,255,255,0.06); transform: translateY(-1px); }
+  .stx-home .sh-code .sh-code-value { color: var(--yellow); font-size: 15px; letter-spacing: 0.06em; }
+  .stx-home .sh-code-done { position: absolute; top: -28px; right: 0; background: var(--yellow); color: var(--dark); padding: 4px 10px; border-radius: 6px; font-size: 10.5px; letter-spacing: 0.14em; opacity: 0; pointer-events: none; transition: opacity 0.2s ease, transform 0.2s ease; transform: translateY(6px); font-style: normal; text-transform: uppercase; font-weight: 800; }
+  .stx-home .sh-code.is-copied .sh-code-done { opacity: 1; transform: translateY(0); }
+  .stx-home .sh-art.bf-art { display: flex; align-items: center; justify-content: flex-end; height: auto; }
+  .stx-home .bf-circle { width: 180px; height: 180px; border-radius: 50%; background: var(--yellow); color: var(--dark); display: flex; flex-direction: column; align-items: center; justify-content: center; transform: rotate(-8deg); box-shadow: 0 14px 30px rgba(255,219,90,0.3); font-family: inherit; }
+  .stx-home .bf-pct { font-size: 56px; font-weight: 900; line-height: 1; letter-spacing: -0.03em; }
+  .stx-home .bf-off { font-size: 20px; font-weight: 800; letter-spacing: 0.16em; margin-top: 2px; text-transform: uppercase; }
+  @media (max-width: 760px) {
+    .stx-home .bf-circle { width: 100px; height: 100px; }
+    .stx-home .bf-pct { font-size: 34px; }
+    .stx-home .bf-off { font-size: 12px; }
+    .stx-home .sh-code { padding: 8px 12px; font-size: 11px; margin-bottom: 8px; }
+    .stx-home .sh-code .sh-code-value { font-size: 13px; }
+  }
 </style>
 
 <script>
@@ -307,14 +331,22 @@
   host.innerHTML =
     '<section class="sh-band">' +
       '<div class="sh-caro' + (ticketsLive ? ' is-live' : '') + '" id="sh-caro" style="--sh-forest:url(' + ASSETS + 'enchanted-forest.jpg)">' +
+        '<div class="sh-slide bf on" data-slide="black-friday">' +
+          '<div><div class="sh-kicker">Black Friday Week · 23–29 November</div>' +
+          '<h2><span class="sh-hl">50% off</span> everything</h2>' +
+          '<p>Use code <strong>BLACKFRIDAY</strong> at checkout.</p>' +
+          '<button type="button" class="sh-code" data-copy="BLACKFRIDAY" data-track="bf-code">Code <span class="sh-code-value">BLACKFRIDAY</span><em class="sh-code-done">Copied</em></button>' +
+          '<a class="sh-cta" href="' + prefix + '/shop" data-track="bf-shop">Shop the sale &rarr;</a></div>' +
+          '<div class="sh-art bf-art"><div class="bf-circle"><span class="bf-pct">50%</span><span class="bf-off">Off</span></div></div>' +
+        '</div>' +
         (ticketsLive ?
-        '<div class="sh-slide ench live on" data-slide="nozzle-up-tickets">' +
+        '<div class="sh-slide ench live" data-slide="nozzle-up-tickets">' +
           '<div><div class="sh-kicker"><span class="sh-livepill"><i></i>' + esc(S.nt_live) + '</span>' + esc(S.nu_k) + '</div><h2>' + hl(S.nt_h) + '</h2><p>' + esc(S.nt_p) + '</p>' +
           '<a class="sh-cta mega" href="' + LINKS.tickets + '" data-track="nozzle-up-tickets">' + esc(S.nt_b) + ' <span aria-hidden="true">&rarr;</span></a></div>' +
           '<div class="sh-art logo"><img src="' + ASSETS + 'nozzle-up-2027.png" alt="Nozzle Up 2027" loading="eager"></div>' +
         '</div>'
         :
-        '<div class="sh-slide ench on" data-slide="nozzle-up">' +
+        '<div class="sh-slide ench" data-slide="nozzle-up">' +
           '<div><div class="sh-kicker">' + esc(S.nu_k) + '</div><h2>' + hl(S.nu_h) + '</h2><p>' + esc(S.nu_p) + '</p>' +
           '<a class="sh-cta" href="' + LINKS.nozzle + '" target="_blank" rel="noopener" data-track="nozzle-up">' + esc(S.nu_b) + '</a></div>' +
           '<div class="sh-art logo"><img src="' + ASSETS + 'nozzle-up-2027.png" alt="Nozzle Up 2027" loading="eager"></div>' +
@@ -394,6 +426,16 @@
   host.addEventListener('click', function (e) {
     var a = e.target.closest ? e.target.closest('a[data-track]') : null;
     if (a) { track('home_band_click', { target: a.getAttribute('data-track'), slide: slides[i].getAttribute('data-slide') }); }
+    var cb = e.target.closest ? e.target.closest('.sh-code[data-copy]') : null;
+    if (cb) {
+      var txt = cb.getAttribute('data-copy') || '';
+      var mark = function () { cb.classList.add('is-copied'); setTimeout(function () { cb.classList.remove('is-copied'); }, 1600); };
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(txt).then(mark, mark); }
+        else { mark(); }
+      } catch (err) { mark(); }
+      track('home_band_click', { target: cb.getAttribute('data-track') || 'bf-code', slide: slides[i].getAttribute('data-slide') });
+    }
   });
   caro.classList.toggle('on-live', slides[0].classList.contains('live'));
   restart();
