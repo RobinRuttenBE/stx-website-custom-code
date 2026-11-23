@@ -73,6 +73,7 @@
   .stx-home .sh-slide.img { padding: 0; display: block; background: #1b073d; }
   .stx-home .sh-slide.img .sh-img-link { display: block; width: 100%; height: 100%; }
   .stx-home .sh-slide.img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  @media (max-width: 760px) { .stx-home .sh-slide.img img { object-fit: contain; } }
 
   /* Nozzle Up slide: zelfde kaartkleur, bos en sterren erbovenop */
   .stx-home .sh-slide.ench::before { content: ""; position: absolute; inset: 0; background: var(--sh-forest) center / cover no-repeat; opacity: 0.85;
@@ -172,7 +173,9 @@
      Voorproef van de tickets-slide: #stxtickets achter de URL (onthouden), #stxtickets-uit zet hem uit. */
   var NU_TICKETS_LIVE = true;
   var NU_BETA_KEY = 'stx_nu_tickets_beta';
-  var ASSETS = 'https://cdn.jsdelivr.net/gh/RobinRuttenBE/stx-website-custom-code@44be4f3a098ba3a0f80e3935bc32e1726a43cfd7/assets/home/';
+  var ASSETS = 'https://cdn.jsdelivr.net/gh/RobinRuttenBE/stx-website-custom-code@46af412fc815cb9f48b34b090fcc1ea694eef91b/assets/home/';
+  /* Zwarte Vrijdag banner wordt los gepind op de commit waar het bestand toegevoegd is, zodat de andere afbeeldingen (nozzle-up, balloons, pump, workshops) op hun oude cache blijven staan. */
+  var BF_BANNER = 'https://cdn.jsdelivr.net/gh/RobinRuttenBE/stx-website-custom-code@b593cc8439dd99c303164d5b332abe2b955c6f53/assets/home/black-friday-2026.png';
 
   function wallDone() { if (window.stxLoadwallHide) { window.stxLoadwallHide(); } }
 
@@ -330,8 +333,8 @@
           '<div class="sh-art"><img class="b1" src="' + ASSETS + 'tools-1.png" alt="" loading="lazy"><img class="b2" src="' + ASSETS + 'tools-2.png" alt="" loading="lazy"><img class="b3" src="' + ASSETS + 'tools-3.png" alt="" loading="lazy"></div>' +
         '</div>' +
         '<div class="sh-slide img" data-slide="black-friday">' +
-          '<a class="sh-img-link" href="' + prefix + '/shop?search=blackfriday" data-track="black-friday">' +
-            '<img src="' + ASSETS + 'black-friday-2026.png" alt="Black Friday Week - 50% OFF with code BLACKFRIDAY - 23-29 November" loading="eager">' +
+          '<a class="sh-img-link" href="' + prefix + '/shop" data-track="black-friday">' +
+            '<img src="' + BF_BANNER + '" alt="Black Friday Week - 50% OFF with code BLACKFRIDAY - 23-29 November" loading="eager">' +
           '</a>' +
         '</div>' +
         '<div class="sh-slide" data-slide="workshops">' +
