@@ -69,6 +69,12 @@
   .stx-home .sh-arrow { position: absolute; top: 50%; transform: translateY(-50%); width: 34px; height: 34px; border-radius: 50%; border: none; background: rgba(255,255,255,0.85); color: var(--dark); font-weight: 800; font-size: 18px; line-height: 1; z-index: 6; box-shadow: 0 4px 12px rgba(27,7,61,0.15); }
   .stx-home .sh-arrow.l { left: 10px; } .stx-home .sh-arrow.r { right: 10px; }
 
+  /* Full-image slide (Black Friday Week banner): carousel vol vullen, crop eet enkel de dark-purple zijpadding van het beeld */
+  .stx-home .sh-slide.img { padding: 0; display: block; background: #1b073d; }
+  .stx-home .sh-slide.img .sh-img-link { display: block; width: 100%; height: 100%; }
+  .stx-home .sh-slide.img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  @media (max-width: 760px) { .stx-home .sh-slide.img img { object-fit: contain; } }
+
   /* Nozzle Up slide: zelfde kaartkleur, bos en sterren erbovenop */
   .stx-home .sh-slide.ench::before { content: ""; position: absolute; inset: 0; background: var(--sh-forest) center / cover no-repeat; opacity: 0.85;
     -webkit-mask-image: linear-gradient(90deg, rgba(0,0,0,0.08) 0%, rgba(0,0,0,0.22) 35%, rgba(0,0,0,0.6) 60%, rgba(0,0,0,1) 85%);
@@ -168,6 +174,8 @@
   var NU_TICKETS_LIVE = true;
   var NU_BETA_KEY = 'stx_nu_tickets_beta';
   var ASSETS = 'https://cdn.jsdelivr.net/gh/RobinRuttenBE/stx-website-custom-code@46af412fc815cb9f48b34b090fcc1ea694eef91b/assets/home/';
+  /* Black Friday banner wordt los gepind op de commit waar het bestand toegevoegd is, zodat de andere afbeeldingen (nozzle-up, balloons, pump, workshops) op hun oude cache blijven staan. */
+  var BF_BANNER = 'https://cdn.jsdelivr.net/gh/RobinRuttenBE/stx-website-custom-code@0478b06ee8c9bfa453ec66e8e36f1dcf6df8d89f/assets/home/black-friday-2026.png';
 
   function wallDone() { if (window.stxLoadwallHide) { window.stxLoadwallHide(); } }
 
@@ -306,15 +314,20 @@
   host.setAttribute('data-nosnippet', '');
   host.innerHTML =
     '<section class="sh-band">' +
-      '<div class="sh-caro' + (ticketsLive ? ' is-live' : '') + '" id="sh-caro" style="--sh-forest:url(' + ASSETS + 'enchanted-forest.jpg)">' +
+      '<div class="sh-caro" id="sh-caro" style="--sh-forest:url(' + ASSETS + 'enchanted-forest.jpg)">' +
+        '<div class="sh-slide img on" data-slide="black-friday">' +
+          '<a class="sh-img-link" href="' + prefix + '/shop/category/printed-latex-2912" data-track="black-friday">' +
+            '<img src="' + BF_BANNER + '" alt="Black Friday Week - 50% OFF with code BLACKFRIDAY - 23-29 November" loading="eager">' +
+          '</a>' +
+        '</div>' +
         (ticketsLive ?
-        '<div class="sh-slide ench live on" data-slide="nozzle-up-tickets">' +
+        '<div class="sh-slide ench live" data-slide="nozzle-up-tickets">' +
           '<div><div class="sh-kicker"><span class="sh-livepill"><i></i>' + esc(S.nt_live) + '</span>' + esc(S.nu_k) + '</div><h2>' + hl(S.nt_h) + '</h2><p>' + esc(S.nt_p) + '</p>' +
           '<a class="sh-cta mega" href="' + LINKS.tickets + '" data-track="nozzle-up-tickets">' + esc(S.nt_b) + ' <span aria-hidden="true">&rarr;</span></a></div>' +
           '<div class="sh-art logo"><img src="' + ASSETS + 'nozzle-up-2027.png" alt="Nozzle Up 2027" loading="eager"></div>' +
         '</div>'
         :
-        '<div class="sh-slide ench on" data-slide="nozzle-up">' +
+        '<div class="sh-slide ench" data-slide="nozzle-up">' +
           '<div><div class="sh-kicker">' + esc(S.nu_k) + '</div><h2>' + hl(S.nu_h) + '</h2><p>' + esc(S.nu_p) + '</p>' +
           '<a class="sh-cta" href="' + LINKS.nozzle + '" target="_blank" rel="noopener" data-track="nozzle-up">' + esc(S.nu_b) + '</a></div>' +
           '<div class="sh-art logo"><img src="' + ASSETS + 'nozzle-up-2027.png" alt="Nozzle Up 2027" loading="eager"></div>' +
@@ -323,12 +336,6 @@
           '<div><div class="sh-kicker">' + esc(S.tl_k) + '</div><h2>' + hl(S.tl_h) + '</h2>' +
           '<a class="sh-cta big" href="' + LINKS.tools + '" data-track="tools">' + esc(S.tl_b) + '</a></div>' +
           '<div class="sh-art"><img class="b1" src="' + ASSETS + 'tools-1.png" alt="" loading="lazy"><img class="b2" src="' + ASSETS + 'tools-2.png" alt="" loading="lazy"><img class="b3" src="' + ASSETS + 'tools-3.png" alt="" loading="lazy"></div>' +
-        '</div>' +
-        '<div class="sh-slide" data-slide="inspiration">' +
-          '<div><div class="sh-kicker">' + esc(S.in_k) + '</div><h2>' + hl(S.in_h) + '</h2>' +
-          '<div class="sh-chips"><a class="sh-chip" href="' + LINKS.downloads + '" data-track="downloads">' + esc(S.in_c1) + '</a><a class="sh-chip" href="' + LINKS.colours + '" data-track="colours">' + esc(S.in_c2) + '</a></div>' +
-          '<a class="sh-cta" href="' + LINKS.inspiration + '" data-track="inspiration">' + esc(S.in_b) + '</a></div>' +
-          '<div class="sh-art"><img class="b1" src="' + ASSETS + 'inspiration-1.png" alt="" loading="lazy"><img class="b2" src="' + ASSETS + 'inspiration-2.png" alt="" loading="lazy"><img class="b3" src="' + ASSETS + 'inspiration-3.png" alt="" loading="lazy"></div>' +
         '</div>' +
         '<div class="sh-slide" data-slide="workshops">' +
           '<div><div class="sh-kicker">' + esc(S.ws_k) + '</div><h2>' + hl(S.ws_h) + '</h2><p>' + esc(S.ws_p) + '</p>' +
@@ -382,7 +389,7 @@
     caro.classList.toggle('on-live', slides[i].classList.contains('live'));
     restart();
   }
-  function restart() { clearInterval(timer); if (autoplay) { timer = setInterval(function () { go(i + 1); }, 6000); } }
+  function restart() { clearTimeout(timer); if (!autoplay) { return; } var delay = (slides[i] && slides[i].classList.contains('img')) ? 10000 : 6000; timer = setTimeout(function () { go(i + 1); }, delay); }
   Array.prototype.forEach.call(caro.querySelectorAll('.sh-arrow'), function (a) {
     a.addEventListener('click', function () { go(i + parseInt(a.getAttribute('data-dir'), 10)); });
   });
