@@ -69,10 +69,10 @@
   .stx-home .sh-arrow { position: absolute; top: 50%; transform: translateY(-50%); width: 34px; height: 34px; border-radius: 50%; border: none; background: rgba(255,255,255,0.85); color: var(--dark); font-weight: 800; font-size: 18px; line-height: 1; z-index: 6; box-shadow: 0 4px 12px rgba(27,7,61,0.15); }
   .stx-home .sh-arrow.l { left: 10px; } .stx-home .sh-arrow.r { right: 10px; }
 
-  /* Full-image slide (Black Friday Week banner) */
-  .stx-home .sh-slide.img { padding: 0; display: block; }
+  /* Full-image slide (Black Friday Week banner): toont de volledige banner zonder cropping, dark purple fill rondom */
+  .stx-home .sh-slide.img { padding: 0; display: block; background: #1b073d; }
   .stx-home .sh-slide.img .sh-img-link { display: block; width: 100%; height: 100%; }
-  .stx-home .sh-slide.img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .stx-home .sh-slide.img img { width: 100%; height: 100%; object-fit: contain; display: block; }
 
   /* Nozzle Up slide: zelfde kaartkleur, bos en sterren erbovenop */
   .stx-home .sh-slide.ench::before { content: ""; position: absolute; inset: 0; background: var(--sh-forest) center / cover no-repeat; opacity: 0.85;
