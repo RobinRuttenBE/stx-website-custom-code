@@ -673,7 +673,14 @@ function check(name, ok, extra) {
       title: 'Ballon-Tools für Farben und Preise | Ballon-Service', cur: 'CHF', curCode: 'CHF', dist: 'km', vat: 8.1,
       shop: /^https:\/\/www\.ballon-service\.com\/shop\/categories\/\d+$/,
       hint: /Trage deinen eigenen Einkaufspreis pro Stück ein/,
-      foreign: /ß|\b(Kleurmixer|opdracht|inkoopprijs|Bewaar|Instellingen|Materiaal|Settings|Saved quotes|Materials|Inner balloon|Upload a photo|Shop this colour)\b/ }
+      foreign: /ß|\b(Kleurmixer|opdracht|inkoopprijs|Bewaar|Instellingen|Materiaal|Settings|Saved quotes|Materials|Inner balloon|Upload a photo|Shop this colour)\b/ },
+    // RS Segelken (25/11/2026): Shopware, a search on our article code jumps straight to the product; German with ß, EUR.
+    { slug: 'rs-segelken', name: 'RS Segelken', brand: '#2563ad', font: 'Inter',
+      tabs: ['Double Stuffing Rechner', 'Kostenrechner', 'Farbabgleich-Tool'],
+      title: 'Ballon-Tools für Farben und Preise | RS Segelken', cur: '€', curCode: 'EUR', dist: 'km', vat: 19,
+      shop: /^https:\/\/www\.rs-segelken\.de\/(search\?search=R(5|12|18)\d{3}|marken\/sempertex\/metallic\/)$/,
+      hint: /Trage deinen eigenen Einkaufspreis pro Stück ein/,
+      foreign: /\b(Kleurmixer|opdracht|inkoopprijs|Bewaar|Instellingen|Materiaal|Settings|Saved quotes|Materials|Inner balloon|Upload a photo|Shop this colour)\b/ }
   ];
   for (const N of NEW_PARTNERS) {
     console.log(`\n/partner/${N.slug}/tools (vaste taal, ${N.curCode})`);
