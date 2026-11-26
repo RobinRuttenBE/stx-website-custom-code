@@ -73,7 +73,8 @@
   .stx-home .sh-slide.img { padding: 0; display: block; background: #1b073d; }
   .stx-home .sh-slide.img .sh-img-link { display: block; width: 100%; height: 100%; }
   .stx-home .sh-slide.img img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  @media (max-width: 760px) { .stx-home .sh-slide.img img { object-fit: contain; } }
+  .stx-home .sh-slide.img picture { display: block; width: 100%; height: 100%; }
+  /* mobiel: eigen uitsnede (logo, titel, 50%-badge) die de kaart vult, zie BF_BANNER_M */
 
   /* Nozzle Up slide: zelfde kaartkleur, bos en sterren erbovenop */
   .stx-home .sh-slide.ench::before { content: ""; position: absolute; inset: 0; background: var(--sh-forest) center / cover no-repeat; opacity: 0.85;
@@ -176,6 +177,7 @@
   var ASSETS = 'https://cdn.jsdelivr.net/gh/RobinRuttenBE/stx-website-custom-code@46af412fc815cb9f48b34b090fcc1ea694eef91b/assets/home/';
   /* Black Friday banner wordt los gepind op de commit waar het bestand toegevoegd is, zodat de andere afbeeldingen (nozzle-up, balloons, pump, workshops) op hun oude cache blijven staan. */
   var BF_BANNER = 'https://cdn.jsdelivr.net/gh/RobinRuttenBE/stx-website-custom-code@ec9a54be37070b75e7d0eced76378734774eb62a/assets/home/black-friday-2026-nobox.png';
+  var BF_BANNER_M = 'https://cdn.jsdelivr.net/gh/RobinRuttenBE/stx-website-custom-code@27578b768eb354aa587ba2cb5d28ffd0b8e58329/assets/home/black-friday-2026-mobile.png';
 
   function wallDone() { if (window.stxLoadwallHide) { window.stxLoadwallHide(); } }
 
@@ -314,10 +316,10 @@
   host.setAttribute('data-nosnippet', '');
   host.innerHTML =
     '<section class="sh-band">' +
-      '<div class="sh-caro" id="sh-caro" style="--sh-forest:url(' + ASSETS + 'enchanted-forest.jpg)">' +
+      '<div class="sh-caro' + (ticketsLive ? ' is-live' : '') + '" id="sh-caro" style="--sh-forest:url(' + ASSETS + 'enchanted-forest.jpg)">' +
         '<div class="sh-slide img on" data-slide="black-friday">' +
           '<a class="sh-img-link" href="' + prefix + '/shop/category/printed-latex-2912" data-track="black-friday">' +
-            '<img src="' + BF_BANNER + '" alt="Black Friday Week - 50% OFF - 23-29 November" loading="eager">' +
+            '<picture><source media="(max-width: 760px)" srcset="' + BF_BANNER_M + '"><img src="' + BF_BANNER + '" alt="Black Friday Week - 50% OFF - 23-29 November" loading="eager"></picture>' +
           '</a>' +
         '</div>' +
         (ticketsLive ?
@@ -386,7 +388,7 @@
     i = (n + slides.length) % slides.length;
     Array.prototype.forEach.call(slides, function (s, k) { s.classList.toggle('on', k === i); });
     Array.prototype.forEach.call(dots.querySelectorAll('button'), function (b, k) { b.classList.toggle('on', k === i); });
-    caro.classList.toggle('on-live', slides[i].classList.contains('live'));
+    caro.classList.toggle('on-live', slides[i].classList.contains('live') || slides[i].classList.contains('img'));
     restart();
   }
   function restart() { clearTimeout(timer); if (!autoplay) { return; } var delay = (slides[i] && slides[i].classList.contains('img')) ? 10000 : 6000; timer = setTimeout(function () { go(i + 1); }, delay); }
@@ -402,7 +404,7 @@
     var a = e.target.closest ? e.target.closest('a[data-track]') : null;
     if (a) { track('home_band_click', { target: a.getAttribute('data-track'), slide: slides[i].getAttribute('data-slide') }); }
   });
-  caro.classList.toggle('on-live', slides[0].classList.contains('live'));
+  caro.classList.toggle('on-live', slides[0].classList.contains('live') || slides[0].classList.contains('img'));
   restart();
   track('home_band_view', { logged_in: loggedIn, nozzle_tickets: ticketsLive });
   wallDone();
